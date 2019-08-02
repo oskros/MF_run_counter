@@ -72,7 +72,7 @@ class Config:
         return parser
 
 
-class MFRunTimer(tk.Frame, Config):
+class MFRunTimer(tk.Frame):
     def __init__(self, config, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.cfg = config
@@ -396,6 +396,7 @@ class Main(Config):
         self.root.overrideredirect(True)
         self.root.config(borderwidth=3, relief='raised')
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
+        self.root.wm_attributes("-topmost", eval(self.cfg['DEFAULT']['always_on_top']))
         self.root.title('MF run counter')
         self.root.focus_get()
 
@@ -408,7 +409,6 @@ class Main(Config):
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
         self.tab1 = MFRunTimer(self.cfg, self.tabcontrol)
-        self.root.wm_attributes("-topmost", eval(self.cfg['DEFAULT']['always_on_top']))
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Hotkeys(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tab4 = Help(self.tabcontrol)
@@ -544,7 +544,7 @@ class Main(Config):
         cfg['KEYBINDS']['reset_key'] = str(self.tab3._reset)
         cfg['KEYBINDS']['quit_key'] = str(self.tab3._quit)
 
-        self.tab1.build_config_file(cfg)
+        self.build_config_file(cfg)
 
     def SaveQuit(self):
         if self.tab1._running:
