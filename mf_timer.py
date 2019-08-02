@@ -8,22 +8,16 @@ import configparser
 from system_hotkey import SystemHotkey
 from messagebox import mbox
 import webbrowser
-__version__ = '0.5'
+__version__ = '0.6'
 __release_repo__ = 'https://github.com/oskros/MF_counter_releases/releases'
 # ===== Block 0 =====
-# Code here
-# ===================
 
 
 class Config:
     # ===== Block 1 =====
-    # Code here
-    # ===================
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
         # ===== Block 2 =====
-        # Code here
-        # ===================
         config['DEFAULT']['logging_path'] = ''
         config['DEFAULT']['single_player_mode'] = 'NOT_IMPLEMENTED'
         config['DEFAULT']['window_start_position'] = str((100, 100))
@@ -65,8 +59,6 @@ class Config:
             parser.read_file(fi)
 
         # ===== Block 3 =====
-        # Code here
-        # ===================
 
         try:
             ver = parser.get('VERSION', 'version')
@@ -98,8 +90,6 @@ class MFRunTimer(tk.Frame, Config):
         self._make_widgets()
 
         # ===== Block 4 =====
-        # Code here
-        # ===================
 
         self._update_session_time()
 
@@ -152,8 +142,6 @@ class MFRunTimer(tk.Frame, Config):
         self.after(50, self._update_session_time)
 
     # ===== Block 5 =====
-    # Code here
-    # ===================
 
     def _set_time(self, elap, for_session):
         time_str = self._build_time_str(elap)
