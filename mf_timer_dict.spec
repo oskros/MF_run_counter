@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer2.py'],
+a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer.py'],
              pathex=['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases'],
              binaries=[],
              datas=[],
@@ -16,6 +16,8 @@ a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer2
              cipher=block_cipher,
              noarchive=False)
 a.datas += [('d2icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\d2icon.png', 'Data')]
+a.datas += [('run_sound.wav', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\run_sound.wav', 'Data')]
+a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\icon.ico', 'Data')]
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -27,7 +29,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False )
+          console=False , icon='C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\icon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

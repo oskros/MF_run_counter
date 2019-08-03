@@ -423,12 +423,15 @@ class Main(Config):
 
         # Modify root window
         self.root.resizable(False, False)
-        self.root.overrideredirect(True)
+        # self.root.attributes('-type', 'dock')
+        # self.root.overrideredirect(True)
         self.root.config(borderwidth=3, relief='raised')
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", eval(self.cfg['DEFAULT']['always_on_top']))
         self.root.title('MF run counter')
         self.root.focus_get()
+        self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
 
         # Build banner image
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'd2icon.png')
