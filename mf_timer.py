@@ -187,7 +187,7 @@ class MFRunTimer(tk.Frame):
     @staticmethod
     def _build_time_str(elap):
         hours = int(elap / 3600)
-        minutes = int(elap / 60)
+        minutes = int(elap / 60 - hours * 60.0)
         seconds = int(elap - minutes * 60.0)
         hseconds = int((elap - minutes * 60.0 - seconds) * 10)
         return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
