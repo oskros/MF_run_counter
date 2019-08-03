@@ -562,7 +562,7 @@ class Main(Config):
                 str_n = ' ' * max(len(str(len(self.tab1.laps))) - len(str(n)), 0) + str(n)
                 savefile.write(bytes('Run ' + str_n + ': ' + self.tab1._build_time_str(lap) + '\r\n', 'utf-8'))
 
-    def WriteToConfig(self):
+    def UpdateConfig(self):
         cfg = self.cfg
 
         # Update position
@@ -588,7 +588,7 @@ class Main(Config):
             self.tab1.Stop()
         if self.tab1.laps and messagebox.askyesno('Reset', 'Would you like to save results?'):
             self.Save()
-        self.WriteToConfig()
+        self.UpdateConfig()
         self.root.quit()
 
     @staticmethod
