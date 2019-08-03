@@ -34,11 +34,13 @@ class Config:
         config['DEFAULT']['logging_path'] = ''
         config['DEFAULT']['single_player_mode'] = 'NOT_IMPLEMENTED'
         config['DEFAULT']['window_start_position'] = str((100, 100))
-        config['DEFAULT']['tab_keys_global'] = '1'
-        config['DEFAULT']['run_timer_delay_seconds'] = '0'
-        config['DEFAULT']['always_on_top'] = '1'
-        config['DEFAULT']['check_for_new_version'] = '1'
-        config['DEFAULT']['enable_sound_effects'] = '0'
+        config['DEFAULT']['run_timer_delay_seconds'] = '0.0'
+
+        config.add_section('FLAGS')
+        config['FLAGS']['always_on_top'] = '1'
+        config['FLAGS']['tab_keys_global'] = '1'
+        config['FLAGS']['check_for_new_version'] = '1'
+        config['FLAGS']['enable_sound_effects'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = __version__
@@ -214,7 +216,7 @@ class MFRunTimer(tk.Frame):
                 self.after(int(delay*1000), update_start)
             else:
                 update_start()
-            if play_sound and eval(self.cfg['DEFAULT']['enable_sound_effects']):
+            if play_sound and eval(self.cfg['FLAGS']['enable_sound_effects']):
                 self.queue_sound()
 
     def Stop(self, play_sound=True):
@@ -224,13 +226,13 @@ class MFRunTimer(tk.Frame):
             self._running = False
             self._set_time(0, for_session=False)
             self.after_cancel(self._timer)
-            if play_sound and eval(self.cfg['DEFAULT']['enable_sound_effects']):
+            if play_sound and eval(self.cfg['FLAGS']['enable_sound_effects']):
                 self.queue_sound()
 
     def StopStart(self):
         self.Stop(play_sound=False)
         self.Start(play_sound=False)
-        if eval(self.cfg['DEFAULT']['enable_sound_effects']):
+        if eval(self.cfg['FLAGS']['enable_sound_effects']):
             self.queue_sound()
 
     def Lap(self):
@@ -418,7 +420,7 @@ class Main(Config):
         self.cfg = self.load_config_file()
 
         # Check for version
-        if eval(self.cfg['DEFAULT']['check_for_new_version']):
+        if eval(self.cfg['FLAGS']['check_for_new_version']):
             self.check_newest_version()
 
         # Modify root window
@@ -427,7 +429,7 @@ class Main(Config):
         # self.root.overrideredirect(True)
         self.root.config(borderwidth=3, relief='raised')
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.wm_attributes("-topmost", eval(self.cfg['DEFAULT']['always_on_top']))
+        self.root.wm_attributes("-topmost", eval(self.cfg['FLAGS']['always_on_top']))
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
@@ -470,7 +472,7 @@ class Main(Config):
         # Register some hidden keybinds
         self.root.bind("<Delete>", lambda event: self.tab2.delete())
         self.root.bind("<Escape>", lambda event: self.SaveQuit())
-        if eval(self.cfg['DEFAULT']['tab_keys_global']):
+        if eval(self.cfg['FLAGS']['tab_keys_global']):
             self.tab3.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
             self.tab3.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
         else:
