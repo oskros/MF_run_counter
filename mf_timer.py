@@ -7,10 +7,23 @@ import os
 import configparser
 from system_hotkey import SystemHotkey
 from messagebox import mbox
+import winsound
 import webbrowser
-__version__ = '0.6'
+import queue
+import threading
+__version__ = '0.7'
 __release_repo__ = 'https://github.com/oskros/MF_counter_releases/releases'
 # ===== Block 0 =====
+
+
+class ThreadedSound(threading.Thread):
+    def __init__(self, queue):
+        threading.Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        winsound.PlaySound(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'run_sound.wav'), winsound.SND_FILENAME)
+        self.queue.put("Task finished")
 
 
 class Config:
@@ -25,7 +38,7 @@ class Config:
         config['DEFAULT']['run_timer_delay_seconds'] = '0'
         config['DEFAULT']['always_on_top'] = '1'
         config['DEFAULT']['check_for_new_version'] = '1'
-        # config['DEFAULT']['auto_mode'] = '0'
+        config['DEFAULT']['enable_sound_effects'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = __version__
@@ -177,7 +190,18 @@ class MFRunTimer(tk.Frame):
         hseconds = int((elap - minutes * 60.0 - seconds) * 10)
         return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
-    def Start(self):
+    def queue_sound(self):
+        self.queue = queue.Queue(maxsize=2)
+        ThreadedSound(self.queue).start()
+        self.master.after(100, self.process_queue)
+
+    def process_queue(self):
+        try:
+            self.queue.get(False)
+        except queue.Empty:
+            self.master.after(50, self.process_queue)
+
+    def Start(self, play_sound=True):
         def update_start():
             self._start = time.time() - self._laptime
             self._update_lap_time()
@@ -190,18 +214,24 @@ class MFRunTimer(tk.Frame):
                 self.after(int(delay*1000), update_start)
             else:
                 update_start()
+            if play_sound and eval(self.cfg['DEFAULT']['enable_sound_effects']):
+                self.queue_sound()
 
-    def Stop(self):
+    def Stop(self, play_sound=True):
         if self._running:
             self.Lap()
             self._laptime = 0.0
             self._running = False
             self._set_time(0, for_session=False)
             self.after_cancel(self._timer)
+            if play_sound and eval(self.cfg['DEFAULT']['enable_sound_effects']):
+                self.queue_sound()
 
     def StopStart(self):
-        self.Stop()
-        self.Start()
+        self.Stop(play_sound=False)
+        self.Start(play_sound=False)
+        if eval(self.cfg['DEFAULT']['enable_sound_effects']):
+            self.queue_sound()
 
     def Lap(self):
         if self._running:
@@ -234,14 +264,14 @@ class Hotkeys(tk.Frame):
 
         self._start_run = eval(tab0.cfg['KEYBINDS']['start_key'])
         self._end_run = eval(tab0.cfg['KEYBINDS']['end_key'])
-        self._stopstart = eval(tab0.cfg['KEYBINDS']['stopstart_key'])
+        self._stop_start = eval(tab0.cfg['KEYBINDS']['stopstart_key'])
         self._add_drop = eval(tab0.cfg['KEYBINDS']['drop_key'])
         self._reset = eval(tab0.cfg['KEYBINDS']['reset_key'])
         self._quit = eval(tab0.cfg['KEYBINDS']['quit_key'])
 
         self.add_hotkey('Start_run', self._start_run, tab1.Start)
         self.add_hotkey('End_run', self._end_run, tab1.Stop)
-        self.add_hotkey('Stop_start', self._stopstart, tab1.StopStart)
+        self.add_hotkey('Stop_start', self._stop_start, tab1.StopStart)
         self.add_hotkey('Add_drop', self._add_drop, tab2.AddDrop)
         self.add_hotkey('Reset', self._reset, tab0.Reset)
         self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
@@ -485,9 +515,11 @@ class Main(Config):
         if yesno:
             self.tab1._start = time.time()
             self.tab1._laptime = 0.0
+            self.tab1._session_start = time.time()
             self.tab1.laps = []
             self.tab1.m.delete(0, tk.END)
             self.tab1._set_time(self.tab1._laptime, for_session=False)
+            self.tab1._set_time(self.tab1._sessiontime, for_session=True)
             self.tab1._set_laps(is_running=self.tab1._running)
             self.tab1._set_fastest()
             self.tab1._set_average()
@@ -539,7 +571,7 @@ class Main(Config):
         cfg.set('KEYBINDS', '# Please only edit keybinds from within the app')
         cfg['KEYBINDS']['start_key'] = str(self.tab3._start_run)
         cfg['KEYBINDS']['end_key'] = str(self.tab3._end_run)
-        cfg['KEYBINDS']['stopstart_key'] = str(self.tab3._stopstart)
+        cfg['KEYBINDS']['stopstart_key'] = str(self.tab3._stop_start)
         cfg['KEYBINDS']['drop_key'] = str(self.tab3._add_drop)
         cfg['KEYBINDS']['reset_key'] = str(self.tab3._reset)
         cfg['KEYBINDS']['quit_key'] = str(self.tab3._quit)

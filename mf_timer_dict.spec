@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer.py'],
+a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer2.py'],
              pathex=['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases'],
              binaries=[],
              datas=[],
