@@ -277,18 +277,18 @@ class Hotkeys(tk.Frame):
         self._end_run = eval(tab0.cfg['KEYBINDS']['end_key'])
         self._stop_start = eval(tab0.cfg['KEYBINDS']['stopstart_key'])
         self._add_drop = eval(tab0.cfg['KEYBINDS']['drop_key'])
-        self._reset = eval(tab0.cfg['KEYBINDS']['reset_key'])
+        self._reset_lap = eval(tab0.cfg['KEYBINDS']['reset_key'])
         self._quit = eval(tab0.cfg['KEYBINDS']['quit_key'])
 
         self.add_hotkey('Start_run', self._start_run, tab1.Start)
         self.add_hotkey('End_run', self._end_run, tab1.Stop)
         self.add_hotkey('Stop_start', self._stop_start, tab1.StopStart)
         self.add_hotkey('Add_drop', self._add_drop, tab2.AddDrop)
-        self.add_hotkey('Reset', self._reset, tab0.ResetSession)
+        self.add_hotkey('Reset_lap', self._reset_lap, tab0.ResetLap)
         self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
 
-        if (any(x not in self.character_options for x in [self._start_run[1], self._end_run[1], self._add_drop[1], self._reset[1], self._quit[1]])
-            or any(x not in self.modifier_options for x in [self._start_run[0], self._end_run[0], self._add_drop[0], self._reset[0], self._quit[0]])):
+        if (any(x not in self.character_options for x in [self._start_run[1], self._end_run[1], self._add_drop[1], self._reset_lap[1], self._quit[1]])
+            or any(x not in self.modifier_options for x in [self._start_run[0], self._end_run[0], self._add_drop[0], self._reset_lap[0], self._quit[0]])):
             messagebox.showerror('Invalid hotkey', 'One or several hotkeys are invalid. Please edit/delete mf_config.ini')
             sys.exit()
 
@@ -605,7 +605,7 @@ class Main(Config):
         cfg['KEYBINDS']['end_key'] = str(self.tab3._end_run)
         cfg['KEYBINDS']['stopstart_key'] = str(self.tab3._stop_start)
         cfg['KEYBINDS']['drop_key'] = str(self.tab3._add_drop)
-        cfg['KEYBINDS']['reset_key'] = str(self.tab3._reset)
+        cfg['KEYBINDS']['reset_key'] = str(self.tab3._reset_lap)
         cfg['KEYBINDS']['quit_key'] = str(self.tab3._quit)
 
         self.build_config_file(cfg)
