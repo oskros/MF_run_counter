@@ -25,11 +25,11 @@ class MessageBox(object):
         frm_1 = tk.Frame(root)
         frm_1.pack(ipadx=2, ipady=2)
         # the message
-        message = tk.Label(frm_1, text=self.msg)
+        message = tk.Label(frm_1, text=self.msg, font=('arial', 11))
         message.pack(padx=8, pady=8)
         # if entry=True create and set focus
         if entry:
-            self.entry = tk.Entry(frm_1)
+            self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
             self.entry.focus_set()
         # button frame

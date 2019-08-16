@@ -81,9 +81,8 @@ class Config:
             ver = 0
         if ver != __version__:
             self.delete_config_file()
-            self.build_config_file(self.default_config())
             parser = self.load_config_file()
-            messagebox.showinfo('Config file recreated', 'You downloaded a new version. Config file has been recreated.')
+            messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated.')
         return parser
 
 
@@ -139,12 +138,22 @@ class MFRunTimer(tk.Frame):
         lf0.pack()
         lf0.config(borderwidth=0, highlightthickness=0)
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set)
+        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
+        self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bindtags((self.m, self, "all"))
         self.m.config(font=('courier', 12))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+    def delete(self):
+        selection = self.m.curselection()
+        if selection:
+            self.m.delete(selection[0])
+            self.laps.pop(-1-selection[0])
+            self._set_laps(is_running=self._running)
+            self._set_fastest()
+            self._set_average()
 
     def _update_lap_time(self):
         self._laptime = time.time() - self._start
@@ -251,7 +260,7 @@ class Hotkeys(tk.Frame):
         tk.Frame.__init__(self, parent, kw)
         self.modifier_options = ['control', 'alt', 'shift', '']
         self.character_options = ['escape', 'space', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-                                  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'NO_BIND']
+                                  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'f10', 'f11', 'f12', 'NO_BIND']
         self.hk = SystemHotkey()
 
         lf0 = tk.LabelFrame(self)
@@ -275,7 +284,7 @@ class Hotkeys(tk.Frame):
         self.add_hotkey('End_run', self._end_run, tab1.Stop)
         self.add_hotkey('Stop_start', self._stop_start, tab1.StopStart)
         self.add_hotkey('Add_drop', self._add_drop, tab2.AddDrop)
-        self.add_hotkey('Reset', self._reset, tab0.Reset)
+        self.add_hotkey('Reset', self._reset, tab0.ResetSession)
         self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
 
         if (any(x not in self.character_options for x in [self._start_run[1], self._end_run[1], self._add_drop[1], self._reset[1], self._quit[1]])
@@ -344,7 +353,8 @@ class Drops(tk.Frame):
         lf = tk.LabelFrame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set)
+        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
+        self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.config(font=('courier', 12))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
@@ -456,13 +466,15 @@ class Main(Config):
         self.tabcontrol.pack(expand=1, fill='both')
 
         # Add buttons to main widget
-        lf = tk.LabelFrame(self.root)
-        lf.pack()
-        tk.Button(lf, text='Start run', command=self.tab1.Start).pack(side=tk.LEFT)
-        tk.Button(lf, text='End run', command=self.tab1.Stop).pack(side=tk.LEFT)
-        tk.Button(lf, text='Add drop', command=self.tab2.AddDrop).pack(side=tk.LEFT)
-        tk.Button(lf, text='Reset', command=self.Reset).pack(side=tk.LEFT)
-        tk.Button(lf, text='Quit', command=self.SaveQuit).pack(side=tk.LEFT)
+        lf = tk.LabelFrame(self.root, height=35)
+        lf.propagate(False)
+        lf.pack(expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Start', command=self.tab1.Start).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='End', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Add drop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Reset\nlap', command=self.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Reset\nsession', command=self.ResetSession).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        # tk.Button(lf, text='Quit', command=self.SaveQuit).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Make window drag on the banner image
         img_panel.bind("<ButtonPress-1>", self._start_move)
@@ -470,7 +482,7 @@ class Main(Config):
         img_panel.bind("<B1-Motion>", self._on_motion)
 
         # Register some hidden keybinds
-        self.root.bind("<Delete>", lambda event: self.tab2.delete())
+        self.root.bind("<Delete>", lambda event: self._delete_selection())
         self.root.bind("<Escape>", lambda event: self.SaveQuit())
         if eval(self.cfg['FLAGS']['tab_keys_global']):
             self.tab3.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
@@ -481,6 +493,15 @@ class Main(Config):
 
         # Open the widget
         self.root.mainloop()
+
+    def _delete_selection(self):
+        tabs = self.tabcontrol.tabs()
+        cur_tab = self.tabcontrol.select()
+        idx = tabs.index(cur_tab)
+        if idx == 0:
+            self.tab1.delete()
+        elif idx == 1:
+            self.tab2.delete()
 
     def _next_tab(self):
         tabs = self.tabcontrol.tabs()
@@ -515,8 +536,8 @@ class Main(Config):
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
 
-    def Reset(self):
-        yesno = messagebox.askyesno('Reset', 'Would you like to reset data?')
+    def ResetSession(self):
+        yesno = messagebox.askyesno('Reset', 'Would you like to reset session?')
         if yesno:
             self.tab1._start = time.time()
             self.tab1._laptime = 0.0
@@ -530,6 +551,12 @@ class Main(Config):
             self.tab1._set_average()
 
             self.tab2.m.delete(0, tk.END)
+
+    def ResetLap(self):
+        if self.tab1._running:
+            self.tab1._start = time.time()
+            self.tab1._laptime = 0.0
+            self.tab1._set_time(self.tab1._laptime, for_session=False)
 
     def Save(self):
         today = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
