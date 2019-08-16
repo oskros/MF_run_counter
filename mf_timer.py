@@ -11,7 +11,7 @@ import winsound
 import webbrowser
 import queue
 import threading
-__version__ = '0.7'
+__version__ = '0.7.1'
 __release_repo__ = 'https://github.com/oskros/MF_counter_releases/releases'
 # ===== Block 0 =====
 
@@ -50,6 +50,8 @@ class Config:
         config['KEYBINDS']['start_key'] = str(['alt', 'q'])
         config['KEYBINDS']['end_key'] = str(['alt', 'w'])
         config['KEYBINDS']['stopstart_key'] = str(['alt', 'e'])
+        config['KEYBINDS']['delete_prev_key'] = str(['alt', 'delete'])
+        config['KEYBINDS']['pause_key'] = str(['alt', 'space'])
         config['KEYBINDS']['drop_key'] = str(['alt', 'a'])
         config['KEYBINDS']['reset_key'] = str(['alt', 'r'])
         config['KEYBINDS']['quit_key'] = str(['alt', 'escape'])
@@ -95,6 +97,7 @@ class MFRunTimer(tk.Frame):
         self._sessiontime = 0.0
         self._laptime = 0.0
         self._running = False
+        self._paused = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
@@ -146,15 +149,6 @@ class MFRunTimer(tk.Frame):
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-    def delete(self):
-        selection = self.m.curselection()
-        if selection:
-            self.m.delete(selection[0])
-            self.laps.pop(-1-selection[0])
-            self._set_laps(is_running=self._running)
-            self._set_fastest()
-            self._set_average()
-
     def _update_lap_time(self):
         self._laptime = time.time() - self._start
         self._set_time(self._laptime, for_session=False)
@@ -163,7 +157,7 @@ class MFRunTimer(tk.Frame):
     def _update_session_time(self):
         self._sessiontime = time.time() - self._session_start
         self._set_time(self._sessiontime, for_session=True)
-        self.after(50, self._update_session_time)
+        self._sess_timer = self.after(50, self._update_session_time)
 
     # ===== Block 5 =====
 
@@ -254,67 +248,93 @@ class MFRunTimer(tk.Frame):
             self._set_fastest()
             self._set_average()
 
+    def DeletePrev(self):
+        if self.laps:
+            self.m.delete(tk.END)
+            self.laps.pop()
+            self._set_laps(is_running=self._running)
+            self._set_fastest()
+            self._set_average()
+
+    def Pause(self):
+        if not self._paused:
+            self._set_time(self._laptime, for_session=False)
+            self._set_time(self._sessiontime, for_session=True)
+            if self._running:
+                self.after_cancel(self._timer)
+            self.after_cancel(self._sess_timer)
+            # ===== Block 6 =====
+            self._paused = True
+        else:
+            self._start = time.time() - self._laptime
+            self._session_start = time.time() - self._sessiontime
+            if self._running:
+                self._update_lap_time()
+            self._update_session_time()
+            # ===== Block 7 =====
+            self._paused = False
+
 
 class Hotkeys(tk.Frame):
     def __init__(self, tab0, tab1, tab2, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.modifier_options = ['control', 'alt', 'shift', '']
-        self.character_options = ['escape', 'space', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        self.character_options = ['escape', 'space', 'delete', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
                                   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'f10', 'f11', 'f12', 'NO_BIND']
         self.hk = SystemHotkey()
 
-        lf0 = tk.LabelFrame(self)
-        lf0.pack()
-        lf0.config(borderwidth=0, highlightthickness=0, height=18)
-
-        lf = tk.LabelFrame(self)
+        lf = tk.Frame(self)
         lf.pack()
 
-        lb = tk.Label(lf, text='Action/Modifier/Key                    ')
+        lb = tk.Label(lf, text='Action            Modifier/Key', font='Helvetica 14 bold')
         lb.pack()
 
         self._start_run = eval(tab0.cfg['KEYBINDS']['start_key'])
         self._end_run = eval(tab0.cfg['KEYBINDS']['end_key'])
         self._stop_start = eval(tab0.cfg['KEYBINDS']['stopstart_key'])
+        self._delete_prev = eval(tab0.cfg['KEYBINDS']['delete_prev_key'])
+        self._pause = eval(tab0.cfg['KEYBINDS']['pause_key'])
         self._add_drop = eval(tab0.cfg['KEYBINDS']['drop_key'])
         self._reset_lap = eval(tab0.cfg['KEYBINDS']['reset_key'])
         self._quit = eval(tab0.cfg['KEYBINDS']['quit_key'])
 
-        self.add_hotkey('Start_run', self._start_run, tab1.Start)
-        self.add_hotkey('End_run', self._end_run, tab1.Stop)
-        self.add_hotkey('Stop_start', self._stop_start, tab1.StopStart)
-        self.add_hotkey('Add_drop', self._add_drop, tab2.AddDrop)
-        self.add_hotkey('Reset_lap', self._reset_lap, tab0.ResetLap)
-        self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
+        self.add_hotkey('Start run', self._start_run, tab1.Start)
+        self.add_hotkey('End run', self._end_run, tab1.Stop)
+        self.add_hotkey('Stop start', self._stop_start, tab1.StopStart)
+        self.add_hotkey('Delete prev', self._delete_prev, tab1.DeletePrev)
+        self.add_hotkey('Pause', self._pause, tab1.Pause)
+        self.add_hotkey('Add drop', self._add_drop, tab2.AddDrop)
+        self.add_hotkey('Reset lap', self._reset_lap, tab0.ResetLap)
+        # self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
 
         if (any(x not in self.character_options for x in [self._start_run[1], self._end_run[1], self._add_drop[1], self._reset_lap[1], self._quit[1]])
             or any(x not in self.modifier_options for x in [self._start_run[0], self._end_run[0], self._add_drop[0], self._reset_lap[0], self._quit[0]])):
             messagebox.showerror('Invalid hotkey', 'One or several hotkeys are invalid. Please edit/delete mf_config.ini')
             sys.exit()
 
-    def add_hotkey(self, action, keys, func):
+    def add_hotkey(self, label_name, keys, func):
         default_modifier, default_key = keys
-        action = action.lower()
-        lf = tk.LabelFrame(self)
-        lf.pack()
+        action = label_name.replace(' ', '_').lower()
+        lf = tk.LabelFrame(self, height=35, width=179)
+        lf.propagate(False)
+        lf.pack(expand=True, fill=tk.BOTH)
 
-        lab = tk.Label(lf, text=action)
+        lab = tk.Label(lf, text=label_name)
         lab.pack(side=tk.LEFT)
-        lab.config(width=7)
-
-        setattr(self, action + '_m', tk.StringVar())
-        mod = getattr(self, action + '_m')
-        mod.set(default_modifier)
-        drop1 = tk.OptionMenu(lf, mod, *self.modifier_options)
-        drop1.config(width=7, indicatoron=0)
-        drop1.pack(side=tk.LEFT)
 
         setattr(self, action + '_e', tk.StringVar())
         key = getattr(self, action + '_e')
         key.set(default_key)
-        drop2 = tk.OptionMenu(lf, key, *self.character_options)
-        drop2.config(width=7, indicatoron=0)
-        drop2.pack(side=tk.LEFT, fill=tk.X)
+        drop2 = ttk.Combobox(lf, textvariable=key, state='readonly', values=self.character_options)
+        drop2.config(width=9)
+        drop2.pack(side=tk.RIGHT, fill=tk.X)
+
+        setattr(self, action + '_m', tk.StringVar())
+        mod = getattr(self, action + '_m')
+        mod.set(default_modifier)
+        drop1 = ttk.Combobox(lf, textvariable=mod, state='readonly', values=self.modifier_options)
+        drop1.config(width=7)
+        drop1.pack(side=tk.RIGHT)
 
         mod.trace_add('write', lambda name, index, mode: self.re_register(action, getattr(self, '_' + action), func))
         key.trace_add('write', lambda name, index, mode: self.re_register(action, getattr(self, '_' + action), func))
@@ -501,6 +521,10 @@ class Main(Config):
         tk.Button(lf, text='Reset\nsession', command=self.ResetSession).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         # tk.Button(lf, text='Quit', command=self.SaveQuit).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
+        # lfx = tk.LabelFrame(self.root)
+        # lfx.pack(expand=True, fill=tk.BOTH)
+        # tk.Button(lfx, text='Pause', command=self.tab1.Pause).pack(expand=True, fill=tk.BOTH)
+
         # Make window drag on the banner image
         img_panel.bind("<ButtonPress-1>", self._start_move)
         img_panel.bind("<ButtonRelease-1>", self._stop_move)
@@ -533,9 +557,9 @@ class Main(Config):
         tabs = self.tabcontrol.tabs()
         cur_tab = self.tabcontrol.select()
         idx = tabs.index(cur_tab)
-        if idx == 0:
-            self.tab1.delete()
-        elif idx == 1:
+        # if idx == 0:
+        #     self.tab1.delete_prev()
+        if idx == 1:
             self.tab2.delete()
 
     def _next_tab(self):
@@ -565,8 +589,11 @@ class Main(Config):
         self.y = None
 
     def _on_motion(self, event):
-        deltax = event.x - self.x
-        deltay = event.y - self.y
+        try:
+            deltax = event.x - self.x
+            deltay = event.y - self.y
+        except (TypeError, AttributeError):
+            return
         x = self.root.winfo_x() + deltax
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
@@ -639,6 +666,8 @@ class Main(Config):
         cfg['KEYBINDS']['start_key'] = str(self.tab3._start_run)
         cfg['KEYBINDS']['end_key'] = str(self.tab3._end_run)
         cfg['KEYBINDS']['stopstart_key'] = str(self.tab3._stop_start)
+        cfg['KEYBINDS']['delete_prev_key'] = str(self.tab3._delete_prev)
+        cfg['KEYBINDS']['pause_key'] = str(self.tab3._pause)
         cfg['KEYBINDS']['drop_key'] = str(self.tab3._add_drop)
         cfg['KEYBINDS']['reset_key'] = str(self.tab3._reset_lap)
         cfg['KEYBINDS']['quit_key'] = str(self.tab3._quit)
