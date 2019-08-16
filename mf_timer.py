@@ -208,6 +208,8 @@ class MFRunTimer(tk.Frame):
 
     def Start(self, play_sound=True):
         def update_start():
+            if self._paused:
+                self.Pause()
             self._start = time.time() - self._laptime
             self._update_lap_time()
             self._set_laps(is_running=True)
@@ -286,7 +288,7 @@ class Hotkeys(tk.Frame):
         lf = tk.Frame(self)
         lf.pack()
 
-        lb = tk.Label(lf, text='Action            Modifier/Key', font='Helvetica 14 bold')
+        lb = tk.Label(lf, text='Action           Modifier    Key         ', font='Helvetica 11 bold')
         lb.pack()
 
         self._start_run = eval(tab0.cfg['KEYBINDS']['start_key'])
