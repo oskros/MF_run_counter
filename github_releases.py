@@ -34,7 +34,6 @@ def _recursive_gh_get(href, items):
     items.extend(response.json())
 
 
-
 def get_releases(repo_name):
     releases = []
     _recursive_gh_get(

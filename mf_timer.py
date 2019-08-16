@@ -378,6 +378,13 @@ class Drops(tk.Frame):
             self.m.delete(selection[0])
 
 
+class History(tk.Frame):
+    def __init__(self, parent=None, **kw):
+        tk.Frame.__init__(self, parent, kw)
+        label = tk.Label(self, text='temp', justify=tk.LEFT)
+        label.pack()
+
+
 class Help(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
@@ -445,6 +452,22 @@ class Main(Config):
         self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
 
+        # Choose active profile
+        profile_frame = tk.Frame(self.root, height=20, width=240)
+        profile_frame.propagate(False)
+        profile_frame.pack()
+        profiles = tk.StringVar()
+        self.active_profile = ttk.Combobox(profile_frame, textvariable=profiles, state='readonly')
+        # self.active_profile.bind('<FocusOut>', lambda e: self.active_profile.selection_clear())
+        self.active_profile.bind("<<ComboboxSelected>>", lambda e: print('New selection: %s' % self.active_profile.get()))
+        self.active_profile['values'] = ['DEFAULT_PROFILE']
+        self.active_profile.current(0)
+        self.active_profile.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+
+        # Add new profile
+        new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile, borderwidth=1, height=1)
+        new_profile.pack(side=tk.LEFT)
+
         # Build banner image
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
@@ -456,13 +479,15 @@ class Main(Config):
         self.tab1 = MFRunTimer(self.cfg, self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Hotkeys(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = Help(self.tabcontrol)
-        self.tab5 = About(self.tabcontrol)
+        self.tab4 = History()
+        self.tab5 = Help(self.tabcontrol)
+        self.tab6 = About(self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tabcontrol.add(self.tab2, text='Drops')
         self.tabcontrol.add(self.tab3, text='Hotkeys')
-        self.tabcontrol.add(self.tab4, text='Help')
-        self.tabcontrol.add(self.tab5, text='About')
+        self.tabcontrol.add(self.tab4, text='Log')
+        self.tabcontrol.add(self.tab5, text='Help')
+        self.tabcontrol.add(self.tab6, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
 
         # Add buttons to main widget
@@ -493,6 +518,16 @@ class Main(Config):
 
         # Open the widget
         self.root.mainloop()
+
+    def _add_new_profile(self):
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        profile = mbox('Add new profile', entry=True, coords=(xc,yc))
+        if profile:
+            if profile in self.active_profile['values']:
+                messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
+                return
+            self.active_profile['values'] = list(self.active_profile['values']) + [profile]
 
     def _delete_selection(self):
         tabs = self.tabcontrol.tabs()

@@ -2,7 +2,7 @@ import tkinter as tk
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, frame, entry):
+    def __init__(self, msg, b1, b2, frame, entry, coords=False):
         root = self.root = tk.Tk()
         self.root.focus_set()
         root.title('Message')
@@ -49,8 +49,12 @@ class MessageBox(object):
         # roughly center the box on screen
         # for accuracy see: https://stackoverflow.com/a/10018670/1217270
         root.update_idletasks()
-        xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
-        yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
+        if coords:
+            xp = coords[0]
+            yp = coords[1]
+        else:
+            xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
+            yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
         geom = (root.winfo_width(), root.winfo_height(), xp, yp)
         root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
         # call self.close_mod when the close button is pressed
@@ -81,7 +85,7 @@ class MessageBox(object):
         self.root.clipboard_append(self.msg)
 
 
-def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False):
+def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False):
     """Create an instance of MessageBox, and get data back from the user.
     msg = string to be displayed
     b1 = text for left button, or a tuple (<text for button>, <to return on press>)
@@ -90,7 +94,7 @@ def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False):
     t = time in seconds (int or float) until the msgbox automatically closes
     entry = include an entry widget that will have its contents returned: True or False
     """
-    msgbox = MessageBox(msg, b1, b2, frame, entry)
+    msgbox = MessageBox(msg, b1, b2, frame, entry, coords)
     msgbox.root.mainloop()
     # the function pauses here until the mainloop is quit
     msgbox.root.destroy()
