@@ -14,7 +14,7 @@ import threading
 import re
 __version__ = '0.7.1'
 __release_repo__ = 'https://github.com/oskros/MF_counter_releases/releases'
-blocks = [x for x in re.split(r'#(\s+)', open('Blocks.txt', 'r').read()) if x != '\n']
+blocks = [x for x in re.split(r'#(\s+)', open('Blocks.txt', 'r').read()) if x != '\n'] if os.path.isfile('Blocks.txt') else ['']*8
 exec(blocks[0])
 
 
