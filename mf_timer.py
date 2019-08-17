@@ -11,9 +11,11 @@ import winsound
 import webbrowser
 import queue
 import threading
+import re
 __version__ = '0.7.1'
 __release_repo__ = 'https://github.com/oskros/MF_counter_releases/releases'
-# ===== Block 0 =====
+blocks = [x for x in re.split(r'#(\s+)', open('Blocks.txt', 'r').read()) if x != '\n']
+exec(blocks[0])
 
 
 class ThreadedSound(threading.Thread):
@@ -27,10 +29,11 @@ class ThreadedSound(threading.Thread):
 
 
 class Config:
-    # ===== Block 1 =====
+    exec(blocks[1])
+
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        # ===== Block 2 =====
+        exec(blocks[2])
         config['DEFAULT']['logging_path'] = ''
         config['DEFAULT']['single_player_mode'] = 'NOT_IMPLEMENTED'
         config['DEFAULT']['window_start_position'] = str((100, 100))
@@ -75,7 +78,7 @@ class Config:
         with open('mf_config.ini') as fi:
             parser.read_file(fi)
 
-        # ===== Block 3 =====
+        exec(blocks[3])
 
         try:
             ver = parser.get('VERSION', 'version')
@@ -106,7 +109,7 @@ class MFRunTimer(tk.Frame):
         self.laps = []
         self._make_widgets()
 
-        # ===== Block 4 =====
+        exec(blocks[4])
 
         self._update_session_time()
 
@@ -163,7 +166,7 @@ class MFRunTimer(tk.Frame):
         self._set_time(self._sessiontime, for_session=True)
         self._sess_timer = self.after(50, self._update_session_time)
 
-    # ===== Block 5 =====
+    exec(blocks[5])
 
     def _set_time(self, elap, for_session):
         time_str = self._build_time_str(elap)
@@ -269,7 +272,7 @@ class MFRunTimer(tk.Frame):
             if self._running:
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
-            # ===== Block 6 =====
+            exec(blocks[6])
             self._paused = True
         else:
             self._start = time.time() - self._laptime
@@ -277,7 +280,7 @@ class MFRunTimer(tk.Frame):
             if self._running:
                 self._update_lap_time()
             self._update_session_time()
-            # ===== Block 7 =====
+            exec(blocks[7])
             self._paused = False
 
 
