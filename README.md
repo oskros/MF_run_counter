@@ -42,9 +42,9 @@ Features:
                   
                   
                   Run   1: 00:00:57:9
-                  Run   2: 00:00:44:5
-                  Run   3: 00:01:11:6
-                  Run   4: 00:01:24:3
+                  Run   2: 00:00:44:5 --- Shako, Skullders
+                  Run   3: 00:01:11:6 
+                  Run   4: 00:01:24:3 --- Nagelring 25%
                   """              
 - DRAGGING: Window can be dragged on the Diablo 2 banner. Widget position is saved in the config file, such that it opens
             where you closed it.

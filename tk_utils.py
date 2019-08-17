@@ -101,3 +101,26 @@ def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False):
     # the function pauses here until the mainloop is quit
     msgbox.root.destroy()
     return msgbox.returning
+
+
+def add_circle(parent, pixels, color):
+    canvas = tk.Canvas(parent, width=pixels + 2, height=pixels + 2, borderwidth=0, highlightthickness=0)
+
+    def _create_circle(self, x, y, r, **kwargs):
+        return self.create_oval(x - r, y - r, x + r, y + r, **kwargs)
+
+    tk.Canvas.create_circle = _create_circle
+
+    def _create_circle_arc(self, x, y, r, **kwargs):
+        if "start" in kwargs and "end" in kwargs:
+            kwargs["extent"] = kwargs["end"] - kwargs["start"]
+            del kwargs["end"]
+        return self.create_arc(x - r, y - r, x + r, y + r, **kwargs)
+
+    tk.Canvas.create_circle_arc = _create_circle_arc
+
+    cpix = pixels // 2
+    circ_id = canvas.create_circle(cpix, cpix, cpix, fill=color, outline="black", width=0.5)
+    canvas.create_circle_arc(cpix, cpix, pixels // 2.2, style="arc", outline="white", width=pixels // 12.5,
+                             start=270 - 25, end=270 + 25)
+    return canvas, circ_id
