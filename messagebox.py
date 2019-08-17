@@ -40,9 +40,10 @@ class MessageBox(object):
         btn_1['command'] = self.b1_action
         btn_1.pack(side='left')
         if not entry: btn_1.focus_set()
-        btn_2 = tk.Button(frm_2, width=8, text=b2)
-        btn_2['command'] = self.b2_action
-        btn_2.pack(side='left')
+        if b2 != '':
+            btn_2 = tk.Button(frm_2, width=8, text=b2)
+            btn_2['command'] = self.b2_action
+            btn_2.pack(side='left')
         # the enter button will trigger the focused button's action
         root.bind('<KeyPress-Return>', func=self.b1_action)
         root.bind('<KeyPress-Escape>', func=self.b2_action)
