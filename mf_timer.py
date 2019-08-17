@@ -407,42 +407,20 @@ class Drops(tk.Frame):
             self.m.delete(selection[0])
 
 
-class Log(tk.Frame):
+class History(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         label = tk.Label(self, text='temp', justify=tk.LEFT)
         label.pack()
 
 
-class Help(tk.Frame):
-    def __init__(self, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        label = tk.Label(self, text="""
-        Widget can be dragged on the banner.
-        Please check your "mf_config.ini" file
-        located in the running directory.
-        
-        Ctrl+Shift+PgUp/PgDn switches tabs. global 
-        or only when focused is chosen in config. 
-        All other hotkeys are always global and 
-        should work while you are in-game.
-        
-        Widget position and hotkeys changed within 
-        the app are saved to config. Please do not 
-        change hotkeys directly in the config file.
-
-        Single player mode has not yet been added,
-        but when implemented it can monitor local
-        save files to automatically start/end your
-        runs.""", justify=tk.LEFT)
-        label.pack(fill='both', anchor=tk.NW)
-        label.place(x=-23, y=-14)
-
-
 class About(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         label = tk.Label(self, text="""
+        Please see the readme.md file available on 
+        Github
+         
         Run counter for Diablo 2 developed in July 
         2019 by *oskros on Path of Diablo.
         
@@ -508,15 +486,13 @@ class Main(Config):
         self.tab1 = MFRunTimer(self.cfg, self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Hotkeys(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = Log()
-        self.tab5 = Help(self.tabcontrol)
-        self.tab6 = About(self.tabcontrol)
+        self.tab4 = History()
+        self.tab5 = About(self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tabcontrol.add(self.tab2, text='Drops')
         self.tabcontrol.add(self.tab3, text='Hotkeys')
-        self.tabcontrol.add(self.tab4, text='Log')
-        self.tabcontrol.add(self.tab5, text='Help')
-        self.tabcontrol.add(self.tab6, text='About')
+        self.tabcontrol.add(self.tab4, text='History')
+        self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
 
         # Add buttons to main widget
@@ -608,22 +584,28 @@ class Main(Config):
         self.root.geometry("+%s+%s" % (x, y))
 
     def ResetSession(self):
-        confirm_reset = messagebox.askyesno('Reset', 'Would you like to reset session?')
-        if confirm_reset:
-            if self.tab1._paused:
-                self.tab1.Pause()
-            self.tab1._start = time.time()
-            self.tab1._laptime = 0.0
-            self.tab1._session_start = time.time()
-            self.tab1.laps = []
-            self.tab1.m.delete(0, tk.END)
-            self.tab1._set_time(self.tab1._laptime, for_session=False)
-            self.tab1._set_time(self.tab1._sessiontime, for_session=True)
-            self.tab1._set_laps(is_running=self.tab1._running)
-            self.tab1._set_fastest()
-            self.tab1._set_average()
+        xc = self.root.winfo_rootx() - self.root.winfo_width()//12
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        save_session = mbox('Would you like to save session results?', b1='Yes', b2='No', coords=[xc, yc])
+        if save_session is None:
+            return
+        if save_session is True:
+            self.Save()
 
-            self.tab2.m.delete(0, tk.END)
+        if self.tab1._paused:
+            self.tab1.Pause()
+        self.tab1._start = time.time()
+        self.tab1._laptime = 0.0
+        self.tab1._session_start = time.time()
+        self.tab1.laps = []
+        self.tab1.m.delete(0, tk.END)
+        self.tab1._set_time(self.tab1._laptime, for_session=False)
+        self.tab1._set_time(self.tab1._sessiontime, for_session=True)
+        self.tab1._set_laps(is_running=self.tab1._running)
+        self.tab1._set_fastest()
+        self.tab1._set_average()
+
+        self.tab2.m.delete(0, tk.END)
 
     def ResetLap(self):
         if self.tab1._running:

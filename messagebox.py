@@ -79,7 +79,8 @@ class MessageBox(object):
         self.root.quit()
 
     def close_mod(self):
-        self.b2_action()
+        self.returning = None
+        self.root.quit()
 
     def to_clip(self, event=None):
         self.root.clipboard_clear()
