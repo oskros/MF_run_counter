@@ -256,7 +256,7 @@ class Profile(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.root = parent
-        self.profiles = ['DEFAULT_PROFILE', 'TsssschSC - Mephisto']
+        self.profiles = ['DEFAULT_PROFILE']
         # Choose active profile
         profile_frame = tk.Frame(self, height=25, width=238, pady=2, padx=2)
         profile_frame.propagate(False)
@@ -268,6 +268,13 @@ class Profile(tk.Frame):
         # self.profile_dropdown.bind('<FocusOut>', lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: print('New selection: %s' % self.active_profile.get()))
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+
+        temp_lab = tk.Label(self, text="""
+NOT WORKING YET!
+        
+This section is still work in progress
+Hopefully I will be able to finish it soon""")
+        temp_lab.pack()
 
         # Add new profile
         new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile, borderwidth=1, height=1)
@@ -287,18 +294,16 @@ class Profile(tk.Frame):
 class About(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
-        label = tk.Label(self, text="""
-        Please see the readme.md file available on 
-        Github
-         
-        Run counter for Diablo 2 developed in July 
-        2019 by *oskros on Path of Diablo.
-        
-        Current version: %s
-        
-        Visit the page below for new releases""" % version, justify=tk.LEFT)
+        label = tk.Label(self, text="""Please see the readme.md file available on 
+Github
+
+Run counter for Diablo 2 developed in July 
+2019 by *oskros on Path of Diablo.
+
+Current version: %s
+
+Visit the page below for new releases""" % version, justify=tk.LEFT)
         label.pack()
-        label.place(x=-23, y=-15)
 
         link1 = tk.Label(self, text="Release Hyperlink", fg="blue", cursor="hand2")
         link1.pack(side=tk.BOTTOM)
