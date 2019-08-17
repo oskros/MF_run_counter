@@ -237,7 +237,7 @@ class Drops(tk.Frame):
         tk.Button(self, text='Delete selection', command=self.delete).pack(side=tk.BOTTOM)
 
     def AddDrop(self):
-        drop = tk_utils.mbox('Input your drop', entry=True)
+        drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
         if drop is False:
             return
         run_no = len(self.tab1.laps)

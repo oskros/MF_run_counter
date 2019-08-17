@@ -2,10 +2,10 @@ import tkinter as tk
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, frame, entry, coords=False):
+    def __init__(self, msg, b1, b2, frame, entry, coords=False, title='Message'):
         root = self.root = tk.Tk()
         self.root.focus_set()
-        root.title('Message')
+        root.title(title)
         self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
         # self.root.overrideredirect(True)
@@ -23,7 +23,7 @@ class MessageBox(object):
         if isinstance(b2, tuple): b2, self.b2_return = b2
         # main frame
         frm_1 = tk.Frame(root)
-        frm_1.pack(ipadx=2, ipady=2)
+        frm_1.pack(ipadx=4, ipady=2)
         # the message
         message = tk.Label(frm_1, text=self.msg, font=('arial', 11))
         message.pack(padx=8, pady=8)
@@ -87,7 +87,7 @@ class MessageBox(object):
         self.root.clipboard_append(self.msg)
 
 
-def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False):
+def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False, title='Message'):
     """Create an instance of MessageBox, and get data back from the user.
     msg = string to be displayed
     b1 = text for left button, or a tuple (<text for button>, <to return on press>)
@@ -96,7 +96,7 @@ def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False):
     t = time in seconds (int or float) until the msgbox automatically closes
     entry = include an entry widget that will have its contents returned: True or False
     """
-    msgbox = MessageBox(msg, b1, b2, frame, entry, coords)
+    msgbox = MessageBox(msg, b1, b2, frame, entry, coords, title)
     msgbox.root.mainloop()
     # the function pauses here until the mainloop is quit
     msgbox.root.destroy()
