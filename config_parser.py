@@ -6,7 +6,6 @@ from tkinter import messagebox
 
 class Config:
     exec(blocks[2])
-
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
         exec(blocks[3])
@@ -65,3 +64,26 @@ class Config:
             parser = self.load_config_file()
             messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated.')
         return parser
+
+    @staticmethod
+    def UpdateConfig(parent):
+        cfg = parent.cfg
+
+        # Update position
+        x = parent.root.winfo_x()
+        y = parent.root.winfo_y()
+        cfg['DEFAULT']['window_start_position'] = str((x, y))
+
+        # Update hotkeys
+        cfg.remove_section('KEYBINDS')
+        cfg.add_section('KEYBINDS')
+        cfg.set('KEYBINDS', '# Please only edit keybinds from within the app')
+        cfg['KEYBINDS']['start_key'] = str(parent.tab3._start_run)
+        cfg['KEYBINDS']['end_key'] = str(parent.tab3._end_run)
+        cfg['KEYBINDS']['stopstart_key'] = str(parent.tab3._stop_start)
+        cfg['KEYBINDS']['delete_prev_key'] = str(parent.tab3._delete_prev)
+        cfg['KEYBINDS']['pause_key'] = str(parent.tab3._pause)
+        cfg['KEYBINDS']['drop_key'] = str(parent.tab3._add_drop)
+        cfg['KEYBINDS']['reset_key'] = str(parent.tab3._reset_lap)
+
+        parent.build_config_file(cfg)
