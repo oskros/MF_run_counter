@@ -46,7 +46,8 @@ Features:
                   """              
 - DRAGGING: Window can be dragged on the Diablo 2 banner. Widget position is saved in the config file, such that it opens
             where you closed it.
-- EXTRA CONFIG FEATURES: In the config file you have the option to set the following to 0 (False) or 1 (True)
+- EXTRA CONFIG FEATURES: In the config file you have the option to set the following to 0 (False) or 1 (True).
+                         This is also possible from within the application under "Options" and then under "Flags"
    - always_on_top: choose whether the app window is on top of other programs (default True)
    - tab_keys_global: choose whether changing tabs with ctrl+shift+pgup/pgdn works system wide, or only when app is in focus 
      (default True)
