@@ -114,18 +114,23 @@ class MFRunTimer(tk.Frame):
         # Make the time label.
         l0 = tk.Label(self, textvariable=self.sessionstr)
         self._set_time(self._sessiontime, for_session=True)
-        l0.pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        l0.pack(fill=tk.X, expand=tk.NO, pady=2)
         l0.config(font=('arial', 10))
 
         l1 = tk.Label(self, textvariable=self.timestr)
         self._set_time(0, for_session=False)
-        l1.pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
-        l1.config(font=('arial', 20))
+        l1.pack(fill=tk.X, expand=tk.NO, pady=4)
+        l1.config(font='arial 20')
 
-        l2 = tk.Label(self, textvariable=self.no_of_laps)
+        l2f = tk.Frame(self)
+        l2f.pack(pady=2)
+        l2_1 = tk.Label(l2f, text='---- Run count:', font=('arial', 12))
+        l2_1.pack(side=tk.LEFT)
+        l2_2 = tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg='red')
+        l2_2.pack(side=tk.LEFT)
+        l2_3 = tk.Label(l2f, text='----', font=('arial', 12))
+        l2_3.pack(side=tk.LEFT)
         self._set_laps(is_running=False)
-        l2.pack(fill=tk.X, expand=tk.NO, pady=4, padx=2)
-        l2.config(font=('arial', 12))
 
         l3 = tk.Label(self, textvariable=self.min_lap)
         self._set_fastest()
@@ -137,15 +142,14 @@ class MFRunTimer(tk.Frame):
         l4.pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         l4.config(font=('arial', 11))
 
-        lf0 = tk.LabelFrame(self)
+        lf0 = tk.Frame(self)
         lf0.pack()
-        lf0.config(borderwidth=0, highlightthickness=0)
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
         self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bindtags((self.m, self, "all"))
         self.m.config(font=('courier', 12))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -173,7 +177,7 @@ class MFRunTimer(tk.Frame):
         run_count = len(self.laps)
         if is_running:
             run_count += 1
-        self.no_of_laps.set('---- Run count: %s ----' % str(run_count))
+        self.no_of_laps.set(run_count)
 
     def _set_fastest(self):
         if self.laps:
@@ -191,8 +195,8 @@ class MFRunTimer(tk.Frame):
     def _build_time_str(elap):
         hours = int(elap / 3600)
         minutes = int(elap / 60 - hours * 60.0)
-        seconds = int(elap - minutes * 60.0)
-        hseconds = int((elap - minutes * 60.0 - seconds) * 10)
+        seconds = int(elap - hours * 3600.0 - minutes * 60.0)
+        hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
         return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
     def queue_sound(self):
@@ -372,7 +376,7 @@ class Drops(tk.Frame):
     def __init__(self, tab1, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.tab1 = tab1
-        lf = tk.LabelFrame(self)
+        lf = tk.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
         self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
@@ -400,7 +404,7 @@ class Drops(tk.Frame):
             self.m.delete(selection[0])
 
 
-class History(tk.Frame):
+class Log(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         label = tk.Label(self, text='temp', justify=tk.LEFT)
@@ -501,7 +505,7 @@ class Main(Config):
         self.tab1 = MFRunTimer(self.cfg, self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Hotkeys(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = History()
+        self.tab4 = Log()
         self.tab5 = Help(self.tabcontrol)
         self.tab6 = About(self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
@@ -601,8 +605,10 @@ class Main(Config):
         self.root.geometry("+%s+%s" % (x, y))
 
     def ResetSession(self):
-        yesno = messagebox.askyesno('Reset', 'Would you like to reset session?')
-        if yesno:
+        confirm_reset = messagebox.askyesno('Reset', 'Would you like to reset session?')
+        if confirm_reset:
+            if self.tab1._paused:
+                self.tab1.Pause()
             self.tab1._start = time.time()
             self.tab1._laptime = 0.0
             self.tab1._session_start = time.time()
@@ -632,6 +638,7 @@ class Main(Config):
         with open(save_path + '.txt', 'wb') as savefile:
             to_write = [
                 'Total session time: ' + str(self.tab1.session_time_str) + '\r\n',
+                'Total run time:     ' + self.tab1._build_time_str(sum(self.tab1.laps)) + '\r\n'
                 'Average run time:   ' + self.tab1._build_time_str(sum(self.tab1.laps) / len(self.tab1.laps)) + '\r\n',
                 'Fastest run time:   ' + self.tab1._build_time_str(min(self.tab1.laps)) + '\r\n',
                 'Percentage spent in runs: ' + str(
@@ -641,17 +648,20 @@ class Main(Config):
             for s in to_write:
                 savefile.write(bytes(s, 'utf-8'))
 
-            droplist = self.tab2.m.get(0, tk.END)
-            if droplist:
-                savefile.write(bytes('Drops collected: \r\n', 'utf-8'))
-                for drop in droplist:
-                    savefile.write(bytes(drop + '\r\n', 'utf-8'))
-                savefile.write(bytes('\r\n', 'utf-8'))
+            collected_drops = self.tab2.m.get(0, tk.END)
+            dropdict = dict()
+            for drop in collected_drops:
+                split = drop.split(' ')
+                dropdict.setdefault(split[1][:-1], []).append(' '.join(split[2:]))
+            dropdict = {key: ', '.join(value) for key, value in dropdict.items()}
 
-            savefile.write(bytes('Individual run times: \r\n', 'utf-8'))
             for n, lap in enumerate(self.tab1.laps, 1):
                 str_n = ' ' * max(len(str(len(self.tab1.laps))) - len(str(n)), 0) + str(n)
-                savefile.write(bytes('Run ' + str_n + ': ' + self.tab1._build_time_str(lap) + '\r\n', 'utf-8'))
+                run_str = 'Run ' + str_n + ': ' + self.tab1._build_time_str(lap)
+                drops = dropdict.get(str(n), '')
+                if drops:
+                    run_str += ' --- ' + drops
+                savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
     def UpdateConfig(self):
         cfg = self.cfg
