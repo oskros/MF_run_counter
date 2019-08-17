@@ -1,4 +1,4 @@
-# MF_counter_releases
+# Diablo 2 MF run counter
 Supports: Windows 7 and Windows 10 (have not tested on any other OS)
 
 1) To run on your computer, go to releases and download the .exe file from the latest release. 
