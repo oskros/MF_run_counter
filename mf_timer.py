@@ -1,5 +1,5 @@
 from init import *
-from options import Hotkeys
+from options import Hotkeys, Options
 from config_parser import Config
 import tk_utils
 import tkinter as tk
@@ -14,9 +14,9 @@ exec(blocks[1])
 
 
 class MFRunTimer(tk.Frame):
-    def __init__(self, config, parent=None, **kw):
+    def __init__(self, main_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
-        self.cfg = config
+        self.main_frame = main_frame
         self._start = 0.0
         self._session_start = time.time()
         self._sessiontime = 0.0
@@ -136,9 +136,9 @@ class MFRunTimer(tk.Frame):
             self._running = True
 
         if not self._running:
-            if play_sound and eval(self.cfg['FLAGS']['enable_sound_effects']):
+            if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
-            delay = eval(self.cfg.get('DEFAULT', 'run_timer_delay_seconds'))
+            delay = eval(self.main_frame.cfg.get('DEFAULT', 'run_timer_delay_seconds'))
             if delay > 0:
                 self.after(int(delay*1000), update_start)
             else:
@@ -152,13 +152,13 @@ class MFRunTimer(tk.Frame):
             self._running = False
             self._set_time(0, for_session=False)
             self.after_cancel(self._timer)
-            if play_sound and eval(self.cfg['FLAGS']['enable_sound_effects']):
+            if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
 
     def StopStart(self):
         self.Stop(play_sound=False)
         self.Start(play_sound=False)
-        if eval(self.cfg['FLAGS']['enable_sound_effects']):
+        if self.main_frame.enable_sound_effects:
             sound.queue_sound(self)
 
     def Lap(self):
@@ -312,9 +312,13 @@ class Main(Config):
 
         # Build/load config file
         self.cfg = self.load_config_file()
+        self.always_on_top = eval(self.cfg['FLAGS']['always_on_top'])
+        self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
+        self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
+        self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
 
         # Check for version
-        if eval(self.cfg['FLAGS']['check_for_new_version']):
+        if self.check_for_new_version:
             self.check_newest_version()
 
         # Modify root window
@@ -323,7 +327,7 @@ class Main(Config):
         # self.root.overrideredirect(True)
         self.root.config(borderwidth=3, relief='raised')
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.wm_attributes("-topmost", eval(self.cfg['FLAGS']['always_on_top']))
+        self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
@@ -337,14 +341,14 @@ class Main(Config):
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
-        self.tab1 = MFRunTimer(self.cfg, self.tabcontrol)
+        self.tab1 = MFRunTimer(self, self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
-        self.tab3 = Hotkeys(self, self.tab1, self.tab2, parent=self.tabcontrol)
+        self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tab4 = Profile(parent=self.root)
         self.tab5 = About(self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tabcontrol.add(self.tab2, text='Drops')
-        self.tabcontrol.add(self.tab3, text='Hotkeys')
+        self.tabcontrol.add(self.tab3, text='Options')
         self.tabcontrol.add(self.tab4, text='Profile')
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
@@ -371,13 +375,6 @@ class Main(Config):
 
         # Register some hidden keybinds
         self.root.bind("<Delete>", lambda event: self._delete_selection())
-        # self.root.bind("<Escape>", lambda event: self.SaveQuit())
-        if eval(self.cfg['FLAGS']['tab_keys_global']):
-            self.tab3.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
-            self.tab3.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
-        else:
-            self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
-            self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Open the widget
         self.root.mainloop()

@@ -17,6 +17,7 @@ a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer.
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+a.datas += [('Blocks.txt', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\Blocks.txt', 'Data')]
 a.datas += [('d2icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\d2icon.png', 'Data')]
 a.datas += [('run_sound.wav', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\run_sound.wav', 'Data')]
 a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\icon.ico', 'Data')]
