@@ -31,7 +31,7 @@ Features:
            (default 'alt+space'). This will pause both the run timer (if a run is active) and the session timer.
 - SAVING RESULTS: When closing the app (clicking the X in upper right corner, or alt+F4) or clicking the "Reset Session" button, you
                   are asked whether you want to save session results. Clicking yes will generate a .txt file named with the current 
-                  time stamp (YYYY-MM-DD HH:MM:SS).
+                  time stamp (YYYY-MM-DD HH:MM:SS). Example of save file with 4 runs:
                   
       Total session time: 00:04:30.5
       Total run time:     00:04:17.3
