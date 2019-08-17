@@ -3,9 +3,7 @@ Supports: Windows 7 and Windows 10 (have not tested on any other OS)
 
 1) To run on your computer, go to releases and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder
-3) The first time you run the .exe file, a config file is created "mf_config.ini", which can be edited in Notepad
-   You can edit the mf_config.file to change various settings for the program - Note that hotkeys should be changed from within the 
-   application
+3) The first time you run the .exe file, a config file is created named "mf_config.ini", which can be edited in Notepad. You can edit the mf_config.ini file to change various settings for the program - Note that hotkeys should be changed from within the application
 
 Features:
 - SYSTEM WIDE HOTKEYS: You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so 
