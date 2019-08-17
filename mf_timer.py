@@ -294,16 +294,15 @@ Hopefully I will be able to finish it soon""")
 class About(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
-        label0 = tk.Label(self, text="Please see the readme.md file available on\nGithub", justify=tk.LEFT)
+        label0 = tk.Label(self, text="""Run counter for Diablo 2 developed in July 
+2019 by *oskros on Path of Diablo. Please 
+see the readme.md file available on Github""", justify=tk.LEFT)
         label0.pack()
-        link0 = tk.Label(self, text="Readme Hyperlink", fg="blue", cursor="hand2")
+        link0 = tk.Label(self, text="Open Readme", fg="blue", cursor="hand2")
         link0.pack()
         link0.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo.rstrip('releases') + '/blob/master/README.md'))
 
         label = tk.Label(self, text="""
-Run counter for Diablo 2 developed in July 
-2019 by *oskros on Path of Diablo.
-
 Current version: %s
 
 Visit the page below for new releases""" % version, justify=tk.LEFT)
