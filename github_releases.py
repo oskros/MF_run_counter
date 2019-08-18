@@ -1,5 +1,8 @@
-import os
 import time
+import tkinter as tk
+from tk_utils import mbox
+from tkinter import messagebox
+from init import *
 from requests import request
 GITHUB_API = "https://api.github.com"
 _github_token_cli_arg = None
@@ -40,3 +43,14 @@ def get_releases(repo_name):
         GITHUB_API + '/repos/{0}/releases'.format(repo_name), releases)
 
     return releases
+
+
+def check_newest_version():
+    try:
+        from packaging import version as pk_version
+        latest = get_releases('oskros/MF_counter_releases')[0]
+        latest_ver = latest['tag_name']
+        if pk_version.parse(version) < pk_version.parse(latest_ver):
+            mbox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=True)
+    except:
+        pass

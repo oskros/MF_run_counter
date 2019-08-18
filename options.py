@@ -10,13 +10,13 @@ class Options(tk.Frame):
 
         self.tabcontrol = ttk.Notebook(self)
         self.tab1 = Hotkeys(main_frame, timer_frame, drop_frame, parent=self.tabcontrol)
-        self.tab2 = Flags(main_frame)
+        self.tab2 = General(main_frame)
         self.tabcontrol.add(self.tab1, text='Hotkeys')
         self.tabcontrol.add(self.tab2, text='General')
         self.tabcontrol.pack(expand=1, fill='both')
 
 
-class Flags(tk.Frame):
+class General(tk.Frame):
     def __init__(self, main_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
@@ -24,6 +24,7 @@ class Flags(tk.Frame):
         self.add_flag(flag_name='Tab keys global')
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
+        self.add_flag(flag_name='Use save state')
 
         tk.Label(self, text="Toggling 'Tab keys global' requires a\n restart of the application", pady=10).pack()
 
@@ -65,11 +66,17 @@ class Hotkeys(tk.Frame):
                                   'F10', 'F11', 'F12', 'NO_BIND']
         self.hk = SystemHotkey()
 
-        lf = tk.Frame(self)
-        lf.pack()
+        lf = tk.Frame(self, height=20, width=179)
+        lf.pack(expand=True, fill=tk.BOTH)
+        lf.propagate(False)
 
-        lb = tk.Label(lf, text='Action          Modifier    Key           ', font='Helvetica 11 bold')
-        lb.pack()
+        l1 = tk.Label(lf, text='Action', font='Helvetica 11 bold', justify=tk.LEFT)
+        l3 = tk.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9)
+        l2 = tk.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7)
+
+        l1.pack(side=tk.LEFT)
+        l3.pack(side=tk.RIGHT)
+        l2.pack(side=tk.RIGHT)
 
         self.add_hotkey(label_name='Start run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.Start)
         self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.Stop)

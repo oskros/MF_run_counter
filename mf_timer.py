@@ -1,6 +1,7 @@
 from init import *
 from options import Options
-from config_parser import Config
+from config import Config
+import github_releases
 import tk_utils
 import tkinter as tk
 from tkinter import ttk
@@ -10,6 +11,7 @@ import sys
 import time
 import os
 import webbrowser
+import json
 exec(blocks[1])
 
 
@@ -125,6 +127,12 @@ class MFRunTimer(tk.Frame):
         hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
         return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
+    def load_from_state(self, state):
+        self._sessiontime = state['session_time']
+        self._session_start = time.time() - self._sessiontime
+        for lap in state['laps']:
+            self.Lap(lap, force=True)
+
     def Start(self, play_sound=True):
         def update_start():
             if self._paused:
@@ -146,7 +154,7 @@ class MFRunTimer(tk.Frame):
 
     def Stop(self, play_sound=True):
         if self._running:
-            self.Lap()
+            self.Lap(self._laptime)
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._laptime = 0.0
             self._running = False
@@ -161,9 +169,9 @@ class MFRunTimer(tk.Frame):
         if self.main_frame.enable_sound_effects:
             sound.queue_sound(self)
 
-    def Lap(self):
-        if self._running:
-            self.laps.append(self._laptime)
+    def Lap(self, laptime, force=False):
+        if self._running or force:
+            self.laps.append(laptime)
             str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
             self.m.insert(tk.END, 'Run ' + str_n + ': ' + self._build_time_str(self.laps[-1]))
             self.m.yview_moveto(1)
@@ -181,6 +189,10 @@ class MFRunTimer(tk.Frame):
 
     def Pause(self):
         if not self._paused:
+            self.pause_lab = tk.Button(self.main_frame.root, font='arial 24 bold', text='Resume', bg='deep sky blue', command=self.Pause)
+            self.pause_lab.pack()
+            self.pause_lab.place(relx=0.5, rely=0.55, anchor=tk.CENTER)
+
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
             self._set_time(self._sessiontime, for_session=True)
@@ -190,6 +202,7 @@ class MFRunTimer(tk.Frame):
             exec(blocks[7])
             self._paused = True
         else:
+            self.pause_lab.destroy()
             self._start = time.time() - self._laptime
             self._session_start = time.time() - self._sessiontime
             if self._running:
@@ -218,6 +231,9 @@ class MFRunTimer(tk.Frame):
         self._set_laps(is_running=self._running)
         self._set_fastest()
         self._set_average()
+
+    def SaveState(self):
+        return dict(laps=self.laps, session_time=self._sessiontime)
 
 
 class Drops(tk.Frame):
@@ -251,6 +267,13 @@ class Drops(tk.Frame):
         if selection:
             self.m.delete(selection[0])
 
+    def SaveState(self):
+        return list(self.m.get(0, tk.END))
+
+    def load_from_state(self, state):
+        for drop in state['drops']:
+            self.m.insert(tk.END, drop)
+
 
 class Profile(tk.Frame):
     def __init__(self, parent=None, **kw):
@@ -265,7 +288,6 @@ class Profile(tk.Frame):
         self.active_profile = tk.StringVar()
         self.active_profile.set('DEFAULT_PROFILE')
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.profiles)
-        # self.profile_dropdown.bind('<FocusOut>', lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: print('New selection: %s' % self.active_profile.get()))
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
@@ -324,22 +346,24 @@ class Main(Config):
         self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
         self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
+        self.use_save_state = eval(self.cfg['FLAGS']['use_save_state'])
 
         # Check for version
         if self.check_for_new_version:
-            self.check_newest_version()
+            github_releases.check_newest_version()
 
         # Modify root window
         self.root.resizable(False, False)
         # self.root.attributes('-type', 'dock')
         # self.root.overrideredirect(True)
-        self.root.config(borderwidth=3, relief='raised')
+        self.root.config(borderwidth=3, relief='raised', height=402, width=240)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
+        self.root.pack_propagate(False)
 
         # Build banner image
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'd2icon.png')
@@ -352,7 +376,7 @@ class Main(Config):
         self.tab1 = MFRunTimer(self, self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = Profile(parent=self.root)
+        self.tab4 = Profile(self.tabcontrol)
         self.tab5 = About(self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tabcontrol.add(self.tab2, text='Drops')
@@ -372,10 +396,6 @@ class Main(Config):
         tk.Button(lf, text='Reset\nsession', command=self.ResetSession).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         # tk.Button(lf, text='Quit', command=self.SaveQuit).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        # lfx = tk.LabelFrame(self.root)
-        # lfx.pack(expand=True, fill=tk.BOTH)
-        # tk.Button(lfx, text='Pause', command=self.tab1.Pause).pack(expand=True, fill=tk.BOTH)
-
         # Make window drag on the banner image
         img_panel.bind("<ButtonPress-1>", self._start_move)
         img_panel.bind("<ButtonRelease-1>", self._stop_move)
@@ -384,6 +404,10 @@ class Main(Config):
         # Register some hidden keybinds
         self.root.bind("<Delete>", lambda event: self._delete_selection())
 
+        # Load save state
+        if self.use_save_state:
+            self.LoadState()
+
         # Open the widget
         self.root.mainloop()
 
@@ -391,8 +415,6 @@ class Main(Config):
         tabs = self.tabcontrol.tabs()
         cur_tab = self.tabcontrol.select()
         idx = tabs.index(cur_tab)
-        # if idx == 0:
-        #     self.tab1.delete_prev()
         if idx == 1:
             self.tab2.delete()
 
@@ -435,14 +457,25 @@ class Main(Config):
     def ResetSession(self):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        save_session = tk_utils.mbox('Would you like to save session results?', b1='Yes', b2='No', coords=[xc, yc])
-        if save_session is None:
-            return
-        if save_session is True:
-            self.Save()
+        if self.tab1.laps:
+            save_session = tk_utils.mbox('Would you like to save session results?', b1='Yes', b2='No', coords=[xc, yc])
+            if save_session is None:
+                return
+            if save_session is True:
+                self.Save()
 
         self.tab1.ResetSession()
         self.tab2.m.delete(0, tk.END)
+
+    def LoadState(self):
+        if not os.path.isfile('saved_states.json'):
+            return
+        with open('saved_states.json', 'r') as fo:
+            state = json.load(fo)
+        if not state['laps']:
+            return
+        self.tab1.load_from_state(state)
+        self.tab2.load_from_state(state)
 
     def Save(self):
         today = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
@@ -481,25 +514,25 @@ class Main(Config):
     def SaveQuit(self):
         if self.tab1._running:
             self.tab1.Stop()
-        if self.tab1.laps and messagebox.askyesno('Reset', 'Would you like to save results?'):
-            self.Save()
-        self.UpdateConfig(self)
-        os._exit(0)
+        if self.tab1.laps:
+            xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
+            yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
+            save_session = tk_utils.mbox('Would you like to save results?', b1='Yes', b2='No', coords=[xc, yc])
+            if save_session is None:
+                return
+            if save_session is True:
+                self.Save()
+        self.Quit()
 
-    @staticmethod
-    def check_newest_version():
-        try:
-            import github_releases
-            from packaging import version as pk_version
-            latest = github_releases.get_releases('oskros/MF_counter_releases')[0]
-            latest_ver = latest['tag_name']
-            # webbrowser.open_new("https://github.com/oskros/MF_counter_releases/releases")
-            if pk_version.parse(version) < pk_version.parse(latest_ver):
-                tk.messagebox.showinfo('New version',
-                                       'Your version is not up to date. Get the newest release from:'
-                                       '\n%s' % release_repo)
-        except:
-            pass
+    def Quit(self):
+        self.UpdateConfig(self)
+        if self.use_save_state:
+            saved_state = self.tab1.SaveState()
+            saved_state.update(dict(drops=self.tab2.SaveState()))
+            if saved_state['laps']:
+                with open('saved_states.json', 'w') as fo:
+                    json.dump(saved_state, fo)
+        os._exit(0)
 
 
 Main()

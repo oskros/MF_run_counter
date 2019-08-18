@@ -1,8 +1,10 @@
+from init import *
 import tkinter as tk
+import webbrowser
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, frame, entry, coords=False, title='Message'):
+    def __init__(self, msg, b1, b2, frame, entry, coords=False, title='Message', hyperlink=False):
         root = self.root = tk.Tk()
         self.root.focus_set()
         root.title(title)
@@ -28,6 +30,10 @@ class MessageBox(object):
         message = tk.Label(frm_1, text=self.msg, font=('arial', 11))
         message.pack(padx=8, pady=8)
         # if entry=True create and set focus
+        if hyperlink:
+            self.button = tk.Label(frm_1, text=release_repo, fg="blue", cursor="hand2", font=('arial', 11))
+            self.button.pack()
+            self.button.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo))
         if entry:
             self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
@@ -87,7 +93,7 @@ class MessageBox(object):
         self.root.clipboard_append(self.msg)
 
 
-def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False, title='Message'):
+def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False, title='Message', hyperlink=False):
     """Create an instance of MessageBox, and get data back from the user.
     msg = string to be displayed
     b1 = text for left button, or a tuple (<text for button>, <to return on press>)
@@ -96,7 +102,7 @@ def mbox(msg, b1='OK', b2='Cancel', frame=True, entry=False, coords=False, title
     t = time in seconds (int or float) until the msgbox automatically closes
     entry = include an entry widget that will have its contents returned: True or False
     """
-    msgbox = MessageBox(msg, b1, b2, frame, entry, coords, title)
+    msgbox = MessageBox(msg, b1, b2, frame, entry, coords, title, hyperlink)
     msgbox.root.mainloop()
     # the function pauses here until the mainloop is quit
     msgbox.root.destroy()
