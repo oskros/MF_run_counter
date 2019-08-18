@@ -346,8 +346,6 @@ class Main(Config):
         self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
         self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
-        self.use_save_state = eval(self.cfg['FLAGS']['use_save_state'])
-
         # Check for version
         if self.check_for_new_version:
             github_releases.check_newest_version()
@@ -361,7 +359,7 @@ class Main(Config):
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.title('MF run counter')
         self.root.focus_get()
-        self.root.protocol("WM_DELETE_WINDOW", self.SaveQuit)
+        self.root.protocol("WM_DELETE_WINDOW", self.Quit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
         self.root.pack_propagate(False)
 
@@ -393,8 +391,7 @@ class Main(Config):
         tk.Button(lf, text='End', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Add drop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Reset\nsession', command=self.ResetSession).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        # tk.Button(lf, text='Quit', command=self.SaveQuit).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Save &\nreset', command=self.SaveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Make window drag on the banner image
         img_panel.bind("<ButtonPress-1>", self._start_move)
@@ -405,8 +402,7 @@ class Main(Config):
         self.root.bind("<Delete>", lambda event: self._delete_selection())
 
         # Load save state
-        if self.use_save_state:
-            self.LoadState()
+        self.LoadState()
 
         # Open the widget
         self.root.mainloop()
@@ -454,18 +450,23 @@ class Main(Config):
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
 
-    def ResetSession(self):
+    def SaveReset(self):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        if self.tab1.laps:
-            save_session = tk_utils.mbox('Would you like to save session results?', b1='Yes', b2='No', coords=[xc, yc])
-            if save_session is None:
-                return
-            if save_session is True:
-                self.Save()
 
-        self.tab1.ResetSession()
-        self.tab2.m.delete(0, tk.END)
+        if not self.tab1.laps:
+            self.tab1.ResetSession()
+            self.tab2.m.delete(0, tk.END)
+            if os.path.isfile('saved_states.json'):
+                os.remove('saved_states.json')
+            return
+        save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
+        if save_session:
+            self.Save()
+            self.tab1.ResetSession()
+            self.tab2.m.delete(0, tk.END)
+            if os.path.isfile('saved_states.json'):
+                os.remove('saved_states.json')
 
     def LoadState(self):
         if not os.path.isfile('saved_states.json'):
@@ -511,27 +512,18 @@ class Main(Config):
                     run_str += ' --- ' + ', '.join(drops)
                 savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
-    def SaveQuit(self):
+    def Quit(self):
         if self.tab1._running:
             self.tab1.Stop()
-        if self.tab1.laps:
-            xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
-            yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
-            save_session = tk_utils.mbox('Would you like to save results?', b1='Yes', b2='No', coords=[xc, yc])
-            if save_session is None:
-                return
-            if save_session is True:
-                self.Save()
-        self.Quit()
-
-    def Quit(self):
+        xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
+        yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
+        # confirm_quit = tk_utils.mbox('Would you like to quit?', b1='Yes', b2='No', coords=[xc, yc])
+        # if confirm_quit:
         self.UpdateConfig(self)
-        if self.use_save_state:
-            saved_state = self.tab1.SaveState()
-            saved_state.update(dict(drops=self.tab2.SaveState()))
-            if saved_state['laps']:
-                with open('saved_states.json', 'w') as fo:
-                    json.dump(saved_state, fo)
+        saved_state = self.tab1.SaveState()
+        saved_state.update(dict(drops=self.tab2.SaveState()))
+        with open('saved_states.json', 'w') as fo:
+            json.dump(saved_state, fo)
         os._exit(0)
 
 

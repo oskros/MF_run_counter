@@ -24,7 +24,6 @@ class General(tk.Frame):
         self.add_flag(flag_name='Tab keys global')
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
-        self.add_flag(flag_name='Use save state')
 
         tk.Label(self, text="Toggling 'Tab keys global' requires a\n restart of the application", pady=10).pack()
 

@@ -19,7 +19,6 @@ class Config:
         config['FLAGS']['tab_keys_global'] = '1'
         config['FLAGS']['check_for_new_version'] = '1'
         config['FLAGS']['enable_sound_effects'] = '0'
-        config['FLAGS']['use_save_state'] = '1'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -78,7 +77,6 @@ class Config:
         cfg['FLAGS']['tab_keys_global'] = str(parent.tab_keys_global)
         cfg['FLAGS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['FLAGS']['enable_sound_effects'] = str(parent.enable_sound_effects)
-        cfg['FLAGS']['use_save_state'] = str(parent.use_save_state)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
