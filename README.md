@@ -8,6 +8,7 @@ Supports Windows 7 and Windows 10 (have not tested on any other OS)
     
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
+5) You can make the application trusted by following the steps suggested here: https://www.windowscentral.com/how-disable-smartscreen-trusted-app-windows-10
 
 ## Features:
 - SYSTEM WIDE HOTKEYS: You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so 
