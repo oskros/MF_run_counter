@@ -8,7 +8,7 @@ Supports Windows 7 and Windows 10 (have not tested on any other OS)
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
 
-Features:
+## Features:
 - SYSTEM WIDE HOTKEYS: You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so 
                        you do not need to place focus on the application to use them. However, this means that while the application 
                        is open, it overrides any other program using this specific hotkey.
