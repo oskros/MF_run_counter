@@ -284,7 +284,7 @@ class Drops(tk.Frame):
     def load_from_state(self, state):
         self.m.delete(0, tk.END)
         self.drops = state.get('drops', dict())
-        for run in sorted(self.drops.keys()):
+        for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
 
@@ -503,6 +503,7 @@ class Main(Config):
         if save_session:
             self.Save()
             self.tab1.ResetSession()
+            self.tab2.drops = dict()
             self.tab2.m.delete(0, tk.END)
 
             # Reset state for active profile
@@ -539,7 +540,7 @@ class Main(Config):
             for n, lap in enumerate(self.tab1.laps, 1):
                 str_n = ' ' * max(len(str(len(self.tab1.laps))) - len(str(n)), 0) + str(n)
                 run_str = 'Run ' + str_n + ': ' + self.tab1._build_time_str(lap)
-                drops = self.tab2.drops.get(n, '')
+                drops = self.tab2.drops.get(str(n), '')
                 if drops:
                     run_str += ' --- ' + ', '.join(drops)
                 savefile.write(bytes(run_str + '\r\n', 'utf-8'))
