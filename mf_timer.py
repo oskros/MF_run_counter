@@ -239,6 +239,7 @@ class MFRunTimer(tk.Frame):
 class Drops(tk.Frame):
     def __init__(self, tab1, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.drops = dict()
         self.tab1 = tab1
         lf = tk.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
@@ -259,20 +260,30 @@ class Drops(tk.Frame):
         run_no = len(self.tab1.laps)
         if self.tab1._running:
             run_no += 1
+        self.drops.setdefault(str(run_no), []).append(drop)
+        self.SaveDrop(drop=drop, run_no=run_no)
+
+    def SaveDrop(self, drop, run_no):
         self.m.insert(tk.END, 'Run %s: %s' % (run_no, drop))
         self.m.yview_moveto(1)
 
     def delete(self):
         selection = self.m.curselection()
         if selection:
+            ss = self.m.get(selection[0])
+            run_no = ss[4:ss.find(':')]
+            drop = ss[ss.find(':')+2:]
+            self.drops[run_no].remove(drop)
             self.m.delete(selection[0])
 
     def SaveState(self):
-        return list(self.m.get(0, tk.END))
+        return self.drops
 
     def load_from_state(self, state):
-        for drop in state['drops']:
-            self.m.insert(tk.END, drop)
+        self.drops = state['drops']
+        for run in sorted(self.drops.keys()):
+            for drop in self.drops[run]:
+                self.SaveDrop(drop=drop, run_no=run)
 
 
 class Profile(tk.Frame):
@@ -503,16 +514,10 @@ class Main(Config):
             for s in to_write:
                 savefile.write(bytes(s, 'utf-8'))
 
-            collected_drops = self.tab2.m.get(0, tk.END)
-            dropdict = dict()
-            for drop in collected_drops:
-                split = drop.split(' ')
-                dropdict.setdefault(split[1][:-1], []).append(' '.join(split[2:]))
-
             for n, lap in enumerate(self.tab1.laps, 1):
                 str_n = ' ' * max(len(str(len(self.tab1.laps))) - len(str(n)), 0) + str(n)
                 run_str = 'Run ' + str_n + ': ' + self.tab1._build_time_str(lap)
-                drops = dropdict.get(str(n), '')
+                drops = self.tab2.drops.get(n, '')
                 if drops:
                     run_str += ' --- ' + ', '.join(drops)
                 savefile.write(bytes(run_str + '\r\n', 'utf-8'))
