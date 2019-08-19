@@ -13,11 +13,9 @@ Features:
                        is open, it overrides any other program using this specific hotkey.
                        It is possible to disable a command from having a hotkey by choosing "NO_BIND"
                        There are 2 hidden hotkeys: 'control+shift+PgDn' and 'control+shift+PgUp' for changing
-- SESSION TIMER: The session timer will start as soon as you open the program and run as long as the program is open.
-- RUN COUNTING: Start a run by pressing the "Start" button, or using the assigned hotkey (default 'alt+Q').
-                End a run by pressing the "End" button, or using the assigned hotkey (default 'alt+W').
-                You can also use the "StopStart" hotkey (default 'alt+E') to stop the current run if one is active, and start a new run 
-                in one click.
+- SESSION TIMER: The session timer will start as soon as you open the program and run as long as the program is open (an not put on pause).
+- RUN COUNTING: Start a new run by pressing the "Start new run" button, or using the assigned hotkey (default 'alt+Q'). In case a run is already active, this button will end it and start a new run
+                End the run by pressing the "End this run" button, or using the assigned hotkey (default 'alt+W').
                 In case of mistakes, the previous run can be deleted using the assigned hotkey (default 'control+delete')
                 If the user desires, the current run timer can be reset using the "Reset lap" button or using the assigned hotkey
                 (default 'alt+R').
@@ -29,9 +27,7 @@ Features:
                 not system wide).
 - PAUSING: In case you need to take a break from the computer, the counter can be paused by using the assigned hotkey 
            (default 'alt+space'). This will pause both the run timer (if a run is active) and the session timer.
-- SAVING RESULTS: When closing the app (clicking the X in upper right corner, or alt+F4) or clicking the "Reset Session" button, you
-                  are asked whether you want to save session results. Clicking yes will generate a .txt file named with the current 
-                  time stamp (YYYY-MM-DD HH:MM:SS). Example of save file with 4 runs:
+- SAVING RESULTS: The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Save & reset" button to reset the session and save the session results to a .txt file with name equal to the current time stamp (YYYY-MM-DD HH:MM:SS) - Example of the .txt file is included below. 
                   
       Total session time: 00:04:30.5
       Total run time:     00:04:17.3
