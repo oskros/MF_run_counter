@@ -403,9 +403,14 @@ class Main(Config):
 
         # Load save state
         self.LoadState()
+        self._autosave_state()
 
         # Open the widget
         self.root.mainloop()
+
+    def _autosave_state(self):
+        self.SaveState()
+        self.root.after(30000, self._autosave_state)
 
     def _delete_selection(self):
         tabs = self.tabcontrol.tabs()
@@ -512,18 +517,21 @@ class Main(Config):
                     run_str += ' --- ' + ', '.join(drops)
                 savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
-    def Quit(self):
-        if self.tab1._running:
-            self.tab1.Stop()
-        xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
-        yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
-        # confirm_quit = tk_utils.mbox('Would you like to quit?', b1='Yes', b2='No', coords=[xc, yc])
-        # if confirm_quit:
-        self.UpdateConfig(self)
+    def SaveState(self):
         saved_state = self.tab1.SaveState()
         saved_state.update(dict(drops=self.tab2.SaveState()))
         with open('saved_states.json', 'w') as fo:
             json.dump(saved_state, fo)
+
+    def Quit(self):
+        if self.tab1._running:
+            self.tab1.Stop()
+        # xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
+        # yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
+        # confirm_quit = tk_utils.mbox('Would you like to quit?', b1='Yes', b2='No', coords=[xc, yc])
+        # if confirm_quit:
+        self.UpdateConfig(self)
+        self.SaveState()
         os._exit(0)
 
 
