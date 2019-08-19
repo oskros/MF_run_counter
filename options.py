@@ -77,9 +77,8 @@ class Hotkeys(tk.Frame):
         l3.pack(side=tk.RIGHT)
         l2.pack(side=tk.RIGHT)
 
-        self.add_hotkey(label_name='Start run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.Start)
+        self.add_hotkey(label_name='Start new run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.StopStart)
         self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.Stop)
-        self.add_hotkey(label_name='Stop start', keys=eval(main_frame.cfg['KEYBINDS']['stopstart_key']), func=timer_frame.StopStart)
         self.add_hotkey(label_name='Delete prev', keys=eval(main_frame.cfg['KEYBINDS']['delete_prev_key']), func=timer_frame.DeletePrev)
         self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.Pause)
         self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.AddDrop)
