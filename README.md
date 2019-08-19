@@ -1,13 +1,14 @@
 # Diablo 2 MF run counter
 Supports Windows 7 and Windows 10 (have not tested on any other OS)
+![GUI](https://github.com/oskros/MF_counter_releases/blob/master/UI_showcase.png?raw=true)
 
 ## How to use
 1) To run on your computer, go to releases (https://github.com/oskros/MF_counter_releases/releases) and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder
 3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
-    ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
-    ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
+    ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
+    ![winblock2](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
 4) You can make the application trusted by following the steps suggested here: https://www.windowscentral.com/how-disable-smartscreen-trusted-app-windows-10
 5) The first time you run the .exe file, a config file is created named "mf_config.ini", which can be edited in Notepad. You can edit the mf_config.ini file to change various settings for the program - Note that hotkeys should be changed from within the application. 
 
