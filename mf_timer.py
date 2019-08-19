@@ -521,7 +521,7 @@ class Main(Config):
         saved_state = self.tab1.SaveState()
         saved_state.update(dict(drops=self.tab2.SaveState()))
         with open('saved_states.json', 'w') as fo:
-            json.dump(saved_state, fo)
+            json.dump(saved_state, fo, indent=2)
 
     def Quit(self):
         if self.tab1._running:
