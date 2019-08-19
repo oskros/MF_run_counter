@@ -3,10 +3,7 @@ Supports Windows 7 and Windows 10 (have not tested on any other OS)
 
 1) To run on your computer, go to releases and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder
-3) The first time you run the .exe file, a config file is created named "mf_config.ini", which
-    can be edited in Notepad. You can edit the mf_config.ini file to change various settings 
-    for the program - Note that hotkeys should be changed from within the application.
-        a) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
+3) The first time you run the .exe file, a config file is created named "mf_config.ini", which can be edited in Notepad. You can edit the mf_config.ini file to change various settings for the program - Note that hotkeys should be changed from within the application. You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
