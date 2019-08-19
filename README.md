@@ -1,6 +1,5 @@
 # Diablo 2 MF run counter
 ![GUI](https://github.com/oskros/MF_counter_releases/blob/master/UI_showcase.png?raw=true)
-Test
 
 ## How to use
 NB: Working on Windows 7 and Windows 10 (I have not tested on any other OS, but probably it wouldn't work)
