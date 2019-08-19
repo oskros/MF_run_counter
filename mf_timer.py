@@ -128,9 +128,11 @@ class MFRunTimer(tk.Frame):
         return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
     def load_from_state(self, state):
-        self._sessiontime = state['session_time']
+        self.laps = []
+        self.m.delete(0, tk.END)
+        self._sessiontime = state.get('session_time', 0)
         self._session_start = time.time() - self._sessiontime
-        for lap in state['laps']:
+        for lap in state.get('laps', []):
             self.Lap(lap, force=True)
 
     def Start(self, play_sound=True):
@@ -189,9 +191,9 @@ class MFRunTimer(tk.Frame):
 
     def Pause(self):
         if not self._paused:
-            self.pause_lab = tk.Button(self.main_frame.root, font='arial 24 bold', text='Resume', bg='deep sky blue', command=self.Pause)
+            self.pause_lab = tk.Button(self, font='arial 24 bold', text='Resume', bg='deep sky blue', command=self.Pause)
             self.pause_lab.pack()
-            self.pause_lab.place(relx=0.5, rely=0.55, anchor=tk.CENTER)
+            self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
@@ -280,7 +282,8 @@ class Drops(tk.Frame):
         return self.drops
 
     def load_from_state(self, state):
-        self.drops = state['drops']
+        self.m.delete(0, tk.END)
+        self.drops = state.get('drops', dict())
         for run in sorted(self.drops.keys()):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
@@ -316,8 +319,12 @@ Hopefully I will be able to finish it soon""")
         new_profile.pack(side=tk.LEFT)
 
     def _set_active_profile(self):
+        self.main_frame.SaveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
+        self.main_frame.LoadState(self.main_frame.load_state_file())
+        if not self.main_frame.tab1._paused:
+            self.main_frame.tab1.Pause()
 
     def _add_new_profile(self):
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
@@ -368,8 +375,7 @@ class Main(Config):
         if self.check_for_new_version:
             github_releases.check_newest_version()
 
-        # Load state file
-        self.state = self.load_state_file()
+        # Load profile info
         self.active_profile = self.cfg['PROFILE']['active_profile']
         self.profiles = eval(self.cfg['PROFILE']['profiles'])
 
@@ -425,7 +431,7 @@ class Main(Config):
         self.root.bind("<Delete>", lambda event: self._delete_selection())
 
         # Load save state
-        self.LoadState(self.state)
+        self.LoadState(self.load_state_file())
         self._autosave_state()
 
         # Open the widget
@@ -492,20 +498,21 @@ class Main(Config):
         if not self.tab1.laps:
             self.tab1.ResetSession()
             self.tab2.m.delete(0, tk.END)
-            if os.path.isfile('mf_cache.json'):
-                os.remove('mf_cache.json')
             return
         save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if save_session:
             self.Save()
             self.tab1.ResetSession()
             self.tab2.m.delete(0, tk.END)
-            if os.path.isfile('mf_cache.json'):
-                os.remove('mf_cache.json')
+
+            # Reset state for active profile
+            state = self.load_state_file()
+            state[self.active_profile] = dict()
+            with open('mf_cache.json', 'w') as fo:
+                json.dump(state, fo)
 
     def LoadState(self, state):
-        if not state.get('laps', None):
-            return
+        state = state.get(self.active_profile, dict())
         self.tab1.load_from_state(state)
         self.tab2.load_from_state(state)
 
@@ -538,10 +545,11 @@ class Main(Config):
                 savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
     def SaveState(self):
-        saved_state = self.tab1.SaveState()
-        saved_state.update(dict(drops=self.tab2.save_state()))
+        cache = self.load_state_file()
+        cache[self.active_profile] = self.tab1.SaveState()
+        cache[self.active_profile].update(dict(drops=self.tab2.save_state()))
         with open('mf_cache.json', 'w') as fo:
-            json.dump(saved_state, fo, indent=2)
+            json.dump(cache, fo, indent=2)
 
     def Quit(self):
         if self.tab1._running:
