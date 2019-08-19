@@ -10,7 +10,7 @@ class Options(tk.Frame):
 
         self.tabcontrol = ttk.Notebook(self)
         self.tab1 = Hotkeys(main_frame, timer_frame, drop_frame, parent=self.tabcontrol)
-        self.tab2 = General(main_frame)
+        self.tab2 = General(main_frame, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Hotkeys')
         self.tabcontrol.add(self.tab2, text='General')
         self.tabcontrol.pack(expand=1, fill='both')

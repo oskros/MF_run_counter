@@ -322,17 +322,17 @@ see the readme.md file available on Github""", justify=tk.LEFT)
         label0.pack()
         link0 = tk.Label(self, text="Open Readme", fg="blue", cursor="hand2")
         link0.pack()
-        link0.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo.rstrip('releases') + '/blob/master/README.md'))
+        link0.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo.rstrip('releases') + 'blob/master/README.md'))
 
-        label = tk.Label(self, text="""
-Current version: %s
-
-Visit the page below for new releases""" % version, justify=tk.LEFT)
+        label = tk.Label(self, text="\n\nVisit the page below for new releases")
         label.pack()
 
         link1 = tk.Label(self, text="Release Hyperlink", fg="blue", cursor="hand2")
         link1.pack()
         link1.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo))
+
+        lab2 = tk.Label(self, text="\n\nCurrent version: %s" % version)
+        lab2.pack(side=tk.BOTTOM)
 
 
 class Main(Config):
