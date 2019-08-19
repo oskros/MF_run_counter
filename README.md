@@ -3,12 +3,12 @@ Supports Windows 7 and Windows 10 (have not tested on any other OS)
 
 1) To run on your computer, go to releases and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder
-3) The first time you run the .exe file, a config file is created named "mf_config.ini", which can be edited in Notepad. You can edit the mf_config.ini file to change various settings for the program - Note that hotkeys should be changed from within the application. 
-4) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
+3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
     ![alt text](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
-5) You can make the application trusted by following the steps suggested here: https://www.windowscentral.com/how-disable-smartscreen-trusted-app-windows-10
+4) You can make the application trusted by following the steps suggested here: https://www.windowscentral.com/how-disable-smartscreen-trusted-app-windows-10
+5) The first time you run the .exe file, a config file is created named "mf_config.ini", which can be edited in Notepad. You can edit the mf_config.ini file to change various settings for the program - Note that hotkeys should be changed from within the application. 
 
 ## Features:
 - SYSTEM WIDE HOTKEYS: You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so 
