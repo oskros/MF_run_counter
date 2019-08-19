@@ -15,7 +15,7 @@ Supports Windows 7 and Windows 10 (have not tested on any other OS)
                        you do not need to place focus on the application to use them. However, this means that while the application 
                        is open, it overrides any other program using this specific hotkey.
                        It is possible to disable a command from having a hotkey by choosing "NO_BIND"
-                       There are 2 hidden hotkeys: 'control+shift+PgDn' and 'control+shift+PgUp' for changing
+                       There are 2 hidden hotkeys: 'control+shift+PgDn' and 'control+shift+PgUp' for switching between tabs in the app (eg. if you wanna confirm the drop you just added is in fact saved)
 - SESSION TIMER: The session timer will start as soon as you open the program and run as long as the program is open (an not put on pause).
 - RUN COUNTING: Start a new run by pressing the "Start new run" button, or using the assigned hotkey (default 'alt+Q'). In case a run is already active, this button will end it and start a new run
                 End the run by pressing the "End this run" button, or using the assigned hotkey (default 'alt+W').
