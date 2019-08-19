@@ -10,9 +10,12 @@ class Config:
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
         exec(blocks[3])
         config['DEFAULT']['logging_path'] = ''
-        config['DEFAULT']['single_player_mode'] = 'NOT_IMPLEMENTED'
         config['DEFAULT']['window_start_position'] = str((100, 100))
         config['DEFAULT']['run_timer_delay_seconds'] = '0.0'
+
+        config.add_section('PROFILE')
+        config['PROFILE']['active_profile'] = 'DEFAULT_PROFILE'
+        config['PROFILE']['profiles'] = str(['DEFAULT_PROFILE'])
 
         config.add_section('FLAGS')
         config['FLAGS']['always_on_top'] = '1'
@@ -72,6 +75,8 @@ class Config:
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
         cfg['DEFAULT']['window_start_position'] = str((x, y))
+        cfg['PROFILE']['active_profile'] = str(parent.active_profile)
+        cfg['PROFILE']['profiles'] = str(parent.profiles)
         cfg['FLAGS']['always_on_top'] = str(parent.always_on_top)
         cfg['FLAGS']['tab_keys_global'] = str(parent.tab_keys_global)
         cfg['FLAGS']['check_for_new_version'] = str(parent.check_for_new_version)

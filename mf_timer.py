@@ -261,9 +261,9 @@ class Drops(tk.Frame):
         if self.tab1._running:
             run_no += 1
         self.drops.setdefault(str(run_no), []).append(drop)
-        self.SaveDrop(drop=drop, run_no=run_no)
+        self.display_drop(drop=drop, run_no=run_no)
 
-    def SaveDrop(self, drop, run_no):
+    def display_drop(self, drop, run_no):
         self.m.insert(tk.END, 'Run %s: %s' % (run_no, drop))
         self.m.yview_moveto(1)
 
@@ -276,30 +276,33 @@ class Drops(tk.Frame):
             self.drops[run_no].remove(drop)
             self.m.delete(selection[0])
 
-    def SaveState(self):
+    def save_state(self):
         return self.drops
 
     def load_from_state(self, state):
         self.drops = state['drops']
         for run in sorted(self.drops.keys()):
             for drop in self.drops[run]:
-                self.SaveDrop(drop=drop, run_no=run)
+                self.display_drop(drop=drop, run_no=run)
 
 
 class Profile(tk.Frame):
-    def __init__(self, parent=None, **kw):
+    def __init__(self, main_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         self.root = parent
-        self.profiles = ['DEFAULT_PROFILE']
+        self.main_frame = main_frame
+        self._make_widgets()
+
+    def _make_widgets(self):
         # Choose active profile
         profile_frame = tk.Frame(self, height=25, width=238, pady=2, padx=2)
         profile_frame.propagate(False)
         profile_frame.pack()
 
         self.active_profile = tk.StringVar()
-        self.active_profile.set('DEFAULT_PROFILE')
-        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.profiles)
-        self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: print('New selection: %s' % self.active_profile.get()))
+        self.active_profile.set(self.main_frame.active_profile)
+        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
+        self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._set_active_profile())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         temp_lab = tk.Label(self, text="""
@@ -309,9 +312,12 @@ This section is still work in progress
 Hopefully I will be able to finish it soon""")
         temp_lab.pack()
 
-        # Add new profile
         new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile, borderwidth=1, height=1)
         new_profile.pack(side=tk.LEFT)
+
+    def _set_active_profile(self):
+        act = self.active_profile.get()
+        self.main_frame.active_profile = act
 
     def _add_new_profile(self):
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
@@ -321,7 +327,8 @@ Hopefully I will be able to finish it soon""")
             if profile in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return
-            self.profile_dropdown['values'] = list(self.profile_dropdown['values']) + [profile]
+            self.main_frame.profiles.append(profile)
+            self.profile_dropdown['values'] = self.main_frame.profiles
 
 
 class About(tk.Frame):
@@ -361,6 +368,11 @@ class Main(Config):
         if self.check_for_new_version:
             github_releases.check_newest_version()
 
+        # Load state file
+        self.state = self.load_state_file()
+        self.active_profile = self.cfg['PROFILE']['active_profile']
+        self.profiles = eval(self.cfg['PROFILE']['profiles'])
+
         # Modify root window
         self.root.resizable(False, False)
         # self.root.attributes('-type', 'dock')
@@ -382,11 +394,11 @@ class Main(Config):
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
-        self.tab1 = MFRunTimer(self, self.tabcontrol)
+        self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = Profile(self.tabcontrol)
-        self.tab5 = About(self.tabcontrol)
+        self.tab4 = Profile(self, parent=self.tabcontrol)
+        self.tab5 = About(parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tabcontrol.add(self.tab2, text='Drops')
         self.tabcontrol.add(self.tab3, text='Options')
@@ -413,7 +425,7 @@ class Main(Config):
         self.root.bind("<Delete>", lambda event: self._delete_selection())
 
         # Load save state
-        self.LoadState()
+        self.LoadState(self.state)
         self._autosave_state()
 
         # Open the widget
@@ -466,6 +478,13 @@ class Main(Config):
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
 
+    def load_state_file(self):
+        if not os.path.isfile('mf_cache.json'):
+            return dict()
+        with open('mf_cache.json', 'r') as fo:
+            state = json.load(fo)
+        return state
+
     def SaveReset(self):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
@@ -473,23 +492,19 @@ class Main(Config):
         if not self.tab1.laps:
             self.tab1.ResetSession()
             self.tab2.m.delete(0, tk.END)
-            if os.path.isfile('saved_states.json'):
-                os.remove('saved_states.json')
+            if os.path.isfile('mf_cache.json'):
+                os.remove('mf_cache.json')
             return
         save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if save_session:
             self.Save()
             self.tab1.ResetSession()
             self.tab2.m.delete(0, tk.END)
-            if os.path.isfile('saved_states.json'):
-                os.remove('saved_states.json')
+            if os.path.isfile('mf_cache.json'):
+                os.remove('mf_cache.json')
 
-    def LoadState(self):
-        if not os.path.isfile('saved_states.json'):
-            return
-        with open('saved_states.json', 'r') as fo:
-            state = json.load(fo)
-        if not state['laps']:
+    def LoadState(self, state):
+        if not state.get('laps', None):
             return
         self.tab1.load_from_state(state)
         self.tab2.load_from_state(state)
@@ -524,8 +539,8 @@ class Main(Config):
 
     def SaveState(self):
         saved_state = self.tab1.SaveState()
-        saved_state.update(dict(drops=self.tab2.SaveState()))
-        with open('saved_states.json', 'w') as fo:
+        saved_state.update(dict(drops=self.tab2.save_state()))
+        with open('mf_cache.json', 'w') as fo:
             json.dump(saved_state, fo, indent=2)
 
     def Quit(self):
