@@ -83,14 +83,6 @@ class Hotkeys(tk.Frame):
         self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.Pause)
         self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.AddDrop)
         self.add_hotkey(label_name='Reset lap', keys=eval(main_frame.cfg['KEYBINDS']['reset_key']), func=timer_frame.ResetLap)
-        # self.add_hotkey('Quit', self._quit, tab0.SaveQuit)
-
-        if main_frame.tab_keys_global:
-            self.hk.register(['control', 'shift', 'next'], callback=lambda event: main_frame._next_tab())
-            self.hk.register(['control', 'shift', 'prior'], callback=lambda event: main_frame._prev_tab())
-        else:
-            main_frame.root.bind_all('<Control-Shift-Next>', lambda event: main_frame._next_tab())
-            main_frame.root.bind_all('<Control-Shift-Prior>', lambda event: main_frame._prev_tab())
 
     def add_hotkey(self, label_name, keys, func):
         if keys[0].lower() not in map(lambda x: x.lower(), self.modifier_options) or keys[1].lower() not in map(lambda x: x.lower(), self.character_options):

@@ -292,8 +292,10 @@ class Profile(tk.Frame):
         self._make_widgets()
 
     def _make_widgets(self):
+        prof_line = tk.Label(self, text='Select active profile', justify=tk.LEFT)
+        prof_line.pack(anchor=tk.W)
         # Choose active profile
-        profile_frame = tk.Frame(self, height=25, width=238, pady=2, padx=2)
+        profile_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         profile_frame.propagate(False)
         profile_frame.pack()
 
@@ -301,22 +303,31 @@ class Profile(tk.Frame):
         self.active_profile.set(self.main_frame.active_profile)
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._set_active_profile())
-        self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile, borderwidth=1, height=1)
+        new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile)
         new_profile.pack(side=tk.LEFT)
 
-        temp_lab = tk.Label(self, text='\nView history for profile')
-        temp_lab.pack()
+        sel_line = tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT)
+        sel_line.pack(anchor=tk.W)
 
+        sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
+        sel_frame.propagate(False)
+        sel_frame.pack()
         state = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
         self.available_archive = [x for x in state.keys() if x != 'active_state']
         self.selected_archive = tk.StringVar()
-        self.archive_dropdown = ttk.Combobox(self, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
-        self.archive_dropdown.pack()
+        self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
+        self.archive_dropdown.pack(side=tk.LEFT)
 
-        open_archive = tk.Button(self, text='Open archive', command=self.load_archived_state)
-        open_archive.pack(expand=tk.NO)
+        open_archive = tk.Button(sel_frame, text='Open', command=self.load_archived_state)
+        open_archive.pack(side=tk.LEFT)
+
+        delete_archive = tk.Button(sel_frame, text='Delete', command=lambda: 0)
+        delete_archive.pack(side=tk.LEFT)
+
+        stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
+        stat_line.pack(anchor=tk.W)
 
     def load_archived_state(self):
         chosen = self.archive_dropdown.get()
@@ -484,6 +495,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         img_panel.bind("<ButtonPress-1>", self._start_move)
         img_panel.bind("<ButtonRelease-1>", self._stop_move)
         img_panel.bind("<B1-Motion>", self._on_motion)
+
+        # Register binds for changing tabs
+        if self.tab_keys_global:
+            self.tab3.tab1.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
+            self.tab3.tab1.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
+        else:
+            self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
+            self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Load save state
         self.LoadActiveState(self.load_state_file())
