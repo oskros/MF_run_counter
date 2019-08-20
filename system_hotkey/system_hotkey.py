@@ -708,6 +708,11 @@ class SystemHotkey(MixIn):
             if value == keycode:
                 return key
 
+    def _nt_get_keymod(self, keycode):
+        for key, value in win_modders.items():
+            if value == keycode:
+                return key
+
     def _nt_the_grab(self, keycode, masks, id, root=None):
         keysym = self._get_keysym(keycode)
         aliases = NUMPAD_ALIASES.get(keysym)
@@ -721,11 +726,13 @@ class SystemHotkey(MixIn):
                     self.unite_kp = True
 
         if not user32.RegisterHotKey(None, id, masks, keycode):
-            keysym = self._nt_get_keysym(keycode)
-            msg = 'The bind could be in use elsewhere: ' + keysym
-            messagebox.showerror('Keybind error', 'Assigned keybind is in use elsewhere. Error occured, closing app.')
+            key = self._nt_get_keysym(keycode)
+            mod = self._nt_get_keymod(masks)
+            # msg = 'The bind could be in use elsewhere: ' + keysym
+            messagebox.showerror('Keybind error', 'The keybind "%s+%s" is reserved by the OS. Error occured, closing app.' % (mod, key)
+                                                 + '\nProgress since last autosave is lost')
             os._exit(0)
-            raise SystemRegisterError(msg)
+            # raise SystemRegisterError(msg)
 
     def _xlib_get_keycode(self, key) :
         keysym = XK.string_to_keysym(key)
