@@ -619,6 +619,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.ResetSession()
 
     def ArchiveState(self):
+        self.tab1.Stop()
         active = self.tab1.SaveState()
         active.update(dict(drops=self.tab2.save_state()))
         stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
