@@ -246,7 +246,9 @@ class Drops(tk.Frame):
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        tk.Button(self, text='Delete selection', command=self.delete).pack(side=tk.BOTTOM)
+        btn = tk.Button(self, text='Delete selection', command=self.delete)
+        btn.bind_all('<Delete>', lambda e: self.delete())
+        btn.pack(side=tk.BOTTOM)
 
     def AddDrop(self):
         drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
@@ -483,14 +485,11 @@ class Main(Config):
         img_panel.bind("<ButtonRelease-1>", self._stop_move)
         img_panel.bind("<B1-Motion>", self._on_motion)
 
-        # Register some hidden keybinds
-        self.root.bind("<Delete>", lambda event: self._delete_selection())
-
         # Load save state
         self.LoadActiveState(self.load_state_file())
         self._autosave_state()
 
-        # Open the widget
+        # Start the program
         self.root.mainloop()
 
     def report_callback_exception(self, *args):
