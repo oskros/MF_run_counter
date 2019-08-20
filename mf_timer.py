@@ -370,7 +370,14 @@ class Profile(tk.Frame):
         self.main_frame.SaveActiveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
-        self.main_frame.LoadActiveState(self.main_frame.load_state_file())
+
+        cache_file = self.main_frame.load_state_file()
+        profile_cache = cache_file.get(self.main_frame.active_profile, dict())
+        self.available_archive = [x for x in profile_cache.keys() if x != 'active_state']
+        self.archive_dropdown['values'] = self.available_archive
+        self.selected_archive.set('')
+
+        self.main_frame.LoadActiveState(cache_file)
         if not self.main_frame.tab1._paused:
             self.main_frame.tab1.Pause()
 
