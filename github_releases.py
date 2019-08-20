@@ -1,7 +1,5 @@
 import time
-import tkinter as tk
 from tk_utils import mbox
-from tkinter import messagebox
 from init import *
 from requests import request
 GITHUB_API = "https://api.github.com"
@@ -28,10 +26,6 @@ def _request(*args, **kwargs):
 
 
 def _recursive_gh_get(href, items):
-    """Recursively get list of GitHub objects.
-
-    See https://developer.github.com/v3/guides/traversing-with-pagination/
-    """
     response = _request('GET', href)
     response.raise_for_status()
     items.extend(response.json())
