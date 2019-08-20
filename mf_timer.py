@@ -3,6 +3,7 @@ from options import Options
 from config import Config
 import github_releases
 import tk_utils
+import traceback
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -306,7 +307,7 @@ class Profile(tk.Frame):
         temp_lab = tk.Label(self, text='\nView history for profile')
         temp_lab.pack()
 
-        state = self.main_frame.load_state_file()[self.main_frame.active_profile]
+        state = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
         self.available_archive = [x for x in state.keys() if x != 'active_state']
         self.selected_archive = tk.StringVar()
         self.archive_dropdown = ttk.Combobox(self, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
@@ -324,6 +325,8 @@ class Profile(tk.Frame):
         new_win.wm_attributes('-topmost', 1)
         new_win.geometry('500x400')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
+        new_win.focus_get()
+        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
 
         l = tk.Label(new_win, text='Browser for archive', font='Helvetica 14')
         l.pack()
@@ -334,6 +337,8 @@ class Profile(tk.Frame):
         session_time = chosen_archive.get('session_time', 0)
         laps = chosen_archive.get('laps', [])
         drops = chosen_archive.get('drops', dict())
+        avg_lap = sum(laps) / len(laps) if laps else 0
+        pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
         scrollbar = tk.Scrollbar(new_win, orient=tk.VERTICAL)
         self.m = tk.Listbox(new_win, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
@@ -346,10 +351,13 @@ class Profile(tk.Frame):
 
         self.m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
         self.m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
-        self.m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(sum(laps) / len(laps)))
-        self.m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps)))
-        self.m.insert(tk.END, 'Percentage spent in runs: ' + str(round(sum(laps) * 100 / session_time, 2)) + '%')
+        self.m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
+        self.m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
+        self.m.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
         self.m.insert(tk.END, '')
+
+        if '0' in drops.keys():
+            self.m.insert(tk.END, 'Run 0: ' + ', '.join(drops['0']))
         for n, lap in enumerate(laps, 1):
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
@@ -376,37 +384,6 @@ class Profile(tk.Frame):
                 return
             self.main_frame.profiles.append(profile)
             self.profile_dropdown['values'] = self.main_frame.profiles
-
-    def SaveToText(self, state):
-        laps = state.get('laps', [])
-        session_time = state.get('session_time', 0)
-        drops = state.get('drops', dict())
-
-        today = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
-        cfg_save_path = os.path.normpath(self.main_frame.cfg.get('DEFAULT', 'logging_path'))
-        if cfg_save_path in ['DEFAULT', '']:
-            save_path = today
-        else:
-            save_path = os.path.join(cfg_save_path, today)
-        with open(save_path + '.txt', 'wb') as savefile:
-            to_write = [
-                'Total session time: ' + tk_utils.build_time_str(session_time) + '\r\n',
-                'Total run time:     ' + tk_utils.build_time_str(sum(laps)) + '\r\n'
-                'Average run time:   ' + tk_utils.build_time_str(sum(laps) / len(laps)) + '\r\n',
-                'Fastest run time:   ' + tk_utils.build_time_str(min(laps)) + '\r\n',
-                'Percentage spent in runs: ' + str(round(sum(laps) * 100 / session_time, 2)) + '%\r\n',
-                '\r\n'
-            ]
-            for s in to_write:
-                savefile.write(bytes(s, 'utf-8'))
-
-            for n, lap in enumerate(laps, 1):
-                str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
-                run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
-                droplst = drops.get(str(n), '')
-                if droplst:
-                    run_str += ' --- ' + ', '.join(droplst)
-                savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
 
 class About(tk.Frame):
@@ -435,6 +412,7 @@ class Main(Config):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
+        self.root.report_callback_exception = self.report_callback_exception
 
         # Build/load config file
         self.cfg = self.load_config_file()
@@ -508,6 +486,11 @@ class Main(Config):
         # Open the widget
         self.root.mainloop()
 
+    def report_callback_exception(self, *args):
+        err = traceback.format_exception(*args)
+        tk.messagebox.showerror('Exception occured', err)
+        self.Quit()
+
     def _delete_selection(self):
         tabs = self.tabcontrol.tabs()
         cur_tab = self.tabcontrol.select()
@@ -567,9 +550,8 @@ class Main(Config):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
 
-        if not self.tab1.laps:
-            self.tab1.ResetSession()
-            self.tab2.m.delete(0, tk.END)
+        if not self.tab1.laps and not self.tab2.drops:
+            self.ResetSession()
             return
         save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if save_session:
@@ -579,7 +561,9 @@ class Main(Config):
     def ArchiveState(self):
         active = self.tab1.SaveState()
         active.update(dict(drops=self.tab2.save_state()))
-        stamp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+        stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        self.tab4.available_archive.append(stamp)
+        self.tab4.archive_dropdown['values'] = self.tab4.available_archive
 
         state = self.load_state_file()
         if self.active_profile not in state:
@@ -587,7 +571,7 @@ class Main(Config):
         state[self.active_profile]['active_state'] = dict()
         state[self.active_profile][stamp] = active
         with open('mf_cache.json', 'w') as fo:
-            json.dump(state, fo, indent=2)
+            json.dump(state, fo, indent=1)
 
     def LoadActiveState(self, state):
         profile_state = state.get(self.active_profile, dict())
@@ -602,7 +586,7 @@ class Main(Config):
         cache[self.active_profile]['active_state'] = self.tab1.SaveState()
         cache[self.active_profile]['active_state'].update(dict(drops=self.tab2.save_state()))
         with open('mf_cache.json', 'w') as fo:
-            json.dump(cache, fo, indent=2)
+            json.dump(cache, fo, indent=1)
 
     def ResetSession(self):
         self.tab1.ResetSession()
