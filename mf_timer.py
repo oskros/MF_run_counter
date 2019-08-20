@@ -532,7 +532,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
-        self.root.iconbitmap(os.path.join(os.path.abspath('.'), frozen + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
         self.root.pack_propagate(False)
 
         # Build banner image
