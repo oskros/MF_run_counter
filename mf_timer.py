@@ -334,7 +334,7 @@ class Profile(tk.Frame):
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.config(font=('courier', 8))
         self.descr.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
-        self.load_descriptive_statistics()
+        self.update_descriptive_statistics()
 
     def delete_archived(self):
         chosen = self.archive_dropdown.get()
@@ -352,9 +352,9 @@ class Profile(tk.Frame):
             self.available_archive.remove(chosen)
             self.archive_dropdown['values'] = self.available_archive
             self.selected_archive.set('')
-            self.load_descriptive_statistics()
+            self.update_descriptive_statistics()
 
-    def load_descriptive_statistics(self):
+    def update_descriptive_statistics(self):
         active = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
         laps = []
         session_time = 0
@@ -384,13 +384,18 @@ class Profile(tk.Frame):
         new_win = tk.Toplevel()
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
-        new_win.geometry('400x400')
+        new_win.geometry('450x450')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
 
         l = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
         l.pack()
+
+        fr = tk.Frame(new_win)
+        fr.pack(side=tk.BOTTOM)
+        tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
 
         archive_state = self.main_frame.load_state_file()
         active = archive_state.get(self.main_frame.active_profile, dict())
@@ -403,13 +408,16 @@ class Profile(tk.Frame):
 
         sbfr = tk.Frame(new_win)
         sbfr.pack(fill=tk.BOTH, expand=1)
-        scrollbar = tk.Scrollbar(sbfr, orient=tk.VERTICAL)
-        m = tk.Listbox(sbfr, selectmode=tk.EXTENDED, yscrollcommand=scrollbar.set, activestyle='none')
+        vscroll = tk.Scrollbar(sbfr, orient=tk.VERTICAL)
+        hscroll = tk.Scrollbar(new_win, orient=tk.HORIZONTAL)
+        m = tk.Listbox(sbfr, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none')
         m.bind('<FocusOut>', lambda e: m.selection_clear(0, tk.END))
         m.config(font=('courier', 12))
-        m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
-        scrollbar.config(command=m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        hscroll.config(command=m.xview)
+        vscroll.config(command=m.yview)
+        vscroll.pack(side=tk.LEFT, fill=tk.Y)
+        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
         m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
         m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
@@ -427,11 +435,6 @@ class Profile(tk.Frame):
             if droplst:
                 run_str += ' --- ' + ', '.join(droplst)
             m.insert(tk.END, run_str)
-
-        fr = tk.Frame(new_win)
-        fr.pack(side=tk.BOTTOM)
-        tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
 
     @staticmethod
     def copy_to_clipboard(obj, string):
@@ -458,7 +461,7 @@ class Profile(tk.Frame):
         self.selected_archive.set('')
 
         self.main_frame.LoadActiveState(cache_file)
-        self.load_descriptive_statistics()
+        self.update_descriptive_statistics()
 
     def _add_new_profile(self):
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
@@ -648,6 +651,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         cache[self.active_profile]['active_state'].update(dict(drops=self.tab2.save_state()))
         with open('mf_cache.json', 'w') as fo:
             json.dump(cache, fo, indent=1)
+        self.tab4.update_descriptive_statistics()
 
     def ResetSession(self):
         self.tab1.ResetSession()
