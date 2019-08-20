@@ -323,11 +323,59 @@ class Profile(tk.Frame):
         open_archive = tk.Button(sel_frame, text='Open', command=self.load_archived_state)
         open_archive.pack(side=tk.LEFT)
 
-        delete_archive = tk.Button(sel_frame, text='Delete', command=lambda: 0)
+        delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived)
         delete_archive.pack(side=tk.LEFT)
 
         stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
         stat_line.pack(anchor=tk.W)
+
+        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=5, activestyle='none')
+        self.descr.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
+        # self.m.bindtags((self.m, self, "all"))
+        self.descr.config(font=('courier', 8))
+        self.descr.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+        self.load_descriptive_statistics()
+
+    def delete_archived(self):
+        chosen = self.archive_dropdown.get()
+        if chosen == '':
+            return
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive?', coords=(xc, yc))
+        if resp:
+            cache = self.main_frame.load_state_file()
+            if self.main_frame.active_profile in cache:
+                cache[self.main_frame.active_profile].pop(chosen, None)
+            with open('mf_cache.json', 'w') as fo:
+                json.dump(cache, fo, indent=1)
+            self.available_archive.remove(chosen)
+            self.archive_dropdown['values'] = self.available_archive
+            self.selected_archive.set('')
+            self.load_descriptive_statistics()
+
+    def load_descriptive_statistics(self):
+        active = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
+        laps = []
+        session_time = 0
+        dropcount = 0
+        for key in active.keys():
+            laps.extend(active[key].get('laps', []))
+            session_time += active[key].get('session_time', 0)
+            drops = active[key].get('drops', dict())
+            for drop in drops.keys():
+                dropcount += len(drop)
+        avg_lap = sum(laps) / len(laps) if laps else 0
+        pct = sum(laps) * 100 / session_time if session_time > 0 else 0
+
+        self.descr.delete(0, tk.END)
+        self.descr.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
+        self.descr.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
+        self.descr.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
+        self.descr.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
+        self.descr.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
+        self.descr.insert(tk.END, 'Number of runs: ' + str(len(laps)))
+        self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
 
     def load_archived_state(self):
         chosen = self.archive_dropdown.get()
@@ -336,12 +384,12 @@ class Profile(tk.Frame):
         new_win = tk.Toplevel()
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
-        new_win.geometry('500x400')
+        new_win.geometry('400x400')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
 
-        l = tk.Label(new_win, text='Browser for archive', font='Helvetica 14')
+        l = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
         l.pack()
 
         archive_state = self.main_frame.load_state_file()
@@ -391,6 +439,7 @@ class Profile(tk.Frame):
         self.selected_archive.set('')
 
         self.main_frame.LoadActiveState(cache_file)
+        self.load_descriptive_statistics()
         if not self.main_frame.tab1._paused:
             self.main_frame.tab1.Pause()
 
@@ -435,6 +484,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.report_callback_exception = self.report_callback_exception
 
         # Build/load config file
+        start_state = self.load_state_file()
         self.cfg = self.load_config_file()
         self.always_on_top = eval(self.cfg['FLAGS']['always_on_top'])
         self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
@@ -446,7 +496,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Load profile info
         self.active_profile = self.cfg['PROFILE']['active_profile']
-        self.profiles = eval(self.cfg['PROFILE']['profiles'])
+        self.profiles = set(eval(self.cfg['PROFILE']['profiles']))
+        self.profiles.update(set(start_state.keys()))
+        self.profiles = list(self.profiles)
 
         # Modify root window
         self.root.resizable(False, False)
@@ -464,8 +516,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Build banner image
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/d2icon.png')
         img = tk.PhotoImage(file=d2icon)
-        img_panel = tk.Label(self.root, image=img)
-        img_panel.pack()
+        self.img_panel = tk.Label(self.root, image=img)
+        self.img_panel.pack()
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
@@ -480,6 +532,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tabcontrol.add(self.tab4, text='Profile')
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
+        self.root.bind("<<NotebookTabChanged>>", lambda e: self.img_panel.focus_force())
 
         # Add buttons to main widget
         lf = tk.LabelFrame(self.root, height=35)
@@ -492,9 +545,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Make window drag on the banner image
-        img_panel.bind("<ButtonPress-1>", self._start_move)
-        img_panel.bind("<ButtonRelease-1>", self._stop_move)
-        img_panel.bind("<B1-Motion>", self._on_motion)
+        self.img_panel.bind("<ButtonPress-1>", self._start_move)
+        self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
+        self.img_panel.bind("<B1-Motion>", self._on_motion)
 
         # Register binds for changing tabs
         if self.tab_keys_global:
@@ -505,7 +558,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Load save state
-        self.LoadActiveState(self.load_state_file())
+        self.LoadActiveState(start_state)
         self._autosave_state()
 
         # Start the program
