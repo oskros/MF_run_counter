@@ -135,12 +135,6 @@ class Hotkeys(tk.Frame):
             e = getattr(self, event + '_e')
             m.set(old_hotkey[0])
             e.set(old_hotkey[1])
-        # elif new_lower == ['control', 'escape']:
-        #     messagebox.showerror('Reserved bind', 'Control+escape is reserved for windows. This setting is not allowed')
-        #     m = getattr(self, event + '_m')
-        #     e = getattr(self, event + '_e')
-        #     m.set(old_hotkey[0])
-        #     e.set(old_hotkey[1])
         else:
             if old_hotkey[1].lower() != 'no_bind':
                 unreg = [old_hotkey[1].lower()] if old_hotkey[0] == '' else list(map(lambda x: x.lower(), old_hotkey))
