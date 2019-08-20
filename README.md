@@ -5,7 +5,7 @@
 NB: Working on Windows 7 and Windows 10 (I have not tested on any other OS, but probably it wouldn't work)
 1) To run on your computer, go to releases (https://github.com/oskros/MF_counter_releases/releases) and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder
-3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for this lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
+3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for Windows to recognize me lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
     ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized1.png?raw=true)
     ![winblock2](https://github.com/oskros/MF_counter_releases/blob/master/Unrecognized2.png?raw=true)
