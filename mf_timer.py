@@ -326,7 +326,7 @@ class Profile(tk.Frame):
         new_win.geometry('500x400')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
-        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
+        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
 
         l = tk.Label(new_win, text='Browser for archive', font='Helvetica 14')
         l.pack()
@@ -445,11 +445,11 @@ class Main(Config):
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
         self.root.pack_propagate(False)
 
         # Build banner image
-        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'd2icon.png')
+        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/d2icon.png')
         img = tk.PhotoImage(file=d2icon)
         img_panel = tk.Label(self.root, image=img)
         img_panel.pack()

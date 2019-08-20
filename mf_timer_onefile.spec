@@ -17,9 +17,9 @@ a = Analysis(['C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\mf_timer.
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
-a.datas += [('d2icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\d2icon.png', 'Data')]
-a.datas += [('run_sound.wav', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\run_sound.wav', 'Data')]
-a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\icon.ico', 'Data')]
+a.datas += [('d2icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\media\\d2icon.png', 'Data')]
+a.datas += [('run_sound.wav', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\media\\run_sound.wav', 'Data')]
+a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\media\\icon.ico', 'Data')]
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -35,4 +35,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\icon.ico')
+          console=False , icon='C:\\Users\\oskro\\PycharmProjects\\MF_counter_releases\\media\\icon.ico')
