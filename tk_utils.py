@@ -3,6 +3,14 @@ import tkinter as tk
 import webbrowser
 
 
+def build_time_str(elap):
+    hours = int(elap / 3600)
+    minutes = int(elap / 60 - hours * 60.0)
+    seconds = int(elap - hours * 3600.0 - minutes * 60.0)
+    hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
+    return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
+
+
 class MessageBox(object):
     def __init__(self, msg, b1, b2, frame, entry, coords=False, title='Message', hyperlink=False):
         root = self.root = tk.Tk()

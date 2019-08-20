@@ -94,7 +94,7 @@ class MFRunTimer(tk.Frame):
     exec(blocks[6])
 
     def _set_time(self, elap, for_session):
-        time_str = self._build_time_str(elap)
+        time_str = tk_utils.build_time_str(elap)
         if for_session:
             self.session_time_str = time_str
             self.sessionstr.set('Session time: ' + self.session_time_str)
@@ -109,23 +109,15 @@ class MFRunTimer(tk.Frame):
 
     def _set_fastest(self):
         if self.laps:
-            self.min_lap.set('Fastest time: %s' % self._build_time_str(min(self.laps)))
+            self.min_lap.set('Fastest time: %s' % tk_utils.build_time_str(min(self.laps)))
         else:
             self.min_lap.set('Fastest time: --:--:--.-')
 
     def _set_average(self):
         if self.laps:
-            self.avg_lap.set('Average time: %s' % self._build_time_str(sum(self.laps)/len(self.laps)))
+            self.avg_lap.set('Average time: %s' % tk_utils.build_time_str(sum(self.laps) / len(self.laps)))
         else:
             self.avg_lap.set('Average time: --:--:--.-')
-
-    @staticmethod
-    def _build_time_str(elap):
-        hours = int(elap / 3600)
-        minutes = int(elap / 60 - hours * 60.0)
-        seconds = int(elap - hours * 3600.0 - minutes * 60.0)
-        hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
-        return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
     def load_from_state(self, state):
         self.laps = []
@@ -175,7 +167,7 @@ class MFRunTimer(tk.Frame):
         if self._running or force:
             self.laps.append(laptime)
             str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
-            self.m.insert(tk.END, 'Run ' + str_n + ': ' + self._build_time_str(self.laps[-1]))
+            self.m.insert(tk.END, 'Run ' + str_n + ': ' + tk_utils.build_time_str(self.laps[-1]))
             self.m.yview_moveto(1)
             self._set_laps(is_running=False)
             self._set_fastest()
@@ -308,21 +300,69 @@ class Profile(tk.Frame):
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._set_active_profile())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        temp_lab = tk.Label(self, text="""
-NOT WORKING YET!
-        
-This section is still work in progress
-Hopefully I will be able to finish it soon""")
-        temp_lab.pack()
-
         new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile, borderwidth=1, height=1)
         new_profile.pack(side=tk.LEFT)
 
+        temp_lab = tk.Label(self, text='\nView history for profile')
+        temp_lab.pack()
+
+        state = self.main_frame.load_state_file()[self.main_frame.active_profile]
+        self.available_archive = [x for x in state.keys() if x != 'active_state']
+        self.selected_archive = tk.StringVar()
+        self.archive_dropdown = ttk.Combobox(self, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
+        self.archive_dropdown.pack()
+
+        open_archive = tk.Button(self, text='Open archive', command=self.load_archived_state)
+        open_archive.pack(expand=tk.NO)
+
+    def load_archived_state(self):
+        chosen = self.archive_dropdown.get()
+        if chosen == '':
+            return
+        new_win = tk.Toplevel()
+        new_win.title('Archive browser')
+        new_win.wm_attributes('-topmost', 1)
+        new_win.geometry('500x400')
+        new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
+
+        l = tk.Label(new_win, text='Browser for archive', font='Helvetica 14')
+        l.pack()
+
+        archive_state = self.main_frame.load_state_file()
+        active = archive_state.get(self.main_frame.active_profile, dict())
+        chosen_archive = active.get(chosen, dict())
+        session_time = chosen_archive.get('session_time', 0)
+        laps = chosen_archive.get('laps', [])
+        drops = chosen_archive.get('drops', dict())
+
+        scrollbar = tk.Scrollbar(new_win, orient=tk.VERTICAL)
+        self.m = tk.Listbox(new_win, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
+        self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
+        # self.m.bindtags((self.m, self, "all"))
+        self.m.config(font=('courier', 12))
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+        scrollbar.config(command=self.m.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
+        self.m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
+        self.m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(sum(laps) / len(laps)))
+        self.m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps)))
+        self.m.insert(tk.END, 'Percentage spent in runs: ' + str(round(sum(laps) * 100 / session_time, 2)) + '%')
+        self.m.insert(tk.END, '')
+        for n, lap in enumerate(laps, 1):
+            str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
+            run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
+            droplst = drops.get(str(n), '')
+            if droplst:
+                run_str += ' --- ' + ', '.join(droplst)
+            self.m.insert(tk.END, run_str)
+
     def _set_active_profile(self):
-        self.main_frame.SaveState()
+        self.main_frame.SaveActiveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
-        self.main_frame.LoadState(self.main_frame.load_state_file())
+        self.main_frame.LoadActiveState(self.main_frame.load_state_file())
         if not self.main_frame.tab1._paused:
             self.main_frame.tab1.Pause()
 
@@ -336,6 +376,37 @@ Hopefully I will be able to finish it soon""")
                 return
             self.main_frame.profiles.append(profile)
             self.profile_dropdown['values'] = self.main_frame.profiles
+
+    def SaveToText(self, state):
+        laps = state.get('laps', [])
+        session_time = state.get('session_time', 0)
+        drops = state.get('drops', dict())
+
+        today = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+        cfg_save_path = os.path.normpath(self.main_frame.cfg.get('DEFAULT', 'logging_path'))
+        if cfg_save_path in ['DEFAULT', '']:
+            save_path = today
+        else:
+            save_path = os.path.join(cfg_save_path, today)
+        with open(save_path + '.txt', 'wb') as savefile:
+            to_write = [
+                'Total session time: ' + tk_utils.build_time_str(session_time) + '\r\n',
+                'Total run time:     ' + tk_utils.build_time_str(sum(laps)) + '\r\n'
+                'Average run time:   ' + tk_utils.build_time_str(sum(laps) / len(laps)) + '\r\n',
+                'Fastest run time:   ' + tk_utils.build_time_str(min(laps)) + '\r\n',
+                'Percentage spent in runs: ' + str(round(sum(laps) * 100 / session_time, 2)) + '%\r\n',
+                '\r\n'
+            ]
+            for s in to_write:
+                savefile.write(bytes(s, 'utf-8'))
+
+            for n, lap in enumerate(laps, 1):
+                str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
+                run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
+                droplst = drops.get(str(n), '')
+                if droplst:
+                    run_str += ' --- ' + ', '.join(droplst)
+                savefile.write(bytes(run_str + '\r\n', 'utf-8'))
 
 
 class About(tk.Frame):
@@ -420,7 +491,7 @@ class Main(Config):
         tk.Button(lf, text='End\nthis run', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Save &\nreset', command=self.SaveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Make window drag on the banner image
         img_panel.bind("<ButtonPress-1>", self._start_move)
@@ -431,15 +502,11 @@ class Main(Config):
         self.root.bind("<Delete>", lambda event: self._delete_selection())
 
         # Load save state
-        self.LoadState(self.load_state_file())
+        self.LoadActiveState(self.load_state_file())
         self._autosave_state()
 
         # Open the widget
         self.root.mainloop()
-
-    def _autosave_state(self):
-        self.SaveState()
-        self.root.after(30000, self._autosave_state)
 
     def _delete_selection(self):
         tabs = self.tabcontrol.tabs()
@@ -484,14 +551,19 @@ class Main(Config):
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
 
-    def load_state_file(self):
+    @staticmethod
+    def load_state_file():
         if not os.path.isfile('mf_cache.json'):
             return dict()
         with open('mf_cache.json', 'r') as fo:
             state = json.load(fo)
         return state
 
-    def SaveReset(self):
+    def _autosave_state(self):
+        self.SaveActiveState()
+        self.root.after(30000, self._autosave_state)
+
+    def ArchiveReset(self):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
 
@@ -501,66 +573,47 @@ class Main(Config):
             return
         save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if save_session:
-            self.Save()
-            self.tab1.ResetSession()
-            self.tab2.drops = dict()
-            self.tab2.m.delete(0, tk.END)
+            self.ArchiveState()
+            self.ResetSession()
 
-            # Reset state for active profile
-            state = self.load_state_file()
+    def ArchiveState(self):
+        active = self.tab1.SaveState()
+        active.update(dict(drops=self.tab2.save_state()))
+        stamp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+
+        state = self.load_state_file()
+        if self.active_profile not in state:
             state[self.active_profile] = dict()
-            with open('mf_cache.json', 'w') as fo:
-                json.dump(state, fo)
+        state[self.active_profile]['active_state'] = dict()
+        state[self.active_profile][stamp] = active
+        with open('mf_cache.json', 'w') as fo:
+            json.dump(state, fo, indent=2)
 
-    def LoadState(self, state):
-        state = state.get(self.active_profile, dict())
-        self.tab1.load_from_state(state)
-        self.tab2.load_from_state(state)
+    def LoadActiveState(self, state):
+        profile_state = state.get(self.active_profile, dict())
+        active_state = profile_state.get('active_state', dict())
+        self.tab1.load_from_state(active_state)
+        self.tab2.load_from_state(active_state)
 
-    def Save(self):
-        today = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
-        cfg_save_path = os.path.normpath(self.cfg.get('DEFAULT', 'logging_path'))
-        if cfg_save_path in ['DEFAULT', '']:
-            save_path = today
-        else:
-            save_path = os.path.join(cfg_save_path, today)
-        with open(save_path + '.txt', 'wb') as savefile:
-            to_write = [
-                'Total session time: ' + str(self.tab1.session_time_str) + '\r\n',
-                'Total run time:     ' + self.tab1._build_time_str(sum(self.tab1.laps)) + '\r\n'
-                'Average run time:   ' + self.tab1._build_time_str(sum(self.tab1.laps) / len(self.tab1.laps)) + '\r\n',
-                'Fastest run time:   ' + self.tab1._build_time_str(min(self.tab1.laps)) + '\r\n',
-                'Percentage spent in runs: ' + str(
-                    round(sum(self.tab1.laps) * 100 / self.tab1._sessiontime, 2)) + '%\r\n',
-                '\r\n'
-            ]
-            for s in to_write:
-                savefile.write(bytes(s, 'utf-8'))
-
-            for n, lap in enumerate(self.tab1.laps, 1):
-                str_n = ' ' * max(len(str(len(self.tab1.laps))) - len(str(n)), 0) + str(n)
-                run_str = 'Run ' + str_n + ': ' + self.tab1._build_time_str(lap)
-                drops = self.tab2.drops.get(str(n), '')
-                if drops:
-                    run_str += ' --- ' + ', '.join(drops)
-                savefile.write(bytes(run_str + '\r\n', 'utf-8'))
-
-    def SaveState(self):
+    def SaveActiveState(self):
         cache = self.load_state_file()
-        cache[self.active_profile] = self.tab1.SaveState()
-        cache[self.active_profile].update(dict(drops=self.tab2.save_state()))
+        if self.active_profile not in cache:
+            cache[self.active_profile] = dict()
+        cache[self.active_profile]['active_state'] = self.tab1.SaveState()
+        cache[self.active_profile]['active_state'].update(dict(drops=self.tab2.save_state()))
         with open('mf_cache.json', 'w') as fo:
             json.dump(cache, fo, indent=2)
+
+    def ResetSession(self):
+        self.tab1.ResetSession()
+        self.tab2.drops = dict()
+        self.tab2.m.delete(0, tk.END)
 
     def Quit(self):
         if self.tab1._running:
             self.tab1.Stop()
-        # xc = self.root.winfo_rootx() - self.root.winfo_width() // 12
-        # yc = self.root.winfo_rooty() + self.root.winfo_height() // 3
-        # confirm_quit = tk_utils.mbox('Would you like to quit?', b1='Yes', b2='No', coords=[xc, yc])
-        # if confirm_quit:
         self.UpdateConfig(self)
-        self.SaveState()
+        self.SaveActiveState()
         os._exit(0)
 
 
