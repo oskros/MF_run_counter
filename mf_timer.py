@@ -15,6 +15,8 @@ import os
 import webbrowser
 import json
 exec(blocks[1])
+frozen = '' if getattr(sys, 'frozen', False) else 'media\\'
+print(frozen)
 
 
 class MFRunTimer(tk.Frame):
@@ -387,7 +389,7 @@ class Profile(tk.Frame):
         new_win.geometry('450x450')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
-        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
+        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
 
         l = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
         l.pack()
@@ -531,11 +533,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/icon.ico'))
+        self.root.iconbitmap(os.path.join(os.path.abspath('.'), frozen + 'icon.ico'))
         self.root.pack_propagate(False)
 
         # Build banner image
-        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), 'media/d2icon.png')
+        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
         self.img_panel = tk.Label(self.root, image=img)
         self.img_panel.pack()
