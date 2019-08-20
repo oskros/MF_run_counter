@@ -432,7 +432,6 @@ class Profile(tk.Frame):
         fr.pack(side=tk.BOTTOM)
         tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
         tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tk.Button(fr, text='Save as .csv', command=lambda: 0).pack(side=tk.LEFT, fill=tk.X)
 
     @staticmethod
     def copy_to_clipboard(obj, string):
