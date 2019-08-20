@@ -7,6 +7,7 @@ import traceback
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import filedialog
 import sound
 import sys
 import time
@@ -302,7 +303,7 @@ class Profile(tk.Frame):
         self.active_profile = tk.StringVar()
         self.active_profile.set(self.main_frame.active_profile)
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
-        self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._set_active_profile())
+        self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile)
@@ -320,7 +321,7 @@ class Profile(tk.Frame):
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.pack(side=tk.LEFT)
 
-        open_archive = tk.Button(sel_frame, text='Open', command=self.load_archived_state)
+        open_archive = tk.Button(sel_frame, text='Open', command=self.open_archive_browser)
         open_archive.pack(side=tk.LEFT)
 
         delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived)
@@ -330,8 +331,7 @@ class Profile(tk.Frame):
         stat_line.pack(anchor=tk.W)
 
         self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=5, activestyle='none')
-        self.descr.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        # self.m.bindtags((self.m, self, "all"))
+        self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.config(font=('courier', 8))
         self.descr.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         self.load_descriptive_statistics()
@@ -377,7 +377,7 @@ class Profile(tk.Frame):
         self.descr.insert(tk.END, 'Number of runs: ' + str(len(laps)))
         self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
 
-    def load_archived_state(self):
+    def open_archive_browser(self):
         chosen = self.archive_dropdown.get()
         if chosen == '':
             return
@@ -401,33 +401,53 @@ class Profile(tk.Frame):
         avg_lap = sum(laps) / len(laps) if laps else 0
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
-        scrollbar = tk.Scrollbar(new_win, orient=tk.VERTICAL)
-        self.m = tk.Listbox(new_win, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
-        self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        # self.m.bindtags((self.m, self, "all"))
-        self.m.config(font=('courier', 12))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
-        scrollbar.config(command=self.m.yview)
+        sbfr = tk.Frame(new_win)
+        sbfr.pack(fill=tk.BOTH, expand=1)
+        scrollbar = tk.Scrollbar(sbfr, orient=tk.VERTICAL)
+        m = tk.Listbox(sbfr, selectmode=tk.EXTENDED, yscrollcommand=scrollbar.set, activestyle='none')
+        m.bind('<FocusOut>', lambda e: m.selection_clear(0, tk.END))
+        m.config(font=('courier', 12))
+        m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+        scrollbar.config(command=m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
-        self.m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
-        self.m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
-        self.m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
-        self.m.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
-        self.m.insert(tk.END, '')
+        m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
+        m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
+        m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
+        m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
+        m.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
+        m.insert(tk.END, '')
 
         if '0' in drops.keys():
-            self.m.insert(tk.END, 'Run 0: ' + ', '.join(drops['0']))
+            m.insert(tk.END, 'Run 0: ' + ', '.join(drops['0']))
         for n, lap in enumerate(laps, 1):
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
             droplst = drops.get(str(n), '')
             if droplst:
                 run_str += ' --- ' + ', '.join(droplst)
-            self.m.insert(tk.END, run_str)
+            m.insert(tk.END, run_str)
 
-    def _set_active_profile(self):
+        fr = tk.Frame(new_win)
+        fr.pack(side=tk.BOTTOM)
+        tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tk.Button(fr, text='Save as .csv', command=lambda: 0).pack(side=tk.LEFT, fill=tk.X)
+
+    @staticmethod
+    def copy_to_clipboard(obj, string):
+        obj.clipboard_clear()
+        obj.clipboard_append(string)
+
+    @staticmethod
+    def save_to_txt(string):
+        f = tk.filedialog.asksaveasfile(mode='w', defaultextension='.txt', filetypes=(('.txt', '*.txt'),('All Files', '*.*')))
+        if not f:
+            return
+        f.write(string)
+        f.close()
+
+    def _change_active_profile(self):
         self.main_frame.SaveActiveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
@@ -440,8 +460,6 @@ class Profile(tk.Frame):
 
         self.main_frame.LoadActiveState(cache_file)
         self.load_descriptive_statistics()
-        if not self.main_frame.tab1._paused:
-            self.main_frame.tab1.Pause()
 
     def _add_new_profile(self):
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
@@ -459,8 +477,9 @@ class About(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
         label0 = tk.Label(self, text="""Run counter for Diablo 2 developed in July 
-2019 by *oskros on Path of Diablo. Please 
-see the readme.md file available on Github""", justify=tk.LEFT)
+and August2019 by *oskros on Path of 
+Diablo. Please see the README.md file 
+available on Github""", justify=tk.LEFT)
         label0.pack()
         link0 = tk.Label(self, text="Open Readme", fg="blue", cursor="hand2")
         link0.pack()
@@ -532,7 +551,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tabcontrol.add(self.tab4, text='Profile')
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
-        self.root.bind("<<NotebookTabChanged>>", lambda e: self.img_panel.focus_force())
+        self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
 
         # Add buttons to main widget
         lf = tk.LabelFrame(self.root, height=35)
@@ -568,6 +587,13 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         err = traceback.format_exception(*args)
         tk.messagebox.showerror('Exception occured', err)
         self.Quit()
+
+    def notebook_tab_change(self):
+        x = self.tabcontrol.select()
+        if x.endswith('profile'):
+            if not self.tab1._paused:
+                self.tab1.Pause()
+        self.img_panel.focus_force()
 
     @staticmethod
     def load_state_file():

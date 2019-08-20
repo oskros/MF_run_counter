@@ -6,10 +6,10 @@ from tkinter import messagebox
 
 class Config:
     exec(blocks[2])
+
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
         exec(blocks[3])
-        config['DEFAULT']['logging_path'] = ''
         config['DEFAULT']['window_start_position'] = str((100, 100))
         config['DEFAULT']['run_timer_delay_seconds'] = '0.0'
 
@@ -34,7 +34,6 @@ class Config:
         config['KEYBINDS']['pause_key'] = str(['Control', 'Space'])
         config['KEYBINDS']['drop_key'] = str(['Alt', 'A'])
         config['KEYBINDS']['reset_key'] = str(['Alt', 'R'])
-        # config['KEYBINDS']['quit_key'] = str(['Alt', 'Escape'])
 
         return config
 
@@ -75,8 +74,12 @@ class Config:
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
         cfg['DEFAULT']['window_start_position'] = str((x, y))
+
+        # Update profiles
         cfg['PROFILE']['active_profile'] = str(parent.active_profile)
         cfg['PROFILE']['profiles'] = str(parent.profiles)
+
+        # Update flags
         cfg['FLAGS']['always_on_top'] = str(parent.always_on_top)
         cfg['FLAGS']['tab_keys_global'] = str(parent.tab_keys_global)
         cfg['FLAGS']['check_for_new_version'] = str(parent.check_for_new_version)
