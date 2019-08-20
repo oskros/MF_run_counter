@@ -417,7 +417,7 @@ see the readme.md file available on Github""", justify=tk.LEFT)
         lab2.pack(side=tk.BOTTOM)
 
 
-class Main(Config, tk_utils.MovingFrame):
+class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
@@ -497,24 +497,6 @@ class Main(Config, tk_utils.MovingFrame):
         tk.messagebox.showerror('Exception occured', err)
         self.Quit()
 
-    def _next_tab(self):
-        tabs = self.tabcontrol.tabs()
-        cur_tab = self.tabcontrol.select()
-
-        nxt_idx = tabs.index(cur_tab) + 1
-        if nxt_idx >= len(tabs):
-            nxt_idx = 0
-        self.tabcontrol.select(tabs[nxt_idx])
-
-    def _prev_tab(self):
-        tabs = self.tabcontrol.tabs()
-        cur_tab = self.tabcontrol.select()
-
-        prev_idx = tabs.index(cur_tab) - 1
-        if prev_idx < 0:
-            prev_idx = len(tabs) - 1
-        self.tabcontrol.select(tabs[prev_idx])
-
     @staticmethod
     def load_state_file():
         if not os.path.isfile('mf_cache.json'):
@@ -582,4 +564,4 @@ class Main(Config, tk_utils.MovingFrame):
         os._exit(0)
 
 
-Main()
+MainFrame()

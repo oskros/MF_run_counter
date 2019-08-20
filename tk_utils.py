@@ -11,6 +11,26 @@ def build_time_str(elap):
     return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
 
+class TabSwitch:
+    def _next_tab(self):
+        tabs = self.tabcontrol.tabs()
+        cur_tab = self.tabcontrol.select()
+
+        nxt_idx = tabs.index(cur_tab) + 1
+        if nxt_idx >= len(tabs):
+            nxt_idx = 0
+        self.tabcontrol.select(tabs[nxt_idx])
+
+    def _prev_tab(self):
+        tabs = self.tabcontrol.tabs()
+        cur_tab = self.tabcontrol.select()
+
+        prev_idx = tabs.index(cur_tab) - 1
+        if prev_idx < 0:
+            prev_idx = len(tabs) - 1
+        self.tabcontrol.select(tabs[prev_idx])
+
+
 class MovingFrame:
     def _start_move(self, event):
         self.x = event.x
