@@ -16,7 +16,6 @@ import webbrowser
 import json
 exec(blocks[1])
 frozen = '' if getattr(sys, 'frozen', False) else 'media\\'
-print(frozen)
 
 
 class MFRunTimer(tk.Frame):
@@ -375,7 +374,7 @@ class Profile(tk.Frame):
         self.descr.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
         self.descr.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
         self.descr.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
-        self.descr.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
+        self.descr.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
         self.descr.insert(tk.END, 'Number of runs: ' + str(len(laps)))
         self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
 
@@ -414,7 +413,7 @@ class Profile(tk.Frame):
         hscroll = tk.Scrollbar(new_win, orient=tk.HORIZONTAL)
         m = tk.Listbox(sbfr, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none')
         m.bind('<FocusOut>', lambda e: m.selection_clear(0, tk.END))
-        m.config(font=('courier', 12))
+        m.config(font=('courier', 10))
         m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         hscroll.config(command=m.xview)
         vscroll.config(command=m.yview)
@@ -425,7 +424,7 @@ class Profile(tk.Frame):
         m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
         m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
         m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
-        m.insert(tk.END, 'Percentage spent in runs: ' + str(round(pct, 2)) + '%')
+        m.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
         m.insert(tk.END, '')
 
         if '0' in drops.keys():
