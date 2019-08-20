@@ -417,7 +417,7 @@ see the readme.md file available on Github""", justify=tk.LEFT)
         lab2.pack(side=tk.BOTTOM)
 
 
-class Main(Config):
+class Main(Config, tk_utils.MovingFrame):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
@@ -497,13 +497,6 @@ class Main(Config):
         tk.messagebox.showerror('Exception occured', err)
         self.Quit()
 
-    def _delete_selection(self):
-        tabs = self.tabcontrol.tabs()
-        cur_tab = self.tabcontrol.select()
-        idx = tabs.index(cur_tab)
-        if idx == 1:
-            self.tab2.delete()
-
     def _next_tab(self):
         tabs = self.tabcontrol.tabs()
         cur_tab = self.tabcontrol.select()
@@ -521,24 +514,6 @@ class Main(Config):
         if prev_idx < 0:
             prev_idx = len(tabs) - 1
         self.tabcontrol.select(tabs[prev_idx])
-
-    def _start_move(self, event):
-        self.x = event.x
-        self.y = event.y
-
-    def _stop_move(self, event):
-        self.x = None
-        self.y = None
-
-    def _on_motion(self, event):
-        try:
-            deltax = event.x - self.x
-            deltay = event.y - self.y
-        except (TypeError, AttributeError):
-            return
-        x = self.root.winfo_x() + deltax
-        y = self.root.winfo_y() + deltay
-        self.root.geometry("+%s+%s" % (x, y))
 
     @staticmethod
     def load_state_file():
