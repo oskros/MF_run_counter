@@ -373,9 +373,9 @@ class Profile(tk.Frame):
             return
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile? This will permanently delete all records stored for the profile.', coords=(xc, yc))
+        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile? This will permanently delete all records stored for the profile.', title='WARNING', coords=(xc, yc))
         if resp1 is True:
-            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile? Final warning!', b1='Cancel', b2='OK', coords=(xc,yc))
+            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile? Final warning!', b1='Cancel', b2='OK', title='WARNING', coords=(xc,yc))
             if resp2 is False:
                 cache = self.main_frame.load_state_file()
                 cache.pop(chosen, None)
@@ -396,7 +396,7 @@ class Profile(tk.Frame):
             return
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive?', coords=(xc, yc))
+        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive? It will be permanently deleted', title='WARNING', coords=(xc, yc))
         if resp:
             if chosen == 'Active session':
                 self.main_frame.ResetSession()
