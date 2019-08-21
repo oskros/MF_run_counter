@@ -15,7 +15,6 @@ import os
 import webbrowser
 import json
 exec(blocks[1])
-frozen = '' if getattr(sys, 'frozen', False) else 'media\\'
 
 
 class MFRunTimer(tk.Frame):
@@ -342,12 +341,12 @@ class Profile(tk.Frame):
     def _add_new_profile(self):
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.mbox('Add new profile', entry=True, coords=(xc,yc))
+        profile = tk_utils.registration_form((xc,yc))
         if profile:
-            if profile in self.profile_dropdown['values']:
+            if profile['Profile name'] in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return
-            self.main_frame.profiles.append(profile)
+            self.main_frame.profiles.append(profile['Profile name'])
             self.profile_dropdown['values'] = self.main_frame.profiles
 
     def _change_active_profile(self):
@@ -466,12 +465,16 @@ class Profile(tk.Frame):
             laps = []
             session_time = 0
             drops = dict()
-            for key in active.keys():
+            for key in [x for x in active.keys() if x != 'active_state']:
                 session_drops = active[key].get('drops', dict())
-                for d in session_drops.keys():
-                    drops[str(int(d)+len(laps))] = session_drops[d]
+                for d, val in session_drops.items():
+                    drops[str(int(d)+len(laps))] = val
                 laps.extend(active[key].get('laps', []))
                 session_time += active[key].get('session_time', 0)
+            for d, val in self.main_frame.tab2.drops.items():
+                drops[str(int(d) + len(laps))] = val
+            laps.extend(self.main_frame.tab1.laps)
+            session_time += self.main_frame.tab1._sessiontime
         else:
             archive_state = self.main_frame.load_state_file()
             active = archive_state.get(self.main_frame.active_profile, dict())

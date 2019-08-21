@@ -1,9 +1,9 @@
+from init import *
 import os
 import queue
 import sys
 import threading
 import winsound
-frozen = '' if getattr(sys, 'frozen', False) else 'media\\'
 
 
 class ThreadedSound(threading.Thread):

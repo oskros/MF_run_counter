@@ -51,6 +51,65 @@ class MovingFrame:
         self.root.geometry("+%s+%s" % (x, y))
 
 
+class RegistrationForm:
+    def __init__(self, coords):
+        self.new_win = tk.Toplevel()
+        self.new_win.title('Profile registration')
+        self.new_win.wm_attributes('-topmost', 1)
+        if coords is not None:
+            self.new_win.geometry('+%d+%d' % (coords[0], coords[1]))
+        self.new_win.focus_get()
+        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
+
+        l = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
+        l.pack()
+
+        self.a1 = self.make_row('Profile name')
+        self.a2 = self.make_row('Character name')
+        self.a3 = self.make_row('Run type')
+        self.a4 = self.make_row('Active MF %')
+
+        tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
+
+        self.new_win.protocol("WM_DELETE_WINDOW", self.close_mod)
+
+    def b1_action(self, event=None):
+        try:
+            a1 = self.a1.get()
+            a2 = self.a2.get()
+            a3 = self.a3.get()
+            a4 = self.a4.get()
+
+            x = {'Profile name': a1, 'Character name': a2, 'Run type': a3, 'Active MF %': a4}
+        except AttributeError:
+            self.returning = None
+            self.new_win.quit()
+        else:
+            self.returning = x
+            self.new_win.quit()
+
+    def make_row(self, text):
+        frame = tk.Frame(self.new_win)
+        frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+
+        tk.Label(frame, width=22, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
+        out = tk.Entry(frame)
+        out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
+        return out
+
+    def close_mod(self):
+        self.returning = None
+        self.new_win.quit()
+
+
+def registration_form(coords=None):
+    reg_form = RegistrationForm(coords)
+    reg_form.new_win.mainloop()
+
+    reg_form.new_win.destroy()
+    return reg_form.returning
+
+
 class MessageBox(object):
     def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
         root = self.root = tk.Tk()
@@ -180,3 +239,7 @@ def add_circle(parent, pixels, color):
     canvas.create_circle_arc(cpix, cpix, pixels // 2.2, style="arc", outline="white", width=pixels // 12.5,
                              start=270 - 25, end=270 + 25)
     return canvas, circ_id
+
+
+if __name__ == '__main__':
+    print(registration_form())
