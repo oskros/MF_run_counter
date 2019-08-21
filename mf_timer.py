@@ -310,7 +310,7 @@ class Profile(tk.Frame):
         tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
         tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
-        self.extra_data = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict()).get('extra_data', dict())
+        self.extra_data = self.main_frame.load_state_file().get('extra_data', dict())
         extra_info1 = tk.Frame(self, height=12, width=238)
         extra_info1.propagate(False)
         extra_info1.pack(expand=True, fill=tk.X)
@@ -332,7 +332,7 @@ class Profile(tk.Frame):
         sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
         sel_frame.pack()
-        state = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
+        state = self.main_frame.load_state_file()
         self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
         self.selected_archive = tk.StringVar()
         self.selected_archive.set('Active session')
@@ -364,12 +364,12 @@ class Profile(tk.Frame):
                 return
             self.main_frame.profiles.append(profile_name)
             self.profile_dropdown['values'] = self.main_frame.profiles
-
-            cache = self.main_frame.load_state_file()
-            cache[profile_name] = {'extra_data': profile}
-            with open('mf_cache.json', 'w') as fo:
-                json.dump(cache, fo, indent=2)
             self.active_profile.set(profile_name)
+            cache = dict()
+            cache['extra_data'] = profile
+            file = 'Profiles/%s.json' % self.active_profile.get()
+            with open(file, 'w') as fo:
+                json.dump(cache, fo, indent=2)
             self._change_active_profile()
 
     def _change_active_profile(self):
@@ -377,8 +377,7 @@ class Profile(tk.Frame):
         act = self.active_profile.get()
         self.main_frame.active_profile = act
 
-        cache_file = self.main_frame.load_state_file()
-        profile_cache = cache_file.get(self.main_frame.active_profile, dict())
+        profile_cache = self.main_frame.load_state_file()
         self.extra_data = profile_cache.get('extra_data', dict())
         self.mf_amount.set(self.extra_data.get('Active MF %', ''))
         self.run_type.set(self.extra_data.get('Run type', ''))
@@ -387,7 +386,7 @@ class Profile(tk.Frame):
         self.archive_dropdown['values'] = self.available_archive
         self.selected_archive.set('')
 
-        self.main_frame.LoadActiveState(cache_file)
+        self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
 
     def _delete_profile(self):
@@ -403,10 +402,8 @@ class Profile(tk.Frame):
         if resp1 is True:
             resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile? Final warning!', b1='Cancel', b2='OK', title='WARNING', coords=(xc,yc))
             if resp2 is False:
-                cache = self.main_frame.load_state_file()
-                cache.pop(chosen, None)
-                with open('mf_cache.json', 'w') as fo:
-                    json.dump(cache, fo, indent=2)
+                file = 'Profiles/%s.json' % chosen
+                os.remove(file)
                 self.main_frame.profiles.remove(chosen)
                 self.main_frame.active_profile = self.main_frame.profiles[0]
                 self.active_profile.set(self.main_frame.profiles[0])
@@ -430,9 +427,9 @@ class Profile(tk.Frame):
                 self.selected_archive.set('Active session')
                 return
             cache = self.main_frame.load_state_file()
-            if self.main_frame.active_profile in cache:
-                cache[self.main_frame.active_profile].pop(chosen, None)
-            with open('mf_cache.json', 'w') as fo:
+            cache.pop(chosen, None)
+            file = 'Profiles/%s.json' % self.active_profile
+            with open(file, 'w') as fo:
                 json.dump(cache, fo, indent=2)
             self.available_archive.remove(chosen)
             self.archive_dropdown['values'] = self.available_archive
@@ -440,7 +437,7 @@ class Profile(tk.Frame):
             self.update_descriptive_statistics()
 
     def update_descriptive_statistics(self):
-        active = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
+        active = self.main_frame.load_state_file()
         laps = []
         session_time = 0
         dropcount = 0
@@ -487,8 +484,7 @@ class Profile(tk.Frame):
             laps = self.main_frame.tab1.laps
             drops = self.main_frame.tab2.drops
         elif chosen == 'Profile history':
-            archive_state = self.main_frame.load_state_file()
-            active = archive_state.get(self.main_frame.active_profile, dict())
+            active = self.main_frame.load_state_file()
             laps = []
             session_time = 0
             drops = dict()
@@ -503,8 +499,7 @@ class Profile(tk.Frame):
             laps.extend(self.main_frame.tab1.laps)
             session_time += self.main_frame.tab1._sessiontime
         else:
-            archive_state = self.main_frame.load_state_file()
-            active = archive_state.get(self.main_frame.active_profile, dict())
+            active = self.main_frame.load_state_file()
             chosen_archive = active.get(chosen, dict())
             session_time = chosen_archive.get('session_time', 0)
             laps = chosen_archive.get('laps', [])
@@ -586,21 +581,20 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.report_callback_exception = self.report_callback_exception
 
         # Build/load config file
-        start_state = self.load_state_file()
         self.cfg = self.load_config_file()
-        self.always_on_top = eval(self.cfg['FLAGS']['always_on_top'])
-        self.tab_switch_keys_global = eval(self.cfg['FLAGS']['tab_switch_keys_global'])
-        self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
-        self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
+        self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
+        self.tab_switch_keys_global = eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
+        self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
+        self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
         # Check for version
         if self.check_for_new_version:
             github_releases.check_newest_version()
 
         # Load profile info
-        self.active_profile = self.cfg['PROFILE']['active_profile']
-        self.profiles = set(eval(self.cfg['PROFILE']['profiles']))
-        self.profiles.update(set(start_state.keys()))
+        self.active_profile = self.cfg['DEFAULT']['active_profile']
+        self.profiles = {(self.active_profile)}
+        self.profiles.update({x.rstrip('json').rstrip('.') for x in os.listdir('Profiles')})
         self.profiles = sorted(self.profiles)
 
         # Modify root window
@@ -659,7 +653,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Load save state
-        self.LoadActiveState(start_state)
+        self.LoadActiveState(self.load_state_file())
         self._autosave_state()
 
         # Start the program
@@ -677,11 +671,13 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
                 self.tab1.Pause()
         self.img_panel.focus_force()
 
-    @staticmethod
-    def load_state_file():
-        if not os.path.isfile('mf_cache.json'):
+    def load_state_file(self):
+        if not os.path.isdir('Profiles'):
+            os.makedirs('Profiles')
+        file = 'Profiles/%s.json' % self.active_profile
+        if not os.path.isfile(file):
             return dict()
-        with open('mf_cache.json', 'r') as fo:
+        with open(file, 'r') as fo:
             state = json.load(fo)
         return state
 
@@ -710,26 +706,23 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab4.archive_dropdown['values'] = self.tab4.available_archive
 
         state = self.load_state_file()
-        if self.active_profile not in state:
-            state[self.active_profile] = dict()
-        state[self.active_profile]['active_state'] = dict()
-        state[self.active_profile][stamp] = active
-        with open('mf_cache.json', 'w') as fo:
+        state['active_state'] = dict()
+        state[stamp] = active
+        file = 'Profiles/%s.json' % self.active_profile
+        with open(file, 'w') as fo:
             json.dump(state, fo, indent=2)
 
     def LoadActiveState(self, state):
-        profile_state = state.get(self.active_profile, dict())
-        active_state = profile_state.get('active_state', dict())
+        active_state = state.get('active_state', dict())
         self.tab1.load_from_state(active_state)
         self.tab2.load_from_state(active_state)
 
     def SaveActiveState(self):
         cache = self.load_state_file()
-        if self.active_profile not in cache:
-            cache[self.active_profile] = dict()
-        cache[self.active_profile]['active_state'] = self.tab1.SaveState()
-        cache[self.active_profile]['active_state'].update(dict(drops=self.tab2.save_state()))
-        with open('mf_cache.json', 'w') as fo:
+        cache['active_state'] = self.tab1.SaveState()
+        cache['active_state'].update(dict(drops=self.tab2.save_state()))
+        file = 'Profiles/%s.json' % self.active_profile
+        with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)
         self.tab4.update_descriptive_statistics()
 

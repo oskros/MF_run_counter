@@ -12,16 +12,13 @@ class Config:
         exec(blocks[3])
         config['DEFAULT']['window_start_position'] = str((100, 100))
         config['DEFAULT']['run_timer_delay_seconds'] = '0.0'
+        config['DEFAULT']['active_profile'] = 'DEFAULT_PROFILE'
 
-        config.add_section('PROFILE')
-        config['PROFILE']['active_profile'] = 'DEFAULT_PROFILE'
-        config['PROFILE']['profiles'] = str(['DEFAULT_PROFILE'])
-
-        config.add_section('FLAGS')
-        config['FLAGS']['always_on_top'] = '1'
-        config['FLAGS']['tab_switch_keys_global'] = '1'
-        config['FLAGS']['check_for_new_version'] = '1'
-        config['FLAGS']['enable_sound_effects'] = '0'
+        config.add_section('OPTIONS')
+        config['OPTIONS']['always_on_top'] = '1'
+        config['OPTIONS']['tab_switch_keys_global'] = '1'
+        config['OPTIONS']['check_for_new_version'] = '1'
+        config['OPTIONS']['enable_sound_effects'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -75,16 +72,13 @@ class Config:
         y = parent.root.winfo_y()
         cfg['DEFAULT']['window_start_position'] = str((x, y))
         cfg['DEFAULT']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
-
-        # Update profiles
-        cfg['PROFILE']['active_profile'] = str(parent.active_profile)
-        cfg['PROFILE']['profiles'] = str(parent.profiles)
+        cfg['DEFAULT']['active_profile'] = str(parent.active_profile)
 
         # Update flags
-        cfg['FLAGS']['always_on_top'] = str(parent.always_on_top)
-        cfg['FLAGS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
-        cfg['FLAGS']['check_for_new_version'] = str(parent.check_for_new_version)
-        cfg['FLAGS']['enable_sound_effects'] = str(parent.enable_sound_effects)
+        cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)
+        cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
+        cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
+        cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

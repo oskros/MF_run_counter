@@ -61,7 +61,7 @@ class General(tk.Frame):
         off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, command=lambda: self.toggle_button(flag_attr))
         on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3, command=lambda: self.toggle_button(flag_attr))
 
-        if eval(self.main_frame.cfg['FLAGS'][flag_attr]):
+        if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
         else:
             off_button.invoke()
