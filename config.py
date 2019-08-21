@@ -19,7 +19,7 @@ class Config:
 
         config.add_section('FLAGS')
         config['FLAGS']['always_on_top'] = '1'
-        config['FLAGS']['tab_keys_global'] = '1'
+        config['FLAGS']['tab_switch_keys_global'] = '1'
         config['FLAGS']['check_for_new_version'] = '1'
         config['FLAGS']['enable_sound_effects'] = '0'
 
@@ -82,7 +82,7 @@ class Config:
 
         # Update flags
         cfg['FLAGS']['always_on_top'] = str(parent.always_on_top)
-        cfg['FLAGS']['tab_keys_global'] = str(parent.tab_keys_global)
+        cfg['FLAGS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['FLAGS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['FLAGS']['enable_sound_effects'] = str(parent.enable_sound_effects)
 

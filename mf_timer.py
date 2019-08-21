@@ -589,7 +589,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         start_state = self.load_state_file()
         self.cfg = self.load_config_file()
         self.always_on_top = eval(self.cfg['FLAGS']['always_on_top'])
-        self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
+        self.tab_switch_keys_global = eval(self.cfg['FLAGS']['tab_switch_keys_global'])
         self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
@@ -651,7 +651,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.img_panel.bind("<B1-Motion>", self._on_motion)
 
         # Register binds for changing tabs
-        if self.tab_keys_global:
+        if self.tab_switch_keys_global:
             self.tab3.tab1.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
             self.tab3.tab1.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
         else:

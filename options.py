@@ -21,12 +21,12 @@ class General(tk.Frame):
         tk.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self.add_flag(flag_name='Always on top')
-        self.add_flag(flag_name='Tab keys global')
+        self.add_flag(flag_name='Tab switch keys global')
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
         self.add_delay_option()
 
-        tk.Label(self, text="Toggling 'Tab keys global' requires a\n restart of the application", pady=10).pack()
+        tk.Label(self, text="Toggling 'Tab switch keys global' requires\na restart of the application", pady=10).pack()
 
     def change_delay(self):
         new = self.run_delay.get()
