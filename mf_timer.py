@@ -143,7 +143,7 @@ class MFRunTimer(tk.Frame):
         if not self._running:
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
-            delay = eval(self.main_frame.cfg.get('DEFAULT', 'run_timer_delay_seconds'))
+            delay = self.main_frame.run_timer_delay_seconds
             if delay > 0:
                 self.after(int(delay*1000), update_start)
             else:
@@ -562,6 +562,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab_keys_global = eval(self.cfg['FLAGS']['tab_keys_global'])
         self.check_for_new_version = eval(self.cfg['FLAGS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['FLAGS']['enable_sound_effects'])
+        self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
         # Check for version
         if self.check_for_new_version:
             github_releases.check_newest_version()

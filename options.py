@@ -24,8 +24,28 @@ class General(tk.Frame):
         self.add_flag(flag_name='Tab keys global')
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
+        self.add_delay_option()
 
         tk.Label(self, text="Toggling 'Tab keys global' requires a\n restart of the application", pady=10).pack()
+
+    def change_delay(self):
+        new = self.run_delay.get()
+        if new in ['', '-'] or float(new) < 0:
+            return
+        self.main_frame.run_timer_delay_seconds = float(self.run_delay.get())
+
+    def add_delay_option(self):
+        lf = tk.LabelFrame(self, height=30, width=179)
+        lf.propagate(False)
+        lf.pack(expand=False, fill=tk.X)
+
+        lab = tk.Label(lf, text='Start run delay (seconds)')
+        lab.pack(side=tk.LEFT)
+
+        self.run_delay = tk.StringVar(lf)
+        self.run_delay.set(eval(self.main_frame.cfg['DEFAULT']['run_timer_delay_seconds']))
+        tk.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
+        self.run_delay.trace_add('write', lambda name, index, mode: self.change_delay())
 
     def add_flag(self, flag_name):
         lf = tk.LabelFrame(self, height=30, width=179)

@@ -74,6 +74,7 @@ class Config:
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
         cfg['DEFAULT']['window_start_position'] = str((x, y))
+        cfg['DEFAULT']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
 
         # Update profiles
         cfg['PROFILE']['active_profile'] = str(parent.active_profile)
