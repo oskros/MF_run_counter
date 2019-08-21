@@ -1,6 +1,7 @@
 from init import *
 import tkinter as tk
 import webbrowser
+allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 
 def build_time_str(elap):
@@ -64,14 +65,25 @@ class RegistrationForm:
         l = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
         l.pack()
 
-        self.a1 = self.make_row('Profile name')
-        self.a2 = self.make_row('Character name')
-        self.a3 = self.make_row('Run type')
-        self.a4 = self.make_row('Active MF %')
+        self.a1, self.v1 = self.make_row('Profile name')
+        self.a2, self.v2 = self.make_row('Character name')
+        self.a3, self.v3 = self.make_row('Run type')
+        self.a4, self.v4 = self.make_row('Active MF %')
+        self.v1.trace_add('write', lambda *args: self.character_limit())
 
-        tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
+        but = tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2)
+        but.pack(fill=tk.X, expand=tk.YES)
+        self.new_win.bind('<KeyPress-Return>', func=self.b1_action)
+        self.new_win.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
 
         self.new_win.protocol("WM_DELETE_WINDOW", self.close_mod)
+        self.a1.focus_set()
+
+    def character_limit(self):
+        get = self.v1.get()
+        for char in get:
+            if char not in allowed_chars:
+                self.v1.set(get.replace(char, ''))
 
     def b1_action(self, event=None):
         try:
@@ -93,9 +105,10 @@ class RegistrationForm:
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
         tk.Label(frame, width=22, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
-        out = tk.Entry(frame)
+        var = tk.StringVar()
+        out = tk.Entry(frame, textvariable=var)
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
-        return out
+        return out, var
 
     def close_mod(self):
         self.returning = None
@@ -165,7 +178,7 @@ class MessageBox(object):
 
         # the enter button will trigger button 1, while escape will trigger button 2
         root.bind('<KeyPress-Return>', func=self.b1_action)
-        root.bind('<KeyPress-Escape>', func=self.b2_action)
+        root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
 
         # roughly center the box on screen
         # for accuracy see: https://stackoverflow.com/a/10018670/1217270
