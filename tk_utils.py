@@ -54,12 +54,11 @@ class MovingFrame:
 
 class RegistrationForm:
     def __init__(self, coords):
-        self.new_win = tk.Toplevel()
+        self.new_win = tk.Tk()
         self.new_win.title('Profile registration')
         self.new_win.wm_attributes('-topmost', 1)
         if coords is not None:
             self.new_win.geometry('+%d+%d' % (coords[0], coords[1]))
-        self.new_win.focus_get()
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
 
         l = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
@@ -117,6 +116,7 @@ class RegistrationForm:
 
 def registration_form(coords=None):
     reg_form = RegistrationForm(coords)
+    reg_form.new_win.focus_force()
     reg_form.new_win.mainloop()
 
     reg_form.new_win.destroy()
