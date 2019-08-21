@@ -28,6 +28,9 @@ If the user desires, the current run timer can be reset using the "Reset lap" bu
 You add a drop to the current run (or previous run if no run is currently active) by pressing the "Add drop" button or using the assigned hotkey (default 'alt+A'). It will then be registered in the "Drops" tab under the run where it was found.
 In case a drop was added by mistake, it can be deleted by highlighting it and clicking the "Delete selection" button under the "Drops" tab, or by pressing the Delete button on your keyboard while the drop is highlighted (this hotkey is not system wide).
 
+### Profiles
+In the profile tab it is possible to create a separate run profile for each character and run type (eg. Chaos, Cows, Meph, etc.). In the profile tab you can view each saved session in the archive browser, where it is also possible to save the results to a .txt file or copy to clipboard. Profile data is saved as a .json under the "Profiles" folder that is created the first time you run the program.
+
 ### Session timer
 The session timer will start as soon as you open the program and run as long as the program is open (an not put on pause).
 
@@ -35,7 +38,7 @@ The session timer will start as soon as you open the program and run as long as 
 In case you need to take a break from the computer, the counter can be paused by using the assigned hotkey (default 'control+space'). This will pause both the run timer (if a run is active) and the session timer.
 
 ### Saving results
-The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Save & reset" button to reset the session and save the session results to a .txt file with name equal to the current time stamp (YYYY-MM-DD HH-MM-SS) - Example of the .txt file is included below.
+The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Archive & reset" button to reset the session and archive the session results to the profile. In the archive browser, it is possible to save a session or the full profile history to a .txt file or copy to clipboard - Example of the .txt file is included below.
                   
       Total session time: 00:04:30.5
       Total run time:     00:04:17.3

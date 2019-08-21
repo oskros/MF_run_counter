@@ -128,6 +128,10 @@ class MFRunTimer(tk.Frame):
         self._session_start = time.time() - self._sessiontime
         for lap in state.get('laps', []):
             self.Lap(lap, force=True)
+        self._set_laps(is_running=False)
+        self._set_fastest()
+        self._set_average()
+        self._set_time(self._sessiontime, for_session=True)
 
     def Start(self, play_sound=True):
         def update_start():
@@ -254,7 +258,7 @@ class Drops(tk.Frame):
 
     def AddDrop(self):
         drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
-        if drop is False:
+        if not drop:
             return
         run_no = len(self.tab1.laps)
         if self.tab1._running:
@@ -441,12 +445,16 @@ class Profile(tk.Frame):
         laps = []
         session_time = 0
         dropcount = 0
-        for key in active.keys():
+        for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
             laps.extend(active[key].get('laps', []))
             session_time += active[key].get('session_time', 0)
             drops = active[key].get('drops', dict())
-            for drop in drops.keys():
-                dropcount += len(drop)
+            for drop, val in drops.items():
+                dropcount += len(val)
+        laps.extend(self.main_frame.tab1.laps)
+        session_time += self.main_frame.tab1._sessiontime
+        for drop, val in self.main_frame.tab2.drops.items():
+            dropcount += len(val)
         avg_lap = sum(laps) / len(laps) if laps else 0
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
@@ -594,6 +602,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Load profile info
         self.active_profile = self.cfg['DEFAULT']['active_profile']
         self.profiles = {(self.active_profile)}
+        active_state = self.load_state_file()
         self.profiles.update({x.rstrip('json').rstrip('.') for x in os.listdir('Profiles')})
         self.profiles = sorted(self.profiles)
 
@@ -653,7 +662,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Load save state
-        self.LoadActiveState(self.load_state_file())
+        self.LoadActiveState(active_state)
         self._autosave_state()
 
         # Start the program
@@ -669,6 +678,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         if x.endswith('profile'):
             if not self.tab1._paused:
                 self.tab1.Pause()
+            self.tab4.update_descriptive_statistics()
         self.img_panel.focus_force()
 
     def load_state_file(self):
