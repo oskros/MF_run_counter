@@ -216,10 +216,11 @@ class MFRunTimer(tk.Frame):
             self._set_time(self._laptime, for_session=False)
 
     def ResetSession(self):
-        if self._paused:
-            self.Pause()
+        if self._running:
+            self.Stop()
         self._start = time.time()
         self._laptime = 0.0
+        self._sessiontime = 0.0
         self._session_start = time.time()
         self.laps = []
         self.m.delete(0, tk.END)
@@ -307,8 +308,8 @@ class Profile(tk.Frame):
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        new_profile = tk.Button(profile_frame, text='New profile..', command=self._add_new_profile)
-        new_profile.pack(side=tk.LEFT)
+        tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
+        tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
         sel_line = tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT)
         sel_line.pack(anchor=tk.W)
@@ -317,15 +318,16 @@ class Profile(tk.Frame):
         sel_frame.propagate(False)
         sel_frame.pack()
         state = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
-        self.available_archive = [x for x in state.keys() if x != 'active_state']
+        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x != 'active_state']
         self.selected_archive = tk.StringVar()
+        self.selected_archive.set('Active session')
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.pack(side=tk.LEFT)
 
         open_archive = tk.Button(sel_frame, text='Open', command=self.open_archive_browser)
         open_archive.pack(side=tk.LEFT)
 
-        delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived)
+        delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived_session)
         delete_archive.pack(side=tk.LEFT)
 
         stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
@@ -337,22 +339,78 @@ class Profile(tk.Frame):
         self.descr.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         self.update_descriptive_statistics()
 
-    def delete_archived(self):
+    def _add_new_profile(self):
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        profile = tk_utils.mbox('Add new profile', entry=True, coords=(xc,yc))
+        if profile:
+            if profile in self.profile_dropdown['values']:
+                messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
+                return
+            self.main_frame.profiles.append(profile)
+            self.profile_dropdown['values'] = self.main_frame.profiles
+
+    def _change_active_profile(self):
+        self.main_frame.SaveActiveState()
+        act = self.active_profile.get()
+        self.main_frame.active_profile = act
+
+        cache_file = self.main_frame.load_state_file()
+        profile_cache = cache_file.get(self.main_frame.active_profile, dict())
+        self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x != 'active_state']
+        self.archive_dropdown['values'] = self.available_archive
+        self.selected_archive.set('')
+
+        self.main_frame.LoadActiveState(cache_file)
+        self.update_descriptive_statistics()
+
+    def _delete_profile(self):
+        chosen = self.profile_dropdown.get()
+        if chosen == '':
+            return
+        if len(self.profile_dropdown['values']) <= 1:
+            tk.messagebox.showerror('Error', 'You need to have at least one profile, create a new profile before deleting this one.')
+            return
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile? This will permanently delete all records stored for the profile.', coords=(xc, yc))
+        if resp1 is True:
+            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile? Final warning!', b1='Cancel', b2='OK', coords=(xc,yc))
+            if resp2 is False:
+                cache = self.main_frame.load_state_file()
+                cache.pop(chosen, None)
+                with open('mf_cache.json', 'w') as fo:
+                    json.dump(cache, fo, indent=2)
+                self.main_frame.profiles.remove(chosen)
+                self.main_frame.active_profile = self.main_frame.profiles[0]
+                self.active_profile.set(self.main_frame.profiles[0])
+                self.profile_dropdown['values'] = self.main_frame.profiles
+                self._change_active_profile()
+
+    def delete_archived_session(self):
         chosen = self.archive_dropdown.get()
         if chosen == '':
+            return
+        if chosen == 'Profile history':
+            tk.messagebox.showerror('Error', 'You cannot delete profile history from here. Please delete all sessions manually, or delete the profile instead')
             return
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
         resp = tk_utils.mbox(msg='Do you really want to delete this session from archive?', coords=(xc, yc))
         if resp:
+            if chosen == 'Active session':
+                self.main_frame.ResetSession()
+                self.main_frame.SaveActiveState()
+                self.selected_archive.set('Active session')
+                return
             cache = self.main_frame.load_state_file()
             if self.main_frame.active_profile in cache:
                 cache[self.main_frame.active_profile].pop(chosen, None)
             with open('mf_cache.json', 'w') as fo:
-                json.dump(cache, fo, indent=1)
+                json.dump(cache, fo, indent=2)
             self.available_archive.remove(chosen)
             self.archive_dropdown['values'] = self.available_archive
-            self.selected_archive.set('')
+            self.selected_archive.set('Active session')
             self.update_descriptive_statistics()
 
     def update_descriptive_statistics(self):
@@ -398,12 +456,29 @@ class Profile(tk.Frame):
         tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
         tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
 
-        archive_state = self.main_frame.load_state_file()
-        active = archive_state.get(self.main_frame.active_profile, dict())
-        chosen_archive = active.get(chosen, dict())
-        session_time = chosen_archive.get('session_time', 0)
-        laps = chosen_archive.get('laps', [])
-        drops = chosen_archive.get('drops', dict())
+        if chosen == 'Active session':
+            session_time = self.main_frame.tab1._sessiontime
+            laps = self.main_frame.tab1.laps
+            drops = self.main_frame.tab2.drops
+        elif chosen == 'Profile history':
+            archive_state = self.main_frame.load_state_file()
+            active = archive_state.get(self.main_frame.active_profile, dict())
+            laps = []
+            session_time = 0
+            drops = dict()
+            for key in active.keys():
+                session_drops = active[key].get('drops', dict())
+                for d in session_drops.keys():
+                    drops[str(int(d)+len(laps))] = session_drops[d]
+                laps.extend(active[key].get('laps', []))
+                session_time += active[key].get('session_time', 0)
+        else:
+            archive_state = self.main_frame.load_state_file()
+            active = archive_state.get(self.main_frame.active_profile, dict())
+            chosen_archive = active.get(chosen, dict())
+            session_time = chosen_archive.get('session_time', 0)
+            laps = chosen_archive.get('laps', [])
+            drops = chosen_archive.get('drops', dict())
         avg_lap = sum(laps) / len(laps) if laps else 0
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
@@ -449,31 +524,6 @@ class Profile(tk.Frame):
             return
         f.write(string)
         f.close()
-
-    def _change_active_profile(self):
-        self.main_frame.SaveActiveState()
-        act = self.active_profile.get()
-        self.main_frame.active_profile = act
-
-        cache_file = self.main_frame.load_state_file()
-        profile_cache = cache_file.get(self.main_frame.active_profile, dict())
-        self.available_archive = [x for x in profile_cache.keys() if x != 'active_state']
-        self.archive_dropdown['values'] = self.available_archive
-        self.selected_archive.set('')
-
-        self.main_frame.LoadActiveState(cache_file)
-        self.update_descriptive_statistics()
-
-    def _add_new_profile(self):
-        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.mbox('Add new profile', entry=True, coords=(xc,yc))
-        if profile:
-            if profile in self.profile_dropdown['values']:
-                messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
-                return
-            self.main_frame.profiles.append(profile)
-            self.profile_dropdown['values'] = self.main_frame.profiles
 
 
 class About(tk.Frame):
@@ -636,7 +686,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         state[self.active_profile]['active_state'] = dict()
         state[self.active_profile][stamp] = active
         with open('mf_cache.json', 'w') as fo:
-            json.dump(state, fo, indent=1)
+            json.dump(state, fo, indent=2)
 
     def LoadActiveState(self, state):
         profile_state = state.get(self.active_profile, dict())
@@ -651,7 +701,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         cache[self.active_profile]['active_state'] = self.tab1.SaveState()
         cache[self.active_profile]['active_state'].update(dict(drops=self.tab2.save_state()))
         with open('mf_cache.json', 'w') as fo:
-            json.dump(cache, fo, indent=1)
+            json.dump(cache, fo, indent=2)
         self.tab4.update_descriptive_statistics()
 
     def ResetSession(self):
