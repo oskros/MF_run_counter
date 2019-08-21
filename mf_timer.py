@@ -432,7 +432,7 @@ class Profile(tk.Frame):
                 return
             cache = self.main_frame.load_state_file()
             cache.pop(chosen, None)
-            file = 'Profiles/%s.json' % self.active_profile
+            file = 'Profiles/%s.json' % self.active_profile.get()
             with open(file, 'w') as fo:
                 json.dump(cache, fo, indent=2)
             self.available_archive.remove(chosen)
