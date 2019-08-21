@@ -311,9 +311,11 @@ class Profile(tk.Frame):
         tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
         self.extra_data = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict()).get('extra_data', dict())
-        extra_info1 = tk.Frame(self)
+        extra_info1 = tk.Frame(self, height=12, width=238)
+        extra_info1.propagate(False)
         extra_info1.pack(expand=True, fill=tk.X)
-        extra_info2 = tk.Frame(self)
+        extra_info2 = tk.Frame(self, height=12, width=238)
+        extra_info2.propagate(False)
         extra_info2.pack(expand=True, fill=tk.X)
         self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
         self.run_type = tk.StringVar(extra_info1, value=self.extra_data.get('Run type', ''))
@@ -325,7 +327,7 @@ class Profile(tk.Frame):
         tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
         tk.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
 
-        tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W)
+        tk.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
 
         sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
@@ -343,13 +345,12 @@ class Profile(tk.Frame):
         delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived_session)
         delete_archive.pack(side=tk.LEFT)
 
-        stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
-        stat_line.pack(anchor=tk.W)
+        tk.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
 
         self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none')
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.config(font=('courier', 8))
-        self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1, pady=5)
+        self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
         self.update_descriptive_statistics()
 
     def _add_new_profile(self):
@@ -357,16 +358,19 @@ class Profile(tk.Frame):
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
         profile = tk_utils.registration_form((xc,yc))
         if profile:
-            if profile['Profile name'] in self.profile_dropdown['values']:
+            profile_name = profile.pop('Profile name')
+            if profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return
-            self.main_frame.profiles.append(profile['Profile name'])
+            self.main_frame.profiles.append(profile_name)
             self.profile_dropdown['values'] = self.main_frame.profiles
 
             cache = self.main_frame.load_state_file()
-            cache[profile.pop('Profile name')]['extra_data'] = profile
+            cache[profile_name] = {'extra_data': profile}
             with open('mf_cache.json', 'w') as fo:
                 json.dump(cache, fo, indent=2)
+            self.active_profile.set(profile_name)
+            self._change_active_profile()
 
     def _change_active_profile(self):
         self.main_frame.SaveActiveState()
