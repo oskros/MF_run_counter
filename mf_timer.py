@@ -310,19 +310,20 @@ class Profile(tk.Frame):
         tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
         tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
+        self.extra_data = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict()).get('extra_data', dict())
         extra_info1 = tk.Frame(self)
         extra_info1.pack(expand=True, fill=tk.X)
         extra_info2 = tk.Frame(self)
         extra_info2.pack(expand=True, fill=tk.X)
-        mf_amount = tk.StringVar(extra_info1, value='300')
-        run_type = tk.StringVar(extra_info1, value='Mephisto')
-        char_name = tk.StringVar(extra_info1, value='xxx_Cool_Guy_xxx')
+        self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
+        self.run_type = tk.StringVar(extra_info1, value=self.extra_data.get('Run type', ''))
+        self.char_name = tk.StringVar(extra_info1, value=self.extra_data.get('Character name', ''))
         tk.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tk.Label(extra_info1, textvariable=run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tk.Label(extra_info1, textvariable=mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
+        tk.Label(extra_info1, textvariable=self.run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info1, textvariable=self.mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
         tk.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT).pack(side=tk.RIGHT)
         tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tk.Label(extra_info2, textvariable=char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
 
         tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W)
 
@@ -342,8 +343,8 @@ class Profile(tk.Frame):
         delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived_session)
         delete_archive.pack(side=tk.LEFT)
 
-        # stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
-        # stat_line.pack(anchor=tk.W)
+        stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
+        stat_line.pack(anchor=tk.W)
 
         self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none')
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
@@ -374,6 +375,10 @@ class Profile(tk.Frame):
 
         cache_file = self.main_frame.load_state_file()
         profile_cache = cache_file.get(self.main_frame.active_profile, dict())
+        self.extra_data = profile_cache.get('extra_data', dict())
+        self.mf_amount.set(self.extra_data.get('Active MF %', ''))
+        self.run_type.set(self.extra_data.get('Run type', ''))
+        self.char_name.set(self.extra_data.get('Character name', ''))
         self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
         self.archive_dropdown['values'] = self.available_archive
         self.selected_archive.set('')
