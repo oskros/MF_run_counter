@@ -310,14 +310,27 @@ class Profile(tk.Frame):
         tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
         tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
-        sel_line = tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT)
-        sel_line.pack(anchor=tk.W)
+        extra_info1 = tk.Frame(self)
+        extra_info1.pack(expand=True, fill=tk.X)
+        extra_info2 = tk.Frame(self)
+        extra_info2.pack(expand=True, fill=tk.X)
+        mf_amount = tk.StringVar(extra_info1, value='300')
+        run_type = tk.StringVar(extra_info1, value='Mephisto')
+        char_name = tk.StringVar(extra_info1, value='xxx_Cool_Guy_xxx')
+        tk.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info1, textvariable=run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info1, textvariable=mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
+        tk.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT).pack(side=tk.RIGHT)
+        tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info2, textvariable=char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+
+        tk.Label(self, text='\nSelect an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W)
 
         sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
         sel_frame.pack()
         state = self.main_frame.load_state_file().get(self.main_frame.active_profile, dict())
-        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x != 'active_state']
+        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
         self.selected_archive = tk.StringVar()
         self.selected_archive.set('Active session')
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
@@ -329,13 +342,13 @@ class Profile(tk.Frame):
         delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived_session)
         delete_archive.pack(side=tk.LEFT)
 
-        stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
-        stat_line.pack(anchor=tk.W)
+        # stat_line = tk.Label(self, text='\nDescriptive statistics for current profile', justify=tk.LEFT)
+        # stat_line.pack(anchor=tk.W)
 
-        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=5, activestyle='none')
+        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none')
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.config(font=('courier', 8))
-        self.descr.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+        self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1, pady=5)
         self.update_descriptive_statistics()
 
     def _add_new_profile(self):
@@ -349,6 +362,11 @@ class Profile(tk.Frame):
             self.main_frame.profiles.append(profile['Profile name'])
             self.profile_dropdown['values'] = self.main_frame.profiles
 
+            cache = self.main_frame.load_state_file()
+            cache[profile.pop('Profile name')]['extra_data'] = profile
+            with open('mf_cache.json', 'w') as fo:
+                json.dump(cache, fo, indent=2)
+
     def _change_active_profile(self):
         self.main_frame.SaveActiveState()
         act = self.active_profile.get()
@@ -356,7 +374,7 @@ class Profile(tk.Frame):
 
         cache_file = self.main_frame.load_state_file()
         profile_cache = cache_file.get(self.main_frame.active_profile, dict())
-        self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x != 'active_state']
+        self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
         self.archive_dropdown['values'] = self.available_archive
         self.selected_archive.set('')
 
@@ -465,7 +483,7 @@ class Profile(tk.Frame):
             laps = []
             session_time = 0
             drops = dict()
-            for key in [x for x in active.keys() if x != 'active_state']:
+            for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
                 session_drops = active[key].get('drops', dict())
                 for d, val in session_drops.items():
                     drops[str(int(d)+len(laps))] = val
@@ -574,12 +592,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.active_profile = self.cfg['PROFILE']['active_profile']
         self.profiles = set(eval(self.cfg['PROFILE']['profiles']))
         self.profiles.update(set(start_state.keys()))
-        self.profiles = list(self.profiles)
+        self.profiles = sorted(self.profiles)
 
         # Modify root window
         self.root.resizable(False, False)
-        # self.root.attributes('-type', 'dock')
-        # self.root.overrideredirect(True)
         self.root.config(borderwidth=3, relief='raised', height=405, width=240)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
