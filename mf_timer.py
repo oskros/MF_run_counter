@@ -585,7 +585,7 @@ class Profile(tk.Frame):
         if not f:
             return
         with open(f, newline='', mode='w') as fo:
-            writer = csv.writer(fo, dialect='excel', delimiter=',')
+            writer = csv.writer(fo, delimiter=',')
             writer.writerows(string)
 
 
