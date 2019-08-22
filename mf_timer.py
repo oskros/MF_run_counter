@@ -528,6 +528,10 @@ class Profile(tk.Frame):
         vscroll.pack(side=tk.LEFT, fill=tk.Y)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
+        m.insert(tk.END, 'Character name: ' + self.extra_data.get('Character name', ''))
+        m.insert(tk.END, 'Run type: ' + self.extra_data.get('Run type', ''))
+        m.insert(tk.END, 'Active MF %: ' + self.extra_data.get('Active MF %', ''))
+        m.insert(tk.END, '')
         m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
         m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
         m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
