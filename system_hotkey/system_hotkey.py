@@ -1,5 +1,4 @@
 import os
-import sys
 import _thread as thread
 import queue
 import time

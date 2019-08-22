@@ -3,6 +3,9 @@ from options import Options
 from config import Config
 import github_releases
 import tk_utils
+import win32con
+import win32gui
+import win32api
 import traceback
 import tkinter as tk
 from tkinter import ttk
@@ -611,11 +614,12 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.profiles = sorted(self.profiles)
 
         # Modify root window
+        self.root.title('MF run counter')
+        self.clickthrough = False
         self.root.resizable(False, False)
         self.root.config(borderwidth=3, relief='raised', height=405, width=240)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
-        self.root.title('MF run counter')
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
@@ -671,6 +675,18 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Start the program
         self.root.mainloop()
+
+    def set_clickthrough(self):
+        hwnd = win32gui.FindWindow(None, "MF run counter")
+        if not self.clickthrough:
+            lExStyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+            lExStyle |= win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
+            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, lExStyle)
+            win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)
+            self.clickthrough = True
+        else:
+            win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
+            self.clickthrough = False
 
     def report_callback_exception(self, *args):
         err = traceback.format_exception(*args)

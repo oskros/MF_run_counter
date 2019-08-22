@@ -31,6 +31,7 @@ class Config:
         config['KEYBINDS']['pause_key'] = str(['Control', 'Space'])
         config['KEYBINDS']['drop_key'] = str(['Alt', 'A'])
         config['KEYBINDS']['reset_key'] = str(['Alt', 'R'])
+        config['KEYBINDS']['make_unclickable'] = str(['Alt', 'NO_BIND'])
 
         return config
 
@@ -90,5 +91,6 @@ class Config:
         cfg['KEYBINDS']['pause_key'] = str(parent.tab3.tab1._pause)
         cfg['KEYBINDS']['drop_key'] = str(parent.tab3.tab1._add_drop)
         cfg['KEYBINDS']['reset_key'] = str(parent.tab3.tab1._reset_lap)
+        cfg['KEYBINDS']['make_unclickable'] = str(parent.tab3.tab1._make_unclickable)
 
         parent.build_config_file(cfg)

@@ -103,6 +103,7 @@ class Hotkeys(tk.Frame):
         self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.Pause)
         self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.AddDrop)
         self.add_hotkey(label_name='Reset lap', keys=eval(main_frame.cfg['KEYBINDS']['reset_key']), func=timer_frame.ResetLap)
+        self.add_hotkey(label_name='Make unclickable', keys=eval(main_frame.cfg['KEYBINDS']['make_unclickable']), func=main_frame.set_clickthrough)
 
     def add_hotkey(self, label_name, keys, func):
         if keys[0].lower() not in map(lambda x: x.lower(), self.modifier_options) or keys[1].lower() not in map(lambda x: x.lower(), self.character_options):
