@@ -523,7 +523,7 @@ class Profile(tk.Frame):
         hscroll.config(command=m.xview)
         vscroll.config(command=m.yview)
 
-        output = []
+        output = list()
         output.append(['Character name: ', self.extra_data.get('Character name', '')])
         output.append(['Run type: ', self.extra_data.get('Run type', '')])
         output.append(['Active MF %: ', self.extra_data.get('Active MF %', '')])
