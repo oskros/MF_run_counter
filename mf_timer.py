@@ -673,6 +673,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.LoadActiveState(active_state)
         self._autosave_state()
 
+        # This works perfectly... Need to fix system hotkey threads :(
+        # self.root.bind('<Control-Shift-A>', lambda event: self.set_clickthrough())
+
         # Start the program
         self.root.mainloop()
 
