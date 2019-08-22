@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+import queue
 import sound
 import sys
 import time
@@ -595,6 +596,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root = tk.Tk()
         self.root.report_callback_exception = self.report_callback_exception
 
+        self.queue = queue.Queue(maxsize=1)
+        self.process_queue()
+
         # Build/load config file
         self.cfg = self.load_config_file()
         self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
@@ -673,11 +677,15 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.LoadActiveState(active_state)
         self._autosave_state()
 
-        # This works perfectly... Need to fix system hotkey threads :(
-        # self.root.bind('<Control-Shift-A>', lambda event: self.set_clickthrough())
-
         # Start the program
         self.root.mainloop()
+
+    def process_queue(self):
+        try:
+            self.queue.get(False)()
+            self.root.after(50, lambda: self.process_queue())
+        except queue.Empty:
+            self.root.after(50, lambda: self.process_queue())
 
     def set_clickthrough(self):
         hwnd = win32gui.FindWindow(None, "MF run counter")
