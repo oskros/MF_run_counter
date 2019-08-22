@@ -18,6 +18,7 @@ import time
 import os
 import webbrowser
 import json
+import csv
 exec(blocks[1])
 
 
@@ -483,13 +484,7 @@ class Profile(tk.Frame):
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
 
-        l = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
-        l.pack()
-
-        fr = tk.Frame(new_win)
-        fr.pack(side=tk.BOTTOM)
-        tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        header = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
 
         if chosen == 'Active session':
             session_time = self.main_frame.tab1._sessiontime
@@ -520,38 +515,56 @@ class Profile(tk.Frame):
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
         sbfr = tk.Frame(new_win)
-        sbfr.pack(fill=tk.BOTH, expand=1)
         vscroll = tk.Scrollbar(sbfr, orient=tk.VERTICAL)
         hscroll = tk.Scrollbar(new_win, orient=tk.HORIZONTAL)
         m = tk.Listbox(sbfr, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none')
         m.bind('<FocusOut>', lambda e: m.selection_clear(0, tk.END))
         m.config(font=('courier', 10))
-        m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         hscroll.config(command=m.xview)
         vscroll.config(command=m.yview)
-        vscroll.pack(side=tk.LEFT, fill=tk.Y)
-        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
-        m.insert(tk.END, 'Character name: ' + self.extra_data.get('Character name', ''))
-        m.insert(tk.END, 'Run type: ' + self.extra_data.get('Run type', ''))
-        m.insert(tk.END, 'Active MF %: ' + self.extra_data.get('Active MF %', ''))
-        m.insert(tk.END, '')
-        m.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
-        m.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
-        m.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
-        m.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
-        m.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
-        m.insert(tk.END, '')
+        output = []
+        output.append(['Character name: ', self.extra_data.get('Character name', '')])
+        output.append(['Run type: ', self.extra_data.get('Run type', '')])
+        output.append(['Active MF %: ', self.extra_data.get('Active MF %', '')])
+        output.append([''])
+        output.append(['Total session time:   ', tk_utils.build_time_str(session_time)])
+        output.append(['Total run time:       ', tk_utils.build_time_str(sum(laps))])
+        output.append(['Average run time:     ', tk_utils.build_time_str(avg_lap)])
+        output.append(['Fastest run time:     ', tk_utils.build_time_str(min(laps, default=0))])
+        output.append(['Time spent in runs: ', str(round(pct, 2)) + '%'])
+        output.append([''])
 
         if '0' in drops.keys():
-            m.insert(tk.END, 'Run 0: ' + ', '.join(drops['0']))
+            output.append(['Run 0: ', *drops['0']])
         for n, lap in enumerate(laps, 1):
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
-            run_str = 'Run ' + str_n + ': ' + tk_utils.build_time_str(lap)
-            droplst = drops.get(str(n), '')
+            droplst = drops.get(str(n), [])
+            tmp = ['Run ' + str_n + ': ', tk_utils.build_time_str(lap)]
             if droplst:
-                run_str += ' --- ' + ', '.join(droplst)
-            m.insert(tk.END, run_str)
+                tmp += droplst
+            output.append(tmp)
+
+        for op in output:
+            tmpstr = ''.join(op[:2])
+            if len(op) > 2:
+                tmpstr += ' --- ' + ', '.join(op[2:])
+            m.insert(tk.END, tmpstr)
+
+        fr = tk.Frame(new_win)
+        b1 = tk.Button(fr, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(m.get(0, tk.END))))
+        b2 = tk.Button(fr, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(m.get(0, tk.END))))
+        b3 = tk.Button(fr, text='Save as .csv', command=lambda: self.save_to_csv(output))
+
+        header.pack(side=tk.TOP)
+        fr.pack(side=tk.BOTTOM)
+        b1.pack(side=tk.LEFT, fill=tk.X)
+        b2.pack(side=tk.LEFT, fill=tk.X)
+        b3.pack(side=tk.LEFT, fill=tk.X)
+        sbfr.pack(fill=tk.BOTH, expand=1)
+        m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        vscroll.pack(side=tk.LEFT, fill=tk.Y)
+        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
     @staticmethod
     def copy_to_clipboard(obj, string):
@@ -560,11 +573,20 @@ class Profile(tk.Frame):
 
     @staticmethod
     def save_to_txt(string):
-        f = tk.filedialog.asksaveasfile(mode='w', defaultextension='.txt', filetypes=(('.txt', '*.txt'),('All Files', '*.*')))
+        f = tk.filedialog.asksaveasfile(mode='w', defaultextension='.txt', filetypes=(('.txt', '*.txt'), ('All Files', '*.*')))
         if not f:
             return
         f.write(string)
         f.close()
+
+    @staticmethod
+    def save_to_csv(string):
+        f = tk.filedialog.asksaveasfilename(defaultextension='.csv', filetypes=(('.csv', '*.csv'), ('All Files', '*.*')))
+        if not f:
+            return
+        with open(f, newline='', mode='w') as fo:
+            writer = csv.writer(fo, dialect='excel', delimiter=',')
+            writer.writerows(string)
 
 
 class About(tk.Frame):
