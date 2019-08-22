@@ -690,13 +690,16 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def set_clickthrough(self):
         hwnd = win32gui.FindWindow(None, "MF run counter")
         if not self.clickthrough:
-            lExStyle = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
-            lExStyle |= win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
-            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, lExStyle)
+            l_ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+            l_ex_style |= win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
+            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, l_ex_style)
             win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickthrough = True
         else:
             win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
+            if not self.always_on_top:
+                win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickthrough = False
 
     def report_callback_exception(self, *args):
