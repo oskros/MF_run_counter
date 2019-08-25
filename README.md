@@ -1,4 +1,5 @@
 # Diablo 2 MF run counter
+You can find a video where I describe the application in detail here: https://www.youtube.com/watch?v=e4vcg8MdvrY&t=46s
 ![GUI](https://github.com/oskros/MF_counter_releases/blob/master/media/UI_showcase.png?raw=true)
 
 ## How to use
