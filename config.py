@@ -65,8 +65,7 @@ class Config:
             messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated.')
         return parser
 
-    @staticmethod
-    def UpdateConfig(parent):
+    def update_config(self, parent):
         cfg = parent.cfg
 
         # Update position
@@ -94,4 +93,4 @@ class Config:
         cfg['KEYBINDS']['reset_key'] = str(parent.tab3.tab1._reset_lap)
         cfg['KEYBINDS']['make_unclickable'] = str(parent.tab3.tab1._make_unclickable)
 
-        parent.build_config_file(cfg)
+        self.build_config_file(cfg)

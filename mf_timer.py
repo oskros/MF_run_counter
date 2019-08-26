@@ -618,6 +618,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root = tk.Tk()
         self.root.report_callback_exception = self.report_callback_exception
 
+        # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
         self.process_queue()
 
@@ -628,7 +629,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
-        # Check for version
+
+        # Check for version update
         if self.check_for_new_version:
             github_releases.check_newest_version()
 
@@ -651,11 +653,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
         self.root.pack_propagate(False)
 
-        # Build banner image
+        # Build banner image and make window draggable on the banner
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
         self.img_panel = tk.Label(self.root, image=img)
         self.img_panel.pack()
+        self.img_panel.bind("<ButtonPress-1>", self._start_move)
+        self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
+        self.img_panel.bind("<B1-Motion>", self._on_motion)
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
@@ -674,18 +679,13 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Add buttons to main widget
         lf = tk.LabelFrame(self.root, height=35)
-        lf.propagate(False)
+        lf.propagate(False)  # dont allow buttons to modify label frame size
         lf.pack(expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Start\nnew run', command=self.tab1.StopStart).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='End\nthis run', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-
-        # Make window drag on the banner image
-        self.img_panel.bind("<ButtonPress-1>", self._start_move)
-        self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
-        self.img_panel.bind("<B1-Motion>", self._on_motion)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -695,7 +695,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
-        # Load save state
+        # Load save state and start autosave process
         self.LoadActiveState(active_state)
         self._autosave_state()
 
@@ -703,6 +703,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.mainloop()
 
     def process_queue(self):
+        """
+        The system hotkeys are registered in child threads, and thus tkinter needs a queue to process hotkey calls to
+        achieve a threadsafe system
+        """
         try:
             self.queue.get(False)()
             self.root.after(50, lambda: self.process_queue())
@@ -710,12 +714,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.after(50, lambda: self.process_queue())
 
     def set_clickthrough(self):
+        """
+        Allow for making mouse clicks pass through the window, in case you want to use it as an overlay in your game
+        Also makes the window transparent to visualize this effect
+        Calling the function again reverts the window to normal state
+        """
         hwnd = win32gui.FindWindow(None, "MF run counter")
         if not self.clickthrough:
             l_ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
             l_ex_style |= win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
             win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, l_ex_style)
-            win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)
+            win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)  # transparent
             win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickthrough = True
         else:
@@ -725,19 +734,32 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.clickthrough = False
 
     def report_callback_exception(self, *args):
+        """
+        Handles occuring errors in the application, showing a messagebox with the occured error that user can send back
+        for bug fixing
+        """
         err = traceback.format_exception(*args)
         tk.messagebox.showerror('Exception occured', err)
         self.Quit()
 
     def notebook_tab_change(self):
+        """
+        When tab is switched to profile, the run counter is paused and descriptive statistics are updated. Perhaps it
+        should also pause when going to the Options tab?
+        """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
             if not self.tab1._paused:
                 self.tab1.Pause()
             self.tab4.update_descriptive_statistics()
+        # A 'hack' to ensure that dropdown menus don't take focus immediate when you switch tabs by focusing the banner
+        # image instead :)
         self.img_panel.focus_force()
 
     def load_state_file(self):
+        """
+        Loads the save file for the active profile.
+        """
         if not os.path.isdir('Profiles'):
             os.makedirs('Profiles')
         file = 'Profiles/%s.json' % self.active_profile
@@ -748,10 +770,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         return state
 
     def _autosave_state(self):
+        """
+        Function to run the autosave loop that saves the profile every 30 seconds
+        """
         self.SaveActiveState()
         self.root.after(30000, self._autosave_state)
 
     def ArchiveReset(self):
+        """
+        If any laps or drops have been recorded, this function saves the current session to the profile archive, and
+        resets all info in the active session. In case no runs/drops are recorded, the session timer is simply reset
+        """
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
 
@@ -800,7 +829,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def Quit(self):
         if self.tab1._running:
             self.tab1.Stop()
-        self.UpdateConfig(self)
+        self.update_config(self)
         self.SaveActiveState()
         os._exit(0)
 
