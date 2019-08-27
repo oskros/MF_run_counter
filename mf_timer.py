@@ -31,7 +31,7 @@ class MFRunTimer(tk.Frame):
         self.session_time = 0.0
         self._laptime = 0.0
         self.is_running = False
-        self._paused = False
+        self.is_paused = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
@@ -140,7 +140,7 @@ class MFRunTimer(tk.Frame):
 
     def Start(self, play_sound=True):
         def update_start():
-            if self._paused:
+            if self.is_paused:
                 self.Pause()
             self.c1.itemconfigure(self.circ_id, fill='green3')
             self._start = time.time() - self._laptime
@@ -193,7 +193,7 @@ class MFRunTimer(tk.Frame):
             self._set_average()
 
     def Pause(self):
-        if not self._paused:
+        if not self.is_paused:
             self.pause_lab = tk.Button(self, font='arial 24 bold', text='Resume', bg='deep sky blue', command=self.Pause)
             self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
@@ -205,7 +205,7 @@ class MFRunTimer(tk.Frame):
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
             exec(blocks[7])
-            self._paused = True
+            self.is_paused = True
         else:
             self.pause_lab.destroy()
             self._start = time.time() - self._laptime
@@ -215,7 +215,7 @@ class MFRunTimer(tk.Frame):
                 self._update_lap_time()
             self._update_session_time()
             exec(blocks[8])
-            self._paused = False
+            self.is_paused = False
 
     def ResetLap(self):
         if self.is_running:
@@ -798,7 +798,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            if not self.tab1._paused:
+            if not self.tab1.is_paused:
                 self.tab1.Pause()
             self.tab4.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediate when you switch tabs by focusing the banner
@@ -807,15 +807,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
     def load_state_file(self):
         """
-        Loads the save file for the active profile.
+        Loads the save file for the active profile. Ensures directory exists, and if not it is created. Ensures the
+        file exists, and if not an empty dictionary is returned.
         """
         if not os.path.isdir('Profiles'):
             os.makedirs('Profiles')
         file = 'Profiles/%s.json' % self.active_profile
         if not os.path.isfile(file):
-            return dict()
-        with open(file, 'r') as fo:
-            state = json.load(fo)
+            state = dict()
+        else:
+            with open(file, 'r') as fo:
+                state = json.load(fo)
         return state
 
     def _autosave_state(self):
@@ -846,21 +848,24 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             return
         user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if user_confirm:
-            # We stop current run if active, load the active state from timer and drop module, and save it in the
-            # profile .json.
+            # Stop any active run and load current session info from timer and drop module.
             self.tab1.Stop()
             active = self.tab1.SaveState()
             active.update(dict(drops=self.tab2.save_state()))
+
+            # Update session dropdown for the profile
             stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             self.tab4.available_archive.append(stamp)
             self.tab4.archive_dropdown['values'] = self.tab4.available_archive
 
+            # Update profile .json with the session
             state = self.load_state_file()
             state['active_state'] = dict()
             state[stamp] = active
             file = 'Profiles/%s.json' % self.active_profile
             with open(file, 'w') as fo:
                 json.dump(state, fo, indent=2)
+
             # When session has been successfully saved, the session is reset
             self.ResetSession()
 
