@@ -663,6 +663,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
+
+        # Configure error handling
         self.root.report_callback_exception = self.report_callback_exception
 
         # Create hotkey queue and initiate process for monitoring the queue
@@ -679,7 +681,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Check for version update
         if self.check_for_new_version:
-            github_releases.check_newest_version()
+            github_releases.check_newest_version(release_repo)
 
         # Load profile info
         self.active_profile = self.cfg['DEFAULT']['active_profile']
@@ -823,6 +825,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.SaveActiveState()
         self.root.after(30000, self._autosave_state)
 
+    def ResetSession(self):
+        """
+        Resets session for the timer module and drops from the drops module
+        """
+        self.tab1.ResetSession()
+        self.tab2.drops = dict()
+        self.tab2.m.delete(0, tk.END)
+
     def ArchiveReset(self):
         """
         If any laps or drops have been recorded, this function saves the current session to the profile archive, and
@@ -834,47 +844,46 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         if not self.tab1.laps and not self.tab2.drops:
             self.ResetSession()
             return
-        save_session = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
-        if save_session:
-            self.ArchiveState()
+        user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
+        if user_confirm:
+            # We stop current run if active, load the active state from timer and drop module, and save it in the
+            # profile .json.
+            self.tab1.Stop()
+            active = self.tab1.SaveState()
+            active.update(dict(drops=self.tab2.save_state()))
+            stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            self.tab4.available_archive.append(stamp)
+            self.tab4.archive_dropdown['values'] = self.tab4.available_archive
+
+            state = self.load_state_file()
+            state['active_state'] = dict()
+            state[stamp] = active
+            file = 'Profiles/%s.json' % self.active_profile
+            with open(file, 'w') as fo:
+                json.dump(state, fo, indent=2)
+            # When session has been successfully saved, the session is reset
             self.ResetSession()
 
-    def ArchiveState(self):
-        self.tab1.Stop()
-        active = self.tab1.SaveState()
-        active.update(dict(drops=self.tab2.save_state()))
-        stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        self.tab4.available_archive.append(stamp)
-        self.tab4.archive_dropdown['values'] = self.tab4.available_archive
-
-        state = self.load_state_file()
-        state['active_state'] = dict()
-        state[stamp] = active
-        file = 'Profiles/%s.json' % self.active_profile
-        with open(file, 'w') as fo:
-            json.dump(state, fo, indent=2)
-
     def LoadActiveState(self, state):
+        """
+        Loads the input state into the timer and drop modules. This is called at start-up when loading the profile .json
+        and when you change the active profile in the profiles tab.
+        """
         active_state = state.get('active_state', dict())
         self.tab1.load_from_state(active_state)
         self.tab2.load_from_state(active_state)
 
     def SaveActiveState(self):
+        """
+        Loads the .json for the profile, and replaces the 'active_state' key with the current active state, whereafter
+        it is saved to file.
+        """
         cache = self.load_state_file()
         cache['active_state'] = self.tab1.SaveState()
         cache['active_state'].update(dict(drops=self.tab2.save_state()))
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)
-        self.tab4.update_descriptive_statistics()
-
-    def ResetSession(self):
-        """
-        Resets session for the timer module and drops from the drops module
-        """
-        self.tab1.ResetSession()
-        self.tab2.drops = dict()
-        self.tab2.m.delete(0, tk.END)
 
     def Quit(self):
         """

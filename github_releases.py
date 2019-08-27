@@ -39,12 +39,13 @@ def get_releases(repo_name):
     return releases
 
 
-def check_newest_version():
+def check_newest_version(release_repo):
     try:
         from packaging import version as pk_version
         latest = get_releases('oskros/MF_counter_releases')[0]
         latest_ver = latest['tag_name']
         if pk_version.parse(version) < pk_version.parse(latest_ver):
-            mbox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=True)
-    except:
+            mbox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=release_repo)
+    except Exception as e:
+        print(e)
         pass

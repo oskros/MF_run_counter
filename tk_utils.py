@@ -155,7 +155,7 @@ class MessageBox(object):
         if hyperlink:
             self.button = tk.Label(frm_1, text=release_repo, fg="blue", cursor="hand2", font=('arial', 11))
             self.button.pack()
-            self.button.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo))
+            self.button.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
         if entry:
             self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
@@ -222,7 +222,7 @@ class MessageBox(object):
         self.root.clipboard_append(self.msg)
 
 
-def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink=False):
+def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink=''):
     msgbox = MessageBox(msg, b1, b2, entry, coords, title, hyperlink)
     msgbox.root.mainloop()
 
