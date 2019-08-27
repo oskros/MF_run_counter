@@ -30,7 +30,7 @@ class MFRunTimer(tk.Frame):
         self._session_start = time.time()
         self.session_time = 0.0
         self._laptime = 0.0
-        self._running = False
+        self.is_running = False
         self._paused = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
@@ -146,9 +146,9 @@ class MFRunTimer(tk.Frame):
             self._start = time.time() - self._laptime
             self._update_lap_time()
             self._set_laps(is_running=True)
-            self._running = True
+            self.is_running = True
 
-        if not self._running:
+        if not self.is_running:
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
             delay = self.main_frame.run_timer_delay_seconds
@@ -158,11 +158,11 @@ class MFRunTimer(tk.Frame):
                 update_start()
 
     def Stop(self, play_sound=True):
-        if self._running:
+        if self.is_running:
             self.Lap(self._laptime)
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._laptime = 0.0
-            self._running = False
+            self.is_running = False
             self._set_time(0, for_session=False)
             self.after_cancel(self._timer)
             if play_sound and self.main_frame.enable_sound_effects:
@@ -175,7 +175,7 @@ class MFRunTimer(tk.Frame):
             sound.queue_sound(self)
 
     def Lap(self, laptime, force=False):
-        if self._running or force:
+        if self.is_running or force:
             self.laps.append(laptime)
             str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
             self.m.insert(tk.END, 'Run ' + str_n + ': ' + tk_utils.build_time_str(self.laps[-1]))
@@ -188,7 +188,7 @@ class MFRunTimer(tk.Frame):
         if self.laps:
             self.m.delete(tk.END)
             self.laps.pop()
-            self._set_laps(is_running=self._running)
+            self._set_laps(is_running=self.is_running)
             self._set_fastest()
             self._set_average()
 
@@ -201,7 +201,7 @@ class MFRunTimer(tk.Frame):
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
             self._set_time(self.session_time, for_session=True)
-            if self._running:
+            if self.is_running:
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
             exec(blocks[7])
@@ -210,7 +210,7 @@ class MFRunTimer(tk.Frame):
             self.pause_lab.destroy()
             self._start = time.time() - self._laptime
             self._session_start = time.time() - self.session_time
-            if self._running:
+            if self.is_running:
                 self.c1.itemconfigure(self.circ_id, fill='green3')
                 self._update_lap_time()
             self._update_session_time()
@@ -218,13 +218,13 @@ class MFRunTimer(tk.Frame):
             self._paused = False
 
     def ResetLap(self):
-        if self._running:
+        if self.is_running:
             self._start = time.time()
             self._laptime = 0.0
             self._set_time(self._laptime, for_session=False)
 
     def ResetSession(self):
-        if self._running:
+        if self.is_running:
             self.Stop()
         self._start = time.time()
         self._laptime = 0.0
@@ -234,7 +234,7 @@ class MFRunTimer(tk.Frame):
         self.m.delete(0, tk.END)
         self._set_time(self._laptime, for_session=False)
         self._set_time(self.session_time, for_session=True)
-        self._set_laps(is_running=self._running)
+        self._set_laps(is_running=self.is_running)
         self._set_fastest()
         self._set_average()
 
@@ -266,7 +266,7 @@ class Drops(tk.Frame):
         if not drop:
             return
         run_no = len(self.tab1.laps)
-        if self.tab1._running:
+        if self.tab1.is_running:
             run_no += 1
         self.drops.setdefault(str(run_no), []).append(drop)
         self.display_drop(drop=drop, run_no=run_no)
@@ -763,8 +763,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def set_clickthrough(self):
         """
         Allow for making mouse clicks pass through the window, in case you want to use it as an overlay in your game
-        Also makes the window transparent to visualize this effect
-        Calling the function again reverts the window to normal state
+        Also makes the window transparent to visualize this effect.
+        Calling the function again reverts the window to normal state.
         """
         hwnd = win32gui.FindWindow(None, "MF run counter")
         if not self.clickthrough:
@@ -869,12 +869,19 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab4.update_descriptive_statistics()
 
     def ResetSession(self):
+        """
+        Resets session for the timer module and drops from the drops module
+        """
         self.tab1.ResetSession()
         self.tab2.drops = dict()
         self.tab2.m.delete(0, tk.END)
 
     def Quit(self):
-        if self.tab1._running:
+        """
+        Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit' which
+        terminates all active threads
+        """
+        if self.tab1.is_running:
             self.tab1.Stop()
         self.update_config(self)
         self.SaveActiveState()
