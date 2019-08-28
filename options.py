@@ -42,7 +42,7 @@ class General(tk.Frame):
         lab = tk.Label(lf, text='Start run delay (seconds)')
         lab.pack(side=tk.LEFT)
 
-        self.run_delay = tk.StringVar(lf)
+        self.run_delay = tk.StringVar()
         self.run_delay.set(eval(self.main_frame.cfg['DEFAULT']['run_timer_delay_seconds']))
         tk.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
         self.run_delay.trace_add('write', lambda name, index, mode: self.change_delay())
@@ -71,13 +71,14 @@ class General(tk.Frame):
     def toggle_button(self, attr):
         val = eval(getattr(self, attr).get())
         setattr(self.main_frame, attr, val)
-        if attr == 'always_on_top':
+        if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
 
 
 class Hotkeys(tk.Frame):
     def __init__(self, main_frame, timer_frame, drop_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.main_frame = main_frame
         self.modifier_options = ['Control', 'Alt', 'Shift', '']
         self.character_options = ['Escape', 'Space', 'Delete',
                                   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',  'L', 'M',
@@ -88,22 +89,17 @@ class Hotkeys(tk.Frame):
         lf = tk.Frame(self, height=20, width=179)
         lf.pack(expand=True, fill=tk.BOTH)
         lf.propagate(False)
+        tk.Label(lf, text='Action', font='Helvetica 11 bold', justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9).pack(side=tk.RIGHT)
+        tk.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7).pack(side=tk.RIGHT)
 
-        l1 = tk.Label(lf, text='Action', font='Helvetica 11 bold', justify=tk.LEFT)
-        l3 = tk.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9)
-        l2 = tk.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7)
-
-        l1.pack(side=tk.LEFT)
-        l3.pack(side=tk.RIGHT)
-        l2.pack(side=tk.RIGHT)
-
-        self.add_hotkey(label_name='Start new run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=lambda: main_frame.queue.put(timer_frame.StopStart))
-        self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=lambda: main_frame.queue.put(timer_frame.Stop))
-        self.add_hotkey(label_name='Delete prev', keys=eval(main_frame.cfg['KEYBINDS']['delete_prev_key']), func=lambda: main_frame.queue.put(timer_frame.DeletePrev))
-        self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=lambda: main_frame.queue.put(timer_frame.Pause))
-        self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=lambda: main_frame.queue.put(drop_frame.AddDrop))
-        self.add_hotkey(label_name='Reset lap', keys=eval(main_frame.cfg['KEYBINDS']['reset_key']), func=lambda: main_frame.queue.put(timer_frame.ResetLap))
-        self.add_hotkey(label_name='Make unclickable', keys=eval(main_frame.cfg['KEYBINDS']['make_unclickable']), func=lambda: main_frame.queue.put(main_frame.set_clickthrough))
+        self.add_hotkey(label_name='Start new run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.StopStart)
+        self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.Stop)
+        self.add_hotkey(label_name='Delete prev', keys=eval(main_frame.cfg['KEYBINDS']['delete_prev_key']), func=timer_frame.DeletePrev)
+        self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.Pause)
+        self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.AddDrop)
+        self.add_hotkey(label_name='Reset lap', keys=eval(main_frame.cfg['KEYBINDS']['reset_key']), func=timer_frame.ResetLap)
+        self.add_hotkey(label_name='Make unclickable', keys=eval(main_frame.cfg['KEYBINDS']['make_unclickable']), func=main_frame.set_clickthrough)
 
     def add_hotkey(self, label_name, keys, func):
         if keys[0].lower() not in map(lambda x: x.lower(), self.modifier_options) or keys[1].lower() not in map(lambda x: x.lower(), self.character_options):
@@ -137,7 +133,7 @@ class Hotkeys(tk.Frame):
         key.trace_add('write', lambda name, index, mode: self.re_register(action, getattr(self, '_' + action), func))
         if default_key.lower() != 'no_bind':
             reg_key = [keys[1].lower()] if keys[0] == '' else list(map(lambda x: x.lower(), keys))
-            self.hk.register(reg_key, callback=lambda event: func())
+            self.hk.register(reg_key, callback=lambda event: self.main_frame.queue.put(func))
 
     def re_register(self, event, old_hotkey, func):
         new_hotkey = [getattr(self, event + '_m').get(), getattr(self, event + '_e').get()]
@@ -154,5 +150,5 @@ class Hotkeys(tk.Frame):
                 self.hk.unregister(unreg)
             if new_hotkey[1].lower() != 'no_bind':
                 reg = [new_hotkey[1].lower()] if new_hotkey[0] == '' else new_lower
-                self.hk.register(reg, callback=lambda event: func(), overwrite=True)
+                self.hk.register(reg, callback=lambda event: self.main_frame.queue.put(func), overwrite=True)
             setattr(self, '_' + event, new_hotkey)

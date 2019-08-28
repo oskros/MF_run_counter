@@ -305,7 +305,7 @@ class Profile(tk.Frame):
     def _make_widgets(self):
         prof_line = tk.Label(self, text='Select active profile', justify=tk.LEFT)
         prof_line.pack(anchor=tk.W)
-        # Choose active profile
+
         profile_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         profile_frame.propagate(False)
         profile_frame.pack()
@@ -363,38 +363,53 @@ class Profile(tk.Frame):
         self.update_descriptive_statistics()
 
     def _add_new_profile(self):
+        # Ensure the pop-up is centered over the main program window
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.registration_form((xc,yc))
+        profile = tk_utils.registration_form((xc, yc))
         if profile:
             profile_name = profile.pop('Profile name')
+            # Handle non-allowed profile names
+            if profile_name == '':
+                messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
+                return
             if profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return
+
+            # Add new profile to profile tab
             self.main_frame.profiles.append(profile_name)
             self.profile_dropdown['values'] = self.main_frame.profiles
+
+            # Change active profile to the newly created profile
             self.active_profile.set(profile_name)
-            cache = dict()
-            cache['extra_data'] = profile
-            file = 'Profiles/%s.json' % self.active_profile.get()
-            with open(file, 'w') as fo:
-                json.dump(cache, fo, indent=2)
             self._change_active_profile()
 
+            # Create a save file for the new profile
+            file = 'Profiles/%s.json' % self.active_profile.get()
+            with open(file, 'w') as fo:
+                json.dump({'extra_data': profile}, fo, indent=2)
+
     def _change_active_profile(self):
+        # Save state before changing profile, such that no information is lost. By design choice, if a run is currently
+        # active, it will carry over to the next profile instead of being stopped first.
         self.main_frame.SaveActiveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
 
+        # Load extra data, defaulting to empty strings if no extra data is found in the new profile
         profile_cache = self.main_frame.load_state_file()
         self.extra_data = profile_cache.get('extra_data', dict())
         self.mf_amount.set(self.extra_data.get('Active MF %', ''))
         self.run_type.set(self.extra_data.get('Run type', ''))
         self.char_name.set(self.extra_data.get('Character name', ''))
+
+        # Update archive dropdown, and set selected archive to 'Active session'
         self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
         self.archive_dropdown['values'] = self.available_archive
-        self.selected_archive.set('')
+        self.selected_archive.set('Active session')
 
+        # Load the new profile into the timer and drop module, and update the descriptive statistics
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
 
@@ -770,15 +785,21 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         """
         hwnd = win32gui.FindWindow(None, "MF run counter")
         if not self.clickthrough:
+            # Get window style and perform a 'bitwise or' operation to make the style layered and transparent, achieving
+            # the clickthrough property
             l_ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
             l_ex_style |= win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
             win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, l_ex_style)
+
+            # Set the window to be transparent and appear always on top
             win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)  # transparent
             win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickthrough = True
         else:
+            # Calling the function again sets the extended style of the window to zero, reverting to a standard window
             win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
             if not self.always_on_top:
+                # Remove the always on top property again, in case always on top was set to false in options
                 win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickthrough = False
 
@@ -892,8 +913,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
     def Quit(self):
         """
-        Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit' which
-        terminates all active threads
+        Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
+        terminating all active threads.
         """
         if self.tab1.is_running:
             self.tab1.Stop()
