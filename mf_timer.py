@@ -1,20 +1,19 @@
 from init import *
-import json
 import os
-import queue
 import sys
 import time
+import json
+import queue
 import traceback
 import webbrowser
 import win32api
 import win32gui
 import win32con
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import ttk
 import github_releases
 import sound
 import tk_utils
+import tkinter as tk
+from tkinter import ttk, messagebox
 from config import Config
 from options import Options
 from profiles import Profile
