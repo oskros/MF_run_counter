@@ -1,7 +1,6 @@
 from init import *
 import tkinter as tk
 import webbrowser
-allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 
 def build_time_str(elap):
@@ -59,30 +58,27 @@ class RegistrationForm:
         self.new_win.wm_attributes('-topmost', 1)
         if coords is not None:
             self.new_win.geometry('+%d+%d' % (coords[0], coords[1]))
-        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
+        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
         l = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
         l.pack()
 
-        self.a1, self.v1 = self.make_row('Profile name')
-        self.a2, self.v2 = self.make_row('Character name')
-        self.a3, self.v3 = self.make_row('Run type')
-        self.a4, self.v4 = self.make_row('Active MF %')
-        self.v1.trace_add('write', lambda *args: self.character_limit())
+        self.a1 = self.make_row('Profile name')
+        self.a2 = self.make_row('Character name')
+        self.a3 = self.make_row('Run type')
+        self.a4 = self.make_row('Active MF %')
 
-        but = tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2)
-        but.pack(fill=tk.X, expand=tk.YES)
+        # Restrict input to profile name, only allowing characters that can appear in a windows file name
+        vcmd = (self.new_win.register(self.validate_input), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        self.a1.config(validate='key', validatecommand=vcmd)
+
+        tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
         self.new_win.bind('<KeyPress-Return>', func=self.b1_action)
         self.new_win.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
 
         self.new_win.protocol("WM_DELETE_WINDOW", self.close_mod)
         self.a1.focus_set()
-
-    def character_limit(self):
-        get = self.v1.get()
-        for char in get:
-            if char not in allowed_chars:
-                self.v1.set(get.replace(char, ''))
 
     def b1_action(self, event=None):
         try:
@@ -107,7 +103,13 @@ class RegistrationForm:
         var = tk.StringVar()
         out = tk.Entry(frame, textvariable=var)
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
-        return out, var
+        return out
+
+    def validate_input(self, *args):
+        if args[0] == '1':
+            return args[4] in self.allowed_chars
+        else:
+            return True
 
     def close_mod(self):
         self.returning = None

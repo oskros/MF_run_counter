@@ -519,7 +519,7 @@ class Profile(tk.Frame):
         new_win.geometry('450x450')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
-        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
+        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         title = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
 
         # Handle how loading of session data should be treated in the 3 different cases
@@ -714,11 +714,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.root.pack_propagate(False)
 
         # Build banner image and make window draggable on the banner
-        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), frozen + 'd2icon.png')
+        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
         self.img_panel = tk.Label(self.root, image=img)
         self.img_panel.pack()
