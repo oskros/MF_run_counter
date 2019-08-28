@@ -50,41 +50,31 @@ class MFRunTimer(tk.Frame):
         flt.pack(fill=tk.X, expand=tk.NO)
         self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red')
         self.c1.grid(row=0, column=0, padx=3, pady=3)
-        l0 = tk.Label(flt, textvariable=self.sessionstr, font=('arial', 10))
+        tk.Label(flt, textvariable=self.sessionstr, font=('arial', 10)).grid(row=0, column=1, sticky=tk.N, padx=20)
         self._set_time(self.session_time, for_session=True)
-        l0.grid(row=0, column=1, sticky=tk.N, padx=20)
 
-        l1 = tk.Label(self, textvariable=self.timestr, font='arial 20')
+        tk.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=tk.NO, pady=4)
         self._set_time(0, for_session=False)
-        l1.pack(fill=tk.X, expand=tk.NO, pady=4)
 
         l2f = tk.Frame(self)
         l2f.pack(pady=2)
-        l2_1 = tk.Label(l2f, text='---- Run count:', font=('arial', 12))
-        l2_1.pack(side=tk.LEFT)
-        l2_2 = tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg='red')
-        l2_2.pack(side=tk.LEFT)
-        l2_3 = tk.Label(l2f, text='----', font=('arial', 12))
-        l2_3.pack(side=tk.LEFT)
+        tk.Label(l2f, text='---- Run count:', font=('arial', 12)).pack(side=tk.LEFT)
+        tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg='red').pack(side=tk.LEFT)
+        tk.Label(l2f, text='----', font=('arial', 12)).pack(side=tk.LEFT)
         self._set_laps(is_running=False)
 
-        l3 = tk.Label(self, textvariable=self.min_lap)
+        tk.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_fastest()
-        l3.pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
-        l3.config(font=('arial', 11))
 
-        l4 = tk.Label(self, textvariable=self.avg_lap)
+        tk.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_average()
-        l4.pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
-        l4.config(font=('arial', 11))
 
         lf0 = tk.Frame(self)
         lf0.pack()
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
+        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bindtags((self.m, self, "all"))
-        self.m.config(font=('courier', 12))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -146,8 +136,8 @@ class MFRunTimer(tk.Frame):
             self.c1.itemconfigure(self.circ_id, fill='green3')
             self._start = time.time() - self._laptime
             self._update_lap_time()
-            self._set_laps(is_running=True)
             self.is_running = True
+            self._set_laps(self.is_running)
             self._waiting_for_delay = False
 
         if not self.is_running:
@@ -255,9 +245,8 @@ class Drops(tk.Frame):
         lf = tk.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none')
+        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        self.m.config(font=('courier', 12))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -305,11 +294,17 @@ class Profile(tk.Frame):
         tk.Frame.__init__(self, parent, kw)
         self.root = parent
         self.main_frame = main_frame
+
+        state = self.main_frame.load_state_file()
+        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
+        self.selected_archive = tk.StringVar()
+        self.selected_archive.set('Active session')
+        self.extra_data = self.main_frame.load_state_file().get('extra_data', dict())
+
         self._make_widgets()
 
     def _make_widgets(self):
-        prof_line = tk.Label(self, text='Select active profile', justify=tk.LEFT)
-        prof_line.pack(anchor=tk.W)
+        tk.Label(self, text='Select active profile', justify=tk.LEFT).pack(anchor=tk.W)
 
         profile_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         profile_frame.propagate(False)
@@ -324,46 +319,39 @@ class Profile(tk.Frame):
         tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
         tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
-        self.extra_data = self.main_frame.load_state_file().get('extra_data', dict())
         extra_info1 = tk.Frame(self, height=12, width=238)
         extra_info1.propagate(False)
         extra_info1.pack(expand=True, fill=tk.X)
         extra_info2 = tk.Frame(self, height=12, width=238)
         extra_info2.propagate(False)
         extra_info2.pack(expand=True, fill=tk.X)
-        self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
+
         self.run_type = tk.StringVar(extra_info1, value=self.extra_data.get('Run type', ''))
-        self.char_name = tk.StringVar(extra_info1, value=self.extra_data.get('Character name', ''))
         tk.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
         tk.Label(extra_info1, textvariable=self.run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+
+        self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
         tk.Label(extra_info1, textvariable=self.mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
         tk.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT).pack(side=tk.RIGHT)
+
+        self.char_name = tk.StringVar(extra_info1, value=self.extra_data.get('Character name', ''))
         tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
         tk.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
 
         tk.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
-
         sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
         sel_frame.pack()
-        state = self.main_frame.load_state_file()
-        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
-        self.selected_archive = tk.StringVar()
-        self.selected_archive.set('Active session')
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.pack(side=tk.LEFT)
 
-        open_archive = tk.Button(sel_frame, text='Open', command=self.open_archive_browser)
-        open_archive.pack(side=tk.LEFT)
-
-        delete_archive = tk.Button(sel_frame, text='Delete', command=self.delete_archived_session)
-        delete_archive.pack(side=tk.LEFT)
+        tk.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
+        tk.Button(sel_frame, text='Delete', command=self.delete_archived_session).pack(side=tk.LEFT)
 
         tk.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
 
-        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none')
+        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
-        self.descr.config(font=('courier', 8))
         self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
         self.update_descriptive_statistics()
 
