@@ -142,8 +142,10 @@ class MessageBox(object):
         self.b2_return = False
 
         # if b1 or b2 is a tuple unpack into the button text & return value
-        if isinstance(b1, tuple): b1, self.b1_return = b1
-        if isinstance(b2, tuple): b2, self.b2_return = b2
+        if isinstance(b1, tuple):
+            b1, self.b1_return = b1
+        if isinstance(b2, tuple):
+            b2, self.b2_return = b2
 
         # main frame
         frm_1 = tk.Frame(root)
@@ -178,12 +180,11 @@ class MessageBox(object):
             btn_2['command'] = self.b2_action
             btn_2.pack(side='left')
 
-        # the enter button will trigger button 1, while escape will trigger button 2
+        # The enter button will trigger button 1, while escape will close the window
         root.bind('<KeyPress-Return>', func=self.b1_action)
         root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
 
-        # roughly center the box on screen
-        # for accuracy see: https://stackoverflow.com/a/10018670/1217270
+        # Roughly center the box on screen. For accuracy see: https://stackoverflow.com/a/10018670/1217270
         root.update_idletasks()
         if coords:
             xp = coords[0]

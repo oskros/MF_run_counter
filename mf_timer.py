@@ -32,6 +32,7 @@ class MFRunTimer(tk.Frame):
         self._laptime = 0.0
         self.is_running = False
         self.is_paused = False
+        self._waiting_for_delay = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
@@ -147,12 +148,16 @@ class MFRunTimer(tk.Frame):
             self._update_lap_time()
             self._set_laps(is_running=True)
             self.is_running = True
+            self._waiting_for_delay = False
 
         if not self.is_running:
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
             delay = self.main_frame.run_timer_delay_seconds
             if delay > 0:
+                if self._waiting_for_delay:
+                    return
+                self._waiting_for_delay = True
                 self.after(int(delay*1000), update_start)
             else:
                 update_start()
