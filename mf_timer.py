@@ -17,12 +17,14 @@ from tkinter import ttk, messagebox
 from config import Config
 from options import Options
 from profiles import Profile
+from color_themes import *
 exec(blocks[1])
 
 
 class MFRunTimer(tk.Frame):
     def __init__(self, main_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.config(bg=frame_color)
         self.main_frame = main_frame
         self._start = 0.0
         self._session_start = time.time()
@@ -44,33 +46,33 @@ class MFRunTimer(tk.Frame):
         self._update_session_time()
 
     def _make_widgets(self):
-        flt = tk.Canvas(self)
+        flt = tk.Frame(self, bg=frame_color)
         flt.pack(fill=tk.X, expand=tk.NO)
-        self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red')
+        self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red', bg=label_color, border=circle_border_color)
         self.c1.grid(row=0, column=0, padx=3, pady=3)
-        tk.Label(flt, textvariable=self.sessionstr, font=('arial', 10)).grid(row=0, column=1, sticky=tk.N, padx=20)
+        tk.Label(flt, textvariable=self.sessionstr, font=('arial', 10), bg=label_color, fg=text_color).grid(row=0, column=1, sticky=tk.N, padx=20)
         self._set_time(self.session_time, for_session=True)
 
-        tk.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=tk.NO, pady=4)
+        tk.Label(self, textvariable=self.timestr, font='arial 20', bg=label_color, fg=text_color).pack(fill=tk.X, expand=tk.NO, pady=4)
         self._set_time(0, for_session=False)
 
-        l2f = tk.Frame(self)
+        l2f = tk.Frame(self, bg=frame_color)
         l2f.pack(pady=2)
-        tk.Label(l2f, text='---- Run count:', font=('arial', 12)).pack(side=tk.LEFT)
-        tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg='red').pack(side=tk.LEFT)
-        tk.Label(l2f, text='----', font=('arial', 12)).pack(side=tk.LEFT)
+        tk.Label(l2f, text='---- Run count:', font=('arial', 12), bg=label_color, fg=text_color).pack(side=tk.LEFT)
+        tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg=run_count_color, bg=label_color).pack(side=tk.LEFT)
+        tk.Label(l2f, text='----', font=('arial', 12), bg=label_color, fg=text_color).pack(side=tk.LEFT)
         self._set_laps(is_running=False)
 
-        tk.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tk.Label(self, textvariable=self.min_lap, font=('arial', 11), bg=label_color, fg=text_color).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_fastest()
 
-        tk.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tk.Label(self, textvariable=self.avg_lap, font=('arial', 11), bg=label_color, fg=text_color).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_average()
 
-        lf0 = tk.Frame(self)
+        lf0 = tk.Frame(self, bg=frame_color)
         lf0.pack()
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12), bg=listbox_color, fg=listbox_text, highlightbackground=border_color)
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
         self.m.bindtags((self.m, self, "all"))
@@ -188,7 +190,7 @@ class MFRunTimer(tk.Frame):
 
     def Pause(self):
         if not self.is_paused:
-            self.pause_lab = tk.Button(self, font='arial 24 bold', text='Resume', bg='deep sky blue', command=self.Pause)
+            self.pause_lab = tk.Button(self, font='arial 24 bold', text='Resume', bg=pause_button_color, fg=pause_button_text, command=self.Pause)
             self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
@@ -239,20 +241,21 @@ class MFRunTimer(tk.Frame):
 class Drops(tk.Frame):
     def __init__(self, tab1, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.config(bg=frame_color)
         self.drops = dict()
         self.tab1 = tab1
-        lf = tk.Frame(self)
+        lf = tk.Frame(self, bg=frame_color)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12), bg=listbox_color, fg=listbox_text, highlightbackground=border_color)
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2,1), padx=2)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2,1), padx=2)
 
-        btn = tk.Button(self, text='Delete selection', command=self.delete)
+        btn = tk.Button(self, text='Delete selection', command=self.delete, bg=button_color, fg=text_color)
         btn.bind_all('<Delete>', lambda e: self.delete())
-        btn.pack(side=tk.BOTTOM)
+        btn.pack(side=tk.BOTTOM, pady=(1,2))
 
     def AddDrop(self):
         drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
@@ -291,23 +294,24 @@ class Drops(tk.Frame):
 class About(tk.Frame):
     def __init__(self, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.config(bg=frame_color)
         label0 = tk.Label(self, text="""Run counter for Diablo 2 developed in July 
 and August2019 by *oskros on Path of 
 Diablo. Please see the README.md file 
-available on Github""", justify=tk.LEFT)
+available on Github""", justify=tk.LEFT, bg=label_color, fg=text_color)
         label0.pack()
-        link0 = tk.Label(self, text="Open Readme", fg="blue", cursor="hand2")
+        link0 = tk.Label(self, text="Open Readme", fg=hyperlink_color, cursor="hand2", bg=label_color)
         link0.pack()
         link0.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo.rstrip('releases') + 'blob/master/README.md'))
 
-        label = tk.Label(self, text="\n\nVisit the page below for new releases")
+        label = tk.Label(self, text="\n\nVisit the page below for new releases", bg=label_color, fg=text_color)
         label.pack()
 
-        link1 = tk.Label(self, text="Release Hyperlink", fg="blue", cursor="hand2")
+        link1 = tk.Label(self, text="Release Hyperlink", fg=hyperlink_color, cursor="hand2", bg=label_color)
         link1.pack()
         link1.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo))
 
-        lab2 = tk.Label(self, text="\n\nCurrent version: %s" % version)
+        lab2 = tk.Label(self, text="\n\nCurrent version: %s" % version, bg=label_color, fg=text_color)
         lab2.pack(side=tk.BOTTOM)
 
 
@@ -316,17 +320,35 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Create root
         self.root = tk.Tk()
 
-        # style = ttk.Style()
-        # style.theme_create("yummy", parent="xpnative", settings={
-        #     "TNotebook": {"configure": {"tabmargins": [1,2,1,0]}},
-        #     "TNotebook.Tab": {
-        #         "configure": {"padding": [1, 1], "background": background_color},
-        #         "map": {"background": [("selected", button_color)],
-        #                 "expand": [("selected", [1, 1, 1, 0])]}}})
+        # Set the style of the notebook
+        if THEME == 'dark':
+            style = ttk.Style()
+            print(style.theme_names())
+            # style.theme_create('combostyle', parent=ttk_style)
+            style.theme_create('combostyle', parent=ttk_style,
+                               settings={'TCombobox':
+                                             {'configure':
+                                                  {'selectbackground': 'blue',
+                                                   # 'selectforeground': 'grey90',
+                                                   'fieldbackground': 'grey90',
+                                                   'background': 'grey70',
+                                                   }}}
+                               )
+            style.theme_use('combostyle')
+            style.element_create('Plain.Notebook.tab', "from", ttk_style)
+            style.element_create('Plain.Notebook', "from", ttk_style)
+            style.layout("TNotebook.Tab",
+                              [('Plain.Notebook.tab', {'children':
+                                                           [('Notebook.padding', {'side': 'top', 'children':
+                                                               [('Notebook.focus', {'side': 'top', 'children':
+                                                                   [('Notebook.label', {'side': 'top', 'sticky': ''})],
+                                                                                    'sticky': 'nswe'})],
+                                                                                  'sticky': 'nswe'})],
+                                                       'sticky': 'nswe'})])
+            style.configure("TNotebook", background=frame_color, tabmargins=[2,4,2,0])
+            style.configure("TNotebook.Tab", background=frame_color, foreground=text_color, lightcolor=border_color, padding=[2,1])
 
-        # style.theme_use("yummy")
-
-        # Configure error handling
+        # Ensure errors are handled with an exception pop-up if encountered
         self.root.report_callback_exception = self.report_callback_exception
 
         # Create hotkey queue and initiate process for monitoring the queue
@@ -359,6 +381,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
+        self.root.config(bg=frame_color)
+        self.root.config(highlightbackground=border_color)
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
@@ -367,7 +391,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Build banner image and make window draggable on the banner
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
-        self.img_panel = tk.Label(self.root, image=img)
+        self.img_panel = tk.Label(self.root, image=img, bg=label_color, fg=text_color)
         self.img_panel.pack()
         self.img_panel.bind("<ButtonPress-1>", self._start_move)
         self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
@@ -389,14 +413,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
 
         # Add buttons to main widget
-        lf = tk.LabelFrame(self.root, height=35)
+        lf = tk.LabelFrame(self.root, height=35, bg=frame_color)
         lf.propagate(False)  # dont allow buttons to modify label frame size
         lf.pack(expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Start\nnew run', command=self.tab1.StopStart).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='End\nthis run', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Start\nnew run', command=self.tab1.StopStart, bg=button_color, fg=text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='End\nthis run', command=self.tab1.Stop, bg=button_color, fg=text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop, bg=button_color, fg=text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap, bg=button_color, fg=text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset, bg=button_color, fg=text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -418,10 +442,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=701, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=697, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=12)
-            self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14')
+            self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14', bg=label_color, fg=text_color)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):

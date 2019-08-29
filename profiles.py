@@ -1,4 +1,5 @@
 from init import *
+from color_themes import *
 import csv
 import json
 import os
@@ -11,6 +12,7 @@ import tk_utils
 class Profile(tk.Frame):
     def __init__(self, main_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
+        self.config(bg=frame_color)
         self.root = parent
         self.main_frame = main_frame
 
@@ -23,53 +25,60 @@ class Profile(tk.Frame):
         self._make_widgets()
 
     def _make_widgets(self):
-        tk.Label(self, text='Select active profile', justify=tk.LEFT).pack(anchor=tk.W)
+        tk.Label(self, text='Select active profile', justify=tk.LEFT, bg=label_color, fg=text_color).pack(anchor=tk.W)
 
-        profile_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
+        profile_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2, bg=frame_color)
         profile_frame.propagate(False)
         profile_frame.pack()
 
+        if THEME == 'dark':
+            self.option_add("*TCombobox*Listbox*Background", select_color)
+            self.option_add("*TCombobox*Listbox*Foreground", 'black')
+            self.option_add("*TCombobox*Listbox*selectBackground", 'black')
+            self.option_add("*TCombobox*Listbox*selectForeground", 'white')
         self.active_profile = tk.StringVar()
         self.active_profile.set(self.main_frame.active_profile)
-        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
+        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles, height=100)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
+        self.profile_dropdown.bind("<FocusOut>", lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        tk.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
-        tk.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
+        tk.Button(profile_frame, text='New...', command=self._add_new_profile, bg=button_color, fg=text_color).pack(side=tk.LEFT)
+        tk.Button(profile_frame, text='Delete', command=self._delete_profile, bg=button_color, fg=text_color).pack(side=tk.LEFT)
 
-        extra_info1 = tk.Frame(self, height=12, width=238)
+        extra_info1 = tk.Frame(self, height=12, width=238, bg=frame_color)
         extra_info1.propagate(False)
         extra_info1.pack(expand=True, fill=tk.X)
-        extra_info2 = tk.Frame(self, height=12, width=238)
+        extra_info2 = tk.Frame(self, height=12, width=238, bg=frame_color)
         extra_info2.propagate(False)
         extra_info2.pack(expand=True, fill=tk.X)
 
         self.run_type = tk.StringVar(extra_info1, value=self.extra_data.get('Run type', ''))
-        tk.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tk.Label(extra_info1, textvariable=self.run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT, bg=label_color, fg=text_color).pack(side=tk.LEFT)
+        tk.Label(extra_info1, textvariable=self.run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT, bg=label_color, fg=text_color).pack(side=tk.LEFT)
 
         self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
-        tk.Label(extra_info1, textvariable=self.mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
-        tk.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT).pack(side=tk.RIGHT)
+        tk.Label(extra_info1, textvariable=self.mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT, bg=label_color, fg=text_color).pack(side=tk.RIGHT)
+        tk.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT, bg=label_color, fg=text_color).pack(side=tk.RIGHT)
 
         self.char_name = tk.StringVar(extra_info1, value=self.extra_data.get('Character name', ''))
-        tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tk.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tk.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT, bg=label_color, fg=text_color).pack(side=tk.LEFT)
+        tk.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT, bg=label_color, fg=text_color).pack(side=tk.LEFT)
 
-        tk.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
-        sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2)
+        tk.Label(self, text='Select an archived run for this profile', justify=tk.LEFT, bg=label_color, fg=text_color).pack(anchor=tk.W, pady=(6,0))
+        sel_frame = tk.Frame(self, height=28, width=238, pady=2, padx=2, bg=frame_color)
         sel_frame.propagate(False)
         sel_frame.pack()
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
+        self.archive_dropdown.bind("<FocusOut>", lambda e: self.archive_dropdown.selection_clear())
         self.archive_dropdown.pack(side=tk.LEFT)
 
-        tk.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
-        tk.Button(sel_frame, text='Delete', command=self.delete_archived_session).pack(side=tk.LEFT)
+        tk.Button(sel_frame, text='Open', command=self.open_archive_browser, bg=button_color, fg=text_color).pack(side=tk.LEFT)
+        tk.Button(sel_frame, text='Delete', command=self.delete_archived_session, bg=button_color, fg=text_color).pack(side=tk.LEFT)
 
-        tk.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
+        tk.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT, bg=label_color, fg=text_color).pack(anchor=tk.W, pady=(6,0))
 
-        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
+        self.descr = tk.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8), bg=listbox_color, fg=listbox_text, highlightbackground=border_color)
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
         self.update_descriptive_statistics()
@@ -226,13 +235,14 @@ class Profile(tk.Frame):
 
         # We build the new tkinter window to be opened
         new_win = tk.Toplevel()
+        new_win.config(bg=frame_color)
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
         new_win.geometry('450x450')
         new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        title = tk.Label(new_win, text='Archive browser', font='Helvetica 14')
+        title = tk.Label(new_win, text='Archive browser', font='Helvetica 14', bg=label_color, fg=text_color)
 
         # Handle how loading of session data should be treated in the 3 different cases
         if chosen == 'Active session':
@@ -272,10 +282,10 @@ class Profile(tk.Frame):
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
         # Configure the list frame with scrollbars which displays the archive of the chosen session
-        list_frame = tk.Frame(new_win)
+        list_frame = tk.Frame(new_win, bg=frame_color)
         vscroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
         hscroll = tk.Scrollbar(new_win, orient=tk.HORIZONTAL)
-        txt_list = tk.Listbox(list_frame, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none', font=('courier', 10))
+        txt_list = tk.Listbox(list_frame, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none', font=('courier', 10), bg=listbox_color, fg=listbox_text, highlightbackground=border_color)
         txt_list.bind('<FocusOut>', lambda e: txt_list.selection_clear(0, tk.END))  # Lose selection when shifting focus
         txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         hscroll.config(command=txt_list.xview)
@@ -314,10 +324,10 @@ class Profile(tk.Frame):
                 tmpstr += ' --- ' + ', '.join(op[2:])
             txt_list.insert(tk.END, tmpstr)
 
-        button_frame = tk.Frame(new_win)
-        tk.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tk.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tk.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output)).pack(side=tk.LEFT, fill=tk.X)
+        button_frame = tk.Frame(new_win, bg=frame_color)
+        tk.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END))), bg=button_color, fg=text_color).pack(side=tk.LEFT, fill=tk.X)
+        tk.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(txt_list.get(0, tk.END))), bg=button_color, fg=text_color).pack(side=tk.LEFT, fill=tk.X)
+        tk.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output), bg=button_color, fg=text_color).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is very important:
         # TOP: Title first (furthest up), then list frame

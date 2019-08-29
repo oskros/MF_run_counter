@@ -3,11 +3,6 @@ import os
 import sys
 
 
-default_color = '#f0f0ed'
-background_color = '#40E0D0'
-button_color = '#40ccd0'
-activebutton_color = '#40E0D0'
-
 # The exe files do not have a media folder, so the media folder should only be added to the path when code is run
 # directly through Python
 media_path = '' if getattr(sys, 'frozen', False) else 'media\\'
