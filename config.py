@@ -20,6 +20,7 @@ class Config:
         config['OPTIONS']['tab_switch_keys_global'] = '1'
         config['OPTIONS']['check_for_new_version'] = '1'
         config['OPTIONS']['enable_sound_effects'] = '0'
+        config['OPTIONS']['pop_up_drop_window'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -80,6 +81,7 @@ class Config:
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
+        cfg['OPTIONS']['pop_up_drop_window'] = str(parent.pop_up_drop_window)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

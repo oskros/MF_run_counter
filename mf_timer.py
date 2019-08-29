@@ -243,7 +243,7 @@ class Drops(tk.Frame):
         lf = tk.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=kw.pop('height', 5), yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
@@ -329,6 +329,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
+        self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
 
         # Check for version update
         if self.check_for_new_version:
@@ -365,14 +366,15 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
-        self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
-        self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tab4 = Profile(self, parent=self.tabcontrol)
-        self.tab5 = About(parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
-        self.tabcontrol.add(self.tab2, text='Drops')
+        self.toggle_drop_tab()
+        # self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
+        # self.tabcontrol.add(self.tab2, text='Drops')
+        self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab3, text='Options')
+        self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab4, text='Profile')
+        self.tab5 = About(parent=self.tabcontrol)
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
@@ -401,6 +403,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Start the program
         self.root.mainloop()
+
+    def toggle_drop_tab(self):
+        if self.pop_up_drop_window:
+            self.root.config(borderwidth=3, relief='raised', height=705, width=240)
+            self.tab2 = Drops(self.tab1, self.root, height=12)
+            self.tab2.pack(side=tk.BOTTOM)
+            lab = tk.Label(self.root, text='Drops', font='helvetica 14')
+            lab.pack(side=tk.BOTTOM)
+        else:
+            self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
+            self.tabcontrol.add(self.tab2, text='Drops')
 
     def process_queue(self):
         """

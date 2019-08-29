@@ -24,9 +24,10 @@ class General(tk.Frame):
         self.add_flag(flag_name='Tab switch keys global')
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
+        self.add_flag(flag_name='Pop-up drop window')
         self.add_delay_option()
 
-        tk.Label(self, text="Toggling 'Tab switch keys global' requires\na restart of the application", pady=10).pack()
+        tk.Label(self, text="Toggling 'Tab switch keys global' or\n'Pop-up drop window' requires a\nrestart of the application", pady=3).pack()
 
     def change_delay(self):
         new = self.run_delay.get()
@@ -55,7 +56,7 @@ class General(tk.Frame):
         lab = tk.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
 
-        flag_attr = flag_name.lower().replace(' ', '_')
+        flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
         sv = getattr(self, flag_attr)
         off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, command=lambda: self.toggle_button(flag_attr))
