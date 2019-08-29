@@ -72,6 +72,7 @@ class MFRunTimer(tk.Frame):
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
         self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
+        self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
         self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
@@ -314,6 +315,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
+
+        # self.s = ttk.Style()
+        # self.s.theme_use('clam')
+
+        # self.colors = ['red', 'green', 'blue', 'orange']
 
         # Configure error handling
         self.root.report_callback_exception = self.report_callback_exception
