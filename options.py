@@ -1,3 +1,4 @@
+from init import *
 import sys
 import tkinter as tk
 from tkinter import messagebox, ttk
@@ -7,7 +8,6 @@ from system_hotkey import SystemHotkey
 class Options(tk.Frame):
     def __init__(self, main_frame, timer_frame, drop_frame, parent=None, **kw):
         tk.Frame.__init__(self, parent, kw)
-
         self.tabcontrol = ttk.Notebook(self)
         self.tab1 = Hotkeys(main_frame, timer_frame, drop_frame, parent=self.tabcontrol)
         self.tab2 = General(main_frame, parent=self.tabcontrol)

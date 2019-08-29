@@ -76,7 +76,7 @@ class MFRunTimer(tk.Frame):
         self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
 
     def _update_lap_time(self):
         self._laptime = time.time() - self._start
@@ -248,7 +248,7 @@ class Drops(tk.Frame):
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
 
         btn = tk.Button(self, text='Delete selection', command=self.delete)
         btn.bind_all('<Delete>', lambda e: self.delete())
@@ -316,10 +316,15 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Create root
         self.root = tk.Tk()
 
-        # self.s = ttk.Style()
-        # self.s.theme_use('clam')
+        # style = ttk.Style()
+        # style.theme_create("yummy", parent="xpnative", settings={
+        #     "TNotebook": {"configure": {"tabmargins": [1,2,1,0]}},
+        #     "TNotebook.Tab": {
+        #         "configure": {"padding": [1, 1], "background": background_color},
+        #         "map": {"background": [("selected", button_color)],
+        #                 "expand": [("selected", [1, 1, 1, 0])]}}})
 
-        # self.colors = ['red', 'green', 'blue', 'orange']
+        # style.theme_use("yummy")
 
         # Configure error handling
         self.root.report_callback_exception = self.report_callback_exception
@@ -352,7 +357,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.title('MF run counter')
         self.clickthrough = False
         self.root.resizable(False, False)
-        self.root.config(borderwidth=3, relief='raised', height=405, width=240)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -414,7 +418,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=3, relief='raised', height=701, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=701, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=12)
             self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14')
@@ -423,10 +427,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             if hasattr(self, 'drop_lab'):
                 self.drop_lab.destroy()
                 self.tab2.forget()
-            self.root.config(borderwidth=3, relief='raised', height=405, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')
             self.tabcontrol.insert(1, self.tab2)
-            self.tab2.m.config(height=5)
+            self.tab2.m.config(height=12)
 
     def process_queue(self):
         """
