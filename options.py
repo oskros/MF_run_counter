@@ -27,7 +27,7 @@ class General(tk.Frame):
         self.add_flag(flag_name='Pop-up drop window')
         self.add_delay_option()
 
-        tk.Label(self, text="Toggling 'Tab switch keys global' or\n'Pop-up drop window' requires a\nrestart of the application", pady=3).pack()
+        tk.Label(self, text="Toggling 'Tab switch keys global'\nrequires a restart of the application", pady=8).pack()
 
     def change_delay(self):
         new = self.run_delay.get()
@@ -59,13 +59,16 @@ class General(tk.Frame):
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
         sv = getattr(self, flag_attr)
-        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, command=lambda: self.toggle_button(flag_attr))
-        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3, command=lambda: self.toggle_button(flag_attr))
+        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5)
+        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3)
 
         if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
         else:
             off_button.invoke()
+
+        off_button.config(command=lambda: self.toggle_button(flag_attr))
+        on_button.config(command=lambda: self.toggle_button(flag_attr))
         on_button.pack(side=tk.RIGHT)
         off_button.pack(side=tk.RIGHT)
 
@@ -74,6 +77,8 @@ class General(tk.Frame):
         setattr(self.main_frame, attr, val)
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
+        if attr.lower() == 'pop_up_drop_window':
+            self.main_frame.toggle_drop_tab()
 
 
 class Hotkeys(tk.Frame):

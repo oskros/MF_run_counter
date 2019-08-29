@@ -243,7 +243,7 @@ class Drops(tk.Frame):
         lf = tk.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=kw.pop('height', 5), yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5, padx=2)
         scrollbar.config(command=self.m.yview)
@@ -367,9 +367,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tabcontrol = ttk.Notebook(self.root)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
+        self.tab2 = Drops(self.tab1, parent=self.root)
         self.toggle_drop_tab()
-        # self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
-        # self.tabcontrol.add(self.tab2, text='Drops')
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab3, text='Options')
         self.tab4 = Profile(self, parent=self.tabcontrol)
@@ -406,14 +405,22 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
     def toggle_drop_tab(self):
         if self.pop_up_drop_window:
-            self.root.config(borderwidth=3, relief='raised', height=705, width=240)
-            self.tab2 = Drops(self.tab1, self.root, height=12)
+            tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
+            if tab_name in self.tabcontrol.tabs():
+                self.tabcontrol.forget(tab_name)
+            self.root.config(borderwidth=3, relief='raised', height=701, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            lab = tk.Label(self.root, text='Drops', font='helvetica 14')
-            lab.pack(side=tk.BOTTOM)
+            self.tab2.m.config(height=12)
+            self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14')
+            self.drop_lab.pack(side=tk.BOTTOM)
         else:
-            self.tab2 = Drops(self.tab1, parent=self.tabcontrol)
+            if hasattr(self, 'drop_lab'):
+                self.drop_lab.destroy()
+                self.tab2.forget()
+            self.root.config(borderwidth=3, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')
+            self.tabcontrol.insert(1, self.tab2)
+            self.tab2.m.config(height=5)
 
     def process_queue(self):
         """
