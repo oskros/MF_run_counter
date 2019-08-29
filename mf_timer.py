@@ -363,6 +363,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
+        self.use_dark_theme = eval(self.cfg['OPTIONS']['use_dark_theme'])
 
         # Check for version update
         if self.check_for_new_version:
@@ -442,9 +443,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=697, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=12)
+            self.tab2.m.config(height=8)
             self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14', bg=label_color, fg=text_color)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:

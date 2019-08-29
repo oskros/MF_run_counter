@@ -27,9 +27,8 @@ class General(tk.Frame):
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
         self.add_flag(flag_name='Pop-up drop window')
+        self.add_flag(flag_name='Use dark theme')
         self.add_delay_option()
-
-        tk.Label(self, text="Toggling 'Tab switch keys global'\nrequires a restart of the application", pady=8, bg=label_color, fg=text_color).pack()
 
     def change_delay(self):
         new = self.run_delay.get()
@@ -79,8 +78,11 @@ class General(tk.Frame):
         setattr(self.main_frame, attr, val)
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
-        if attr.lower() == 'pop_up_drop_window':
+        elif attr.lower() == 'pop_up_drop_window':
             self.main_frame.toggle_drop_tab()
+        elif attr.lower() in ['use_dark_theme', 'tab_switch_keys_global']:
+            tk.messagebox.showinfo('Restart required', 'The change will take effect after a restart of the application'
+                                                       '')
 
 
 class Hotkeys(tk.Frame):

@@ -1,4 +1,9 @@
-THEME = 'dark'
+from config import Config
+cfg = Config().load_config_file()
+if eval(cfg['OPTIONS']['use_dark_theme']):
+    THEME = 'dark'
+else:
+    THEME = 'default'
 
 
 if THEME == 'test':
