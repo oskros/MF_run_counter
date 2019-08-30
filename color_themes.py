@@ -34,7 +34,9 @@ class Theme:
             self.combohighlight_color = 'black'  # Highlight selection color
             self.combofield_color = 'SteelBlue1'  # Background of the combobox
             self.dropdown_button_color = 'blue'  # Color of the dropdown button
-
+            self.combo_listbox_foreground = 'black'
+            self.combo_listbox_selectbackground = 'black'
+            self.combo_listbox_selectforeground = 'white'
         elif used_theme == 'dark':
             # General
             default_color = 'black'
@@ -65,7 +67,9 @@ class Theme:
             self.combohighlight_color = 'blue'  # Highlight selection color
             self.combofield_color = 'grey90'  # Background of the combobox
             self.dropdown_button_color = 'grey70'  # Color of the dropdown button
-
+            self.combo_listbox_foreground = 'black'
+            self.combo_listbox_selectbackground = 'black'
+            self.combo_listbox_selectforeground = 'white'
         elif used_theme == 'default':
             # General
             default_color = '#f0f0ed'
@@ -96,7 +100,9 @@ class Theme:
             self.combohighlight_color = 'blue'  # Highlight selection color
             self.combofield_color = 'white'  # Background of the combobox
             self.dropdown_button_color = 'white'  # Color of the dropdown button
-
+            self.combo_listbox_foreground = 'black'
+            self.combo_listbox_selectbackground = 'black'
+            self.combo_listbox_selectforeground = 'white'
         else:
             raise NotImplementedError
 

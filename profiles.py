@@ -32,9 +32,9 @@ class Profile(tk.Frame):
 
         if self.main_frame.active_theme != 'default':
             self.option_add("*TCombobox*Listbox*Background", self.main_frame.entry_color)
-            self.option_add("*TCombobox*Listbox*Foreground", 'black')
-            self.option_add("*TCombobox*Listbox*selectBackground", 'black')
-            self.option_add("*TCombobox*Listbox*selectForeground", 'white')
+            self.option_add("*TCombobox*Listbox*Foreground", self.main_frame.combo_listbox_foreground)
+            self.option_add("*TCombobox*Listbox*selectBackground", self.main_frame.combo_listbox_selectbackground)
+            self.option_add("*TCombobox*Listbox*selectForeground", self.main_frame.combo_listbox_selectforeground)
         self.active_profile = tk.StringVar()
         self.active_profile.set(self.main_frame.active_profile)
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
