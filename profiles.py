@@ -4,7 +4,8 @@ import json
 import os
 import sys
 import tkinter as tk
-import tk_dynamic as  tkd
+import tk_dynamic as tkd
+from color_themes import Theme
 from tkinter import ttk, messagebox, filedialog
 import tk_utils
 
@@ -323,9 +324,9 @@ class Profile(tkd.Frame):
             txt_list.insert(tk.END, tmpstr)
 
         button_frame = tkd.Frame(new_win)
-        tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END))), bg=self.main_frame.button_color, fg=self.main_frame.text_color).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(txt_list.get(0, tk.END))), bg=self.main_frame.button_color, fg=self.main_frame.text_color).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output), bg=self.main_frame.button_color, fg=self.main_frame.text_color).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output)).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is very important:
         # TOP: Title first (furthest up), then list frame
@@ -334,6 +335,8 @@ class Profile(tkd.Frame):
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         button_frame.pack(side=tk.BOTTOM)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
+
+        Theme(self.main_frame.active_theme)
 
     @staticmethod
     def copy_to_clipboard(obj, string):

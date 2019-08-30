@@ -52,11 +52,7 @@ class General(tkd.Frame):
         active_theme = self.active_theme.get()
         if active_theme != self.main_frame.active_theme:
             self.main_frame.active_theme = active_theme
-            theme = Theme(used_theme=active_theme)
-            self.main_frame.pause_button_color = theme.pause_button_color
-            self.main_frame.pause_button_text = theme.pause_button_text
-            theme.apply_theme_style()
-            theme.update_colors()
+            self.main_frame.theme = Theme(used_theme=active_theme)
 
     def _change_delay(self):
         new = self.run_delay.get()

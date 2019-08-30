@@ -22,6 +22,10 @@ class Toplevel(tk.Toplevel):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Toplevel.destroy(self)
+
 
 class Canvas(tk.Canvas):
     objects = []
@@ -43,6 +47,10 @@ class Canvas(tk.Canvas):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Canvas.destroy(self)
 
 
 class Tk(tk.Tk):
@@ -66,6 +74,10 @@ class Tk(tk.Tk):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Tk.destroy(self)
+
 
 class Label(tk.Label):
     objects = []
@@ -87,6 +99,10 @@ class Label(tk.Label):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Label.destroy(self)
 
 
 class Hyperlink(tk.Label):
@@ -110,6 +126,10 @@ class Hyperlink(tk.Label):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Label.destroy(self)
+
 
 class RunLabel(tk.Label):
     objects = []
@@ -131,6 +151,10 @@ class RunLabel(tk.Label):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Label.destroy(self)
 
 
 class Frame(tk.Frame):
@@ -154,6 +178,10 @@ class Frame(tk.Frame):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Frame.destroy(self)
+
 
 class Button(tk.Button):
     objects = []
@@ -175,6 +203,10 @@ class Button(tk.Button):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Button.destroy(self)
 
 
 class PauseButton(tk.Button):
@@ -198,6 +230,10 @@ class PauseButton(tk.Button):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Button.destroy(self)
+
 
 class LabelFrame(tk.LabelFrame):
     objects = []
@@ -219,6 +255,10 @@ class LabelFrame(tk.LabelFrame):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.LabelFrame.destroy(self)
 
 
 class Listbox(tk.Listbox):
@@ -242,6 +282,10 @@ class Listbox(tk.Listbox):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Listbox.destroy(self)
+
 
 class Entry(tk.Entry):
     objects = []
@@ -264,6 +308,10 @@ class Entry(tk.Entry):
         for obj in cls.objects:
             obj.my_config = val
 
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Entry.destroy(self)
+
 
 class Radiobutton(tk.Radiobutton):
     objects = []
@@ -285,3 +333,7 @@ class Radiobutton(tk.Radiobutton):
     def set_config(cls, **val):
         for obj in cls.objects:
             obj.my_config = val
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Radiobutton.destroy(self)

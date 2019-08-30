@@ -123,6 +123,9 @@ class Theme:
         else:
             raise NotImplementedError
 
+        self.apply_theme_style()
+        self.update_colors()
+
     def apply_theme_style(self):
         style = ttk.Style()
         style_name = 'my_' + self.used_theme if self.used_theme != 'vista' else self.used_theme

@@ -190,7 +190,7 @@ class MFRunTimer(tkd.Frame):
 
     def Pause(self):
         if not self.is_paused:
-            self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause, bg=self.main_frame.pause_button_color, fg=self.main_frame.pause_button_text)
+            self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause, bg=self.main_frame.theme.pause_button_color, fg=self.main_frame.theme.pause_button_text)
             self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
@@ -204,7 +204,6 @@ class MFRunTimer(tkd.Frame):
             self.is_paused = True
         else:
             self.pause_lab.destroy()
-            tkd.PauseButton.objects.pop()
             self._start = time.time() - self._laptime
             self._session_start = time.time() - self.session_time
             if self.is_running:
@@ -407,11 +406,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # Apply styling options
         if self.active_theme not in available_themes:
             self.active_theme = 'vista'
-        theme = Theme(used_theme=self.active_theme)
-        theme.apply_theme_style()
-        theme.update_colors()
-        self.pause_button_color = theme.pause_button_color
-        self.pause_button_text = theme.pause_button_text
+        self.theme = Theme(used_theme=self.active_theme)
 
         # Start the program
         self.root.mainloop()
