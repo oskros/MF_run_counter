@@ -1,4 +1,5 @@
 from init import *
+import tk_dynamic as tkd
 import tkinter as tk
 import webbrowser
 
@@ -234,8 +235,8 @@ def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', 
     return msgbox.returning
 
 
-def add_circle(parent, pixels, color, bg, border):
-    canvas = tk.Canvas(parent, width=pixels + 2, height=pixels + 2, borderwidth=0, highlightthickness=0, bg=bg)
+def add_circle(parent, pixels, color):
+    canvas = tkd.Canvas(parent, width=pixels + 2, height=pixels + 2, borderwidth=0, highlightthickness=0)
 
     def _create_circle(self, x, y, r, **kwargs):
         return self.create_oval(x - r, y - r, x + r, y + r, **kwargs)
@@ -251,7 +252,7 @@ def add_circle(parent, pixels, color, bg, border):
     tk.Canvas.create_circle_arc = _create_circle_arc
 
     cpix = pixels // 2
-    circ_id = canvas.create_circle(cpix, cpix, cpix, fill=color, outline=border, width=0.5)
+    circ_id = canvas.create_circle(cpix, cpix, cpix, fill=color, width=0.5) # outline = 'black'
     canvas.create_circle_arc(cpix, cpix, pixels // 2.2, style="arc", outline="white", width=pixels // 12.5,
                              start=270 - 25, end=270 + 25)
     return canvas, circ_id

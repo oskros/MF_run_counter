@@ -13,6 +13,7 @@ import github_releases
 import sound
 import tk_utils
 import tkinter as tk
+import tk_dynamic as tkd
 from tkinter import ttk, messagebox
 from config import Config
 from options import Options
@@ -21,10 +22,9 @@ from color_themes import Theme, available_themes
 exec(blocks[1])
 
 
-class MFRunTimer(tk.Frame):
+class MFRunTimer(tkd.Frame):
     def __init__(self, main_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
+        tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self._start = 0.0
         self._session_start = time.time()
@@ -46,33 +46,33 @@ class MFRunTimer(tk.Frame):
         self._update_session_time()
 
     def _make_widgets(self):
-        flt = tk.Frame(self, bg=self.main_frame.frame_color)
+        flt = tkd.Frame(self)
         flt.pack(fill=tk.X, expand=tk.NO)
-        self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red', bg=self.main_frame.label_color, border=self.main_frame.circle_border_color)
+        self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red')
         self.c1.grid(row=0, column=0, padx=3, pady=3)
-        tk.Label(flt, textvariable=self.sessionstr, font=('arial', 10), bg=self.main_frame.label_color, fg=self.main_frame.text_color).grid(row=0, column=1, sticky=tk.N, padx=20)
+        tkd.Label(flt, textvariable=self.sessionstr, font=('arial', 10)).grid(row=0, column=1, sticky=tk.N, padx=20)
         self._set_time(self.session_time, for_session=True)
 
-        tk.Label(self, textvariable=self.timestr, font='arial 20', bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(fill=tk.X, expand=tk.NO, pady=4)
+        tkd.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=tk.NO, pady=4)
         self._set_time(0, for_session=False)
 
-        l2f = tk.Frame(self, bg=self.main_frame.frame_color)
+        l2f = tkd.Frame(self)
         l2f.pack(pady=2)
-        tk.Label(l2f, text='---- Run count:', font=('arial', 12), bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(side=tk.LEFT)
-        tk.Label(l2f, textvariable=self.no_of_laps, font='arial 15', fg=self.main_frame.run_count_color, bg=self.main_frame.label_color).pack(side=tk.LEFT)
-        tk.Label(l2f, text='----', font=('arial', 12), bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(side=tk.LEFT)
+        tkd.Label(l2f, text='---- Run count:', font=('arial', 12)).pack(side=tk.LEFT)
+        tkd.RunLabel(l2f, textvariable=self.no_of_laps, font='arial 15').pack(side=tk.LEFT)
+        tkd.Label(l2f, text='----', font=('arial', 12)).pack(side=tk.LEFT)
         self._set_laps(is_running=False)
 
-        tk.Label(self, textvariable=self.min_lap, font=('arial', 11), bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tkd.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_fastest()
 
-        tk.Label(self, textvariable=self.avg_lap, font=('arial', 11), bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tkd.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
         self._set_average()
 
-        lf0 = tk.Frame(self, bg=self.main_frame.frame_color)
+        lf0 = tkd.Frame(self)
         lf0.pack()
         scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12), bg=self.main_frame.listbox_color, fg=self.main_frame.listbox_text, highlightbackground=self.main_frame.border_color)
+        self.m = tkd.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
         self.m.bindtags((self.m, self, "all"))
@@ -190,7 +190,7 @@ class MFRunTimer(tk.Frame):
 
     def Pause(self):
         if not self.is_paused:
-            self.pause_lab = tk.Button(self, font='arial 24 bold', text='Resume', bg=self.main_frame.pause_button_color, fg=self.main_frame.pause_button_text, command=self.Pause)
+            self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause, bg=self.main_frame.pause_button_color, fg=self.main_frame.pause_button_text)
             self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
@@ -204,6 +204,7 @@ class MFRunTimer(tk.Frame):
             self.is_paused = True
         else:
             self.pause_lab.destroy()
+            tkd.PauseButton.objects.pop()
             self._start = time.time() - self._laptime
             self._session_start = time.time() - self.session_time
             if self.is_running:
@@ -238,22 +239,21 @@ class MFRunTimer(tk.Frame):
         return dict(laps=self.laps, session_time=self.session_time)
 
 
-class Drops(tk.Frame):
+class Drops(tkd.Frame):
     def __init__(self, tab1, main_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
+        tkd.Frame.__init__(self, parent, kw)
         self.drops = dict()
         self.tab1 = tab1
-        lf = tk.Frame(self, bg=main_frame.frame_color)
+        lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tk.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12), bg=main_frame.listbox_color, fg=main_frame.listbox_text, highlightbackground=main_frame.border_color)
+        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2,1), padx=2)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2,1), padx=2)
 
-        btn = tk.Button(self, text='Delete selection', command=self.delete, bg=main_frame.button_color, fg=main_frame.text_color)
+        btn = tkd.Button(self, text='Delete selection', command=self.delete)
         btn.bind_all('<Delete>', lambda e: self.delete())
         btn.pack(side=tk.BOTTOM, pady=(1,2))
 
@@ -291,31 +291,30 @@ class Drops(tk.Frame):
                 self.display_drop(drop=drop, run_no=run)
 
 
-class About(tk.Frame):
+class About(tkd.Frame):
     def __init__(self, main_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
-        label0 = tk.Label(self, text="""Run counter for Diablo 2 developed in July 
+        tkd.Frame.__init__(self, parent, kw)
+        label0 = tkd.Label(self, text="""Run counter for Diablo 2 developed in July 
 and August2019 by *oskros on Path of 
 Diablo. Please see the README.md file 
-available on Github""", justify=tk.LEFT, bg=main_frame.label_color, fg=main_frame.text_color)
+available on Github""", justify=tk.LEFT)
         label0.pack()
-        link0 = tk.Label(self, text="Open Readme", fg=main_frame.hyperlink_color, cursor="hand2", bg=main_frame.label_color)
+        link0 = tkd.Hyperlink(self, text="Open Readme", cursor="hand2")
         link0.pack()
         link0.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo.rstrip('releases') + 'blob/master/README.md'))
 
-        label = tk.Label(self, text="\n\nVisit the page below for new releases", bg=main_frame.label_color, fg=main_frame.text_color)
+        label = tkd.Label(self, text="\n\nVisit the page below for new releases")
         label.pack()
 
-        link1 = tk.Label(self, text="Release Hyperlink", fg=main_frame.hyperlink_color, cursor="hand2", bg=main_frame.label_color)
+        link1 = tkd.Hyperlink(self, text="Release Hyperlink", cursor="hand2")
         link1.pack()
         link1.bind("<Button-1>", lambda e: webbrowser.open_new(release_repo))
 
-        lab2 = tk.Label(self, text="\n\nCurrent version: %s" % version, bg=main_frame.label_color, fg=main_frame.text_color)
+        lab2 = tkd.Label(self, text="\n\nCurrent version: %s" % version)
         lab2.pack(side=tk.BOTTOM)
 
 
-class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
+class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
         self.root = tk.Tk()
@@ -332,13 +331,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
-
-        # Apply styling options
-        if self.active_theme not in available_themes:
-            self.active_theme = 'default'
-        Theme.__init__(self, used_theme=self.active_theme)
-        if self.active_theme != 'default':
-            self.apply_theme_style()
 
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
@@ -361,8 +353,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
-        self.root.config(bg=self.frame_color)
-        self.root.config(highlightbackground=self.border_color)
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
@@ -371,7 +361,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         # Build banner image and make window draggable on the banner
         d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
         img = tk.PhotoImage(file=d2icon)
-        self.img_panel = tk.Label(self.root, image=img, bg=self.label_color, fg=self.text_color)
+        self.img_panel = tkd.Label(self.root, image=img)
         self.img_panel.pack()
         self.img_panel.bind("<ButtonPress-1>", self._start_move)
         self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
@@ -393,14 +383,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
 
         # Add buttons to main widget
-        lf = tk.LabelFrame(self.root, height=35, bg=self.frame_color)
+        lf = tkd.LabelFrame(self.root, height=35)
         lf.propagate(False)  # dont allow buttons to modify label frame size
         lf.pack(expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Start\nnew run', command=self.tab1.StopStart, bg=self.button_color, fg=self.text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='End\nthis run', command=self.tab1.Stop, bg=self.button_color, fg=self.text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop, bg=self.button_color, fg=self.text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap, bg=self.button_color, fg=self.text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tk.Button(lf, text='Archive\n& reset', command=self.ArchiveReset, bg=self.button_color, fg=self.text_color).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Start\nnew run', command=self.tab1.StopStart).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='End\nthis run', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -414,6 +404,15 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.LoadActiveState(active_state)
         self._autosave_state()
 
+        # Apply styling options
+        if self.active_theme not in available_themes:
+            self.active_theme = 'vista'
+        theme = Theme(used_theme=self.active_theme)
+        theme.apply_theme_style()
+        theme.update_colors()
+        self.pause_button_color = theme.pause_button_color
+        self.pause_button_text = theme.pause_button_text
+
         # Start the program
         self.root.mainloop()
 
@@ -425,7 +424,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
             self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=8)
-            self.drop_lab = tk.Label(self.root, text='Drops', font='helvetica 14', bg=self.label_color, fg=self.text_color)
+            self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14')
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):

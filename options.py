@@ -2,15 +2,16 @@ from color_themes import available_themes
 import sys
 import tkinter as tk
 from tk_utils import mbox
+from color_themes import Theme
+import tk_dynamic as tkd
 from tkinter import messagebox, ttk
 from system_hotkey import SystemHotkey
 import os
 
 
-class Options(tk.Frame):
+class Options(tkd.Frame):
     def __init__(self, main_frame, timer_frame, drop_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
+        tkd.Frame.__init__(self, parent, kw)
         self.tabcontrol = ttk.Notebook(self)
         self.tab1 = Hotkeys(main_frame, timer_frame, drop_frame, parent=self.tabcontrol)
         self.tab2 = General(main_frame, parent=self.tabcontrol)
@@ -19,10 +20,9 @@ class Options(tk.Frame):
         self.tabcontrol.pack(expand=1, fill='both')
 
 
-class General(tk.Frame):
+class General(tkd.Frame):
     def __init__(self, main_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
+        tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self.add_flag(flag_name='Always on top')
         self.add_flag(flag_name='Tab switch keys global')
@@ -33,11 +33,11 @@ class General(tk.Frame):
         self.add_delay_option()
 
     def add_theme_choice(self):
-        lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
+        lf = tkd.LabelFrame(self, height=30, width=179)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
-        lab = tk.Label(lf, text='Active theme', bg=self.main_frame.label_color, fg=self.main_frame.text_color)
+        lab = tkd.Label(lf, text='Active theme')
         lab.pack(side=tk.LEFT)
 
         self.active_theme = tk.StringVar()
@@ -48,22 +48,15 @@ class General(tk.Frame):
         theme_choices.config(width=11)
         theme_choices.pack(side=tk.RIGHT, fill=tk.X, padx=2)
 
-    # @staticmethod
-    # def restart_program():
-    #     """Restarts the current program.
-    #     Note: this function does not return. Any cleanup action (like
-    #     saving data) must be done before calling this function."""
-    #     python = sys.executable
-    #     os.execl(python, python, *sys.argv)
-
     def _change_theme(self):
         active_theme = self.active_theme.get()
         if active_theme != self.main_frame.active_theme:
             self.main_frame.active_theme = active_theme
-            # confirm = mbox(msg='Theme will be updated after a restart. Do you wish to restart?', b1='Yes', b2='No')
-            # if confirm:
-            #     self.restart_program()
-            tk.messagebox.showinfo('Restart required', 'The theme will update after a restart of the application')
+            theme = Theme(used_theme=active_theme)
+            self.main_frame.pause_button_color = theme.pause_button_color
+            self.main_frame.pause_button_text = theme.pause_button_text
+            theme.apply_theme_style()
+            theme.update_colors()
 
     def _change_delay(self):
         new = self.run_delay.get()
@@ -72,31 +65,31 @@ class General(tk.Frame):
         self.main_frame.run_timer_delay_seconds = float(self.run_delay.get())
 
     def add_delay_option(self):
-        lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
+        lf = tkd.LabelFrame(self, height=30, width=179)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
-        lab = tk.Label(lf, text='Start run delay (seconds)', bg=self.main_frame.label_color, fg=self.main_frame.text_color)
+        lab = tkd.Label(lf, text='Start run delay (seconds)')
         lab.pack(side=tk.LEFT)
 
         self.run_delay = tk.StringVar()
         self.run_delay.set(eval(self.main_frame.cfg['DEFAULT']['run_timer_delay_seconds']))
-        tk.Entry(lf, textvariable=self.run_delay, bg=self.main_frame.entry_color).pack(side=tk.RIGHT)
+        tkd.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
         self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
 
     def add_flag(self, flag_name):
-        lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
+        lf = tkd.LabelFrame(self, height=30, width=179)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
-        lab = tk.Label(lf, text=flag_name, bg=self.main_frame.label_color, fg=self.main_frame.text_color)
+        lab = tkd.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
 
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
         sv = getattr(self, flag_attr)
-        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, bg=self.main_frame.button_color, selectcolor=self.main_frame.activebutton_color)
-        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3, bg=self.main_frame.button_color, selectcolor=self.main_frame.activebutton_color)
+        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5)
+        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3)
 
         if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
@@ -119,10 +112,9 @@ class General(tk.Frame):
             tk.messagebox.showinfo('Restart required', 'The change will take effect after a restart of the application')
 
 
-class Hotkeys(tk.Frame):
+class Hotkeys(tkd.Frame):
     def __init__(self, main_frame, timer_frame, drop_frame, parent=None, **kw):
-        tk.Frame.__init__(self, parent, kw)
-        self.config(bg=main_frame.frame_color)
+        tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self.modifier_options = ['Control', 'Alt', 'Shift', '']
         self.character_options = ['Escape', 'Space', 'Delete',
@@ -131,12 +123,12 @@ class Hotkeys(tk.Frame):
                                   'F10', 'F11', 'F12', 'NO_BIND']
         self.hk = SystemHotkey()
 
-        lf = tk.Frame(self, height=20, width=179, bg=self.main_frame.frame_color)
+        lf = tkd.Frame(self, height=20, width=179)
         lf.pack(expand=True, fill=tk.BOTH)
         lf.propagate(False)
-        tk.Label(lf, text='Action', font='Helvetica 11 bold', justify=tk.LEFT, bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(side=tk.LEFT)
-        tk.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9, bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(side=tk.RIGHT)
-        tk.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7, bg=self.main_frame.label_color, fg=self.main_frame.text_color).pack(side=tk.RIGHT)
+        tkd.Label(lf, text='Action', font='Helvetica 11 bold', justify=tk.LEFT).pack(side=tk.LEFT)
+        tkd.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9).pack(side=tk.RIGHT)
+        tkd.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7).pack(side=tk.RIGHT)
 
         self.add_hotkey(label_name='Start new run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.StopStart)
         self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.Stop)
@@ -153,11 +145,11 @@ class Hotkeys(tk.Frame):
         default_modifier, default_key = keys
         action = label_name.replace(' ', '_').lower()
         setattr(self, '_' + action, keys)
-        lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
+        lf = tkd.LabelFrame(self, height=30, width=179)
         lf.propagate(False)
         lf.pack(expand=True, fill=tk.BOTH)
 
-        lab = tk.Label(lf, text=label_name, bg=self.main_frame.frame_color, fg=self.main_frame.text_color)
+        lab = tkd.Label(lf, text=label_name)
         lab.pack(side=tk.LEFT)
 
         setattr(self, action + '_e', tk.StringVar())

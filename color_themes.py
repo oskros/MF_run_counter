@@ -1,10 +1,12 @@
 from tkinter import ttk
-available_themes = ['blue', 'dark', 'default']
+import tk_dynamic as tkd
+available_themes = ['blue', 'dark', 'vista']
 
 
 class Theme:
     def __init__(self, used_theme):
-        if used_theme == 'blue':
+        self.used_theme = used_theme
+        if self.used_theme == 'blue':
             # General
             default_color = 'light blue'
             self.ttk_style = 'clam'
@@ -42,7 +44,7 @@ class Theme:
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
-        elif used_theme == 'dark':
+        elif self.used_theme == 'dark':
             # General
             default_color = 'black'
             self.ttk_style = 'clam'
@@ -80,7 +82,7 @@ class Theme:
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
-        elif used_theme == 'default':
+        elif self.used_theme == 'vista':
             # General
             default_color = '#f0f0ed'
             self.ttk_style = 'vista'
@@ -123,26 +125,43 @@ class Theme:
 
     def apply_theme_style(self):
         style = ttk.Style()
-        style.theme_create('mf_timer_style', parent=self.ttk_style,
-                           settings={'TCombobox':
-                                         {'configure':
-                                              {'selectbackground': self.combohighlight_color,
-                                               # 'selectforeground': 'grey90',
-                                               'fieldbackground': self.combofield_color,
-                                               'background': self.dropdown_button_color,
-                                               }},
-                                     "TNotebook": {
-                                         "configure": {"background": self.notebook_background_color,
-                                                       "tabmargins": [2, 4, 2, 0]}
-                                     },
-                                     "TNotebook.Tab": {
-                                         "configure": {"padding": [2, 1],
-                                                       "background": self.tab_background_color,
-                                                       "foreground": self.text_color,
-                                                       "lightcolor": self.border_color},
-                                         "map": {"background": [("selected", self.selected_tab_color),
-                                                                ("active", self.hover_tab_background_color)],
-                                                 "expand": [("selected", [2, 1, 2, 0])]}}
-                                     }
-                           )
-        style.theme_use('mf_timer_style')
+        style_name = 'my_' + self.used_theme if self.used_theme != 'vista' else self.used_theme
+        if style_name not in style.theme_names() and self.used_theme != 'vista':
+            style.theme_create(style_name, parent=self.ttk_style,
+                               settings={'TCombobox':
+                                             {'configure':
+                                                  {'selectbackground': self.combohighlight_color,
+                                                   # 'selectforeground': 'grey90',
+                                                   'fieldbackground': self.combofield_color,
+                                                   'background': self.dropdown_button_color,
+                                                   }},
+                                         "TNotebook": {
+                                             "configure": {"background": self.notebook_background_color,
+                                                           "tabmargins": [2, 4, 2, 0]}
+                                         },
+                                         "TNotebook.Tab": {
+                                             "configure": {"padding": [2, 1],
+                                                           "background": self.tab_background_color,
+                                                           "foreground": self.text_color,
+                                                           "lightcolor": self.border_color},
+                                             "map": {"background": [("selected", self.selected_tab_color),
+                                                                    ("active", self.hover_tab_background_color)],
+                                                     "expand": [("selected", [2, 1, 2, 0])]}}
+                                         }
+                               )
+        style.theme_use(style_name)
+
+    def update_colors(self):
+        tkd.Tk.set_config(bg=self.frame_color, highlightbackground=self.border_color)
+        tkd.Toplevel.set_config(bg=self.frame_color)
+        tkd.Label.set_config(bg=self.label_color, fg=self.text_color)
+        tkd.Hyperlink.set_config(bg=self.label_color, fg=self.hyperlink_color)
+        tkd.RunLabel.set_config(bg=self.label_color, fg=self.run_count_color)
+        tkd.Button.set_config(bg=self.button_color, fg=self.text_color)
+        tkd.PauseButton.set_config(bg=self.pause_button_color, fg=self.pause_button_text)
+        tkd.Listbox.set_config(bg=self.listbox_color, fg=self.listbox_text, highlightbackground=self.border_color)
+        tkd.Frame.set_config(bg=self.frame_color)
+        tkd.LabelFrame.set_config(bg=self.frame_color)
+        tkd.Entry.set_config(bg=self.entry_color)
+        tkd.Radiobutton.set_config(bg=self.button_color, selectcolor=self.activebutton_color)
+        tkd.Canvas.set_config(bg=self.frame_color)
