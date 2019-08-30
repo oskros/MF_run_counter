@@ -1,6 +1,6 @@
 from tkinter import ttk
 import tk_dynamic as tkd
-available_themes = ['blue', 'dark', 'vista']
+available_themes = ['blue', 'dark', 'vista']  # , 'default', 'winnative', 'clam', 'alt']
 
 
 class Theme:
@@ -82,7 +82,7 @@ class Theme:
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
-        elif self.used_theme == 'vista':
+        else:
             # General
             default_color = '#f0f0ed'
             self.ttk_style = 'vista'
@@ -120,8 +120,6 @@ class Theme:
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
-        else:
-            raise NotImplementedError
 
         self.apply_theme_style()
         self.update_colors()
