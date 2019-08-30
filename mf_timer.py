@@ -316,7 +316,7 @@ available on Github""", justify=tk.LEFT)
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
-        self.root = tk.Tk()
+        self.root = tkd.Tk()
 
         # Ensure errors are handled with an exception pop-up if encountered
         self.root.report_callback_exception = self.report_callback_exception
