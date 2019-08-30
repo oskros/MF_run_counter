@@ -291,7 +291,7 @@ class Drops(tkd.Frame):
 
 
 class About(tkd.Frame):
-    def __init__(self, main_frame, parent=None, **kw):
+    def __init__(self, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         label0 = tkd.Label(self, text="""Run counter for Diablo 2 developed in July 
 and August2019 by *oskros on Path of 
@@ -335,6 +335,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         if self.active_theme not in available_themes:
             self.active_theme = 'vista'
         self.theme = Theme(used_theme=self.active_theme)
+        self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14', bg=self.theme.label_color, fg=self.theme.text_color)
 
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
@@ -381,7 +382,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tabcontrol.add(self.tab3, text='Options')
         self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab4, text='Profile')
-        self.tab5 = About(self, parent=self.tabcontrol)
+        self.tab5 = About(parent=self.tabcontrol)
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
@@ -423,7 +424,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=8)
-            self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14', bg=self.theme.label_color, fg=self.theme.text_color)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):

@@ -92,8 +92,10 @@ class General(tkd.Frame):
 
         if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
+            setattr(self, flag_attr + '_invoked', True)
         else:
             off_button.invoke()
+            setattr(self, flag_attr + '_invoked', False)
 
         off_button.config(command=lambda: self.toggle_button(flag_attr))
         on_button.config(command=lambda: self.toggle_button(flag_attr))
@@ -102,6 +104,9 @@ class General(tkd.Frame):
 
     def toggle_button(self, attr):
         val = eval(getattr(self, attr).get())
+        if bool(val) == getattr(self, attr + '_invoked'):
+            return
+        setattr(self, attr + '_invoked', bool(val))
         setattr(self.main_frame, attr, val)
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
