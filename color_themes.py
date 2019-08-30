@@ -13,11 +13,12 @@ class Theme:
             self.frame_color = default_color
             self.border_color = default_color
             self.label_color = default_color
+            self.notebook_background_color = default_color
 
             # Tab colors
-            self.notebook_background_color = default_color
             self.selected_tab_color = 'alice blue'
             self.hover_tab_background_color = 'lavender'
+            self.tab_background_color = self.frame_color
 
             # Widgets
             self.button_color = 'light sky blue'
@@ -50,9 +51,10 @@ class Theme:
             self.frame_color = default_color
             self.label_color = default_color
             self.border_color = 'dark grey'
+            self.notebook_background_color = 'grey10'
 
             # Tab colors
-            self.notebook_background_color = 'grey10'
+            self.tab_background_color = self.frame_color
             self.selected_tab_color = 'grey20'
             self.hover_tab_background_color = 'grey30'
 
@@ -87,11 +89,12 @@ class Theme:
             self.frame_color = default_color
             self.border_color = default_color
             self.label_color = default_color
+            self.notebook_background_color = default_color
 
             # Tab colors
-            self.notebook_background_color = default_color
             self.selected_tab_color = 'white'
             self.hover_tab_background_color = 'white'
+            self.tab_background_color = self.frame_color
 
             # Widgets
             self.button_color = default_color
@@ -120,16 +123,7 @@ class Theme:
 
     def apply_theme_style(self):
         style = ttk.Style()
-        # style.theme_create('combostyle', parent=self.ttk_style,
-        #                    settings={'TCombobox':
-        #                                  {'configure':
-        #                                       {'selectbackground': self.combohighlight_color,
-        #                                        # 'selectforeground': 'grey90',
-        #                                        'fieldbackground': self.combofield_color,
-        #                                        'background': self.dropdown_button_color,
-        #                                        }}}
-        #                    )
-        style.theme_create('combostyle', parent=self.ttk_style,
+        style.theme_create('mf_timer_style', parent=self.ttk_style,
                            settings={'TCombobox':
                                          {'configure':
                                               {'selectbackground': self.combohighlight_color,
@@ -137,23 +131,18 @@ class Theme:
                                                'fieldbackground': self.combofield_color,
                                                'background': self.dropdown_button_color,
                                                }},
+                                     "TNotebook": {
+                                         "configure": {"background": self.notebook_background_color,
+                                                       "tabmargins": [2, 4, 2, 0]}
+                                     },
                                      "TNotebook.Tab": {
-                                         "configure": {"padding": [5, 1], "background": self.frame_color},
-                                         "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
+                                         "configure": {"padding": [2, 1],
+                                                       "background": self.tab_background_color,
+                                                       "foreground": self.text_color,
+                                                       "lightcolor": self.border_color},
+                                         "map": {"background": [("selected", self.selected_tab_color),
+                                                                ("active", self.hover_tab_background_color)],
                                                  "expand": [("selected", [2, 1, 2, 0])]}}
                                      }
                            )
-
-        style.theme_use('combostyle')
-        style.element_create('Plain.Notebook.tab', "from", self.ttk_style)
-        style.element_create('Plain.Notebook', "from", self.ttk_style)
-        style.layout("TNotebook.Tab",
-                          [('Plain.Notebook.tab', {'children':
-                                                       [('Notebook.padding', {'side': 'top', 'children':
-                                                           [('Notebook.focus', {'side': 'top', 'children':
-                                                               [('Notebook.label', {'side': 'top', 'sticky': ''})],
-                                                                                'sticky': 'nswe'})],
-                                                                              'sticky': 'nswe'})],
-                                                   'sticky': 'nswe'})])
-        style.configure("TNotebook", background=self.frame_color, tabmargins=[2, 4, 2, 0])
-        style.configure("TNotebook.Tab", background=self.frame_color, foreground=self.text_color, lightcolor=self.border_color, padding=[2,1])
+        style.theme_use('mf_timer_style')
