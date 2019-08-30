@@ -25,7 +25,7 @@ class Theme:
             # Widgets
             self.button_color = 'light sky blue'
             self.activebutton_color = 'lavender'
-            self.listbox_color = 'white'
+            self.listbox_color = 'alice blue'
             self.pause_button_color = 'DodgerBlue2'
             self.circle_border_color = 'black'
             self.entry_color = 'alice blue'

@@ -8,19 +8,10 @@ class Toplevel(tk.Toplevel):
         tk.Toplevel.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -34,19 +25,10 @@ class Canvas(tk.Canvas):
         tk.Canvas.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -60,19 +42,10 @@ class Tk(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -86,19 +59,10 @@ class Label(tk.Label):
         tk.Label.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -112,19 +76,10 @@ class Hyperlink(tk.Label):
         tk.Label.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -138,19 +93,10 @@ class RunLabel(tk.Label):
         tk.Label.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -164,19 +110,10 @@ class Frame(tk.Frame):
         tk.Frame.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -190,19 +127,10 @@ class Button(tk.Button):
         tk.Button.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -216,19 +144,10 @@ class PauseButton(tk.Button):
         tk.Button.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -242,19 +161,10 @@ class LabelFrame(tk.LabelFrame):
         tk.LabelFrame.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -268,19 +178,10 @@ class Listbox(tk.Listbox):
         tk.Listbox.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -294,19 +195,10 @@ class Entry(tk.Entry):
         tk.Entry.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
@@ -320,19 +212,10 @@ class Radiobutton(tk.Radiobutton):
         tk.Radiobutton.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-    @property
-    def my_config(self):
-        return self._my_config
-
-    @my_config.setter
-    def my_config(self, val):
-        self._my_config = val
-        self.config(**self._my_config)
-
     @classmethod
     def set_config(cls, **val):
         for obj in cls.objects:
-            obj.my_config = val
+            obj.config(val)
 
     def destroy(self):
         self.__class__.objects.pop()
