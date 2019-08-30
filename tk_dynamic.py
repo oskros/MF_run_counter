@@ -34,6 +34,10 @@ class Canvas(tk.Canvas):
         self.__class__.objects.pop()
         tk.Canvas.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Canvas.forget(self)
+
 
 class Tk(tk.Tk):
     objects = []
@@ -68,6 +72,10 @@ class Label(tk.Label):
         self.__class__.objects.pop()
         tk.Label.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Label.forget(self)
+
 
 class Hyperlink(tk.Label):
     objects = []
@@ -84,6 +92,10 @@ class Hyperlink(tk.Label):
     def destroy(self):
         self.__class__.objects.pop()
         tk.Label.destroy(self)
+
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Label.forget(self)
 
 
 class RunLabel(tk.Label):
@@ -102,6 +114,10 @@ class RunLabel(tk.Label):
         self.__class__.objects.pop()
         tk.Label.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Label.forget(self)
+
 
 class Frame(tk.Frame):
     objects = []
@@ -118,6 +134,10 @@ class Frame(tk.Frame):
     def destroy(self):
         self.__class__.objects.pop()
         tk.Frame.destroy(self)
+
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Frame.forget(self)
 
 
 class Button(tk.Button):
@@ -136,6 +156,10 @@ class Button(tk.Button):
         self.__class__.objects.pop()
         tk.Button.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Button.forget(self)
+
 
 class PauseButton(tk.Button):
     objects = []
@@ -152,6 +176,10 @@ class PauseButton(tk.Button):
     def destroy(self):
         self.__class__.objects.pop()
         tk.Button.destroy(self)
+
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Button.forget(self)
 
 
 class LabelFrame(tk.LabelFrame):
@@ -170,6 +198,10 @@ class LabelFrame(tk.LabelFrame):
         self.__class__.objects.pop()
         tk.LabelFrame.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.LabelFrame.forget(self)
+
 
 class Listbox(tk.Listbox):
     objects = []
@@ -186,6 +218,10 @@ class Listbox(tk.Listbox):
     def destroy(self):
         self.__class__.objects.pop()
         tk.Listbox.destroy(self)
+
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Listbox.forget(self)
 
 
 class Entry(tk.Entry):
@@ -204,6 +240,10 @@ class Entry(tk.Entry):
         self.__class__.objects.pop()
         tk.Entry.destroy(self)
 
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Entry.forget(self)
+
 
 class Radiobutton(tk.Radiobutton):
     objects = []
@@ -220,3 +260,7 @@ class Radiobutton(tk.Radiobutton):
     def destroy(self):
         self.__class__.objects.pop()
         tk.Radiobutton.destroy(self)
+
+    def forget(self):
+        self.__class__.objects.pop()
+        tk.Radiobutton.forget(self)

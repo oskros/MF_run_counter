@@ -331,6 +331,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
 
+        # Load theme
+        if self.active_theme not in available_themes:
+            self.active_theme = 'vista'
+        self.theme = Theme(used_theme=self.active_theme)
+
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
         self.process_queue()
@@ -404,9 +409,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self._autosave_state()
 
         # Apply styling options
-        if self.active_theme not in available_themes:
-            self.active_theme = 'vista'
-        self.theme = Theme(used_theme=self.active_theme)
+        self.theme.apply_theme_style()
+        self.theme.update_colors()
 
         # Start the program
         self.root.mainloop()
@@ -419,11 +423,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=8)
-            self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14')
+            self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14', bg=self.theme.label_color, fg=self.theme.text_color)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
-                self.drop_lab.destroy()
+                self.drop_lab.forget()
                 self.tab2.forget()
             self.root.config(borderwidth=2, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')

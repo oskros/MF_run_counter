@@ -149,9 +149,6 @@ class Theme:
             self.sb_arrowcolor = 'white'
             self.sb_select_btn = 'grey35'
 
-        self.apply_theme_style()
-        self.update_colors()
-
     def apply_theme_style(self):
         style = ttk.Style()
         style_name = 'my_' + self.used_theme if self.used_theme != 'vista' else self.used_theme
@@ -189,7 +186,6 @@ class Theme:
                                          }
                                          })
         style.theme_use(style_name)
-
 
     def update_colors(self):
         tkd.Tk.set_config(bg=self.frame_color, highlightbackground=self.border_color)

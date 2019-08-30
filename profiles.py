@@ -336,7 +336,9 @@ class Profile(tkd.Frame):
         button_frame.pack(side=tk.BOTTOM)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
-        Theme(self.main_frame.active_theme)
+        theme = Theme(self.main_frame.active_theme)
+        theme.apply_theme_style()
+        theme.update_colors()
 
     @staticmethod
     def copy_to_clipboard(obj, string):
