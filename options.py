@@ -84,8 +84,8 @@ class General(tkd.Frame):
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
         sv = getattr(self, flag_attr)
-        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5)
-        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3)
+        off_button = tkd.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5)
+        on_button = tkd.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3)
 
         if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
