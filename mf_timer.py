@@ -17,7 +17,7 @@ from tkinter import ttk, messagebox
 from config import Config
 from options import Options
 from profiles import Profile
-from color_themes import Theme
+from color_themes import Theme, available_themes
 exec(blocks[1])
 
 
@@ -331,13 +331,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
-        self.use_dark_theme = eval(self.cfg['OPTIONS']['use_dark_theme'])
+        self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
 
         # Apply styling options
-        used_theme = 'dark' if self.use_dark_theme else 'default'
-        Theme.__init__(self, used_theme=used_theme)
-        if self.use_dark_theme:
-            self.apply_dark_style()
+        if self.active_theme not in available_themes:
+            self.active_theme = 'default'
+        Theme.__init__(self, used_theme=self.active_theme)
+        if self.active_theme != 'default':
+            self.apply_theme_style()
 
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)

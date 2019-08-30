@@ -30,14 +30,14 @@ class Profile(tk.Frame):
         profile_frame.propagate(False)
         profile_frame.pack()
 
-        if self.main_frame.use_dark_theme:
-            self.option_add("*TCombobox*Listbox*Background", self.main_frame.select_color)
+        if self.main_frame.active_theme != 'default':
+            self.option_add("*TCombobox*Listbox*Background", self.main_frame.entry_color)
             self.option_add("*TCombobox*Listbox*Foreground", 'black')
             self.option_add("*TCombobox*Listbox*selectBackground", 'black')
             self.option_add("*TCombobox*Listbox*selectForeground", 'white')
         self.active_profile = tk.StringVar()
         self.active_profile.set(self.main_frame.active_profile)
-        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles, height=100)
+        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
         self.profile_dropdown.bind("<FocusOut>", lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)

@@ -21,7 +21,7 @@ class Config:
         config['OPTIONS']['check_for_new_version'] = '1'
         config['OPTIONS']['enable_sound_effects'] = '0'
         config['OPTIONS']['pop_up_drop_window'] = '0'
-        config['OPTIONS']['use_dark_theme'] = '0'
+        config['OPTIONS']['active_theme'] = 'default'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -83,7 +83,7 @@ class Config:
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
         cfg['OPTIONS']['pop_up_drop_window'] = str(parent.pop_up_drop_window)
-        cfg['OPTIONS']['use_dark_theme'] = str(parent.use_dark_theme)
+        cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

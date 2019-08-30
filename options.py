@@ -1,8 +1,10 @@
-from color_themes import *
+from color_themes import available_themes
 import sys
 import tkinter as tk
+from tk_utils import mbox
 from tkinter import messagebox, ttk
 from system_hotkey import SystemHotkey
+import os
 
 
 class Options(tk.Frame):
@@ -27,10 +29,43 @@ class General(tk.Frame):
         self.add_flag(flag_name='Check for new version')
         self.add_flag(flag_name='Enable sound effects')
         self.add_flag(flag_name='Pop-up drop window')
-        self.add_flag(flag_name='Use dark theme')
+        self.add_theme_choice()
         self.add_delay_option()
 
-    def change_delay(self):
+    def add_theme_choice(self):
+        lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
+        lf.propagate(False)
+        lf.pack(expand=False, fill=tk.X)
+
+        lab = tk.Label(lf, text='Active theme', bg=self.main_frame.label_color, fg=self.main_frame.text_color)
+        lab.pack(side=tk.LEFT)
+
+        self.active_theme = tk.StringVar()
+        self.active_theme.set(self.main_frame.active_theme)
+        theme_choices = ttk.Combobox(lf, textvariable=self.active_theme, state='readonly', values=available_themes)
+        theme_choices.bind("<FocusOut>", lambda e: theme_choices.selection_clear())
+        theme_choices.bind("<<ComboboxSelected>>", lambda e: self._change_theme())
+        theme_choices.config(width=11)
+        theme_choices.pack(side=tk.RIGHT, fill=tk.X, padx=2)
+
+    # @staticmethod
+    # def restart_program():
+    #     """Restarts the current program.
+    #     Note: this function does not return. Any cleanup action (like
+    #     saving data) must be done before calling this function."""
+    #     python = sys.executable
+    #     os.execl(python, python, *sys.argv)
+
+    def _change_theme(self):
+        active_theme = self.active_theme.get()
+        if active_theme != self.main_frame.active_theme:
+            self.main_frame.active_theme = active_theme
+            # confirm = mbox(msg='Theme will be updated after a restart. Do you wish to restart?', b1='Yes', b2='No')
+            # if confirm:
+            #     self.restart_program()
+            tk.messagebox.showinfo('Restart required', 'The theme will update after a restart of the application')
+
+    def _change_delay(self):
         new = self.run_delay.get()
         if new in ['', '-'] or float(new) < 0:
             return
@@ -46,8 +81,8 @@ class General(tk.Frame):
 
         self.run_delay = tk.StringVar()
         self.run_delay.set(eval(self.main_frame.cfg['DEFAULT']['run_timer_delay_seconds']))
-        tk.Entry(lf, textvariable=self.run_delay, bg=self.main_frame.select_color).pack(side=tk.RIGHT)
-        self.run_delay.trace_add('write', lambda name, index, mode: self.change_delay())
+        tk.Entry(lf, textvariable=self.run_delay, bg=self.main_frame.entry_color).pack(side=tk.RIGHT)
+        self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
 
     def add_flag(self, flag_name):
         lf = tk.LabelFrame(self, height=30, width=179, bg=self.main_frame.frame_color)
@@ -60,8 +95,8 @@ class General(tk.Frame):
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
         sv = getattr(self, flag_attr)
-        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, bg=self.main_frame.button_color, selectcolor=self.main_frame.select_color)
-        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3, bg=self.main_frame.button_color, selectcolor=self.main_frame.select_color)
+        off_button = tk.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5, bg=self.main_frame.button_color, selectcolor=self.main_frame.activebutton_color)
+        on_button = tk.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3, bg=self.main_frame.button_color, selectcolor=self.main_frame.activebutton_color)
 
         if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
@@ -80,9 +115,8 @@ class General(tk.Frame):
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
         elif attr.lower() == 'pop_up_drop_window':
             self.main_frame.toggle_drop_tab()
-        elif attr.lower() in ['use_dark_theme', 'tab_switch_keys_global']:
-            tk.messagebox.showinfo('Restart required', 'The change will take effect after a restart of the application'
-                                                       '')
+        elif attr.lower() in ['tab_switch_keys_global']:
+            tk.messagebox.showinfo('Restart required', 'The change will take effect after a restart of the application')
 
 
 class Hotkeys(tk.Frame):

@@ -1,7 +1,7 @@
 import re
 import os
 import sys
-version = '0.12'
+version = '0.12.1'
 
 # The exe files do not have a media folder, so the media folder should only be added to the path when code is run
 # directly through Python
