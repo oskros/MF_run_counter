@@ -8,7 +8,7 @@ class Theme:
         self.used_theme = used_theme
         if self.used_theme == 'blue':
             # General
-            default_color = 'light blue'
+            default_color = 'LightSkyBlue1'
             self.ttk_style = 'clam'
 
             # Backgrounds
@@ -23,8 +23,8 @@ class Theme:
             self.tab_background_color = self.frame_color
 
             # Widgets
-            self.button_color = 'light sky blue'
-            self.activebutton_color = 'lavender'
+            self.button_color = 'SkyBlue1'
+            self.activebutton_color = 'alice blue'
             self.listbox_color = 'alice blue'
             self.pause_button_color = 'DodgerBlue2'
             self.circle_border_color = 'black'
@@ -39,11 +39,21 @@ class Theme:
 
             # Selecting Comboboxes
             self.combohighlight_color = 'black'  # Highlight selection color
-            self.combofield_color = 'lavender'  # Background of the combobox
+            self.combofield_color = 'alice blue'  # Background of the combobox
             self.dropdown_button_color = 'cornflower blue'  # Color of the dropdown button
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
+
+            # Scrollbars
+            self.sb_btn_background = 'cornflower blue'
+            self.sb_btn_border_se = 'black'
+            self.sb_btn_border_nw = 'white'
+            self.sb_bar_background = 'lavender'
+            self.sb_bordercolor = 'grey50'
+            self.sb_arrowcolor = 'white'
+            self.sb_select_btn = 'DodgerBlue3'
+
         elif self.used_theme == 'dark':
             # General
             default_color = 'black'
@@ -82,6 +92,15 @@ class Theme:
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
+
+            # Scrollbars
+            self.sb_btn_background = 'grey50'
+            self.sb_btn_border_se = 'black'
+            self.sb_btn_border_nw = 'white'
+            self.sb_bar_background = 'grey70'
+            self.sb_bordercolor = 'grey50'
+            self.sb_arrowcolor = 'white'
+            self.sb_select_btn = 'grey35'
         else:
             # General
             default_color = '#f0f0ed'
@@ -121,6 +140,15 @@ class Theme:
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
 
+            # Scrollbars
+            self.sb_btn_background = 'grey50'
+            self.sb_btn_border_se = 'black'
+            self.sb_btn_border_nw = 'white'
+            self.sb_bar_background = 'grey70'
+            self.sb_bordercolor = 'grey50'
+            self.sb_arrowcolor = 'white'
+            self.sb_select_btn = 'grey35'
+
         self.apply_theme_style()
         self.update_colors()
 
@@ -147,10 +175,21 @@ class Theme:
                                                            "lightcolor": self.border_color},
                                              "map": {"background": [("selected", self.selected_tab_color),
                                                                     ("active", self.hover_tab_background_color)],
-                                                     "expand": [("selected", [2, 1, 2, 0])]}}
+                                                     "expand": [("selected", [2, 1, 2, 0])]}},
+                                         "TScrollbar": {
+                                             "configure": {
+                                                 "background": self.sb_btn_background,
+                                                 "darkcolor": self.sb_btn_border_se,
+                                                 "lightcolor": self.sb_btn_border_nw,
+                                                 "troughcolor": self.sb_bar_background,
+                                                 "bordercolor": self.sb_bordercolor,
+                                                 "arrowcolor": self.sb_arrowcolor,
+                                             },
+                                             "map": {"background": [("active", self.sb_select_btn)]}
                                          }
-                               )
+                                         })
         style.theme_use(style_name)
+
 
     def update_colors(self):
         tkd.Tk.set_config(bg=self.frame_color, highlightbackground=self.border_color)

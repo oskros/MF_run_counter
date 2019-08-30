@@ -282,8 +282,8 @@ class Profile(tkd.Frame):
 
         # Configure the list frame with scrollbars which displays the archive of the chosen session
         list_frame = tkd.Frame(new_win)
-        vscroll = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
-        hscroll = tk.Scrollbar(new_win, orient=tk.HORIZONTAL)
+        vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
+        hscroll = ttk.Scrollbar(new_win, orient=tk.HORIZONTAL)
         txt_list = tkd.Listbox(list_frame, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none', font=('courier', 10))
         txt_list.bind('<FocusOut>', lambda e: txt_list.selection_clear(0, tk.END))  # Lose selection when shifting focus
         txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)

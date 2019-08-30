@@ -71,14 +71,14 @@ class MFRunTimer(tkd.Frame):
 
         lf0 = tkd.Frame(self)
         lf0.pack()
-        scrollbar = tk.Scrollbar(lf0, orient=tk.VERTICAL)
+        scrollbar = ttk.Scrollbar(lf0, orient=tk.VERTICAL)
         self.m = tkd.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
         self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
     def _update_lap_time(self):
         self._laptime = time.time() - self._start
@@ -245,12 +245,12 @@ class Drops(tkd.Frame):
         self.tab1 = tab1
         lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
-        scrollbar = tk.Scrollbar(lf, orient=tk.VERTICAL)
+        scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
         self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2,1), padx=2)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2,1), padx=1)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2,1), padx=2)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2,1), padx=0)
 
         btn = tkd.Button(self, text='Delete selection', command=self.delete)
         btn.bind_all('<Delete>', lambda e: self.delete())
