@@ -333,34 +333,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch, Theme):
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.use_dark_theme = eval(self.cfg['OPTIONS']['use_dark_theme'])
 
+        # Apply styling options
         used_theme = 'dark' if self.use_dark_theme else 'default'
         Theme.__init__(self, used_theme=used_theme)
-
-        # Set the style of the notebook
         if self.use_dark_theme:
-            style = ttk.Style()
-            style.theme_create('combostyle', parent=self.ttk_style,
-                               settings={'TCombobox':
-                                             {'configure':
-                                                  {'selectbackground': 'blue',
-                                                   # 'selectforeground': 'grey90',
-                                                   'fieldbackground': 'grey90',
-                                                   'background': 'grey70',
-                                                   }}}
-                               )
-            style.theme_use('combostyle')
-            style.element_create('Plain.Notebook.tab', "from", self.ttk_style)
-            style.element_create('Plain.Notebook', "from", self.ttk_style)
-            style.layout("TNotebook.Tab",
-                              [('Plain.Notebook.tab', {'children':
-                                                           [('Notebook.padding', {'side': 'top', 'children':
-                                                               [('Notebook.focus', {'side': 'top', 'children':
-                                                                   [('Notebook.label', {'side': 'top', 'sticky': ''})],
-                                                                                    'sticky': 'nswe'})],
-                                                                                  'sticky': 'nswe'})],
-                                                       'sticky': 'nswe'})])
-            style.configure("TNotebook", background=self.frame_color, tabmargins=[2,4,2,0])
-            style.configure("TNotebook.Tab", background=self.frame_color, foreground=self.text_color, lightcolor=self.border_color, padding=[2,1])
+            self.apply_dark_style()
 
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)

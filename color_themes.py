@@ -1,3 +1,6 @@
+from tkinter import ttk
+
+
 class Theme:
     def __init__(self, used_theme):
         if used_theme == 'test':
@@ -54,3 +57,28 @@ class Theme:
             self.notebook_background = self.default_color
             self.circle_border_color = 'black'
             self.select_color = 'white'
+
+    def apply_dark_style(self):
+        style = ttk.Style()
+        style.theme_create('combostyle', parent=self.ttk_style,
+                           settings={'TCombobox':
+                                         {'configure':
+                                              {'selectbackground': 'blue',
+                                               # 'selectforeground': 'grey90',
+                                               'fieldbackground': 'grey90',
+                                               'background': 'grey70',
+                                               }}}
+                           )
+        style.theme_use('combostyle')
+        style.element_create('Plain.Notebook.tab', "from", self.ttk_style)
+        style.element_create('Plain.Notebook', "from", self.ttk_style)
+        style.layout("TNotebook.Tab",
+                          [('Plain.Notebook.tab', {'children':
+                                                       [('Notebook.padding', {'side': 'top', 'children':
+                                                           [('Notebook.focus', {'side': 'top', 'children':
+                                                               [('Notebook.label', {'side': 'top', 'sticky': ''})],
+                                                                                'sticky': 'nswe'})],
+                                                                              'sticky': 'nswe'})],
+                                                   'sticky': 'nswe'})])
+        style.configure("TNotebook", background=self.frame_color, tabmargins=[2,4,2,0])
+        style.configure("TNotebook.Tab", background=self.frame_color, foreground=self.text_color, lightcolor=self.border_color, padding=[2,1])
