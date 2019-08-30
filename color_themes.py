@@ -1,62 +1,56 @@
-from config import Config
-cfg = Config().load_config_file()
-if eval(cfg['OPTIONS']['use_dark_theme']):
-    THEME = 'dark'
-else:
-    THEME = 'default'
-
-
-if THEME == 'test':
-    tkk_style = 'clam'
-    default_color = '#f0f0ed'
-    frame_color = '#40E0D0'
-    border_color = '#40E0D0'
-    label_color = '#40E0D0'
-    button_color = '#40ccd0'
-    # activebutton_color = '#40E0D0'
-    text_color = '#ffffff'
-    run_count_color = 'red'
-    hyperlink_color = 'blue'
-    listbox_color = 'white'
-    listbox_text = 'black'
-    pause_button_color = 'deep sky blue'
-    pause_button_text = 'black'
-    notebook_background = frame_color
-    circle_border_color = 'black'
-    select_color = 'white'
-elif THEME == 'dark':
-    ttk_style = 'clam'
-    default_color = 'black'
-    frame_color = default_color
-    border_color = 'dark grey'
-    label_color = default_color
-    button_color = 'grey40'
-    # activebutton_color = '#40E0D0'
-    text_color = '#ffffff'
-    run_count_color = 'dark orange'
-    hyperlink_color = 'dodger blue'
-    listbox_color = 'grey33'
-    listbox_text = 'white'
-    pause_button_color = 'deep sky blue'
-    pause_button_text = 'black'
-    notebook_background = 'grey10'
-    circle_border_color = 'grey33'
-    select_color = 'grey78'
-else:
-    ttk_style = 'vista'
-    default_color = '#f0f0ed'
-    frame_color = default_color
-    border_color = default_color
-    label_color = default_color
-    button_color = default_color
-    # activebutton_color = '#40E0D0'
-    text_color = 'black'
-    run_count_color = 'red'
-    hyperlink_color = 'blue'
-    listbox_color = 'white'
-    listbox_text = 'black'
-    pause_button_color = 'deep sky blue'
-    pause_button_text = 'black'
-    notebook_background = default_color
-    circle_border_color = 'black'
-    select_color = 'white'
+class Theme:
+    def __init__(self, used_theme):
+        if used_theme == 'test':
+            self.tkk_style = 'clam'
+            self.default_color = '#f0f0ed'
+            self.frame_color = '#40E0D0'
+            self.border_color = '#40E0D0'
+            self.label_color = '#40E0D0'
+            self.button_color = '#40ccd0'
+            # self.activebutton_color = '#40E0D0'
+            self.text_color = '#ffffff'
+            self.run_count_color = 'red'
+            self.hyperlink_color = 'blue'
+            self.listbox_color = 'white'
+            self.listbox_text = 'black'
+            self.pause_button_color = 'deep sky blue'
+            self.pause_button_text = 'black'
+            self.notebook_background = self.frame_color
+            self.circle_border_color = 'black'
+            self.select_color = 'white'
+        elif used_theme == 'dark':
+            self.ttk_style = 'clam'
+            self.default_color = 'black'
+            self.frame_color = self.default_color
+            self.border_color = 'dark grey'
+            self.label_color = self.default_color
+            self.button_color = 'grey40'
+            # self.activebutton_color = '#40E0D0'
+            self.text_color = '#ffffff'
+            self.run_count_color = 'dark orange'
+            self.hyperlink_color = 'dodger blue'
+            self.listbox_color = 'grey33'
+            self.listbox_text = 'white'
+            self.pause_button_color = 'deep sky blue'
+            self.pause_button_text = 'black'
+            self.notebook_background = 'grey10'
+            self.circle_border_color = 'grey33'
+            self.select_color = 'grey78'
+        else:
+            self.ttk_style = 'vista'
+            self.default_color = '#f0f0ed'
+            self.frame_color = self.default_color
+            self.border_color = self.default_color
+            self.label_color = self.default_color
+            self.button_color = self.default_color
+            # self.activebutton_color = '#40E0D0'
+            self.text_color = 'black'
+            self.run_count_color = 'red'
+            self.hyperlink_color = 'blue'
+            self.listbox_color = 'white'
+            self.listbox_text = 'black'
+            self.pause_button_color = 'deep sky blue'
+            self.pause_button_text = 'black'
+            self.notebook_background = self.default_color
+            self.circle_border_color = 'black'
+            self.select_color = 'white'
