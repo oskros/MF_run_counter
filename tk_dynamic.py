@@ -34,6 +34,15 @@ class Canvas(tk.Canvas):
         self.__class__.objects.pop()
         tk.Canvas.destroy(self)
 
+    def create_circle(self, x, y, r, **kwargs):
+        return self.create_oval(x - r, y - r, x + r, y + r, **kwargs)
+
+    def create_circle_arc(self, x, y, r, **kwargs):
+        if "start" in kwargs and "end" in kwargs:
+            kwargs["extent"] = kwargs["end"] - kwargs["start"]
+            del kwargs["end"]
+        return self.create_arc(x - r, y - r, x + r, y + r, **kwargs)
+
 
 class Tk(tk.Tk):
     objects = []

@@ -154,13 +154,12 @@ class Theme:
         style_name = 'my_' + self.used_theme if self.used_theme != 'vista' else self.used_theme
         if style_name not in style.theme_names() and self.used_theme != 'vista':
             style.theme_create(style_name, parent=self.ttk_style,
-                               settings={'TCombobox':
-                                             {'configure':
-                                                  {'selectbackground': self.combohighlight_color,
-                                                   # 'selectforeground': 'grey90',
-                                                   'fieldbackground': self.combofield_color,
-                                                   'background': self.dropdown_button_color,
-                                                   }},
+                               settings={'TCombobox': {
+                                             'configure': {'selectbackground': self.combohighlight_color,
+                                                           # 'selectforeground': 'grey90',
+                                                           'fieldbackground': self.combofield_color,
+                                                           'background': self.dropdown_button_color}
+                                         },
                                          "TNotebook": {
                                              "configure": {"background": self.notebook_background_color,
                                                            "tabmargins": [2, 4, 2, 0]}
