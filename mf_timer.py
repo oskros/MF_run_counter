@@ -399,8 +399,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
-            self.tab3.tab1.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
-            self.tab3.tab1.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
         else:
             self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
