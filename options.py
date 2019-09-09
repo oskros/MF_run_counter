@@ -1,12 +1,10 @@
 from color_themes import available_themes
 import sys
 import tkinter as tk
-from tk_utils import mbox
 from color_themes import Theme
 import tk_dynamic as tkd
 from tkinter import messagebox, ttk
 from system_hotkey import SystemHotkey
-import os
 
 
 class Options(tkd.Frame):
@@ -55,7 +53,6 @@ class General(tkd.Frame):
             self.main_frame.theme = Theme(used_theme=active_theme)
             self.main_frame.theme.apply_theme_style()
             self.main_frame.theme.update_colors()
-
 
     def _change_delay(self):
         new = self.run_delay.get()
