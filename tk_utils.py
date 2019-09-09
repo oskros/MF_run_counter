@@ -51,6 +51,26 @@ class MovingFrame:
         y = self.root.winfo_y() + deltay
         self.root.geometry("+%s+%s" % (x, y))
 
+    def _moveleft(self, event):
+        x = self.root.winfo_x() - 1
+        y = self.root.winfo_y()
+        self.root.geometry("+%s+%s" % (x, y))
+
+    def _moveright(self, event):
+        x = self.root.winfo_x() + 1
+        y = self.root.winfo_y()
+        self.root.geometry("+%s+%s" % (x, y))
+
+    def _moveup(self, event):
+        x = self.root.winfo_x()
+        y = self.root.winfo_y() - 1
+        self.root.geometry("+%s+%s" % (x, y))
+
+    def _movedown(self, event):
+        x = self.root.winfo_x()
+        y = self.root.winfo_y() + 1
+        self.root.geometry("+%s+%s" % (x, y))
+
 
 class RegistrationForm:
     def __init__(self, coords):

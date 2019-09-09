@@ -371,6 +371,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.img_panel.bind("<ButtonPress-1>", self._start_move)
         self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
         self.img_panel.bind("<B1-Motion>", self._on_motion)
+        self.root.bind("<Left>", self._moveleft)
+        self.root.bind("<Right>", self._moveright)
+        self.root.bind("<Up>", self._moveup)
+        self.root.bind("<Down>", self._movedown)
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
