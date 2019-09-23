@@ -239,7 +239,7 @@ class MFRunTimer(tkd.Frame):
 
 
 class Drops(tkd.Frame):
-    def __init__(self, tab1, main_frame, parent=None, **kw):
+    def __init__(self, tab1, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         self.drops = dict()
         self.tab1 = tab1
@@ -248,13 +248,13 @@ class Drops(tkd.Frame):
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
         self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2,1), padx=1)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
         scrollbar.config(command=self.m.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2,1), padx=0)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
         btn = tkd.Button(self, text='Delete selection', command=self.delete)
         btn.bind_all('<Delete>', lambda e: self.delete())
-        btn.pack(side=tk.BOTTOM, pady=(1,2))
+        btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
     def AddDrop(self):
         drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
@@ -294,7 +294,7 @@ class About(tkd.Frame):
     def __init__(self, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         label0 = tkd.Label(self, text="""Run counter for Diablo 2 developed in July 
-and August2019 by *oskros on Path of 
+and August 2019 by *oskros on Path of 
 Diablo. Please see the README.md file 
 available on Github""", justify=tk.LEFT)
         label0.pack()
@@ -380,7 +380,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tabcontrol = ttk.Notebook(self.root)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
-        self.tab2 = Drops(self.tab1, self, parent=self.root)
+        self.tab2 = Drops(self.tab1, parent=self.root)
         self.toggle_drop_tab()
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab3, text='Options')

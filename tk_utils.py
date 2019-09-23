@@ -151,7 +151,7 @@ class MessageBox(object):
         root = self.root = tk.Tk()
         self.root.focus_set()
         root.title(title)
-        self.root.attributes("-toolwindow", True)
+        # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
         self.msg = str(msg)
 
