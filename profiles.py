@@ -316,6 +316,12 @@ class Profile(tkd.Frame):
                 tmp += droplst
             output.append(tmp)
 
+        out_drops = sorted(sum(drops.values(), []))
+        if out_drops:
+            output.append([''])
+            for drop in out_drops:
+                output.append([drop])
+
         # Format string list to be shown in the archive browser
         for op in output:
             tmpstr = ''.join(op[:2])
