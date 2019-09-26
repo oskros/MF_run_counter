@@ -316,6 +316,7 @@ class Profile(tkd.Frame):
                 tmp += droplst
             output.append(tmp)
 
+        # List all drops collected and show them below the individual runs (good for doing data work on output file)
         out_drops = sorted(sum(drops.values(), []))
         if out_drops:
             output.append([''])
