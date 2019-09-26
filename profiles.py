@@ -375,9 +375,16 @@ class Profile(tkd.Frame):
         Here we use asksaveasfilename in order to just return a path instead of writable object, because then we can
         initiate our own csv writer opbject with the newline='' option, which ensures we don't have double line breaks
         """
+        string_lst_corr = list()
+        for s in string_lst:
+            if s[0].lower().startswith('run'):
+                tmp = [s[0][:s[0].find(':')]] + s[1:]
+                string_lst_corr.append([' '.join(x.split()) for x in tmp])
+            else:
+                string_lst_corr.append([' '.join(x.split()) for x in s])
         f = tk.filedialog.asksaveasfilename(defaultextension='.csv', filetypes=(('.csv', '*.csv'), ('All Files', '*.*')))
         if not f:
             return
         with open(f, newline='', mode='w') as fo:
             writer = csv.writer(fo, delimiter=',')
-            writer.writerows(string_lst)
+            writer.writerows(string_lst_corr)

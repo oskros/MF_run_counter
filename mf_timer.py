@@ -364,8 +364,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.pack_propagate(False)
 
         # Build banner image and make window draggable on the banner
-        d2icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
-        img = tk.PhotoImage(file=d2icon)
+        d2banner = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
+        img = tk.PhotoImage(file=d2banner)
         self.img_panel = tkd.Label(self.root, image=img)
         self.img_panel.pack()
         self.img_panel.bind("<ButtonPress-1>", self._start_move)

@@ -150,6 +150,7 @@ class MessageBox(object):
     def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
         root = self.root = tk.Tk()
         self.root.focus_set()
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         root.title(title)
         # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
