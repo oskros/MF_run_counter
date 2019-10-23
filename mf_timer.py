@@ -166,9 +166,7 @@ class MFRunTimer(tkd.Frame):
 
     def StopStart(self):
         self.Stop(play_sound=False)
-        self.Start(play_sound=False)
-        if self.main_frame.enable_sound_effects:
-            sound.queue_sound(self)
+        self.Start(play_sound=True)
 
     def Lap(self, laptime, force=False):
         if self.is_running or force:
@@ -190,7 +188,9 @@ class MFRunTimer(tkd.Frame):
 
     def Pause(self):
         if not self.is_paused:
-            self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause, bg=self.main_frame.theme.pause_button_color, fg=self.main_frame.theme.pause_button_text)
+            self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause,
+                                             bg=self.main_frame.theme.pause_button_color,
+                                             fg=self.main_frame.theme.pause_button_text)
             self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
