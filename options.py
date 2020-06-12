@@ -69,7 +69,7 @@ class General(tkd.Frame):
         lab.pack(side=tk.LEFT)
 
         self.run_delay = tk.StringVar()
-        self.run_delay.set(eval(self.main_frame.cfg['DEFAULT']['run_timer_delay_seconds']))
+        self.run_delay.set(eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
         tkd.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
         self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
 

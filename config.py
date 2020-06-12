@@ -6,14 +6,38 @@ from tkinter import messagebox
 
 
 class Config:
-    exec(blocks[2])
+    # exec(blocks[2])
+    @staticmethod
+    def _find_game_path():
+        possible_paths = [
+            'C:/Program Files (x86)/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files (x86)/Diablo II/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files (x86)/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files (x86)/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files/Diablo II/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
+            'C:/Program Files/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
+            'C:/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
+            'C:/Diablo II/Path of Diablo/Save/Path of Diablo/',
+            'C:/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
+            'C:/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
+            'C:/Users/g48606/Desktop/Personal/TestFolder',
+        ]
+
+        out = next((path for path in possible_paths if os.path.exists(path)), '')
+        # if out == '':
+        #     messagebox.showerror('Missing game path', 'Game folder for PoD could not be identified automatically. '
+        #                                               'Please add game_path to mf_config.ini (ending with "/Path of Diablo/Save/Path of Diablo")')
+        return out
 
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        exec(blocks[3])
+        # exec(blocks[3])
+        if 'automode' in config['DEFAULT'] and eval(config['DEFAULT']['automode']) is True:
+            config['DEFAULT']['game_path'] = self._find_game_path()
         config['DEFAULT']['window_start_position'] = str((100, 100))
-        config['DEFAULT']['run_timer_delay_seconds'] = '0.0'
-        config['DEFAULT']['active_profile'] = 'DEFAULT_PROFILE'
+        config['DEFAULT']['active_profile'] = ''
 
         config.add_section('OPTIONS')
         config['OPTIONS']['always_on_top'] = '1'
@@ -22,6 +46,7 @@ class Config:
         config['OPTIONS']['enable_sound_effects'] = '0'
         config['OPTIONS']['pop_up_drop_window'] = '0'
         config['OPTIONS']['active_theme'] = 'default'
+        config['OPTIONS']['run_timer_delay_seconds'] = '0.0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -55,7 +80,8 @@ class Config:
         with open('mf_config.ini') as fi:
             parser.read_file(fi)
 
-        exec(blocks[4])
+        if 'automode' in parser['DEFAULT'] and eval(parser['DEFAULT']['automode']) is True and 'game_path' not in parser['DEFAULT']:
+            parser['DEFAULT']['game_path'] = self._find_game_path()
 
         try:
             ver = parser.get('VERSION', 'version')
@@ -64,7 +90,7 @@ class Config:
         if ver != version:
             self.delete_config_file()
             parser = self.load_config_file()
-            messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated.')
+            messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated with default options.')
         return parser
 
     def update_config(self, parent):
@@ -74,7 +100,6 @@ class Config:
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
         cfg['DEFAULT']['window_start_position'] = str((x, y))
-        cfg['DEFAULT']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
         cfg['DEFAULT']['active_profile'] = str(parent.active_profile)
 
         # Update flags
@@ -84,6 +109,7 @@ class Config:
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
         cfg['OPTIONS']['pop_up_drop_window'] = str(parent.pop_up_drop_window)
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
+        cfg['OPTIONS']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

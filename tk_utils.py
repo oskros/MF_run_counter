@@ -1,6 +1,7 @@
 from init import *
 import tk_dynamic as tkd
 import tkinter as tk
+from tkinter import messagebox
 import webbrowser
 
 
@@ -73,17 +74,21 @@ class MovingFrame:
 
 
 class RegistrationForm:
-    def __init__(self, coords):
+    def __init__(self, coords, first_profile):
         self.new_win = tk.Tk()
         self.new_win.title('Profile registration')
         self.new_win.wm_attributes('-topmost', 1)
+        self.new_win.resizable(False, False)
         if coords is not None:
             self.new_win.geometry('+%d+%d' % (coords[0], coords[1]))
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
-        l = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
-        l.pack()
+        if first_profile:
+            la = tk.Label(self.new_win, text='Welcome to MF Run Timer!\nPlease create your first profile.', font='Helvetica 14')
+        else:
+            la = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
+        la.pack()
 
         self.a1 = self.make_row('Profile name')
         self.a2 = self.make_row('Character name')
@@ -137,8 +142,8 @@ class RegistrationForm:
         self.new_win.quit()
 
 
-def registration_form(coords=None):
-    reg_form = RegistrationForm(coords)
+def registration_form(coords=None, first_profile=False):
+    reg_form = RegistrationForm(coords, first_profile)
     reg_form.new_win.focus_force()
     reg_form.new_win.mainloop()
 
@@ -264,6 +269,22 @@ def add_circle(parent, pixels, color):
     canvas.create_circle_arc(cpix, cpix, pixels // 2.2, style="arc", outline="white", width=pixels // 12.5,
                              start=270 - 25, end=270 + 25)
     return canvas, circ_id
+
+
+def test_mapfile_path(game_path, char_name):
+    if not os.path.exists(game_path) or game_path in ['', '.']:
+        messagebox.showerror('Game path error', 'Game path from config.ini not found, please update the path in config.ini (ending with "/Path of Diablo/Save/Path of Diablo") and restart program\n\n'
+                                                'This session will continue in manual mode.')
+        return False
+    elif char_name == '':
+        messagebox.showerror('Character name missing', 'Chosen profile has no character name specified. Create a new profile with a character name to use automode\n\n'
+                                                       'This session will continue in manual mode.')
+        return False
+    elif not os.path.exists(os.path.join(game_path, char_name + '.map')):
+        messagebox.showerror('Character file not found', 'Map file for specified character not found. Make sure the character name in chosen profile is identical to your in-game character name. If not, create a new profile with the correct character name\n\n'
+                                                         'This session will continue in manual mode')
+        return False
+    return True
 
 
 if __name__ == '__main__':

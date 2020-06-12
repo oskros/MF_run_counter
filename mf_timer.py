@@ -19,7 +19,6 @@ from config import Config
 from options import Options
 from profiles import Profile
 from color_themes import Theme, available_themes
-exec(blocks[1])
 
 
 class MFRunTimer(tkd.Frame):
@@ -40,8 +39,10 @@ class MFRunTimer(tkd.Frame):
         self.avg_lap = tk.StringVar()
         self.laps = []
         self._make_widgets()
+        self.automode_active = self.main_frame.AUTOMODE
 
-        exec(blocks[5])
+        if self.main_frame.AUTOMODE:
+            self.activate_automode(char_name=self.main_frame.tab4.char_name.get())
 
         self._update_session_time()
 
@@ -80,6 +81,11 @@ class MFRunTimer(tkd.Frame):
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
+        # self.automode_lab = tk.Button(self, font='arial 24 bold', text='You are\nrunning in\nAUTOMODE!', bg='red', fg='black')
+        # self.automode_lab.pack()
+        # self.automode_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        # self.automode_lab.config(command=self.automode_lab.destroy)
+
     def _update_lap_time(self):
         self._laptime = time.time() - self._start
         self._set_time(self._laptime, for_session=False)
@@ -90,7 +96,12 @@ class MFRunTimer(tkd.Frame):
         self._set_time(self.session_time, for_session=True)
         self._sess_timer = self.after(50, self._update_session_time)
 
-    exec(blocks[6])
+    def _check_entered_game(self):
+        stamp = os.stat(self.map_file_path).st_mtime
+        if self.cached_file_stamp != stamp:
+            self.StopStart()
+            self.cached_file_stamp = stamp
+        self._game_check = self.after(50, self._check_entered_game)
 
     def _set_time(self, elap, for_session):
         time_str = tk_utils.build_time_str(elap)
@@ -131,6 +142,9 @@ class MFRunTimer(tkd.Frame):
         self._set_time(self.session_time, for_session=True)
 
     def Start(self, play_sound=True):
+        if self.automode_active and hasattr(self, 'automode_lab') and self.automode_lab.winfo_exists():
+            self.automode_lab.destroy()
+
         def update_start():
             if self.is_paused:
                 self.Pause()
@@ -200,7 +214,8 @@ class MFRunTimer(tkd.Frame):
             if self.is_running:
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
-            exec(blocks[7])
+            if self.automode_active:
+                self.after_cancel(self._game_check)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
@@ -210,7 +225,10 @@ class MFRunTimer(tkd.Frame):
                 self.c1.itemconfigure(self.circ_id, fill='green3')
                 self._update_lap_time()
             self._update_session_time()
-            exec(blocks[8])
+            # exec(blocks[8])
+            if self.automode_active:
+                self.cached_file_stamp = os.stat(self.map_file_path).st_mtime
+                self._check_entered_game()
             self.is_paused = False
 
     def ResetLap(self):
@@ -236,6 +254,21 @@ class MFRunTimer(tkd.Frame):
 
     def SaveState(self):
         return dict(laps=self.laps, session_time=self.session_time)
+
+    def activate_automode(self, char_name):
+        if hasattr(self, '_game_check'):
+            self.after_cancel(self._game_check)
+
+        d2_save_path = os.path.normpath(self.main_frame.cfg.get('DEFAULT', 'game_path'))
+
+        self.map_file_path = os.path.join(d2_save_path, char_name + '.map')
+        if tk_utils.test_mapfile_path(d2_save_path, char_name):
+            self.cached_file_stamp = os.stat(self.map_file_path).st_mtime
+            self._check_entered_game()
+
+            self.automode_active = True
+        else:
+            self.automode_active = False
 
 
 class Drops(tkd.Frame):
@@ -323,11 +356,12 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Build/load config file
         self.cfg = self.load_config_file()
+        self.AUTOMODE = eval(self.cfg['DEFAULT']['automode']) if 'automode' in self.cfg['DEFAULT'] else False
         self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
         self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
-        self.run_timer_delay_seconds = eval(self.cfg['DEFAULT']['run_timer_delay_seconds'])
+        self.run_timer_delay_seconds = eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
 
@@ -346,15 +380,19 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             github_releases.check_newest_version(release_repo)
 
         # Load profile info
+        self.make_profile_folder()
+        self.profiles = [x[:-5] for x in os.listdir('Profiles') if x.endswith('.json')]
         self.active_profile = self.cfg['DEFAULT']['active_profile']
-        self.profiles = {(self.active_profile)}
-        active_state = self.load_state_file()
-        self.profiles.update({x.rstrip('json').rstrip('.') for x in os.listdir('Profiles')})
-        self.profiles = sorted(self.profiles)
+        if len(self.profiles) == 0:
+            self.active_profile = ''
+        elif len(self.profiles) > 0 and self.active_profile not in self.profiles:
+            self.active_profile = self.profiles[0]
+        self.profiles = sorted(self.profiles)  # FIXME: Sort by update time
 
         # Modify root window
-        self.root.title('MF run counter')
-        self.clickthrough = False
+        self.title = 'MF run counter'
+        self.root.title(self.title)
+        self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
         self.root.wm_attributes("-topmost", self.always_on_top)
@@ -378,18 +416,19 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
+        self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
         self.tab2 = Drops(self.tab1, parent=self.root)
         self.toggle_drop_tab()
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab3, text='Options')
-        self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab4, text='Profile')
         self.tab5 = About(parent=self.tabcontrol)
         self.tabcontrol.add(self.tab5, text='About')
         self.tabcontrol.pack(expand=1, fill='both')
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
+        self.tab4.update_descriptive_statistics()
 
         # Add buttons to main widget
         lf = tkd.LabelFrame(self.root, height=35)
@@ -410,6 +449,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
         # Load save state and start autosave process
+        active_state = self.load_state_file()
         self.LoadActiveState(active_state)
         self._autosave_state()
 
@@ -455,8 +495,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         Also makes the window transparent to visualize this effect.
         Calling the function again reverts the window to normal state.
         """
-        hwnd = win32gui.FindWindow(None, "MF run counter")
-        if not self.clickthrough:
+        hwnd = win32gui.FindWindow(None, self.title)
+        if self.clickable:
             # Get window style and perform a 'bitwise or' operation to make the style layered and transparent, achieving
             # the clickthrough property
             l_ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
@@ -466,14 +506,14 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             # Set the window to be transparent and appear always on top
             win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(0, 0, 0), 190, win32con.LWA_ALPHA)  # transparent
             win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
-            self.clickthrough = True
+            self.clickable = False
         else:
             # Calling the function again sets the extended style of the window to zero, reverting to a standard window
             win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
             if not self.always_on_top:
                 # Remove the always on top property again, in case always on top was set to false in options
                 win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
-            self.clickthrough = False
+            self.clickable = True
 
     def report_callback_exception(self, *args):
         """
@@ -498,13 +538,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         # image instead :)
         self.img_panel.focus_force()
 
+    @staticmethod
+    def make_profile_folder():
+        if not os.path.isdir('Profiles'):
+            os.makedirs('Profiles')
+
     def load_state_file(self):
         """
         Loads the save file for the active profile. Ensures directory exists, and if not it is created. Ensures the
         file exists, and if not an empty dictionary is returned.
         """
-        if not os.path.isdir('Profiles'):
-            os.makedirs('Profiles')
+        self.make_profile_folder()
         file = 'Profiles/%s.json' % self.active_profile
         if not os.path.isfile(file):
             state = dict()

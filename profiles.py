@@ -15,12 +15,16 @@ class Profile(tkd.Frame):
         tkd.Frame.__init__(self, parent, kw)
         self.root = parent
         self.main_frame = main_frame
+        self.active_profile = tk.StringVar()
 
+        if self.main_frame.active_profile == '':
+            self._add_new_profile(first_profile=True)
+            self.main_frame.active_profile = self.active_profile.get()
         state = self.main_frame.load_state_file()
         self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
         self.selected_archive = tk.StringVar()
         self.selected_archive.set('Active session')
-        self.extra_data = self.main_frame.load_state_file().get('extra_data', dict())
+        self.extra_data = state.get('extra_data', dict())
 
         self._make_widgets()
 
@@ -36,7 +40,6 @@ class Profile(tkd.Frame):
         #     self.option_add("*TCombobox*Listbox*Foreground", self.main_frame.combo_listbox_foreground)
         #     self.option_add("*TCombobox*Listbox*selectBackground", self.main_frame.combo_listbox_selectbackground)
         #     self.option_add("*TCombobox*Listbox*selectForeground", self.main_frame.combo_listbox_selectforeground)
-        self.active_profile = tk.StringVar()
         self.active_profile.set(self.main_frame.active_profile)
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
@@ -81,35 +84,40 @@ class Profile(tkd.Frame):
         self.descr = tkd.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
-        self.update_descriptive_statistics()
 
-    def _add_new_profile(self):
+    def _add_new_profile(self, first_profile=False):
         # Ensure the pop-up is centered over the main program window
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.registration_form((xc, yc))
+        profile = tk_utils.registration_form((xc, yc), first_profile)
         if profile:
             profile_name = profile.pop('Profile name')
             # Handle non-allowed profile names
             if profile_name == '':
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
                 return
-            if profile_name in self.profile_dropdown['values']:
+            if not first_profile and profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return
 
             # Add new profile to profile tab
             self.main_frame.profiles.append(profile_name)
-            self.profile_dropdown['values'] = self.main_frame.profiles
+            if not first_profile:
+                self.profile_dropdown['values'] = self.main_frame.profiles
 
             # Change active profile to the newly created profile
             self.active_profile.set(profile_name)
-            self._change_active_profile()
 
             # Create a save file for the new profile
             file = 'Profiles/%s.json' % self.active_profile.get()
             with open(file, 'w') as fo:
                 json.dump({'extra_data': profile}, fo, indent=2)
+
+            # Update active profile
+            if not first_profile:
+                self._change_active_profile()
+        elif first_profile:
+            sys.exit()
 
     def _change_active_profile(self):
         # Save state before changing profile, such that no information is lost. By design choice, if a run is currently
@@ -133,6 +141,8 @@ class Profile(tkd.Frame):
         # Load the new profile into the timer and drop module, and update the descriptive statistics
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
+        if self.main_frame.AUTOMODE:
+            self.main_frame.tab1.activate_automode(self.char_name.get())
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()
