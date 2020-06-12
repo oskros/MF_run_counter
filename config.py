@@ -1,12 +1,10 @@
 from init import *
 import os
 import configparser
-import tk_utils
 from tkinter import messagebox
 
 
 class Config:
-    # exec(blocks[2])
     @staticmethod
     def _find_game_path():
         possible_paths = [
@@ -22,18 +20,12 @@ class Config:
             'C:/Diablo II/Path of Diablo/Save/Path of Diablo/',
             'C:/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
             'C:/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
-            'C:/Users/g48606/Desktop/Personal/TestFolder',
         ]
 
-        out = next((path for path in possible_paths if os.path.exists(path)), '')
-        # if out == '':
-        #     messagebox.showerror('Missing game path', 'Game folder for PoD could not be identified automatically. '
-        #                                               'Please add game_path to mf_config.ini (ending with "/Path of Diablo/Save/Path of Diablo")')
-        return out
+        return next((path for path in possible_paths if os.path.exists(path)), '')
 
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        # exec(blocks[3])
         if 'automode' in config['DEFAULT'] and eval(config['DEFAULT']['automode']) is True:
             config['DEFAULT']['game_path'] = self._find_game_path()
         config['DEFAULT']['window_start_position'] = str((100, 100))

@@ -142,8 +142,8 @@ class MFRunTimer(tkd.Frame):
         self._set_time(self.session_time, for_session=True)
 
     def Start(self, play_sound=True):
-        if self.automode_active and hasattr(self, 'automode_lab') and self.automode_lab.winfo_exists():
-            self.automode_lab.destroy()
+        # if self.automode_active and hasattr(self, 'automode_lab') and self.automode_lab.winfo_exists():
+        #     self.automode_lab.destroy()
 
         def update_start():
             if self.is_paused:

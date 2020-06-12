@@ -116,6 +116,7 @@ class Profile(tkd.Frame):
             # Update active profile
             if not first_profile:
                 self._change_active_profile()
+        # Exit program if nothing is entered for first profile
         elif first_profile:
             sys.exit()
 
@@ -330,6 +331,7 @@ class Profile(tkd.Frame):
         out_drops = sorted(sum(drops.values(), []))
         if out_drops:
             output.append([''])
+            output.append(['All listed drops:'])
             for drop in out_drops:
                 output.append([drop])
 
@@ -383,7 +385,7 @@ class Profile(tkd.Frame):
         Writes a list of lists of strings to a .csv file
 
         Here we use asksaveasfilename in order to just return a path instead of writable object, because then we can
-        initiate our own csv writer opbject with the newline='' option, which ensures we don't have double line breaks
+        initiate our own csv writer object with the newline='' option, which ensures we don't have double line breaks
         """
         string_lst_corr = list()
         for s in string_lst:

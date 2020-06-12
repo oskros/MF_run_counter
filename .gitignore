@@ -15,3 +15,4 @@
 *.tcl
 *.msg
 *.json
+/results.csv
