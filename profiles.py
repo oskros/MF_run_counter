@@ -81,7 +81,7 @@ class Profile(tkd.Frame):
 
         tkd.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
 
-        self.descr = tkd.Listbox(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
+        self.descr = tkd.Listbox2(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
 

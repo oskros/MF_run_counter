@@ -260,8 +260,8 @@ class MFRunTimer(tkd.Frame):
             self.after_cancel(self._game_check)
 
         d2_save_path = os.path.normpath(self.main_frame.cfg.get('DEFAULT', 'game_path'))
-
         self.map_file_path = os.path.join(d2_save_path, char_name + '.map')
+
         if tk_utils.test_mapfile_path(d2_save_path, char_name):
             self.cached_file_stamp = os.stat(self.map_file_path).st_mtime
             self._check_entered_game()

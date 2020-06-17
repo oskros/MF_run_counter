@@ -26,6 +26,7 @@ class Theme:
             self.button_color = 'SkyBlue1'
             self.activebutton_color = 'alice blue'
             self.listbox_color = 'alice blue'
+            self.listbox_color_stats = 'alice blue'
             self.pause_button_color = 'DodgerBlue2'
             self.circle_border_color = 'black'
             self.entry_color = 'alice blue'
@@ -35,6 +36,7 @@ class Theme:
             self.run_count_color = 'red'
             self.hyperlink_color = 'blue'
             self.listbox_text = 'black'
+            self.listbox_text_stats = 'black'
             self.pause_button_text = 'black'
 
             # Selecting Comboboxes
@@ -73,6 +75,7 @@ class Theme:
             # Widgets
             self.button_color = 'grey40'
             self.activebutton_color = 'grey78'
+            self.listbox_color_stats = 'grey90'
             self.listbox_color = 'grey33'
             self.pause_button_color = 'deep sky blue'
             self.circle_border_color = 'grey33'
@@ -82,6 +85,7 @@ class Theme:
             self.text_color = '#ffffff'
             self.run_count_color = 'dark orange'
             self.hyperlink_color = 'dodger blue'
+            self.listbox_text_stats = 'black'
             self.listbox_text = 'white'
             self.pause_button_text = 'black'
 
@@ -121,6 +125,7 @@ class Theme:
             self.button_color = default_color
             self.activebutton_color = 'white'
             self.listbox_color = 'white'
+            self.listbox_color_stats = 'white'
             self.pause_button_color = 'deep sky blue'
             self.circle_border_color = 'black'
             self.entry_color = 'white'
@@ -130,6 +135,7 @@ class Theme:
             self.run_count_color = 'red'
             self.hyperlink_color = 'blue'
             self.listbox_text = 'black'
+            self.listbox_text_stats = 'black'
             self.pause_button_text = 'black'
 
             # Selecting Comboboxes
@@ -195,6 +201,7 @@ class Theme:
         tkd.Button.set_config(bg=self.button_color, fg=self.text_color)
         tkd.PauseButton.set_config(bg=self.pause_button_color, fg=self.pause_button_text)
         tkd.Listbox.set_config(bg=self.listbox_color, fg=self.listbox_text, highlightbackground=self.border_color)
+        tkd.Listbox2.set_config(bg=self.listbox_color_stats, fg=self.listbox_text_stats, highlightbackground=self.border_color)
         tkd.Frame.set_config(bg=self.frame_color)
         tkd.LabelFrame.set_config(bg=self.frame_color)
         tkd.Entry.set_config(bg=self.entry_color)

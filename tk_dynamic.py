@@ -197,6 +197,23 @@ class Listbox(tk.Listbox):
         tk.Listbox.destroy(self)
 
 
+class Listbox2(tk.Listbox):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        tk.Listbox.__init__(self, *args, **kwargs)
+        self.__class__.objects.append(self)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        self.__class__.objects.pop()
+        tk.Listbox.destroy(self)
+
+
 class Entry(tk.Entry):
     objects = []
 
