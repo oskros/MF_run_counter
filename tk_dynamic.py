@@ -14,7 +14,8 @@ class Toplevel(tk.Toplevel):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Toplevel.destroy(self)
 
 
@@ -31,7 +32,8 @@ class Canvas(tk.Canvas):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Canvas.destroy(self)
 
     def create_circle(self, x, y, r, **kwargs):
@@ -57,7 +59,8 @@ class Tk(tk.Tk):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Tk.destroy(self)
 
 
@@ -74,7 +77,8 @@ class Label(tk.Label):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Label.destroy(self)
 
 
@@ -91,7 +95,8 @@ class Hyperlink(tk.Label):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Label.destroy(self)
 
 
@@ -108,7 +113,8 @@ class RunLabel(tk.Label):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Label.destroy(self)
 
 
@@ -125,7 +131,8 @@ class Frame(tk.Frame):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Frame.destroy(self)
 
 
@@ -142,7 +149,8 @@ class Button(tk.Button):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Button.destroy(self)
 
 
@@ -159,7 +167,8 @@ class PauseButton(tk.Button):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Button.destroy(self)
 
 
@@ -176,7 +185,8 @@ class LabelFrame(tk.LabelFrame):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.LabelFrame.destroy(self)
 
 
@@ -193,7 +203,8 @@ class Listbox(tk.Listbox):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Listbox.destroy(self)
 
 
@@ -210,7 +221,8 @@ class Listbox2(tk.Listbox):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Listbox.destroy(self)
 
 
@@ -227,7 +239,8 @@ class Entry(tk.Entry):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Entry.destroy(self)
 
 
@@ -244,5 +257,6 @@ class Radiobutton(tk.Radiobutton):
             obj.config(val)
 
     def destroy(self):
-        self.__class__.objects.pop()
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
         tk.Radiobutton.destroy(self)
