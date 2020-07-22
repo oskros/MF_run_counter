@@ -151,6 +151,77 @@ def registration_form(coords=None, first_profile=False):
     return reg_form.returning
 
 
+class MultiEntryBox(object):
+    def __init__(self, entries, coords, title):
+        self.enum = len(entries)
+        root = self.root = tk.Tk()
+        self.root.focus_set()
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        root.title(title)
+        self.root.wm_attributes("-topmost", True)
+
+        frm_1 = tk.Frame(root)
+        frm_1.pack(ipadx=4, ipady=2)
+
+        for i, e in enumerate(entries):
+            ff = tk.Frame(frm_1)
+            ff.pack()
+            tk.Label(ff, font='arial 11', text=e, width=8).pack(side=tk.LEFT, expand=True, fill=tk.X, pady=3)
+            setattr(self, 'e' + str(i), tk.Entry(ff, font=('arial', 11), justify='center'))
+            getattr(self, 'e' + str(i)).pack(side=tk.LEFT, expand=True, fill=tk.X)
+            if i == 0:
+                getattr(self, 'e' + str(i)).focus_set()
+
+        # button frame
+        frm_2 = tk.Frame(frm_1)
+        frm_2.pack(padx=4, pady=4)
+
+        # buttons
+        btn_1 = tk.Button(frm_2, width=8, text='OK')
+        btn_1['command'] = self.b1_action
+        btn_1.pack(side='left')
+
+        btn_2 = tk.Button(frm_2, width=8, text='Cancel')
+        btn_2['command'] = self.close_mod
+        btn_2.pack(side='left')
+
+        # The enter button will trigger button 1, while escape will close the window
+        root.bind('<KeyPress-Return>', func=self.b1_action)
+        root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
+
+        root.update_idletasks()
+        if coords:
+            xp = coords[0]
+            yp = coords[1]
+        else:
+            xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
+            yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
+        geom = (root.winfo_width(), root.winfo_height(), xp, yp)
+        root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
+
+        # call self.close_mod when the close button is pressed
+        root.protocol("WM_DELETE_WINDOW", self.close_mod)
+
+        # a trick to activate the window (on windows 7)
+        root.deiconify()
+
+    def b1_action(self, event=None):
+        self.returning = [getattr(self, 'e' + str(i)).get() for i in range(self.enum)]
+        self.root.quit()
+
+    def close_mod(self):
+        self.returning = None
+        self.root.quit()
+
+def mebox(entries, coords=False, title='Message'):
+    msgbox = MultiEntryBox(entries, coords, title)
+    msgbox.root.mainloop()
+
+    # the function pauses here until the mainloop is quit
+    msgbox.root.destroy()
+    return msgbox.returning
+
+
 class MessageBox(object):
     def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
         root = self.root = tk.Tk()
@@ -271,6 +342,9 @@ def add_circle(parent, pixels, color):
     return canvas, circ_id
 
 
+
+
+
 def test_mapfile_path(game_path, char_name):
     if not os.path.exists(game_path) or game_path in ['', '.']:
         messagebox.showerror('Game path error', 'Game path from config.ini not found, please update the path in config.ini (ending with "/Path of Diablo/Save/Path of Diablo") and restart program\n\n'
@@ -288,4 +362,4 @@ def test_mapfile_path(game_path, char_name):
 
 
 if __name__ == '__main__':
-    print(registration_form())
+    print(mebox(entries=['Item alias', 'Stats'], title='Add drop'))

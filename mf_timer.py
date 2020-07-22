@@ -14,6 +14,7 @@ import sound
 import tk_utils
 import tkinter as tk
 import tk_dynamic as tkd
+# import pandas as pd
 from tkinter import ttk, messagebox
 from config import Config
 from options import Options
@@ -269,11 +270,13 @@ class MFRunTimer(tkd.Frame):
             self.automode_active = True
         else:
             self.automode_active = False
+            self.main_frame.am_lab.destroy()
 
 
 class Drops(tkd.Frame):
     def __init__(self, tab1, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
+        # self.drops = []
         self.drops = dict()
         self.tab1 = tab1
         lf = tkd.Frame(self)
@@ -289,8 +292,12 @@ class Drops(tkd.Frame):
         btn.bind_all('<Delete>', lambda e: self.delete())
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
+        # self.load_item_library()
+
     def AddDrop(self):
-        drop = tk_utils.mbox('Input your drop', entry=True, title='Add drop')
+        # drop = tk_utils.mebox(entries=['Item alias', 'Stats'], title='Add drop')
+        drop = tk_utils.mbox('Input drop', entry=True, title='Add drop')
+        # if drop is None or drop[0] == '':
         if not drop:
             return
         run_no = len(self.tab1.laps)
@@ -298,14 +305,22 @@ class Drops(tkd.Frame):
             run_no += 1
         self.drops.setdefault(str(run_no), []).append(drop)
         self.display_drop(drop=drop, run_no=run_no)
+        # lookup = self.lookup_item(drop[0])
+        # lookup['Stats'] = drop[1]
+        # lookup['Run'] = run_no
+        # self.drops.append(lookup)
+        # self.display_drop(lookup)
 
+    # def display_drop(self, lookup):
     def display_drop(self, drop, run_no):
+        # self.m.insert(tk.END, 'Run %s: %s' % (str(lookup['Run']), ' '.join([lookup['Alias'], lookup['Stats']])))
         self.m.insert(tk.END, 'Run %s: %s' % (run_no, drop))
         self.m.yview_moveto(1)
 
     def delete(self):
         selection = self.m.curselection()
         if selection:
+            # self.drops.pop(selection[0])
             ss = self.m.get(selection[0])
             run_no = ss[4:ss.find(':')]
             drop = ss[ss.find(':')+2:]
@@ -317,10 +332,29 @@ class Drops(tkd.Frame):
 
     def load_from_state(self, state):
         self.m.delete(0, tk.END)
+        # self.drops = state.get('drops', [])
         self.drops = state.get('drops', dict())
+        # for drop in self.drops:
+        #     self.display_drop(drop)
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
+
+    # def load_item_library(self):
+    #     lib = pd.read_csv('item_library.csv', index_col='Item')
+    #     alias_cols = [c for c in lib.columns if c.lower().startswith('alias')]
+    #     lib['Alias'] = lib[alias_cols].values.tolist()
+    #     pre_dict = lib['Alias'].to_dict()
+    #     self.item_alias = {l: k for k, v in pre_dict.items() for l in v if str(l) != 'nan'}
+    #
+    #     for c in alias_cols + ['Alias']:
+    #         del lib[c]
+    #     self.item_library = lib
+
+    # def lookup_item(self, item_alias):
+    #     x = item_alias.lower()
+    #     item_name = ' '.join(w.capitalize() for w in self.item_alias.get(x, x).split())
+    #     return dict(Name=item_name, Alias=item_alias)
 
 
 class About(tkd.Frame):
@@ -395,6 +429,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
+        # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
@@ -413,6 +448,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.bind("<Right>", self._moveright)
         self.root.bind("<Up>", self._moveup)
         self.root.bind("<Down>", self._movedown)
+        if self.AUTOMODE:
+            self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
+            self.am_lab.place(x=1, y=1)
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)

@@ -155,11 +155,11 @@ class Profile(tkd.Frame):
             return
 
         # Open window at the center of the application
-        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        xc = self.root.winfo_rootx() - self.root.winfo_width()//6
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile? This will permanently delete all records stored for the profile.', title='WARNING', coords=(xc, yc))
+        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile?\nThis will permanently delete all records stored for the profile.', title='WARNING', coords=(xc, yc))
         if resp1 is True:
-            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile? Final warning!', b1='Cancel', b2='OK', title='WARNING', coords=(xc,yc))
+            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile?\nFinal warning!', b1='Cancel', b2='OK', title='WARNING', coords=(xc,yc))
             if resp2 is False:  # False here because we switch buttons around in second confirmation
                 file = 'Profiles/%s.json' % chosen
                 os.remove(file)
@@ -221,6 +221,7 @@ class Profile(tkd.Frame):
         # Append data for active session from timer module
         laps.extend(self.main_frame.tab1.laps)
         session_time += self.main_frame.tab1.session_time
+        # dropcount += len(self.main_frame.tab2.drops) FIXME: New version with dictionary style drops
         for drop, val in self.main_frame.tab2.drops.items():
             dropcount += len(val)
 
@@ -334,6 +335,8 @@ class Profile(tkd.Frame):
             output.append(['All listed drops:'])
             for drop in out_drops:
                 output.append([drop])
+            # for drop in drops:
+            #     output.append(['Run ' + str(drop['Run']) + ': ', drop['Name'] + ' ' + drop['Stats']])
 
         # Format string list to be shown in the archive browser
         for op in output:
