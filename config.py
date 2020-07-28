@@ -85,6 +85,7 @@ class Config:
             parser = self.load_config_file()
             messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated with default options.')
 
+        # Check if any binds in config file is already used by the system, and remove them in case
         used = system_hotkey.check_used_hotkeys()
         for key, bind in parser['KEYBINDS'].items():
             if bind[0] in ["[", "("] and tuple(str(x).lower() for x in eval(bind)) in used:
