@@ -523,7 +523,6 @@ def check_used_hotkeys():
             if not user32.RegisterHotKey(None, 99, m, s):
                 reserved.append((SystemHotkey._nt_get_keymod(m), SystemHotkey._nt_get_keysym(s)))
             user32.UnregisterHotKey(None, 99)
-    print(reserved)
     return reserved
 
 
