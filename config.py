@@ -1,6 +1,7 @@
 from init import *
 import os
 import configparser
+import system_hotkey
 from tkinter import messagebox
 
 
@@ -83,6 +84,13 @@ class Config:
             self.delete_config_file()
             parser = self.load_config_file()
             messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated with default options.')
+
+        used = system_hotkey.check_used_hotkeys()
+        for key, bind in parser['KEYBINDS'].items():
+            if bind[0] in ["[", "("] and tuple(str(x).lower() for x in eval(bind)) in used:
+                parser['KEYBINDS'][key] = str([eval(bind)[0], 'NO_BIND'])
+                messagebox.showerror('Used keybind', 'Configured keybind for %s (%s) is already in use by the system.\nUnbinding "%s" - please set a new bind in options.' % (key, bind, key))
+
         return parser
 
     def update_config(self, parent):

@@ -4,7 +4,7 @@ import tkinter as tk
 from color_themes import Theme
 import tk_dynamic as tkd
 from tkinter import messagebox, ttk
-from system_hotkey import SystemHotkey
+import system_hotkey
 
 
 class Options(tkd.Frame):
@@ -117,12 +117,9 @@ class Hotkeys(tkd.Frame):
     def __init__(self, main_frame, timer_frame, drop_frame, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
-        self.modifier_options = ['Control', 'Alt', 'Shift', '']
-        self.character_options = ['Escape', 'Space', 'Delete',
-                                  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',  'L', 'M',
-                                  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                                  'F10', 'F11', 'F12', 'NO_BIND']
-        self.hk = SystemHotkey()
+        self.modifier_options = system_hotkey.modifier_options
+        self.character_options = system_hotkey.character_options
+        self.hk = system_hotkey.SystemHotkey()
 
         lf = tkd.Frame(self, height=20, width=179)
         lf.pack(expand=True, fill=tk.BOTH)

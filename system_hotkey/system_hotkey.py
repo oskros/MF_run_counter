@@ -17,6 +17,13 @@ class SystemRegisterError(SystemHotkeyError):pass
 class UnregisterError(SystemHotkeyError):pass
 class InvalidKeyError(SystemHotkeyError):pass
 
+
+modifier_options = ['Control', 'Alt', 'Shift', '']
+character_options = ['Escape', 'Space', 'Delete',
+                          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                          'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                          'F10', 'F11', 'F12', 'NO_BIND']
+
 if os.name == 'nt':
     import ctypes
     from ctypes import wintypes
@@ -506,6 +513,20 @@ class MixIn():
         # i.e kp_3 and kp_page_down look exactly the same, so we cannot implement our unite_kp..
 
 
+def check_used_hotkeys():
+    mods = [1, 2, 4]
+    syms = [x for x in [vk_codes.get(x.lower()) for x in character_options] if x]
+
+    reserved = []
+    for m in mods:
+        for s in syms:
+            if not user32.RegisterHotKey(None, 99, m, s):
+                reserved.append((SystemHotkey._nt_get_keymod(m), SystemHotkey._nt_get_keysym(s)))
+            user32.UnregisterHotKey(None, 99)
+    print(reserved)
+    return reserved
+
+
 class SystemHotkey(MixIn):
     '''
     Cross platform System Wide Hotkeys
@@ -699,15 +720,18 @@ class SystemHotkey(MixIn):
                     print('some other message')
             time.sleep(self.check_queue_interval)
 
-    def _nt_get_keycode(self, key, disp=None):
+    @staticmethod
+    def _nt_get_keycode(key, disp=None):
         return vk_codes.get(key)
 
-    def _nt_get_keysym(self, keycode):
+    @staticmethod
+    def _nt_get_keysym(keycode):
         for key, value in vk_codes.items():
             if value == keycode:
                 return key
 
-    def _nt_get_keymod(self, keycode):
+    @staticmethod
+    def _nt_get_keymod(keycode):
         for key, value in win_modders.items():
             if value == keycode:
                 return key
