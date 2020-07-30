@@ -141,7 +141,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
     def character_file_extension(self):
         if self.game_version == 'PlugY':
-            return '.d2i'
+            return '.d2s'
         else:
             return '.map'
 
