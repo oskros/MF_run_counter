@@ -95,9 +95,11 @@ class Profile(tkd.Frame):
             # Handle non-allowed profile names
             if profile_name == '':
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
+                self._add_new_profile(first_profile=first_profile)
                 return
             if not first_profile and profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
+                self._add_new_profile(first_profile=first_profile)
                 return
 
             # Add new profile to profile tab

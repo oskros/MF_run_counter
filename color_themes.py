@@ -75,8 +75,9 @@ class Theme:
             # Widgets
             self.button_color = 'grey40'
             self.activebutton_color = 'grey78'
-            self.listbox_color_stats = 'grey90'
+            # self.listbox_color_stats = 'grey90'
             self.listbox_color = 'grey33'
+            self.listbox_color_stats = self.listbox_color
             self.pause_button_color = 'deep sky blue'
             self.circle_border_color = 'grey33'
             self.entry_color = 'grey78'
@@ -85,8 +86,9 @@ class Theme:
             self.text_color = '#ffffff'
             self.run_count_color = 'dark orange'
             self.hyperlink_color = 'dodger blue'
-            self.listbox_text_stats = 'black'
+            # self.listbox_text_stats = 'black'
             self.listbox_text = 'white'
+            self.listbox_text_stats = self.listbox_text
             self.pause_button_text = 'black'
 
             # Selecting Comboboxes
