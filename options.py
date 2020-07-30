@@ -138,8 +138,8 @@ class Automode(General):
 
         lab = tkd.Label(lf, text='Game version')
         lab.pack(side=tk.LEFT)
-        tk_utils.create_tooltip(lab, 'If PoD is selected, the .map file is used to check for updates. Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
-                                     'If PlugY is selected the .d2i file is used to check for updates. Thus, a new run begins every time you leave a game (since your .d2i files are saved upon exit)')
+        tk_utils.create_tooltip(lab, 'If B.net is selected, the .map file is used to check for updates. Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+                                     'If PlugY is selected the .d2s file is used to check for updates. Thus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_version = tk.StringVar()
         self.game_version.set(self.main_frame.game_version)
