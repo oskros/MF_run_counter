@@ -342,23 +342,57 @@ def add_circle(parent, pixels, color):
     return canvas, circ_id
 
 
-
-
-
 def test_mapfile_path(game_path, char_name):
     if not os.path.exists(game_path) or game_path in ['', '.']:
-        messagebox.showerror('Game path error', 'Game path from config.ini not found, please update the path in config.ini (ending with "/Path of Diablo/Save/Path of Diablo") and restart program\n\n'
+        messagebox.showerror('Game path error', """Game path not found, please update the path in options (for PoD, it's ending with "/Path of Diablo/Save/Path of Diablo") \n\n"""
                                                 'This session will continue in manual mode.')
         return False
     elif char_name == '':
         messagebox.showerror('Character name missing', 'Chosen profile has no character name specified. Create a new profile with a character name to use automode\n\n'
                                                        'This session will continue in manual mode.')
         return False
-    elif not os.path.exists(os.path.join(game_path, char_name + '.map')):
+    elif not os.path.exists(os.path.join(game_path, char_name)):
         messagebox.showerror('Character file not found', 'Map file for specified character not found. Make sure the character name in chosen profile is identical to your in-game character name. If not, create a new profile with the correct character name\n\n'
                                                          'This session will continue in manual mode')
         return False
     return True
+
+
+class Tooltip(object):
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 57
+        y = y + cy + self.widget.winfo_rooty() +27
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        self.tipwindow.wm_attributes('-topmost', True)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                      background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                      font=("tahoma", "8", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+def create_tooltip(widget, text):
+    tooltip = Tooltip(widget)
+    widget.bind('<Enter>', lambda event: tooltip.showtip(text))
+    widget.bind('<Leave>', lambda event: tooltip.hidetip())
 
 
 if __name__ == '__main__':

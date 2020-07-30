@@ -142,8 +142,8 @@ class Profile(tkd.Frame):
         # Load the new profile into the timer and drop module, and update the descriptive statistics
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
-        if self.main_frame.AUTOMODE:
-            self.main_frame.tab1.activate_automode(self.char_name.get())
+        if self.main_frame.automode:
+            self.main_frame.toggle_automode(self.char_name.get())
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()

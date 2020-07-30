@@ -27,12 +27,13 @@ class Config:
 
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        if 'automode' in config['DEFAULT'] and eval(config['DEFAULT']['automode']) is True:
-            config['DEFAULT']['game_path'] = self._find_game_path()
+        config['DEFAULT']['game_path'] = self._find_game_path()
         config['DEFAULT']['window_start_position'] = str((100, 100))
         config['DEFAULT']['active_profile'] = ''
 
         config.add_section('OPTIONS')
+        config['OPTIONS']['automode'] = '0'
+        config['OPTIONS']['game_version'] = 'PoD'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '1'
         config['OPTIONS']['check_for_new_version'] = '1'
@@ -88,7 +89,7 @@ class Config:
         # Check if any binds in config file is already used by the system, and remove them in case
         used = system_hotkey.check_used_hotkeys()
         for key, bind in parser['KEYBINDS'].items():
-            if bind[0] in ["[", "("] and tuple(str(x).lower() for x in eval(bind)) in used:
+            if len(bind) > 0 and bind[0] in ["[", "("] and tuple(str(x).lower() for x in eval(bind)) in used:
                 parser['KEYBINDS'][key] = str([eval(bind)[0], 'NO_BIND'])
                 messagebox.showerror('Used keybind', 'Configured keybind for %s (%s) is already in use by the system.\nUnbinding "%s" - please set a new bind in options.' % (key, bind, key))
 
@@ -100,10 +101,13 @@ class Config:
         # Update position
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
+        cfg['DEFAULT']['game_path'] = str(parent.game_path)
         cfg['DEFAULT']['window_start_position'] = str((x, y))
         cfg['DEFAULT']['active_profile'] = str(parent.active_profile)
 
         # Update flags
+        cfg['OPTIONS']['automode'] = str(parent.automode)
+        cfg['OPTIONS']['game_version'] = str(parent.game_version)
         cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)

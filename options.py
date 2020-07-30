@@ -5,6 +5,9 @@ from color_themes import Theme
 import tk_dynamic as tkd
 from tkinter import messagebox, ttk
 import system_hotkey
+import tk_utils
+LAB_HEIGHT = 30
+LAB_WIDTH = 179
 
 
 class Options(tkd.Frame):
@@ -13,8 +16,10 @@ class Options(tkd.Frame):
         self.tabcontrol = ttk.Notebook(self)
         self.tab1 = General(main_frame, parent=self.tabcontrol)
         self.tab2 = Hotkeys(main_frame, timer_frame, drop_frame, parent=self.tabcontrol)
+        self.tab3 = Automode(main_frame, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='General')
         self.tabcontrol.add(self.tab2, text='Hotkeys')
+        self.tabcontrol.add(self.tab3, text='Automode')
         self.tabcontrol.pack(expand=1, fill='both')
 
 
@@ -22,21 +27,23 @@ class General(tkd.Frame):
     def __init__(self, main_frame, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
-        self.add_flag(flag_name='Always on top')
-        self.add_flag(flag_name='Tab switch keys global')
-        self.add_flag(flag_name='Check for new version')
-        self.add_flag(flag_name='Enable sound effects')
-        self.add_flag(flag_name='Pop-up drop window')
-        self.add_theme_choice()
-        self.add_delay_option()
+        self.add_flag(flag_name='Always on top', comment='Forces the application to appear on top of other windows (including d2)')
+        self.add_flag(flag_name='Tab switch keys global', comment='Controls whether the <Ctrl-Shift-PgUp/PgDn> hotkeys are global or only works when application has focus')
+        self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
+        self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
+        self.add_flag(flag_name='Pop-up drop window', comment='Make the "drops" window appear below the main widget, instead of having it as a separate tab')
+        self.add_theme_choice(comment='Select which color/style theme to use for the application')
+        self.add_delay_option(comment='Add an artificial delay to the "start run" command')
 
-    def add_theme_choice(self):
-        lf = tkd.LabelFrame(self, height=30, width=179)
+    def add_theme_choice(self, comment=None):
+        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
         lab = tkd.Label(lf, text='Active theme')
         lab.pack(side=tk.LEFT)
+        if comment is not None:
+            tk_utils.create_tooltip(lab, comment)
 
         self.active_theme = tk.StringVar()
         self.active_theme.set(self.main_frame.active_theme)
@@ -60,26 +67,30 @@ class General(tkd.Frame):
             return
         self.main_frame.run_timer_delay_seconds = float(self.run_delay.get())
 
-    def add_delay_option(self):
-        lf = tkd.LabelFrame(self, height=30, width=179)
+    def add_delay_option(self, comment=None):
+        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
         lab = tkd.Label(lf, text='Start run delay (seconds)')
         lab.pack(side=tk.LEFT)
+        if comment is not None:
+            tk_utils.create_tooltip(lab, comment)
 
         self.run_delay = tk.StringVar()
         self.run_delay.set(eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
         tkd.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
         self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
 
-    def add_flag(self, flag_name):
-        lf = tkd.LabelFrame(self, height=30, width=179)
+    def add_flag(self, flag_name, comment=None):
+        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
         lab = tkd.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
+        if comment is not None:
+            tk_utils.create_tooltip(lab, comment)
 
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
@@ -109,8 +120,49 @@ class General(tkd.Frame):
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
         elif attr.lower() == 'pop_up_drop_window':
             self.main_frame.toggle_drop_tab()
-        elif attr.lower() in ['tab_switch_keys_global']:
-            tk.messagebox.showinfo('Restart required', 'The change will take effect after a restart of the application')
+        elif attr.lower() == 'tab_switch_keys_global':
+            self.main_frame.toggle_tab_keys_global()
+        elif attr.lower() == 'automode':
+            self.main_frame.toggle_automode()
+
+
+class Automode(General):
+    def __init__(self, main_frame, parent=None, **kw):
+        tkd.Frame.__init__(self, parent, kw)
+        self.main_frame = main_frame
+        self.add_flag(flag_name='Automode', comment='Enables automode, which monitors your local character files for updates.\nEvery time an update is registered, the current run terminates and a new one is started')
+
+        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
+        lf.propagate(False)
+        lf.pack(expand=False, fill=tk.X)
+
+        lab = tkd.Label(lf, text='Game version')
+        lab.pack(side=tk.LEFT)
+        tk_utils.create_tooltip(lab, 'If PoD is selected, the .map file is used to check for updates. Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+                                     'If PlugY is selected the .d2i file is used to check for updates. Thus, a new run begins every time you leave a game (since your .d2i files are saved upon exit)')
+
+        self.game_version = tk.StringVar()
+        self.game_version.set(self.main_frame.game_version)
+        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['PlugY', 'PoD'])
+        cb.bind("<FocusOut>", lambda e: cb.selection_clear())
+        cb.config(width=7)
+        cb.pack(side=tk.RIGHT)
+        self.game_version.trace_add('write', lambda name, index, mode: self.update_game_version())
+
+        tkd.Label(self, text='Game path').pack(pady=[10, 0])
+        self.game_path = tk.StringVar()
+        self.game_path.set(self.main_frame.game_path)
+        # tk.Text(self, textvariable=self.game_path).pack()
+        tkd.Entry(self, textvariable=self.game_path).pack(fill=tk.BOTH, padx=4)
+        tkd.Button(self, text='Apply', command=self.apply_path_ch).pack()
+
+    def update_game_version(self):
+        self.main_frame.game_version = self.game_version.get()
+        self.main_frame.toggle_automode()
+
+    def apply_path_ch(self):
+        self.main_frame.game_path = self.game_path.get()
+        self.main_frame.toggle_automode()
 
 
 class Hotkeys(tkd.Frame):

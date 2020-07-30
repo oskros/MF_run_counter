@@ -28,10 +28,8 @@ class MFRunTimer(tkd.Frame):
         self.avg_lap = tk.StringVar()
         self.laps = []
         self._make_widgets()
-        self.automode_active = self.main_frame.AUTOMODE
-
-        if self.main_frame.AUTOMODE:
-            self.activate_automode(char_name=self.main_frame.tab4.char_name.get())
+        self.automode_active = self.main_frame.automode
+        # self.toggle_automode(char_name=self.main_frame.tab4.char_name.get())
 
         self._update_session_time()
 
@@ -86,8 +84,8 @@ class MFRunTimer(tkd.Frame):
         self._sess_timer = self.after(50, self._update_session_time)
 
     def _check_entered_game(self):
-        stamp = os.stat(self.map_file_path).st_mtime
-        if self.cached_file_stamp != stamp:
+        stamp = os.stat(self.char_file_path).st_mtime
+        if self.cached_file_stamp != stamp and not self.is_paused:
             self.StopStart()
             self.cached_file_stamp = stamp
         self._game_check = self.after(50, self._check_entered_game)
@@ -131,9 +129,6 @@ class MFRunTimer(tkd.Frame):
         self._set_time(self.session_time, for_session=True)
 
     def Start(self, play_sound=True):
-        # if self.automode_active and hasattr(self, 'automode_lab') and self.automode_lab.winfo_exists():
-        #     self.automode_lab.destroy()
-
         def update_start():
             if self.is_paused:
                 self.Pause()
@@ -194,7 +189,6 @@ class MFRunTimer(tkd.Frame):
             self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.Pause,
                                              bg=self.main_frame.theme.pause_button_color,
                                              fg=self.main_frame.theme.pause_button_text)
-            self.pause_lab.pack()
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
             self.c1.itemconfigure(self.circ_id, fill='red')
@@ -203,8 +197,8 @@ class MFRunTimer(tkd.Frame):
             if self.is_running:
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
-            if self.automode_active:
-                self.after_cancel(self._game_check)
+            # if hasattr(self, '_game_check'):
+            #     self.after_cancel(self._game_check)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
@@ -214,10 +208,10 @@ class MFRunTimer(tkd.Frame):
                 self.c1.itemconfigure(self.circ_id, fill='green3')
                 self._update_lap_time()
             self._update_session_time()
-            # exec(blocks[8])
+
             if self.automode_active:
-                self.cached_file_stamp = os.stat(self.map_file_path).st_mtime
-                self._check_entered_game()
+                self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
+                # self._check_entered_game()
             self.is_paused = False
 
     def ResetLap(self):
@@ -244,21 +238,26 @@ class MFRunTimer(tkd.Frame):
     def SaveState(self):
         return dict(laps=self.laps, session_time=self.session_time)
 
-    def activate_automode(self, char_name):
-        if hasattr(self, '_game_check'):
+    def toggle_automode(self, char_name):
+        if self.main_frame.automode:
+            if hasattr(self, '_game_check'):
+                self.after_cancel(self._game_check)
+
+            d2_save_path = os.path.normpath(self.main_frame.game_path)
+            char_extension = char_name + self.main_frame.character_file_extension()
+            self.char_file_path = os.path.join(d2_save_path, char_extension)
+
+            if tk_utils.test_mapfile_path(d2_save_path, char_extension):
+                self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
+                self._check_entered_game()
+
+                self.automode_active = True
+            else:
+                self.automode_active = False
+                self.main_frame.am_lab.destroy()
+        elif hasattr(self, '_game_check'):
             self.after_cancel(self._game_check)
-
-        d2_save_path = os.path.normpath(self.main_frame.cfg.get('DEFAULT', 'game_path'))
-        self.map_file_path = os.path.join(d2_save_path, char_name + '.map')
-
-        if tk_utils.test_mapfile_path(d2_save_path, char_name):
-            self.cached_file_stamp = os.stat(self.map_file_path).st_mtime
-            self._check_entered_game()
-
-            self.automode_active = True
-        else:
             self.automode_active = False
-            self.main_frame.am_lab.destroy()
 
 
 class Drops(tkd.Frame):

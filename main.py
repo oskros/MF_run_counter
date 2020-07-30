@@ -29,7 +29,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Build/load config file
         self.cfg = self.load_config_file()
-        self.AUTOMODE = eval(self.cfg['DEFAULT']['automode']) if 'automode' in self.cfg['DEFAULT'] else False
+        self.game_path = self.cfg['DEFAULT']['game_path']
+        self.automode = eval(self.cfg['OPTIONS']['automode'])
+        self.game_version = self.cfg['OPTIONS']['game_version']
         self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -87,9 +89,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.bind("<Right>", self._moveright)
         self.root.bind("<Up>", self._moveup)
         self.root.bind("<Down>", self._movedown)
-        if self.AUTOMODE:
-            self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
-            self.am_lab.place(x=1, y=1)
 
         # Build tabs
         self.tabcontrol = ttk.Notebook(self.root)
@@ -134,8 +133,39 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.theme.apply_theme_style()
         self.theme.update_colors()
 
+        # Automode
+        self.toggle_automode()
+
         # Start the program
         self.root.mainloop()
+
+    def character_file_extension(self):
+        if self.game_version == 'PlugY':
+            return '.d2i'
+        else:
+            return '.map'
+
+    def toggle_automode(self, char_name=None):
+        if hasattr(self, 'am_lab'):
+            self.am_lab.destroy()
+        if char_name is None:
+            char_name = self.tab4.char_name.get()
+        if self.automode:
+            self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
+            self.am_lab.place(x=1, y=1)
+        self.tab1.toggle_automode(char_name)
+
+    def toggle_tab_keys_global(self):
+        if self.tab_switch_keys_global:
+            self.root.unbind_all('<Control-Shift-Next>')
+            self.root.unbind_all('<Control-Shift-Prior>')
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
+        else:
+            self.tab3.tab2.hk.unregister(['control', 'shift', 'next'])
+            self.tab3.tab2.hk.unregister(['control', 'shift', 'prior'])
+            self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
+            self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
     def toggle_drop_tab(self):
         if self.pop_up_drop_window:
