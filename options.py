@@ -138,8 +138,8 @@ class Automode(General):
 
         lab = tkd.Label(lf, text='Game version')
         lab.pack(side=tk.LEFT)
-        tk_utils.create_tooltip(lab, 'If B.net is selected, the .map file is used to check for updates. Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
-                                     'If PlugY is selected the .d2s file is used to check for updates. Thus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
+        tk_utils.create_tooltip(lab, 'If B.net is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+                                     '\nIf PlugY is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_version = tk.StringVar()
         self.game_version.set(self.main_frame.game_version)
@@ -148,6 +148,17 @@ class Automode(General):
         cb.config(width=7)
         cb.pack(side=tk.RIGHT)
         self.game_version.trace_add('write', lambda name, index, mode: self.update_game_version())
+
+        lf2 = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
+        lf2.propagate(False)
+        lf2.pack(expand=False, fill=tk.X)
+
+        self.char_var = tk.StringVar()
+        self.char_var.set(self.main_frame.tab4.char_name.get())
+        cn_lab = tkd.Label(lf2, text='Character name')
+        cn_lab.pack(side=tk.LEFT)
+        tk_utils.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
+        tkd.Label(lf2, textvariable=self.char_var).pack(side=tk.RIGHT)
 
         tkd.Label(self, text='Game path').pack(pady=[10, 0])
         self.game_path = tk.StringVar()

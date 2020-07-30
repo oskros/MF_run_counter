@@ -146,6 +146,7 @@ class Profile(tkd.Frame):
         self.update_descriptive_statistics()
         if self.main_frame.automode:
             self.main_frame.toggle_automode(self.char_name.get())
+        self.main_frame.tab3.tab3.char_var.set(self.char_name.get())
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()

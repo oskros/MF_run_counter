@@ -347,8 +347,9 @@ class Drops(tkd.Frame):
 class About(tkd.Frame):
     def __init__(self, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
-        label0 = tkd.Label(self, text="""Run counter for Diablo 2 developed in July 
-and August 2019 by Oskros#1889 on Discord. Please see the README.md file 
+        label0 = tkd.Label(self, text="""Run counter for Diablo 2 developed in July
+and August 2019 by Oskros#1889 on 
+Discord. Please see the README.md file 
 available on Github""", justify=tk.LEFT)
         label0.pack()
         link0 = tkd.Hyperlink(self, text="Open Readme", cursor="hand2")
