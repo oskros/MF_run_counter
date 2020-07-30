@@ -33,7 +33,7 @@ class Config:
 
         config.add_section('OPTIONS')
         config['OPTIONS']['automode'] = '0'
-        config['OPTIONS']['game_version'] = 'PoD'
+        config['OPTIONS']['game_version'] = '´PlugY'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '1'
         config['OPTIONS']['check_for_new_version'] = '1'
