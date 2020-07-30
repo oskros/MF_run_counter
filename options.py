@@ -143,7 +143,7 @@ class Automode(General):
 
         self.game_version = tk.StringVar()
         self.game_version.set(self.main_frame.game_version)
-        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['PlugY', 'PoD'])
+        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['PlugY', 'B.net'])
         cb.bind("<FocusOut>", lambda e: cb.selection_clear())
         cb.config(width=7)
         cb.pack(side=tk.RIGHT)
