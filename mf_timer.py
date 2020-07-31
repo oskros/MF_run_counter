@@ -246,6 +246,7 @@ class MFRunTimer(tkd.Frame):
             d2_save_path = os.path.normpath(self.main_frame.game_path)
             char_extension = char_name + self.main_frame.character_file_extension()
             self.char_file_path = os.path.join(d2_save_path, char_extension)
+            print(self.char_file_path)
 
             if tk_utils.test_mapfile_path(d2_save_path, char_extension):
                 self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
