@@ -47,7 +47,7 @@ class Config:
         config['OPTIONS']['automode'] = '0'
         config['OPTIONS']['game_version'] = 'PlugY'
         config['OPTIONS']['always_on_top'] = '1'
-        config['OPTIONS']['tab_switch_keys_global'] = '1'
+        config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
         config['OPTIONS']['enable_sound_effects'] = '0'
         config['OPTIONS']['pop_up_drop_window'] = '0'
