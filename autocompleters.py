@@ -39,7 +39,7 @@ FULL_ITEM_LIST = ["Aldur's Advance", "Aldur's Deception", "Aldur's Rhythm", "Ald
                   "Griffon's Eye", "Grim's Burning Dead", "Griswold's Edge", "Griswold's Heart",
                   "Griswold's Honor", "Griswold's Redemption", "Griswold's Valor", "Guardian Angel",
                   "Guardian Naga", "Guillaume's Face", "Gul Rune", "Gull", "Gut Siphon", "Haemosu's Adamant",
-                  "Halaberd's Reign", "Hand of Blessed Light", "Harlequin Crest", "Hawkmail",
+                  "Halaberd's Reign", "Hand of Blessed Light", "(Shako) Harlequin Crest", "Hawkmail",
                   "Head Hunter's Glory", "Headstriker", "Heart Carver", "Heavenly Garb", "Heaven's Light",
                   "Hel Rune", "Hellcast", "Hellclap", "Hellfire Torch", "Hellmouth", "Hellplague", "Hellrack",
                   "Hellslayer", "Herald of Zakarum", "Hexfire", "Highlord's Wrath", "Homunculus", "Hone Sundan",
@@ -150,7 +150,6 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'SOE': 'String Of Ears',
                 'SOJ': 'Stone of Jordan',
                 'SS': 'Stormshield',
-                'Shako': 'Harlequin Crest',
                 "Sigon's Armor": "Sigon's Shelter",
                 "Sigon's Belt": "Sigon's Wrap",
                 "Sigon's Boots": "Sigon's Sabot",
@@ -177,24 +176,27 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'Wizzy': 'Wizardspike'}
 
 
-class AutocompleteEntry(tk.Entry):
-    def __init__(self, *args, **kwargs):
+class AutocompleteEntry:
+    def __init__(self, master, width, textvariable):
         self.chosen = None
-        tk.Entry.__init__(self, *args, **kwargs)
-        self.focus()
+        self.master = master
+        self.width = width
+        self.var = textvariable
+        self.entry = tk.Entry(master, textvariable=self.var)
+        self.entry.pack(fill=tk.X, padx=4)
+        self.entry.focus()
 
-        self.var = self["textvariable"]
-        if self.var == '':
-            self.var = self["textvariable"] = tk.StringVar()
-
-        self.var.trace('w', self.changed)
-        self.bind("<Tab>", self.selection)
-        self.bind("<Up>", self.move_up)
-        self.bind("<Down>", self.move_down)
+        self.var.trace_add('write', lambda name, index, mode: self.changed(name, index, mode))
+        self.master.unbind_all('<<NextWindow>>')
+        self.master.unbind_all('<<PrevWindow>>')
+        self.master.bind_all("<Tab>", self.selection)
+        self.master.bind_all("<Up>", self.move_up)
+        self.master.bind_all("<Down>", self.move_down)
 
         self.listboxUp = False
 
-    def changed(self, name, index, mode):
+    def changed(self, name=None, index=None, mode=None):
+        a = 0
         if self.var.get() == '':
             if self.listboxUp:
                 self.listbox.destroy()
@@ -204,9 +206,10 @@ class AutocompleteEntry(tk.Entry):
             if words:
                 if self.listboxUp:
                     self.listbox.destroy()
-                self.listbox = tk.Listbox(width=self["width"], height=min(len(words), 6))
+                self.listbox = tk.Listbox(self.master, width=self.width, height=min(len(words), 6))
                 self.listbox.bind("<Double-Button-1>", self.selection)
-                self.listbox.place(x=self.winfo_x(), y=self.winfo_y() + self.winfo_height())
+                self.listbox.place(relx=0, rely=0.3)
+                self.listbox.tkraise()
                 self.listboxUp = True
 
                 self.listbox.delete(0, tk.END)
@@ -223,7 +226,7 @@ class AutocompleteEntry(tk.Entry):
             self.var.set(self.chosen + ' ')
             self.listbox.destroy()
             self.listboxUp = False
-            self.icursor(tk.END)
+            self.entry.icursor(tk.END)
 
     def move_up(self, event):
         if self.listboxUp:
@@ -259,73 +262,75 @@ class AutocompleteEntry(tk.Entry):
 
     def comparison(self):
         out = []
+        # regex to append a [']? after all letters, which is an optional argument for having a hyphen
+        # this means that typing in "mavinas" and "m'avina's" will yield the same result
         hyphen_escape = re.sub('([^a-zA-Z]*)', "\\1[']?", re.escape(self.var.get()))
+        # encapsulating with \b ensures that searches are done only at the start of each word
+        # ".*" allows anything to follow after the already typed letters
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
+
         for w in FULL_ITEM_LIST + list(ITEM_ALIASES.keys()):
             if re.search(pattern, w):
+                # Append true entry from the alias list - if none are found, add the match from original list
                 out.append(ITEM_ALIASES.get(w, w))
         return out
 
 
 class ACMbox(object):
     def __init__(self, title):
-        self.root = root = tk.Tk()
+        self.root = tk.Toplevel()
+        self.root.geometry('200x145+%s+%s' % (self.root.winfo_screenwidth()//2 - 100, self.root.winfo_screenheight()//2 - 72))
+        self.root.update_idletasks()
         self.root.focus_set()
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.root.title(title)
         self.root.wm_attributes("-topmost", True)
-        self.root.geometry('200x145')
         self.root.resizable(False, False)
 
         frm_1 = tk.Frame(self.root)
-        frm_1.pack(ipadx=4, ipady=2)
+        frm_1.pack(ipadx=4, ipady=2, fill=tk.BOTH, expand=tk.Y)
 
         tk.Label(frm_1, text='Input your drop...').pack()
 
-        self.entry = AutocompleteEntry(frm_1, width=32)
-        self.entry.pack()
+        tw = tk.StringVar()
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
 
-        # buttons
-        btn_1 = tk.Button(frm_2, width=8, text='OK')
-        btn_1['command'] = self.b1_action
-        btn_1.pack(side='left')
+        tk.Button(frm_2, width=8, text='OK', command=self.b1_action).pack(side=tk.LEFT)
+        tk.Button(frm_2, width=8, text='Cancel', command=self.close_mod).pack(side=tk.LEFT)
 
-        btn_2 = tk.Button(frm_2, width=8, text='Cancel')
-        btn_2['command'] = self.close_mod
-        btn_2.pack(side='left')
-
-        root.unbind_all('<<NextWindow>>')
-        root.unbind_all('<<PrevWindow>>')
-        root.bind('<KeyPress-Return>', func=self.b1_action)
-        root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
-
-        root.update_idletasks()
-        xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
-        yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
-        geom = (root.winfo_width(), root.winfo_height(), xp, yp)
-        root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
+        # Unbind tab from its normal features
+        # self.root.unbind_all('<<NextWindow>>')
+        # self.root.unbind_all('<<PrevWindow>>')
+        # self.root.bind('<KeyPress-Tab>', func=self.entry.changed)
+        self.root.bind('<KeyPress-Return>', func=self.b1_action)
+        self.root.bind('<KeyPress-Escape>', func=self.close_mod)
 
         # call self.close_mod when the close button is pressed
-        root.protocol("WM_DELETE_WINDOW", self.close_mod)
+        self.root.protocol("WM_DELETE_WINDOW", self.close_mod)
 
         # a trick to activate the window (on windows 7)
-        root.deiconify()
+        self.root.deiconify()
 
     def b1_action(self, event=None):
         if self.entry.listboxUp:
             self.entry.selection(event)
         else:
             arg1 = self.entry.chosen
-            arg2 = self.entry.get().replace(arg1, '').strip() if arg1 else self.entry.get().strip()
-            self.returning = arg1, arg2
+            arg2 = self.entry.var.get()
+            arg3 = arg2.replace(arg1, '').strip() if arg1 else arg2.strip()
+            self.returning = arg1, arg2, arg3
             self.root.quit()
 
-    def close_mod(self):
-        self.returning = None
-        self.root.quit()
+    def close_mod(self, event=None):
+        if self.entry.listboxUp:
+            self.entry.listbox.destroy()
+            self.entry.listboxUp = False
+        else:
+            self.returning = None
+            self.root.quit()
 
 
 def acbox(title='Drop'):
@@ -339,14 +344,3 @@ def acbox(title='Drop'):
 
 if __name__ == '__main__':
     print(acbox())
-
-    # root = tk.Tk()
-    # entry = AutocompleteEntry(root, width=32)
-    # entry.grid()
-    # tk.Button(text='Python').grid(column=0)
-    # tk.Button(text='Tkinter').grid(column=0)
-    # tk.Button(text='Regular Expressions').grid(column=0)
-    # tk.Button(text='Fixed bugs').grid(column=0)
-    # tk.Button(text='New features').grid(column=0)
-    # tk.Button(text='Check code comments').grid(column=0)
-    # root.mainloop()

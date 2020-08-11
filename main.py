@@ -174,7 +174,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
                 self.tabcontrol.forget(tab_name)
             self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=8)
+            self.tab2.m.config(height=8, width=24)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
@@ -183,7 +183,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.config(borderwidth=2, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')
             self.tabcontrol.insert(1, self.tab2)
-            self.tab2.m.config(height=12)
+            self.tab2.m.config(height=12, width=23)
 
     def process_queue(self):
         """

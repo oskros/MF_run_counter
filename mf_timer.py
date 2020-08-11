@@ -6,6 +6,7 @@ import sound
 import tk_utils
 import tkinter as tk
 import tk_dynamic as tkd
+import autocompleters
 from tkinter import ttk
 # import pandas as pd
 
@@ -270,7 +271,7 @@ class Drops(tkd.Frame):
         lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 11))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
         scrollbar.config(command=self.m.yview)
@@ -284,21 +285,15 @@ class Drops(tkd.Frame):
         # a = 0
 
     def AddDrop(self):
-        # drop = tk_utils.mebox(entries=['Item alias', 'Stats'], title='Add drop')
-        drop = tk_utils.mbox('Input drop', entry=True, title='Add drop')
-        # if drop is None or drop[0] == '':
-        if not drop:
+        drop = autocompleters.acbox()
+        print(drop)
+        if not drop or drop[1] == '':
             return
         run_no = len(self.tab1.laps)
         if self.tab1.is_running:
             run_no += 1
-        self.drops.setdefault(str(run_no), []).append(drop)
-        self.display_drop(drop=drop, run_no=run_no)
-        # lookup = self.lookup_item(drop[0])
-        # lookup['Stats'] = drop[1]
-        # lookup['Run'] = run_no
-        # self.drops.append(lookup)
-        # self.display_drop(lookup)
+        self.drops.setdefault(str(run_no), []).append(drop[1])
+        self.display_drop(drop=drop[1], run_no=run_no)
 
     # def display_drop(self, lookup):
     def display_drop(self, drop, run_no):

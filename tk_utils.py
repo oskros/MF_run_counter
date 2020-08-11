@@ -259,7 +259,6 @@ class MessageBox(object):
             self.button.pack()
             self.button.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
         if entry:
-            # from autocompleters import AutocompleteEntry
             self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
             self.entry.focus_set()
