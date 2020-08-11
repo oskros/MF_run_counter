@@ -281,6 +281,7 @@ class Drops(tkd.Frame):
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
         # self.load_item_library()
+        # a = 0
 
     def AddDrop(self):
         # drop = tk_utils.mebox(entries=['Item alias', 'Stats'], title='Add drop')
@@ -328,21 +329,22 @@ class Drops(tkd.Frame):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
 
-    # def load_item_library(self):
-    #     lib = pd.read_csv('item_library.csv', index_col='Item')
-    #     alias_cols = [c for c in lib.columns if c.lower().startswith('alias')]
-    #     lib['Alias'] = lib[alias_cols].values.tolist()
-    #     pre_dict = lib['Alias'].to_dict()
-    #     self.item_alias = {l: k for k, v in pre_dict.items() for l in v if str(l) != 'nan'}
-    #
-    #     for c in alias_cols + ['Alias']:
-    #         del lib[c]
-    #     self.item_library = lib
+    def load_item_library(self):
+        import pandas as pd
+        lib = pd.read_csv('item_library.csv', index_col='Item')
+        alias_cols = [c for c in lib.columns if c.lower().startswith('alias')]
+        lib['Alias'] = lib[alias_cols].values.tolist()
+        pre_dict = lib['Alias'].to_dict()
+        self.item_alias = {l: k for k, v in pre_dict.items() for l in v if str(l) != 'nan'}
 
-    # def lookup_item(self, item_alias):
-    #     x = item_alias.lower()
-    #     item_name = ' '.join(w.capitalize() for w in self.item_alias.get(x, x).split())
-    #     return dict(Name=item_name, Alias=item_alias)
+        for c in alias_cols + ['Alias']:
+            del lib[c]
+        self.item_library = lib
+
+    def lookup_item(self, item_alias):
+        x = item_alias.lower()
+        item_name = ' '.join(w.capitalize() for w in self.item_alias.get(x, x).split())
+        return dict(Name=item_name, Alias=item_alias)
 
 
 class About(tkd.Frame):
