@@ -46,6 +46,8 @@
 #     if k32.ReadProcessMemory(process, hex(i), buf, STRLEN, ctypes.byref(s)):
 #         print(s.value, buf.raw)
 
+# Will pull memory addresses from https://github.com/Zutatensuppe/DiabloInterface/blob/master/src/D2Reader/GameMemoryTableFactory.cs#L70-L74
+
 import pymem
 import re
 
