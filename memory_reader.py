@@ -46,16 +46,52 @@
 #     if k32.ReadProcessMemory(process, hex(i), buf, STRLEN, ctypes.byref(s)):
 #         print(s.value, buf.raw)
 
+# Will pull memory addresses from https://github.com/Zutatensuppe/DiabloInterface/blob/master/src/D2Reader/GameMemoryTableFactory.cs#L70-L74
+import psutil
 import pymem
+import pymem.process
+import pymem.ressources.structure
 import re
+tp = pymem.ressources.structure.TOKEN_PRIVILEGES()
+luid = pymem.ressources.structure.LUID()
+pymem.process.set_debug_privilege()
+pm = pymem.Pymem('Game.exe')
+pid = pymem.process.process_from_name('Game.exe').th32ProcessID
+print('Process id: %s' % pid)
+# pid = pm.process_id
+base_adress = pm.process_base.lpBaseOfDll
 
-pm = pymem.Pymem('notepad.exe', debug=False)
-print('Process id: %s' % pm.process_id)
+# print('Base address: %s' % pm.process_base.lpBaseOfDll)
+print('Base address: %s' % base_address)
+#
+# import win32process
+# import win32api
+# import pymem
+# pid = pymem.process.process_from_name('Game.exe').th32ProcessID
+# print('Process id: %s' % pid)
+# # pymem.process.process_
+# # base_addr = pymem.process.module_from_name()
+#
+# PROCESS_ALL_ACCESS = 0x1F0FFF
+# PROCESS_VM_READ = 0x0010
+# PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+# win32api.T
+# # processHandle = win32api.OpenProcess(0x0400 | 0x0010, False, pid)
+# modules = win32process.EnumProcessModules(processHandle)
+# processHandle.close()
+# base_addr = modules[0] # for me it worked to select the first item in list...
+# print('Base address: %s' % base_addr)
 
-print('Base address: %s' % pm.process_base.lpBaseOfDll)
+import sys
+sys.exit(1)
+loading = base_adress + 0x30F2C0,
+saving = base_adress + 0x3792F8,
+saving2 = base_adress + 0x3786D0,
+in_game = base_adress + 0x30EE8C,
+in_menu = base_adress + 0x379970,
 # print(pm.read_bytes(pm.process_base.EntryPoint, 255))
 # print(pm.read_bytes(pm.process_base.process_handle, 4))
-read_bytes = pm.read_bytes(pm.process_base.lpBaseOfDll, 10000)
+read_bytes = pm.read_bytes(base_adress, 10000)
 # print(read_bytes)
 # print(re.sub(b'[^\x00-\x99f9]', b'', read_bytes).replace(b'\x00', b''))
 
