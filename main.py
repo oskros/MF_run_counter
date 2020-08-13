@@ -16,7 +16,10 @@ from tkinter import ttk, messagebox
 import tk_utils
 import tkinter as tk
 import tk_dynamic as tkd
-from mf_timer import MFRunTimer, Drops, About
+from about import About
+from drops import Drops
+from mf_timer import MFRunTimer
+
 
 
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
@@ -112,10 +115,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         lf = tkd.LabelFrame(self.root, height=35)
         lf.propagate(False)  # dont allow buttons to modify label frame size
         lf.pack(expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Start\nnew run', command=self.tab1.StopStart).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='End\nthis run', command=self.tab1.Stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Add\ndrop', command=self.tab2.AddDrop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Reset\nlap', command=self.tab1.ResetLap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Start\nnew run', command=self.tab1.stop_start).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='End\nthis run', command=self.tab1.stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Add\ndrop', command=self.tab2.add_drop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Reset\nlap', command=self.tab1.reset_lap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tkd.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Register binds for changing tabs
@@ -241,7 +244,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         x = self.tabcontrol.select()
         if x.endswith('profile'):
             if not self.tab1.is_paused:
-                self.tab1.Pause()
+                self.tab1.pause()
             self.tab4.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediate when you switch tabs by focusing the banner
         # image instead :)
@@ -277,7 +280,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         """
         Resets session for the timer module and drops from the drops module
         """
-        self.tab1.ResetSession()
+        self.tab1.reset_session()
         self.tab2.drops = dict()
         self.tab2.m.delete(0, tk.END)
 
@@ -295,8 +298,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
         if user_confirm:
             # Stop any active run and load current session info from timer and drop module.
-            self.tab1.Stop()
-            active = self.tab1.SaveState()
+            self.tab1.stop()
+            active = self.tab1.save_state()
             active.update(dict(drops=self.tab2.save_state()))
 
             # Update session dropdown for the profile
@@ -330,7 +333,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         it is saved to file.
         """
         cache = self.load_state_file()
-        cache['active_state'] = self.tab1.SaveState()
+        cache['active_state'] = self.tab1.save_state()
         cache['active_state'].update(dict(drops=self.tab2.save_state()))
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
@@ -342,7 +345,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         terminating all active threads.
         """
         if self.tab1.is_running:
-            self.tab1.Stop()
+            self.tab1.stop()
         self.update_config(self)
         self.SaveActiveState()
         os._exit(0)

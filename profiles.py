@@ -190,7 +190,7 @@ class Profile(tkd.Frame):
         if resp:
             if chosen == 'Active session':
                 # Here we simply reset the timer module
-                self.main_frame.ResetSession()
+                self.main_frame.reset_session()
                 self.main_frame.SaveActiveState()
                 self.selected_archive.set('Active session')
                 return
