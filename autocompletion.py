@@ -115,6 +115,8 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Andy's Face": "Andariel's Visage",
                 'Angelic Amu': 'Angelic Wings',
                 'Angelic Ring': 'Angelic Halo',
+                'Angelic Armor': 'Angelic Mantle',
+                'Angelic Weapon': 'Angelic Sickle',
                 'BK ring': "Bul-Kathos' Wedding Band",
                 'CoA': 'Crown Of Ages',
                 'DF': "Death's Fathom",
@@ -125,6 +127,10 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Griswold's Helm": "Griswold's Valor",
                 "Griswold's Shield": "Griswold's Honor",
                 "Griswold's Weapon": "Griswold's Redemption",
+                "Gris Armor": "Griswold's Heart",
+                "Gris Helm": "Griswold's Valor",
+                "Gris Shield": "Griswold's Honor",
+                "Gris Weapon": "Griswold's Redemption",
                 'Gull Dagger': 'Gull',
                 'HoZ': 'Herald of Zakarum',
                 'IK Armor': "Immortal King's Soul Cage",
@@ -203,8 +209,6 @@ ITEM_SHORTNAMES = {"Aldur's Advance": "Aldur's Boots",
                    "Atma's Scarab": "Atma's Amu",
                    "Bartuc's Cut-Throat": "Bartuc's",
                    'Blade of Ali Baba': 'Ali Baba',
-                   # "Bul-Kathos' Sacred Charge": 'BK 2H weap',
-                   # "Bul-Kathos' Tribal Guardian": 'BK 1H weap',
                    "Bul-Kathos' Wedding Band": 'BK Ring',
                    'Buriza-Do Kyanon': 'Buriza',
                    "Cathan's Mesh": "Cathan's Armor",
@@ -224,7 +228,6 @@ ITEM_SHORTNAMES = {"Aldur's Advance": "Aldur's Boots",
                    "Dracul's Grasp": "Dracul's",
                    "Duriel's Shell": "Duriel's",
                    'Dwarf Star': 'Dwarf',
-                   'Eaglehorn': 'Eagle',
                    "Eschuta's Temper": "Eschuta's",
                    "Gheed's Fortune": "Gheed's",
                    'Gore Rider': 'Gore',
@@ -259,8 +262,10 @@ ITEM_SHORTNAMES = {"Aldur's Advance": "Aldur's Boots",
                    "M'avina's Icy Clutch": "M'avina Gloves",
                    "M'avina's Tenet": "M'avina Belt",
                    "M'avina's True Sight": "M'avina Diadem",
+                   "Manald Heal": "Manald",
                    "Mang Song's Lesson": 'Mang Song',
                    "Mara's Kaleidoscope": "Mara's",
+                   "Nagel Ring": "Nagel",
                    "Natalya's Mark": "Nat's Claw",
                    "Natalya's Shadow": "Nat's Armor",
                    "Natalya's Soul": "Nat's Boots",
@@ -437,7 +442,7 @@ class AutocompleteEntry:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
-                if self.shortnames:
+                if False:#self.shortnames:
                     out.add(ITEM_SHORTNAMES.get(i_name, i_name))
                 else:
                     out.add(i_name)
@@ -483,10 +488,10 @@ class ACMbox(object):
         if self.entry.listboxUp:
             self.entry.selection(event)
         else:
-            arg1 = self.entry.chosen
-            arg2 = self.entry.var.get().strip()
-            arg3 = arg2.replace(arg1, '').strip() if arg1 else arg2
-            self.returning = arg1, arg2, arg3
+            item_name = self.entry.chosen
+            item_shortname = ITEM_SHORTNAMES.get(item_name, item_name)
+            user_input = self.entry.var.get().strip()
+            self.returning = item_name, item_shortname, user_input
             self.root.quit()
 
     def close_mod(self, event=None):

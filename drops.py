@@ -36,9 +36,9 @@ class Drops(tkd.Frame):
         if self.tab1.is_running:
             run_no += 1
         if drop[0] is not None and self.parent.item_shortnames:
-            drop_display = autocompletion.ITEM_SHORTNAMES.get(drop[0], drop[0]) + ' ' + drop[2]
+            drop_display = drop[1] + ' ' + drop[2].replace(drop[0], '').strip()
         else:
-            drop_display = drop[1]
+            drop_display = drop[2]
         self.drops.setdefault(str(run_no), []).append(drop_display.strip())
         self.display_drop(drop=drop_display.strip(), run_no=run_no)
 
