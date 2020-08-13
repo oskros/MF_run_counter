@@ -39,6 +39,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.run_timer_delay_seconds = eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
         self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
+        self.autocomplete = eval(self.cfg['OPTIONS']['autocomplete'])
+        self.item_shortnames = eval(self.cfg['OPTIONS']['item_shortnames'])
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -95,7 +97,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
-        self.tab2 = Drops(self.tab1, parent=self.root)
+        self.tab2 = Drops(self.tab1, parent=self)
         self.toggle_drop_tab()
         self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab3, text='Options')
@@ -174,7 +176,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
                 self.tabcontrol.forget(tab_name)
             self.root.config(borderwidth=2, relief='raised', height=622, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=8, width=27)
+            self.tab2.m.config(height=9, width=27)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
@@ -183,7 +185,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.config(borderwidth=2, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')
             self.tabcontrol.insert(1, self.tab2)
-            self.tab2.m.config(height=12, width=23)
+            self.tab2.m.config(height=9, width=23)
 
     def process_queue(self):
         """

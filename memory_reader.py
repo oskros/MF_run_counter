@@ -52,17 +52,31 @@ import pymem
 import pymem.process
 import pymem.ressources.structure
 import re
-tp = pymem.ressources.structure.TOKEN_PRIVILEGES()
-luid = pymem.ressources.structure.LUID()
-pymem.process.set_debug_privilege()
-pm = pymem.Pymem('Game.exe')
-pid = pymem.process.process_from_name('Game.exe').th32ProcessID
+# tp = pymem.ressources.structure.TOKEN_PRIVILEGES()
+# luid = pymem.ressources.structure.LUID()
+# pymem.process.set_debug_privilege()
+
+pm = pymem.Pymem('notepad.exe')
+# pid = pymem.process.process_from_name('Game.exe').th32ProcessID
+
+pid = pm.process_id
 print('Process id: %s' % pid)
-# pid = pm.process_id
-base_adress = pm.process_base.lpBaseOfDll
+base_address = pm.process_base.lpBaseOfDll
 
 # print('Base address: %s' % pm.process_base.lpBaseOfDll)
 print('Base address: %s' % base_address)
+
+import ctypes
+from ctypes import wintypes
+
+kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+
+kernel32.GetModuleHandleW.restype = wintypes.HMODULE
+kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
+
+hMod = kernel32.GetModuleHandleW('kernel32.dll')
+print(hMod)
+
 #
 # import win32process
 # import win32api

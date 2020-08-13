@@ -39,7 +39,7 @@ FULL_ITEM_LIST = ["Aldur's Advance", "Aldur's Deception", "Aldur's Rhythm", "Ald
                   "Griffon's Eye", "Grim's Burning Dead", "Griswold's Edge", "Griswold's Heart",
                   "Griswold's Honor", "Griswold's Redemption", "Griswold's Valor", "Guardian Angel",
                   "Guardian Naga", "Guillaume's Face", "Gul Rune", "Gull", "Gut Siphon", "Haemosu's Adamant",
-                  "Halaberd's Reign", "Hand of Blessed Light", "(Shako) Harlequin Crest", "Hawkmail",
+                  "Halaberd's Reign", "Hand of Blessed Light", "Harlequin Crest", "Hawkmail",
                   "Head Hunter's Glory", "Headstriker", "Heart Carver", "Heavenly Garb", "Heaven's Light",
                   "Hel Rune", "Hellcast", "Hellclap", "Hellfire Torch", "Hellmouth", "Hellplague", "Hellrack",
                   "Hellslayer", "Herald of Zakarum", "Hexfire", "Highlord's Wrath", "Homunculus", "Hone Sundan",
@@ -116,17 +116,17 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'Angelic Amu': 'Angelic Wings',
                 'Angelic Ring': 'Angelic Halo',
                 'BK ring': "Bul-Kathos' Wedding Band",
-                'COA': 'Crown Of Ages',
+                'CoA': 'Crown Of Ages',
                 'DF': "Death's Fathom",
                 'G Angel': 'Guardian Angel',
-                'Gangel': 'Guardian Angel',
+                'GAngel': 'Guardian Angel',
                 'GF': 'The Grandfather',
                 "Griswold's Armor": "Griswold's Heart",
                 "Griswold's Helm": "Griswold's Valor",
                 "Griswold's Shield": "Griswold's Honor",
                 "Griswold's Weapon": "Griswold's Redemption",
                 'Gull Dagger': 'Gull',
-                'HOZ': 'Herald of Zakarum',
+                'HoZ': 'Herald of Zakarum',
                 'IK Armor': "Immortal King's Soul Cage",
                 'IK Weapon': "Immortal King's Stone Crusher",
                 'IK Helm': "Immortal King's Will",
@@ -139,7 +139,7 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Immortal King's Belt": "Immortal King's Detail",
                 "Immortal King's Boots": "Immortal King's Pillar",
                 "Immortal King's Gloves": "Immortal King's Forge",
-                'LOH': 'Laying Of Hands',
+                'LoH': 'Laying Of Hands',
                 'Mahim Oak': 'The Mahim-Oak Curio',
                 'Nagel Ring': 'Nagelring',
                 'OOC': 'Orb Of Corruption',
@@ -147,8 +147,9 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'Occy': 'The Oculus',
                 "Que Hegan's Wisdom": "Que-Hegan's Wisdom",
                 'RBF': 'Rainbow Facet',
-                'SOE': 'String Of Ears',
-                'SOJ': 'Stone of Jordan',
+                'Shako': 'Harlequin Crest',
+                'SoE': 'String Of Ears',
+                'SoJ': 'Stone of Jordan',
                 'SS': 'Stormshield',
                 "Sigon's Armor": "Sigon's Shelter",
                 "Sigon's Belt": "Sigon's Wrap",
@@ -175,10 +176,174 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'WWS': 'Waterwalk',
                 'Wizzy': 'Wizardspike'}
 
+ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
+                   "Aldur's Deception": 'Aldur Armor',
+                   "Aldur's Rhythm": 'Aldur Weapon',
+                   "Aldur's Stony Gaze": 'Aldur Helm',
+                   "Andariel's Visage": 'Andys',
+                   'Angelic Halo': 'Angelic Ring',
+                   'Angelic Mantle': 'Angelic Armor',
+                   'Angelic Sickle': 'Angelic Weapon',
+                   'Angelic Wings': 'Angelic Amu',
+                   'Annihilus': 'Anni',
+                   'Arachnid Mesh': 'Arach',
+                   "Arcanna's Deathwand": 'Arcanna Staff',
+                   "Arcanna's Flesh": 'Arcanna Armor',
+                   "Arcanna's Head": 'Arcanna Helm',
+                   "Arcanna's Sign": 'Arcanna Amu',
+                   'Arctic Binding': 'Arctic Belt',
+                   'Arctic Furs': 'Arctic Armor',
+                   'Arctic Horn': 'Arctic Bow',
+                   'Arctic Mitts': 'Arctic Gloves',
+                   "Arkaine's Valor": 'Arkaines',
+                   "Arreat's Face": 'Arreats',
+                   "Astreon's Iron Ward": 'Astreons',
+                   "Athena's Wrath": 'Athenas',
+                   "Atma's Scarab": 'Atma Amu',
+                   "Bartuc's Cut-Throat": 'Bartucs',
+                   'Blade of Ali Baba': 'Ali Baba',
+                   "Bul-Kathos' Sacred Charge": 'BK 2H weap',
+                   "Bul-Kathos' Tribal Guardian": 'BK 1H weap',
+                   "Bul-Kathos' Wedding Band": 'BK Ring',
+                   'Buriza-Do Kyanon': 'Buriza',
+                   "Cathan's Mesh": 'Cathan Armor',
+                   "Cathan's Rule": 'Cathan Staff',
+                   "Cathan's Seal": 'Cathan Ring',
+                   "Cathan's Sigil": 'Cathan Amu',
+                   "Cathan's Visage": 'Cathan Helm',
+                   "Cerebus' Bite": 'Cerebus',
+                   'Chance Guards': 'Chance',
+                   "Civerb's Cudgel": 'Civerb Scepter',
+                   "Civerb's Icon": 'Civerb Amu',
+                   "Civerb's Ward": 'Civerb Shield',
+                   "Cleglaw's Claw": 'Cleglaw Shield',
+                   "Cleglaw's Pincers": 'Cleglaw Gloves',
+                   "Cleglaw's Tooth": 'Cleglaw Sword',
+                   'Crown of Ages': 'CoA',
+                   "Death's Fathom": 'DF',
+                   "Dracul's Grasp": 'Draculs',
+                   "Duriel's Shell": 'Duriels',
+                   'Dwarf Star': 'Dwarf',
+                   'Eaglehorn': 'Eagle',
+                   "Eschuta's Temper": 'Eschutas',
+                   "Gheed's Fortune": 'Gheeds',
+                   'Gore Rider': 'Gore',
+                   "Griffon's Eye": 'Griffons',
+                   "Griswold's Heart": 'Gris Armor',
+                   "Griswold's Honor": 'Gris Shield',
+                   "Griswold's Redemption": 'Gris Weapon',
+                   "Griswold's Valor": 'Gris Helm',
+                   'Guardian Angel': 'Gangel',
+                   "Guillaume's Face": 'Guillaumes',
+                   'Gull': 'Gull Dagger',
+                   'Harlequin Crest': 'Shako',
+                   'Hellfire Torch': 'Torch',
+                   'Herald of Zakarum': 'HoZ',
+                   "Highlord's Wrath": 'Highlords',
+                   "Immortal King's Detail": 'IK Belt',
+                   "Immortal King's Forge": 'IK Gloves',
+                   "Immortal King's Pillar": 'IK Boots',
+                   "Immortal King's Soul Cage": 'IK Armor',
+                   "Immortal King's Stone Crusher": 'IK Weapon',
+                   "Immortal King's Will": 'IK Helm',
+                   "Iratha's Coil": 'Irathas Helm',
+                   "Iratha's Collar": 'Irathas Amu',
+                   "Iratha's Cord": 'Irathas Belt',
+                   "Iratha's Cuff": 'Irathas Gloves',
+                   "Jalal's Mane": 'Jalals',
+                   "Kira's Guardian": 'Kiras',
+                   'Laying of Hands': 'LoH',
+                   'Lidless Wall': 'Lidless',
+                   "M'avina's Caster": "M'avina Bow",
+                   "M'avina's Embrace": "M'avina Armor",
+                   "M'avina's Icy Clutch": "M'avina Gloves",
+                   "M'avina's Tenet": "M'avina Belt",
+                   "M'avina's True Sight": "M'avina Diadem",
+                   "Mang Song's Lesson": 'Mang Song',
+                   "Mara's Kaleidoscope": "Mara's",
+                   "Natalya's Mark": "Nat's Claw",
+                   "Natalya's Shadow": "Nat's Armor",
+                   "Natalya's Soul": "Nat's Boots",
+                   "Natalya's Totem": "Nat's Helm",
+                   "Nightwing's Veil": 'Nightwings',
+                   'Nokozan Relic': 'Nokozan',
+                   "Nosferatu's Coil": "Nosferatu's",
+                   "Ondal's Almighty": "Ondal's Helm",
+                   "Ondal's Wisdom": "Ondal's Staff",
+                   'Orb of Corruption': 'OOC',
+                   "Ormus' Robes": 'Ormus',
+                   "Que-Hegan's Wisdom": 'Que-Hegan',
+                   'Rainbow Facet': 'RBF',
+                   'Raven Frost': 'Raven',
+                   'Razortail': 'Razor',
+                   "Sander's Paragon": "Sander's Helm",
+                   "Sander's Riprap": "Sander's Boots",
+                   "Sander's Superstition": "Sander's Wand",
+                   "Sander's Taboo": "Sanders' Gloves",
+                   'Sandstorm Trek': 'Sands',
+                   "Saracen's Chance": "Saracen's",
+                   "Sazabi's Cobalt Redeemer": "Sazabi's Sword",
+                   "Sazabi's Ghost Liberator": "Sazabi's Armor",
+                   "Sazabi's Mental Sheath": "Sazabi's Helm",
+                   "Schaefer's Hammer": "Schaefer's",
+                   "Seraph's Hymn": "Seraph's",
+                   'Shaftstop': 'Shafts',
+                   "Sigon's Gage": "Sigon's Gloves",
+                   "Sigon's Guard": "Sigon's Shield",
+                   "Sigon's Sabot": "Sigon's Boots",
+                   "Sigon's Shelter": "Sigon's Armor",
+                   "Sigon's Visor": "Sigon's Helm",
+                   "Sigon's Wrap": "Sigon's Belt",
+                   'Skin of the Vipermagi': 'Viper',
+                   "Skullder's Ire": "Skullder's",
+                   'Stone of Jordan': 'SoJ',
+                   'Stormshield': 'Storm',
+                   'String of Ears': 'String',
+                   "Tal Rasha's Adjudication": "Tal's Amu",
+                   "Tal Rasha's Fine Spun Cloth": "Tal's Belt",
+                   "Tal Rasha's Guardianship": "Tal's Armor",
+                   "Tal Rasha's Horadric Crest": "Tal's Helm",
+                   "Tal Rasha's Lidless Eye": "Tal's Orb",
+                   "Tancred's Crowbill": "Tancred's Axe",
+                   "Tancred's Hobnails": "Tancred's Boots",
+                   "Tancred's Skull": "Tancred's Helm",
+                   "Tancred's Spine": "Tancred's Armor",
+                   "Tancred's Weird": "Tancred's Amu",
+                   "Templar's Might": "Templa'r's",
+                   "The Cat's Eye": "Cat's Eye",
+                   'The Cranium Basher': 'Cranium Basher',
+                   'The Eye of Etlich': 'Eye of Etlich',
+                   'The Grandfather': 'GF',
+                   'The Mahim-Oak Curio': 'Mahim-Oak',
+                   'The Oculus': 'Oculus',
+                   "The Reaper's Toll": "Reaper's Toll",
+                   'The Rising Sun': 'Rising Sun',
+                   "Thundergod's Vigor": 'Tgods',
+                   "Tiamat's Rebuke": "Tiamat's",
+                   "Titan's Revenge": "Titan's",
+                   "Trang-Oul's Claws": 'Trang Gloves',
+                   "Trang-Oul's Girth": 'Trang Belt',
+                   "Trang-Oul's Guise": 'Trang Helm',
+                   "Trang-Oul's Scales": 'Trang Armor',
+                   "Trang-Oul's Wing": 'Trang Shield',
+                   "Tyrael's Might": "Tyrael's",
+                   'Vampire Gaze': 'VGaze',
+                   "Verdungo's Hearty Cord": "Verdungo's",
+                   "Vidala's Ambush": "Vidala's Armor",
+                   "Vidala's Barb": "Vidala's Bow",
+                   "Vidala's Fetlock": "Vidala's Boots",
+                   "Vidala's Snare": "Vidala's Amu",
+                   'War Traveler': 'War Travs',
+                   "Whitstan's Guard": "Whitstan's",
+                   'Windforce': 'WF',
+                   'Wisp Projector': 'Wisp',
+                   'Wizardspike': 'Wizzy'}
+
 
 class AutocompleteEntry:
-    def __init__(self, master, width, textvariable):
+    def __init__(self, master, width, textvariable, enable=True):
         self.chosen = None
+        self.enable = enable
         self.master = master
         self.width = width
         self.var = textvariable
@@ -196,13 +361,12 @@ class AutocompleteEntry:
         self.listboxUp = False
 
     def changed(self, name=None, index=None, mode=None):
-        a = 0
         if self.var.get() == '':
             if self.listboxUp:
                 self.listbox.destroy()
                 self.listboxUp = False
         else:
-            words = self.comparison()
+            words = self.comparison() if self.enable else []
             if words:
                 if self.listboxUp:
                     self.listbox.destroy()
@@ -261,9 +425,9 @@ class AutocompleteEntry:
                 self.listbox.activate(hl_idx)
 
     def comparison(self):
-        out = []
-        # regex to append a [']? after all letters, which is an optional argument for having a hyphen
-        # this means that typing in "mavinas" and "m'avina's" will yield the same result
+        out = set()
+        # regex to append a [']? after all letters, which is an optional argument for adding a hyphen
+        # this means that for example typing in "mavinas" and "m'avina's" will yield the same results
         hyphen_escape = re.sub('([^a-zA-Z]*)', "\\1[']?", re.escape(self.var.get()))
         # encapsulating with \b ensures that searches are done only at the start of each word
         # ".*" allows anything to follow after the already typed letters
@@ -272,14 +436,15 @@ class AutocompleteEntry:
         for w in FULL_ITEM_LIST + list(ITEM_ALIASES.keys()):
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
-                out.append(ITEM_ALIASES.get(w, w))
-        return out
+                out.add(ITEM_ALIASES.get(w, w))
+        return sorted(out)
 
 
 class ACMbox(object):
-    def __init__(self, title):
+    def __init__(self, title, enable=True):
         self.root = tk.Toplevel()
-        self.root.geometry('200x145+%s+%s' % (self.root.winfo_screenwidth()//2 - 100, self.root.winfo_screenheight()//2 - 72))
+        self.root.geometry(
+            '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
         self.root.update_idletasks()
         self.root.focus_set()
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
@@ -293,7 +458,7 @@ class ACMbox(object):
         tk.Label(frm_1, text='Input your drop...').pack()
 
         tw = tk.StringVar()
-        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw)
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
@@ -301,10 +466,6 @@ class ACMbox(object):
         tk.Button(frm_2, width=8, text='OK', command=self.b1_action).pack(side=tk.LEFT)
         tk.Button(frm_2, width=8, text='Cancel', command=self.close_mod).pack(side=tk.LEFT)
 
-        # Unbind tab from its normal features
-        # self.root.unbind_all('<<NextWindow>>')
-        # self.root.unbind_all('<<PrevWindow>>')
-        # self.root.bind('<KeyPress-Tab>', func=self.entry.changed)
         self.root.bind('<KeyPress-Return>', func=self.b1_action)
         self.root.bind('<KeyPress-Escape>', func=self.close_mod)
 
@@ -333,8 +494,8 @@ class ACMbox(object):
             self.root.quit()
 
 
-def acbox(title='Drop'):
-    msgbox = ACMbox(title)
+def acbox(title='Drop', enable=True):
+    msgbox = ACMbox(title, enable=enable)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
@@ -343,4 +504,4 @@ def acbox(title='Drop'):
 
 
 if __name__ == '__main__':
-    print(acbox())
+    print(acbox(enable=True))

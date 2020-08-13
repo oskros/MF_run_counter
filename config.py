@@ -53,6 +53,8 @@ class Config:
         config['OPTIONS']['pop_up_drop_window'] = '0'
         config['OPTIONS']['active_theme'] = 'default'
         config['OPTIONS']['run_timer_delay_seconds'] = '0.0'
+        config['OPTIONS']['autocomplete'] = '1'
+        config['OPTIONS']['item_shortnames'] = '1'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -127,6 +129,8 @@ class Config:
         cfg['OPTIONS']['pop_up_drop_window'] = str(parent.pop_up_drop_window)
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
         cfg['OPTIONS']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
+        cfg['OPTIONS']['autocomplete'] = str(parent.autocomplete)
+        cfg['OPTIONS']['item_shortnames'] = str(parent.autocomplete)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

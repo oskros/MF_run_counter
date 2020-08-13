@@ -247,7 +247,7 @@ class MFRunTimer(tkd.Frame):
             d2_save_path = os.path.normpath(self.main_frame.game_path)
             char_extension = char_name + self.main_frame.character_file_extension()
             self.char_file_path = os.path.join(d2_save_path, char_extension)
-            print(self.char_file_path)
+            # print(self.char_file_path)
 
             if tk_utils.test_mapfile_path(d2_save_path, char_extension):
                 self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
@@ -264,7 +264,8 @@ class MFRunTimer(tkd.Frame):
 
 class Drops(tkd.Frame):
     def __init__(self, tab1, parent=None, **kw):
-        tkd.Frame.__init__(self, parent, kw)
+        tkd.Frame.__init__(self, parent.root, kw)
+        self.parent = parent
         # self.drops = []
         self.drops = dict()
         self.tab1 = tab1
@@ -285,15 +286,19 @@ class Drops(tkd.Frame):
         # a = 0
 
     def AddDrop(self):
-        drop = autocompleters.acbox()
+        drop = autocompleters.acbox(enable=self.parent.autocomplete)
         print(drop)
         if not drop or drop[1] == '':
             return
         run_no = len(self.tab1.laps)
         if self.tab1.is_running:
             run_no += 1
-        self.drops.setdefault(str(run_no), []).append(drop[1])
-        self.display_drop(drop=drop[1], run_no=run_no)
+        if drop[0] is not None and self.parent.item_shortnames:
+            drop_display = autocompleters.ITEM_SHORTNAMES.get(drop[0], drop[0]) + ' ' + drop[2]
+        else:
+            drop_display = drop[1]
+        self.drops.setdefault(str(run_no), []).append(drop_display.strip())
+        self.display_drop(drop=drop_display.strip(), run_no=run_no)
 
     # def display_drop(self, lookup):
     def display_drop(self, drop, run_no):
