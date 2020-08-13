@@ -78,7 +78,8 @@ class MFRunTimer(tkd.Frame):
 
     def _check_entered_game(self):
         stamp = os.stat(self.char_file_path).st_mtime
-        if self.cached_file_stamp != stamp and not self.is_paused:
+        if self.cached_file_stamp != stamp and not self.is_paused and (stamp - self.cached_file_stamp) > 1:
+            print(stamp - self.cached_file_stamp)
             self.stop_start()
             self.cached_file_stamp = stamp
         self._game_check = self.after(50, self._check_entered_game)
