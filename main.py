@@ -177,9 +177,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=622, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=610, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=9, width=27)
+            self.tab2.m.config(height=8, width=27)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
@@ -188,7 +188,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.config(borderwidth=2, relief='raised', height=405, width=240)
             self.tabcontrol.add(self.tab2, text='Drops')
             self.tabcontrol.insert(1, self.tab2)
-            self.tab2.m.config(height=9, width=23)
+            self.tab2.m.config(height=8, width=23)
 
     def process_queue(self):
         """

@@ -14,7 +14,7 @@ class Drops(tkd.Frame):
         lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 10))
+        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 11))
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
         scrollbar.config(command=self.m.yview)
