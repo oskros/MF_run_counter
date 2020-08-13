@@ -180,7 +180,7 @@ ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
                    "Aldur's Deception": 'Aldur Armor',
                    "Aldur's Rhythm": 'Aldur Weapon',
                    "Aldur's Stony Gaze": 'Aldur Helm',
-                   "Andariel's Visage": 'Andys',
+                   "Andariel's Visage": "Andy's",
                    'Angelic Halo': 'Angelic Ring',
                    'Angelic Mantle': 'Angelic Armor',
                    'Angelic Sickle': 'Angelic Weapon',
@@ -196,14 +196,14 @@ ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
                    'Arctic Horn': 'Arctic Bow',
                    'Arctic Mitts': 'Arctic Gloves',
                    "Arkaine's Valor": 'Arkaines',
-                   "Arreat's Face": 'Arreats',
-                   "Astreon's Iron Ward": 'Astreons',
-                   "Athena's Wrath": 'Athenas',
-                   "Atma's Scarab": 'Atma Amu',
-                   "Bartuc's Cut-Throat": 'Bartucs',
+                   "Arreat's Face": "Arreat's",
+                   "Astreon's Iron Ward": "Astreon's",
+                   "Athena's Wrath": "Athena's",
+                   "Atma's Scarab": "Atma's Amu",
+                   "Bartuc's Cut-Throat": "Bartuc's",
                    'Blade of Ali Baba': 'Ali Baba',
-                   "Bul-Kathos' Sacred Charge": 'BK 2H weap',
-                   "Bul-Kathos' Tribal Guardian": 'BK 1H weap',
+                   # "Bul-Kathos' Sacred Charge": 'BK 2H weap',
+                   # "Bul-Kathos' Tribal Guardian": 'BK 1H weap',
                    "Bul-Kathos' Wedding Band": 'BK Ring',
                    'Buriza-Do Kyanon': 'Buriza',
                    "Cathan's Mesh": 'Cathan Armor',
@@ -220,38 +220,37 @@ ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
                    "Cleglaw's Pincers": 'Cleglaw Gloves',
                    "Cleglaw's Tooth": 'Cleglaw Sword',
                    'Crown of Ages': 'CoA',
-                   "Death's Fathom": 'DF',
-                   "Dracul's Grasp": 'Draculs',
-                   "Duriel's Shell": 'Duriels',
+                   "Dracul's Grasp": "Dracul's",
+                   "Duriel's Shell": "Duriel's",
                    'Dwarf Star': 'Dwarf',
                    'Eaglehorn': 'Eagle',
-                   "Eschuta's Temper": 'Eschutas',
-                   "Gheed's Fortune": 'Gheeds',
+                   "Eschuta's Temper": "Eschuta's",
+                   "Gheed's Fortune": "Gheed's",
                    'Gore Rider': 'Gore',
-                   "Griffon's Eye": 'Griffons',
+                   "Griffon's Eye": "Griffon's",
                    "Griswold's Heart": 'Gris Armor',
                    "Griswold's Honor": 'Gris Shield',
                    "Griswold's Redemption": 'Gris Weapon',
                    "Griswold's Valor": 'Gris Helm',
-                   'Guardian Angel': 'Gangel',
-                   "Guillaume's Face": 'Guillaumes',
+                   'Guardian Angel': 'G Angel',
+                   "Guillaume's Face": "Guillaume's",
                    'Gull': 'Gull Dagger',
                    'Harlequin Crest': 'Shako',
                    'Hellfire Torch': 'Torch',
                    'Herald of Zakarum': 'HoZ',
-                   "Highlord's Wrath": 'Highlords',
+                   "Highlord's Wrath": "Highlord's",
                    "Immortal King's Detail": 'IK Belt',
                    "Immortal King's Forge": 'IK Gloves',
                    "Immortal King's Pillar": 'IK Boots',
                    "Immortal King's Soul Cage": 'IK Armor',
                    "Immortal King's Stone Crusher": 'IK Weapon',
                    "Immortal King's Will": 'IK Helm',
-                   "Iratha's Coil": 'Irathas Helm',
-                   "Iratha's Collar": 'Irathas Amu',
-                   "Iratha's Cord": 'Irathas Belt',
-                   "Iratha's Cuff": 'Irathas Gloves',
-                   "Jalal's Mane": 'Jalals',
-                   "Kira's Guardian": 'Kiras',
+                   "Iratha's Coil": "Iratha's Helm",
+                   "Iratha's Collar": "Iratha's Amu",
+                   "Iratha's Cord": "Iratha's Belt",
+                   "Iratha's Cuff": "Iratha's Gloves",
+                   "Jalal's Mane": "Jalal's",
+                   "Kira's Guardian": "Kira's",
                    'Laying of Hands': 'LoH',
                    'Lidless Wall': 'Lidless',
                    "M'avina's Caster": "M'avina Bow",
@@ -309,11 +308,11 @@ ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
                    "Tancred's Skull": "Tancred's Helm",
                    "Tancred's Spine": "Tancred's Armor",
                    "Tancred's Weird": "Tancred's Amu",
-                   "Templar's Might": "Templa'r's",
+                   "Templar's Might": "Templar's",
                    "The Cat's Eye": "Cat's Eye",
                    'The Cranium Basher': 'Cranium Basher',
                    'The Eye of Etlich': 'Eye of Etlich',
-                   'The Grandfather': 'GF',
+                   'The Grandfather': 'Grandfather',
                    'The Mahim-Oak Curio': 'Mahim-Oak',
                    'The Oculus': 'Oculus',
                    "The Reaper's Toll": "Reaper's Toll",
@@ -335,15 +334,15 @@ ITEM_SHORTNAMES = {"Aldur's Advance": 'Aldur Boots',
                    "Vidala's Snare": "Vidala's Amu",
                    'War Traveler': 'War Travs',
                    "Whitstan's Guard": "Whitstan's",
-                   'Windforce': 'WF',
                    'Wisp Projector': 'Wisp',
                    'Wizardspike': 'Wizzy'}
 
 
 class AutocompleteEntry:
-    def __init__(self, master, width, textvariable, enable=True):
+    def __init__(self, master, width, textvariable, enable=True, shortnames=True):
         self.chosen = None
         self.enable = enable
+        self.shortnames = shortnames
         self.master = master
         self.width = width
         self.var = textvariable
@@ -436,12 +435,16 @@ class AutocompleteEntry:
         for w in FULL_ITEM_LIST + list(ITEM_ALIASES.keys()):
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
-                out.add(ITEM_ALIASES.get(w, w))
+                i_name = ITEM_ALIASES.get(w, w)
+                if self.shortnames:
+                    out.add(ITEM_SHORTNAMES.get(i_name, i_name))
+                else:
+                    out.add(i_name)
         return sorted(out)
 
 
 class ACMbox(object):
-    def __init__(self, title, enable=True):
+    def __init__(self, title, enable=True, shortnames=True):
         self.root = tk.Toplevel()
         self.root.geometry(
             '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
@@ -458,7 +461,7 @@ class ACMbox(object):
         tk.Label(frm_1, text='Input your drop...').pack()
 
         tw = tk.StringVar()
-        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable)
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, shortnames=shortnames)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
@@ -494,8 +497,8 @@ class ACMbox(object):
             self.root.quit()
 
 
-def acbox(title='Drop', enable=True):
-    msgbox = ACMbox(title, enable=enable)
+def acbox(title='Drop', enable=True, shortnames=True):
+    msgbox = ACMbox(title, enable=enable, shortnames=shortnames)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
@@ -504,4 +507,4 @@ def acbox(title='Drop', enable=True):
 
 
 if __name__ == '__main__':
-    print(acbox(enable=True))
+    print(acbox(enable=True, shortnames=True))

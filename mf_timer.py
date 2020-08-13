@@ -286,7 +286,7 @@ class Drops(tkd.Frame):
         # a = 0
 
     def AddDrop(self):
-        drop = autocompleters.acbox(enable=self.parent.autocomplete)
+        drop = autocompleters.acbox(enable=self.parent.autocomplete, shortnames=self.parent.item_shortnames)
         print(drop)
         if not drop or drop[1] == '':
             return
