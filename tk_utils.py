@@ -97,7 +97,7 @@ def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
     displaced_x = max(min(pos_x, max_x - app_x - 10), min_x - 5)
     displaced_y = max(min(pos_y, max_y - app_y), min_y)
 
-    return displaced_x, displaced_y
+    return '%sx%s+%s+%s' % (app_x, app_y, displaced_x, displaced_y)
 
 
 class RegistrationForm:
@@ -107,21 +107,7 @@ class RegistrationForm:
         self.new_win.wm_attributes('-topmost', 1)
         self.new_win.resizable(False, False)
 
-        mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
-        min_x = mon.x
-        min_y = mon.y
-        max_x = mon.width + min_x
-        max_y = mon.height + min_y
-
-        app_x = 290
-        app_y = 185
-
-        displaced_x = max(min(coords[0], max_x - app_x - 10), min_x - 5)
-        displaced_y = max(min(coords[1], max_y - app_y), min_y)
-
-        geom = '%sx%s+%s+%d' % (app_x, app_y, displaced_x, displaced_y)
-        # if coords is not None:
-        #     geom += '+%d+%d' % (coords[0], coords[1])
+        geom = get_displaced_coords(root, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))

@@ -254,8 +254,7 @@ class Profile(tkd.Frame):
         new_win.wm_attributes('-topmost', 1)
 
         disp_coords = tk_utils.get_displaced_coords(self.main_frame.root, 450, 450)
-        new_win.geometry('450x450')
-        new_win.geometry('+%d+%d' % (disp_coords[0], disp_coords[1]))
+        new_win.geometry(disp_coords)
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         title = tkd.Label(new_win, text='Archive browser', font='Helvetica 14')
