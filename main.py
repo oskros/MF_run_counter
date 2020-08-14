@@ -144,12 +144,17 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.mainloop()
 
     def character_file_extension(self):
-        if self.game_version == 'PlugY':
+        if self.game_version == 'Single Player':
             return '.d2s'
         else:
             return '.map'
 
     def toggle_automode(self, char_name=None):
+        """
+        Enables or disables automode. Shows a small label on top of the banner image with the text "Automode" when
+        automode is activated. Takes an optional argument "char_name" which is used by the profile manager when changing
+        between profiles, such that the automode loop listens to changes in the correct save file.
+        """
         if hasattr(self, 'am_lab'):
             self.am_lab.destroy()
         if char_name is None:
@@ -160,6 +165,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab1.toggle_automode(char_name)
 
     def toggle_tab_keys_global(self):
+        """
+        Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
+        the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
+        """
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
@@ -172,6 +181,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
 
     def toggle_drop_tab(self):
+        """
+        Toggles whether the drop tab should be shown below the main application, or as its own tab. Relies on hard-coded
+        length and width of the application which means that changing font sizes can mess it up
+        """
         if self.pop_up_drop_window:
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():

@@ -138,16 +138,16 @@ class Automode(General):
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
-        lab = tkd.Label(lf, text='Game version')
+        lab = tkd.Label(lf, text='Game mode')
         lab.pack(side=tk.LEFT)
-        tk_utils.create_tooltip(lab, 'If B.net is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
-                                     '\nIf PlugY is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
+        tk_utils.create_tooltip(lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+                                     '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_version = tk.StringVar()
         self.game_version.set(self.main_frame.game_version)
-        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['PlugY', 'B.net'])
+        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['Single Player', 'Multiplayer'])
         cb.bind("<FocusOut>", lambda e: cb.selection_clear())
-        cb.config(width=7)
+        cb.config(width=12)
         cb.pack(side=tk.RIGHT)
         self.game_version.trace_add('write', lambda name, index, mode: self.update_game_version())
 

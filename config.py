@@ -45,7 +45,7 @@ class Config:
 
         config.add_section('OPTIONS')
         config['OPTIONS']['automode'] = '0'
-        config['OPTIONS']['game_version'] = 'PlugY'
+        config['OPTIONS']['game_version'] = 'Single Player'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
@@ -54,7 +54,7 @@ class Config:
         config['OPTIONS']['active_theme'] = 'default'
         config['OPTIONS']['run_timer_delay_seconds'] = '0.0'
         config['OPTIONS']['autocomplete'] = '1'
-        config['OPTIONS']['item_shortnames'] = '1'
+        config['OPTIONS']['item_shortnames'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version

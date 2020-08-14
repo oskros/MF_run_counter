@@ -3,6 +3,7 @@ import tk_dynamic as tkd
 import tkinter as tk
 from tkinter import messagebox
 import webbrowser
+import screeninfo
 
 
 def build_time_str(elap):
@@ -73,14 +74,56 @@ class MovingFrame:
         self.root.geometry("+%s+%s" % (x, y))
 
 
+def get_monitor_from_coord(x, y):
+    monitors = screeninfo.get_monitors()
+
+    for m in reversed(monitors):
+        if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
+            return m
+    return monitors[0]
+
+
+def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
+    if pos_x is None:
+        pos_x = root.winfo_rootx()
+    if pos_y is None:
+        pos_y = root.winfo_rooty()
+    mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+    min_x = mon.x
+    min_y = mon.y
+    max_x = mon.width + min_x
+    max_y = mon.height + min_y
+
+    displaced_x = max(min(pos_x, max_x - app_x - 10), min_x - 5)
+    displaced_y = max(min(pos_y, max_y - app_y), min_y)
+
+    return displaced_x, displaced_y
+
+
 class RegistrationForm:
-    def __init__(self, coords, first_profile):
+    def __init__(self, root, coords, first_profile):
         self.new_win = tk.Tk()
         self.new_win.title('Profile registration')
         self.new_win.wm_attributes('-topmost', 1)
         self.new_win.resizable(False, False)
-        if coords is not None:
-            self.new_win.geometry('+%d+%d' % (coords[0], coords[1]))
+
+        mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+        min_x = mon.x
+        min_y = mon.y
+        max_x = mon.width + min_x
+        max_y = mon.height + min_y
+
+        app_x = 290
+        app_y = 185
+
+        displaced_x = max(min(coords[0], max_x - app_x - 10), min_x - 5)
+        displaced_y = max(min(coords[1], max_y - app_y), min_y)
+
+        geom = '%sx%s+%s+%d' % (app_x, app_y, displaced_x, displaced_y)
+        # if coords is not None:
+        #     geom += '+%d+%d' % (coords[0], coords[1])
+        self.new_win.geometry(geom)
+        # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
@@ -142,8 +185,8 @@ class RegistrationForm:
         self.new_win.quit()
 
 
-def registration_form(coords=None, first_profile=False):
-    reg_form = RegistrationForm(coords, first_profile)
+def registration_form(root, coords=None, first_profile=False):
+    reg_form = RegistrationForm(root, coords, first_profile)
     reg_form.new_win.focus_force()
     reg_form.new_win.mainloop()
 
@@ -396,4 +439,5 @@ def create_tooltip(widget, text):
 
 
 if __name__ == '__main__':
-    print(mebox(entries=['Item alias', 'Stats'], title='Add drop'))
+    r = tk.Tk()
+    print(registration_form(r))

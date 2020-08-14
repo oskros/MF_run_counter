@@ -87,9 +87,9 @@ class Profile(tkd.Frame):
 
     def _add_new_profile(self, first_profile=False):
         # Ensure the pop-up is centered over the main program window
-        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.registration_form((xc, yc), first_profile)
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8#, self.root.winfo_screenwidth()-300), -5)
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3#, self.root.winfo_screenheight()-185), -5)
+        profile = tk_utils.registration_form(root=self.root, coords=(xc, yc), first_profile=first_profile)
         if profile:
             profile_name = profile.pop('Profile name')
             # Handle non-allowed profile names
@@ -252,8 +252,10 @@ class Profile(tkd.Frame):
         new_win = tkd.Toplevel()
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
+
+        disp_coords = tk_utils.get_displaced_coords(self.main_frame.root, 450, 450)
         new_win.geometry('450x450')
-        new_win.geometry('+%d+%d' % (self.main_frame.root.winfo_rootx(), self.main_frame.root.winfo_rooty()))
+        new_win.geometry('+%d+%d' % (disp_coords[0], disp_coords[1]))
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         title = tkd.Label(new_win, text='Archive browser', font='Helvetica 14')
