@@ -1,7 +1,5 @@
-from init import *
 import os
 import time
-import webbrowser
 import sound
 import tk_utils
 import tkinter as tk
@@ -78,7 +76,7 @@ class MFRunTimer(tkd.Frame):
 
     def _check_entered_game(self):
         stamp = os.stat(self.char_file_path).st_mtime
-        if self.cached_file_stamp != stamp and not self.is_paused and (stamp - self.cached_file_stamp) > 1:
+        if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
             print(stamp - self.cached_file_stamp)
             self.stop_start()
             self.cached_file_stamp = stamp

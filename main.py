@@ -21,7 +21,6 @@ from drops import Drops
 from mf_timer import MFRunTimer
 
 
-
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
@@ -177,9 +176,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=610, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=613, width=240)
             self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=8, width=27)
+            self.tab2.m.config(height=8, width=24)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
