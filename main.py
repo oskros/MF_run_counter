@@ -21,6 +21,9 @@ from drops import Drops
 from mf_timer import MFRunTimer
 
 
+# FIXME: Automode - game mode saved by profile
+# FIXME: Automode - game path saved by profile / SP MP paths
+
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
@@ -122,8 +125,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self._next_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self._prev_tab))
         else:
             self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
@@ -165,10 +168,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab1.toggle_automode(char_name)
 
     def toggle_tab_keys_global(self):
-        """
-        Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
-        the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
-        """
+        # """
+        # Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
+        # the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
+        # """
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')

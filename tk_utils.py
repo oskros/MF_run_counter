@@ -114,7 +114,7 @@ class RegistrationForm:
         self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
         if first_profile:
-            la = tk.Label(self.new_win, text='Welcome to MF Run Timer!\nPlease create your first profile.', font='Helvetica 14')
+            la = tk.Label(self.new_win, text='Please create your first profile.', font='Helvetica 14')
         else:
             la = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
         la.pack()

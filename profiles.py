@@ -21,9 +21,9 @@ class Profile(tkd.Frame):
             self._add_new_profile(first_profile=True)
             self.main_frame.active_profile = self.active_profile.get()
         state = self.main_frame.load_state_file()
-        self.available_archive = ['Active session', 'Profile history'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
+        self.available_archive = ['Profile history', 'Active session'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
         self.selected_archive = tk.StringVar()
-        self.selected_archive.set('Active session')
+        self.selected_archive.set('Profile history')
         self.extra_data = state.get('extra_data', dict())
 
         self._make_widgets()
@@ -73,7 +73,9 @@ class Profile(tkd.Frame):
         sel_frame.propagate(False)
         sel_frame.pack()
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
+        self.archive_dropdown.bind("<<ComboboxSelected>>", lambda e: self.update_descriptive_statistics())
         self.archive_dropdown.bind("<FocusOut>", lambda e: self.archive_dropdown.selection_clear())
+        # self.archive_dropdown.bind("<Right>", lambda e: self.archive_dropdown.set(self.archive_dropdown.current()+1))
         self.archive_dropdown.pack(side=tk.LEFT)
 
         tkd.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
@@ -87,8 +89,8 @@ class Profile(tkd.Frame):
 
     def _add_new_profile(self, first_profile=False):
         # Ensure the pop-up is centered over the main program window
-        xc = self.root.winfo_rootx() + self.root.winfo_width()//8#, self.root.winfo_screenwidth()-300), -5)
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3#, self.root.winfo_screenheight()-185), -5)
+        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
         profile = tk_utils.registration_form(root=self.root, coords=(xc, yc), first_profile=first_profile)
         if profile:
             profile_name = profile.pop('Profile name')
@@ -210,23 +212,34 @@ class Profile(tkd.Frame):
 
     def update_descriptive_statistics(self):
         active = self.main_frame.load_state_file()
-        laps = []
-        session_time = 0
-        dropcount = 0
-        # Concatenate information from each available session
-        for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
-            laps.extend(active[key].get('laps', []))
-            session_time += active[key].get('session_time', 0)
-            drops = active[key].get('drops', dict())
-            for drop, val in drops.items():
-                dropcount += len(val)
+        chosen = self.archive_dropdown.get()
 
-        # Append data for active session from timer module
-        laps.extend(self.main_frame.tab1.laps)
-        session_time += self.main_frame.tab1.session_time
-        # dropcount += len(self.main_frame.tab2.drops) FIXME: New version with dictionary style drops
-        for drop, val in self.main_frame.tab2.drops.items():
-            dropcount += len(val)
+        if chosen == 'Profile history':
+            laps = []
+            session_time = 0
+            dropcount = 0
+            # Concatenate information from each available session
+            for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
+                laps.extend(active[key].get('laps', []))
+                session_time += active[key].get('session_time', 0)
+                drops = active[key].get('drops', dict())
+                for drop, val in drops.items():
+                    dropcount += len(val)
+
+            # Append data for active session from timer module
+            laps.extend(self.main_frame.tab1.laps)
+            session_time += self.main_frame.tab1.session_time
+            # dropcount += len(self.main_frame.tab2.drops) FIXME: New version with dictionary style drops
+            for drop, val in self.main_frame.tab2.drops.items():
+                dropcount += len(val)
+        elif chosen == 'Active session':
+            laps = self.main_frame.tab1.laps
+            session_time = self.main_frame.tab1.session_time
+            dropcount = sum(len(val) for val in self.main_frame.tab2.drops.values())
+        else:
+            laps = active[chosen].get('laps', [])
+            session_time = active[chosen].get('session_time', 0)
+            dropcount = sum(len(val) for val in active[chosen].get('drops', dict()))
 
         # Ensure no division by zero errors by defaulting to displaying 0
         avg_lap = sum(laps) / len(laps) if laps else 0
