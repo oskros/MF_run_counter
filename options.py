@@ -1,11 +1,13 @@
 from color_themes import available_themes
 import sys
 import tkinter as tk
+from tkinter import messagebox
 from color_themes import Theme
 import tk_dynamic as tkd
 from tkinter import messagebox, ttk
 import system_hotkey
 import tk_utils
+import config
 LAB_HEIGHT = 26
 LAB_WIDTH = 179
 
@@ -162,19 +164,42 @@ class Automode(General):
         tk_utils.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
         tkd.Label(lf2, textvariable=self.char_var).pack(side=tk.RIGHT)
 
-        tkd.Label(self, text='Game path').pack(pady=[10, 0])
-        self.game_path = tk.StringVar()
-        self.game_path.set(self.main_frame.game_path)
-        # tk.Text(self, textvariable=self.game_path).pack()
-        tkd.Entry(self, textvariable=self.game_path).pack(fill=tk.BOTH, padx=4)
-        tkd.Button(self, text='Apply', command=self.apply_path_ch).pack()
+        tkd.Label(self, text='Game path (Single Player)').pack(pady=[10, 0])
+        self.SP_game_path = tk.StringVar()
+        self.SP_game_path.set(self.main_frame.SP_game_path)
+        tkd.Entry(self, textvariable=self.SP_game_path).pack(fill=tk.BOTH, padx=4)
+        bf1 = tkd.Frame(self)
+        bf1.pack()
+        tkd.Button(bf1, text='Get', command=lambda: self.get_game_path(is_sp=True)).pack(side=tk.LEFT)
+        tkd.Button(bf1, text='Apply', command=self.apply_path_ch).pack(side=tk.LEFT)
+
+        tkd.Label(self, text='Game path (Multiplayer)').pack(pady=[10,0])
+        self.MP_game_path = tk.StringVar()
+        self.MP_game_path.set(self.main_frame.MP_game_path)
+        tkd.Entry(self, textvariable=self.MP_game_path).pack(fill=tk.BOTH, padx=4)
+        bf2 = tkd.Frame(self)
+        bf2.pack()
+        tkd.Button(bf2, text='Get', command=lambda: self.get_game_path(is_sp=False)).pack(side=tk.LEFT)
+        tkd.Button(bf2, text='Apply', command=self.apply_path_ch).pack(side=tk.LEFT)
+
+    def get_game_path(self, is_sp=True):
+        found_path = config.Config.find_SP_game_path() if is_sp else config.Config.find_MP_game_path()
+        if found_path:
+            if is_sp:
+                self.SP_game_path.set(found_path)
+            else:
+                self.MP_game_path.set(found_path)
+        else:
+            tk.messagebox.showerror('Path', 'Failed to find save folder path for single player. Please enter manually')
+
 
     def update_game_version(self):
         self.main_frame.game_version = self.game_version.get()
         self.main_frame.toggle_automode()
 
     def apply_path_ch(self):
-        self.main_frame.game_path = self.game_path.get()
+        self.main_frame.SP_game_path = self.SP_game_path.get()
+        self.main_frame.MP_game_path = self.MP_game_path.get()
         self.main_frame.toggle_automode()
 
 

@@ -34,7 +34,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Build/load config file
         self.cfg = self.load_config_file()
-        self.game_path = self.cfg['DEFAULT']['game_path']
+        self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
+        self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
         self.automode = eval(self.cfg['OPTIONS']['automode'])
         self.game_version = self.cfg['OPTIONS']['game_version']
         self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
@@ -145,6 +146,12 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Start the program
         self.root.mainloop()
+
+    def game_path(self):
+        if self.game_version == 'Single Player':
+            return self.SP_game_path
+        else:
+            return self.MP_game_path
 
     def character_file_extension(self):
         if self.game_version == 'Single Player':

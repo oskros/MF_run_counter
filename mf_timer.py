@@ -235,7 +235,7 @@ class MFRunTimer(tkd.Frame):
             if hasattr(self, '_game_check'):
                 self.after_cancel(self._game_check)
 
-            d2_save_path = os.path.normpath(self.main_frame.game_path)
+            d2_save_path = os.path.normpath(self.main_frame.game_path())
             char_extension = char_name + self.main_frame.character_file_extension()
             self.char_file_path = os.path.join(d2_save_path, char_extension)
 
