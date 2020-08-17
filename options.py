@@ -145,13 +145,13 @@ class Automode(General):
         tk_utils.create_tooltip(lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
                                      '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
-        self.game_version = tk.StringVar()
-        self.game_version.set(self.main_frame.game_version)
-        cb = ttk.Combobox(lf, textvariable=self.game_version, state='readonly', values=['Single Player', 'Multiplayer'])
+        self.game_mode = tk.StringVar()
+        self.game_mode.set(self.main_frame.tab4.game_mode.get())
+        cb = ttk.Combobox(lf, textvariable=self.game_mode, state='readonly', values=['Single Player', 'Multiplayer'])
         cb.bind("<FocusOut>", lambda e: cb.selection_clear())
         cb.config(width=12)
         cb.pack(side=tk.RIGHT)
-        self.game_version.trace_add('write', lambda name, index, mode: self.update_game_version())
+        self.game_mode.trace_add('write', lambda name, index, mode: self.update_game_version())
 
         lf2 = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf2.propagate(False)
@@ -192,9 +192,8 @@ class Automode(General):
         else:
             tk.messagebox.showerror('Path', 'Failed to find save folder path for single player. Please enter manually')
 
-
     def update_game_version(self):
-        self.main_frame.game_version = self.game_version.get()
+        self.main_frame.game_version = self.game_mode.get()
         self.main_frame.toggle_automode()
 
     def apply_path_ch(self):

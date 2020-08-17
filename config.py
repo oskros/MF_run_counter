@@ -52,7 +52,6 @@ class Config:
 
         config.add_section('OPTIONS')
         config['OPTIONS']['automode'] = '0'
-        config['OPTIONS']['game_version'] = 'Single Player'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
@@ -129,7 +128,6 @@ class Config:
 
         # Update flags
         cfg['OPTIONS']['automode'] = str(parent.automode)
-        cfg['OPTIONS']['game_version'] = str(parent.game_version)
         cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)

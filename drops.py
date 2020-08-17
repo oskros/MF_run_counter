@@ -29,7 +29,7 @@ class Drops(tkd.Frame):
 
     def add_drop(self):
         drop = autocompletion.acbox(enable=self.parent.autocomplete, shortnames=self.parent.item_shortnames)
-        print(drop)
+        # print(drop)
         if not drop or drop[1] == '':
             return
         run_no = len(self.tab1.laps)

@@ -1,7 +1,7 @@
 from init import *
 import tk_dynamic as tkd
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 import webbrowser
 import screeninfo
 
@@ -119,10 +119,10 @@ class RegistrationForm:
             la = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
         la.pack()
 
-        self.a1 = self.make_row('Profile name')
-        self.a2 = self.make_row('Character name')
-        self.a3 = self.make_row('Run type')
-        self.a4 = self.make_row('Active MF %')
+        self.a1 = self.make_entry_row('Profile name')
+        self.a2 = self.make_entry_row('Character name')
+        self.a3 = self.make_entry_row('Run type')
+        self.a4 = self.make_combobox_row('Game mode', ['Single Player', 'Multiplayer'])
 
         # Restrict input to profile name, only allowing characters that can appear in a windows file name
         vcmd = (self.new_win.register(self.validate_input), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
@@ -142,7 +142,7 @@ class RegistrationForm:
             a3 = self.a3.get()
             a4 = self.a4.get()
 
-            x = {'Profile name': a1, 'Character name': a2, 'Run type': a3, 'Active MF %': a4}
+            x = {'Profile name': a1, 'Character name': a2, 'Run type': a3, 'Game mode': a4}
         except AttributeError:
             self.returning = None
             self.new_win.quit()
@@ -150,7 +150,7 @@ class RegistrationForm:
             self.returning = x
             self.new_win.quit()
 
-    def make_row(self, text):
+    def make_entry_row(self, text):
         frame = tk.Frame(self.new_win)
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
@@ -158,6 +158,17 @@ class RegistrationForm:
         var = tk.StringVar()
         out = tk.Entry(frame, textvariable=var)
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
+        return out
+
+    def make_combobox_row(self, text, values):
+        frame = tk.Frame(self.new_win)
+        frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+
+        tk.Label(frame, width=22, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
+        var = tk.StringVar()
+        out = ttk.Combobox(frame, textvariable=var, state='readonly', values=values)
+        out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
+        out.set(values[0])
         return out
 
     def validate_input(self, *args):

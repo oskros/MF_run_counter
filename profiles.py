@@ -49,26 +49,14 @@ class Profile(tkd.Frame):
         tkd.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
         tkd.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
-        extra_info1 = tkd.Frame(self, height=12, width=238)
-        extra_info1.propagate(False)
-        extra_info1.pack(expand=True, fill=tk.X)
-        extra_info2 = tkd.Frame(self, height=12, width=238)
-        extra_info2.propagate(False)
-        extra_info2.pack(expand=True, fill=tk.X)
+        self.run_type = tk.StringVar(self, value=self.extra_data.get('Run type', ''))
+        self.game_mode = tk.StringVar(self, value=self.extra_data.get('Game mode', 'Single Player'))
+        self.char_name = tk.StringVar(self, value=self.extra_data.get('Character name', ''))
+        self._extra_info_label('Run type', self.run_type)
+        self._extra_info_label('Game mode', self.game_mode)
+        self._extra_info_label('Character name', self.char_name)
 
-        self.run_type = tk.StringVar(extra_info1, value=self.extra_data.get('Run type', ''))
-        tkd.Label(extra_info1, text='Run type:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tkd.Label(extra_info1, textvariable=self.run_type, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-
-        self.mf_amount = tk.StringVar(extra_info1, value=self.extra_data.get('Active MF %', ''))
-        tkd.Label(extra_info1, textvariable=self.mf_amount, font='helvetica 8 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
-        tkd.Label(extra_info1, text='MF amount %:', font='helvetica 8', anchor=tk.W, justify=tk.RIGHT).pack(side=tk.RIGHT)
-
-        self.char_name = tk.StringVar(extra_info1, value=self.extra_data.get('Character name', ''))
-        tkd.Label(extra_info2, text='Character:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tkd.Label(extra_info2, textvariable=self.char_name, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-
-        tkd.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
+        tkd.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6, 0))
         sel_frame = tkd.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
         sel_frame.pack()
@@ -81,11 +69,17 @@ class Profile(tkd.Frame):
         tkd.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
         tkd.Button(sel_frame, text='Delete', command=self.delete_archived_session).pack(side=tk.LEFT)
 
-        tkd.Label(self, text='Descriptive statistics for current profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6,0))
-
         self.descr = tkd.Listbox2(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
         self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
+
+    def _extra_info_label(self, text, var):
+        frame = tkd.Frame(self, height=12, width=238)
+        frame.propagate(False)
+        frame.pack(expand=True, fill=tk.X)
+
+        tkd.Label(frame, text='%s:' % text, font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tkd.Label(frame, textvariable=var, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
 
     def _add_new_profile(self, first_profile=False):
         # Ensure the pop-up is centered over the main program window
@@ -94,6 +88,7 @@ class Profile(tkd.Frame):
         profile = tk_utils.registration_form(root=self.root, coords=(xc, yc), first_profile=first_profile)
         if profile:
             profile_name = profile.pop('Profile name')
+            profile['Game mode'] = 'Single Player' if profile['Game mode'] == '' else profile['Game mode']
             # Handle non-allowed profile names
             if profile_name == '':
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
@@ -134,20 +129,20 @@ class Profile(tkd.Frame):
         # Load extra data, defaulting to empty strings if no extra data is found in the new profile
         profile_cache = self.main_frame.load_state_file()
         self.extra_data = profile_cache.get('extra_data', dict())
-        self.mf_amount.set(self.extra_data.get('Active MF %', ''))
+        self.game_mode.set(self.extra_data.get('Game mode', 'Single Player'))
         self.run_type.set(self.extra_data.get('Run type', ''))
         self.char_name.set(self.extra_data.get('Character name', ''))
 
         # Update archive dropdown, and set selected archive to 'Active session'
-        self.available_archive = ['Active session', 'Profile history'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
+        self.available_archive = ['Profile history', 'Active session'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
         self.archive_dropdown['values'] = self.available_archive
-        self.selected_archive.set('Active session')
+        self.selected_archive.set('Profile history')
 
         # Load the new profile into the timer and drop module, and update the descriptive statistics
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
         if self.main_frame.automode:
-            self.main_frame.toggle_automode(self.char_name.get())
+            self.main_frame.toggle_automode(self.char_name.get(), self.game_mode.get())
         self.main_frame.tab3.tab3.char_var.set(self.char_name.get())
 
     def _delete_profile(self):
@@ -323,7 +318,7 @@ class Profile(tkd.Frame):
         # Build header for output file with information and descriptive statistics
         output = [['Character name: ', self.extra_data.get('Character name', '')],
                   ['Run type: ', self.extra_data.get('Run type', '')],
-                  ['Active MF %: ', self.extra_data.get('Active MF %', '')],
+                  ['Game mode: ', self.extra_data.get('Game mode', 'Single Player')],
                   [''],
                   ['Total session time:   ', tk_utils.build_time_str(session_time)],
                   ['Total run time:       ', tk_utils.build_time_str(sum(laps))],

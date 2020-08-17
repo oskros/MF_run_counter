@@ -21,8 +21,9 @@ from drops import Drops
 from mf_timer import MFRunTimer
 
 
-# FIXME: Automode - game mode saved by profile
-# FIXME: Automode - game path saved by profile / SP MP paths
+# FIXME: Get in touch with d2 holy grail owner about API to sync the holy grail from dataset
+# FIXME: Ingame holy grail support
+# FIXME: d2 overlay mode with only text - could be hard
 
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
@@ -37,7 +38,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
         self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
         self.automode = eval(self.cfg['OPTIONS']['automode'])
-        self.game_version = self.cfg['OPTIONS']['game_version']
         self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -148,18 +148,20 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.root.mainloop()
 
     def game_path(self):
-        if self.game_version == 'Single Player':
+        game_mode = self.tab4.game_mode.get()
+        if game_mode == 'Single Player':
             return self.SP_game_path
         else:
             return self.MP_game_path
 
     def character_file_extension(self):
-        if self.game_version == 'Single Player':
+        game_mode = self.tab4.game_mode.get()
+        if game_mode == 'Single Player':
             return '.d2s'
         else:
             return '.map'
 
-    def toggle_automode(self, char_name=None):
+    def toggle_automode(self, char_name=None, game_mode=None):
         """
         Enables or disables automode. Shows a small label on top of the banner image with the text "Automode" when
         automode is activated. Takes an optional argument "char_name" which is used by the profile manager when changing
@@ -169,10 +171,12 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             self.am_lab.destroy()
         if char_name is None:
             char_name = self.tab4.char_name.get()
+        if game_mode is None:
+            game_mode = self.tab4.game_mode.get()
         if self.automode:
             self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
             self.am_lab.place(x=1, y=1)
-        self.tab1.toggle_automode(char_name)
+        self.tab1.toggle_automode(char_name=char_name, game_mode=game_mode)
 
     def toggle_tab_keys_global(self):
         # """
@@ -182,8 +186,8 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self._next_tab())
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self._prev_tab())
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self._next_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self._prev_tab))
         else:
             self.tab3.tab2.hk.unregister(['control', 'shift', 'next'])
             self.tab3.tab2.hk.unregister(['control', 'shift', 'prior'])

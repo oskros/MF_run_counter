@@ -230,7 +230,7 @@ class MFRunTimer(tkd.Frame):
     def save_state(self):
         return dict(laps=self.laps, session_time=self.session_time)
 
-    def toggle_automode(self, char_name):
+    def toggle_automode(self, char_name, game_mode):
         if self.main_frame.automode:
             if hasattr(self, '_game_check'):
                 self.after_cancel(self._game_check)
