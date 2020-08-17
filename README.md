@@ -66,6 +66,10 @@ Window can be dragged on the Diablo 2 banner. Window position is saved in the co
 ### Automatic check for updates
 The program automatically checks if a new version is available on start-up, providing a link to the release pages where you can download it. This features can be disabled under "Options" and then under "General"
 
+### Color themes
+Three different themes for the application have been created, which the user can choose between under Options -> General
+    ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/color_themes.png?raw=true)
+
 ### Extra options
 In the config file you have the option to set the following to 0 (False) or 1 (True). This is also possible from within the application under "Options" and then under "General".
 - always_on_top: choose whether the app window is on top of other programs (default True)
