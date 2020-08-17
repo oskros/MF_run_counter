@@ -21,6 +21,7 @@ from drops import Drops
 from mf_timer import MFRunTimer
 
 
+# FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Get in touch with d2 holy grail owner about API to sync the holy grail from dataset
 # FIXME: Ingame holy grail support
 # FIXME: d2 overlay mode with only text - could be hard
@@ -29,6 +30,12 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
         # Create root
         self.root = tkd.Tk()
+
+        # Check if application is already open
+        self.title = 'MF run counter'
+        if win32gui.FindWindow(None, self.title):
+            tk.messagebox.showerror('Error', 'Application is already open. Cannot open another instance')
+            sys.exit(0)
 
         # Ensure errors are handled with an exception pop-up if encountered
         self.root.report_callback_exception = self.report_callback_exception
@@ -73,7 +80,6 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.profiles = sorted(self.profiles)  # FIXME: Sort by update time
 
         # Modify root window
-        self.title = 'MF run counter'
         self.root.title(self.title)
         self.clickable = True
         self.root.resizable(False, False)
