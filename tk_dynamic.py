@@ -270,7 +270,7 @@ class Text(tk.Text):
         self.__class__.objects.append(self)
 
         self.tag_configure('currentLine', background='#1874CD', foreground='white')#background='#e9e9e9')
-        self.bind('<Key>', lambda _: self.highlight_line())
+        # self.bind('<Key>', lambda _: self.highlight_line())
         self.bind('<Button-1>', lambda _: self.highlight_line())
         # self.highlight_line(delay=0)
 
