@@ -209,3 +209,4 @@ class Theme:
         tkd.Entry.set_config(bg=self.entry_color)
         tkd.Radiobutton.set_config(bg=self.button_color, selectcolor=self.activebutton_color)
         tkd.Canvas.set_config(bg=self.frame_color)
+        tkd.Text.set_config(bg=self.listbox_color, fg=self.listbox_text)

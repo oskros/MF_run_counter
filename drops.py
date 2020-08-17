@@ -8,14 +8,20 @@ class Drops(tkd.Frame):
     def __init__(self, tab1, parent=None, **kw):
         tkd.Frame.__init__(self, parent.root, kw)
         self.parent = parent
-        # self.drops = []
         self.drops = dict()
         self.tab1 = tab1
+
+        self._make_widgets()
+        # self.load_item_library()
+        # a = 0
+
+    def _make_widgets(self):
         lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
-        self.m = tkd.Listbox(lf, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 11))
-        self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
+
+        self.m = tkd.Text(lf, height=5, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=0, name='droplist')
+        self.m.bind('<FocusOut>', lambda e: self.m.tag_remove('currentLine', 1.0, tk.END))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
@@ -23,9 +29,6 @@ class Drops(tkd.Frame):
         btn = tkd.Button(self, text='Delete selection', command=self.delete)
         btn.bind_all('<Delete>', lambda e: self.delete())
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
-
-        # self.load_item_library()
-        # a = 0
 
     def add_drop(self):
         drop = autocompletion.acbox(enable=self.parent.autocomplete, shortnames=self.parent.item_shortnames)
@@ -42,31 +45,32 @@ class Drops(tkd.Frame):
         self.drops.setdefault(str(run_no), []).append(drop_display.strip())
         self.display_drop(drop=drop_display.strip(), run_no=run_no)
 
-    # def display_drop(self, lookup):
     def display_drop(self, drop, run_no):
-        # self.m.insert(tk.END, 'Run %s: %s' % (str(lookup['Run']), ' '.join([lookup['Alias'], lookup['Stats']])))
-        self.m.insert(tk.END, 'Run %s: %s' % (run_no, drop))
+        line = 'Run %s: %s' % (run_no, drop)
+        if self.m.get('1.0', tk.END) != '\n':
+            line = '\n' + line
+        self.m.config(state=tk.NORMAL)
+        self.m.insert(tk.END, line)
         self.m.yview_moveto(1)
+        self.m.config(state=tk.DISABLED)
 
     def delete(self):
-        selection = self.m.curselection()
-        if selection:
-            # self.drops.pop(selection[0])
-            ss = self.m.get(selection[0])
-            run_no = ss[4:ss.find(':')]
-            drop = ss[ss.find(':')+2:]
+        if self.focus_get()._name == 'droplist':
+            cur_row = self.m.get('insert linestart', 'insert lineend+1c').strip()
+            sep = cur_row.find(':')
+            run_no = cur_row[:sep].replace('Run ', '')
+            drop = cur_row[sep+2:]
             self.drops[run_no].remove(drop)
-            self.m.delete(selection[0])
+            self.m.config(state=tk.NORMAL)
+            self.m.delete('insert linestart', 'insert lineend+1c')
+            self.m.config(state=tk.DISABLED)
 
     def save_state(self):
         return self.drops
 
     def load_from_state(self, state):
-        self.m.delete(0, tk.END)
-        # self.drops = state.get('drops', [])
+        self.m.delete(1.0, tk.END)
         self.drops = state.get('drops', dict())
-        # for drop in self.drops:
-        #     self.display_drop(drop)
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)

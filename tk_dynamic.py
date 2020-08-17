@@ -260,3 +260,35 @@ class Radiobutton(tk.Radiobutton):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
         tk.Radiobutton.destroy(self)
+
+
+class Text(tk.Text):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        tk.Text.__init__(self, *args, **kwargs)
+        self.__class__.objects.append(self)
+
+        self.tag_configure('currentLine', background='#1874CD', foreground='white')#background='#e9e9e9')
+        self.bind('<Key>', lambda _: self.highlight_line())
+        self.bind('<Button-1>', lambda _: self.highlight_line())
+        # self.highlight_line(delay=0)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.Text.destroy(self)
+
+    def highlight_line(self, delay=10):
+        def delayed_highlight():
+            self.tag_remove('currentLine', 1.0, "end")
+            self.tag_add('currentLine', 'insert linestart', 'insert lineend+1c')
+        # This bound function is called before the cursor actually moves.
+        # So delay checking the cursor position and moving the highlight 10 ms.
+
+        self.after(delay, delayed_highlight)
