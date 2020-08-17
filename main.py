@@ -20,11 +20,14 @@ from about import About
 from drops import Drops
 from mf_timer import MFRunTimer
 
-
+# FIXME: Better handling of drops in general - big revamp..
+# FIXME: Add wide mode + wrap drop text to fit window...
+# FIXME: Show active profile on main tab somehow
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Get in touch with d2 holy grail owner about API to sync the holy grail from dataset
 # FIXME: Ingame holy grail support
 # FIXME: d2 overlay mode with only text - could be hard
+
 
 class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
     def __init__(self):
