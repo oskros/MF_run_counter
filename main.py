@@ -20,6 +20,7 @@ from about import About
 from drops import Drops
 from mf_timer import MFRunTimer
 
+# FIXME: Add option to export/upload to google sheets
 # FIXME: Better handling of drops in general - big revamp..
 # FIXME: Show active profile on main tab somehow
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
