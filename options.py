@@ -151,7 +151,7 @@ class Automode(General):
         cb.bind("<FocusOut>", lambda e: cb.selection_clear())
         cb.config(width=12)
         cb.pack(side=tk.RIGHT)
-        self.game_mode.trace_add('write', lambda name, index, mode: self.update_game_version())
+        self.game_mode.trace_add('write', lambda name, index, mode: self.update_game_mode())
 
         lf2 = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf2.propagate(False)
@@ -192,8 +192,8 @@ class Automode(General):
         else:
             tk.messagebox.showerror('Path', 'Failed to find save folder path for single player. Please enter manually')
 
-    def update_game_version(self):
-        self.main_frame.game_version = self.game_mode.get()
+    def update_game_mode(self):
+        self.main_frame.tab4.game_mode.set(self.game_mode.get())
         self.main_frame.toggle_automode()
 
     def apply_path_ch(self):

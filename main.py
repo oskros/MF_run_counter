@@ -264,16 +264,15 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
     def notebook_tab_change(self):
         """
-        When tab is switched to profile, the run counter is paused and descriptive statistics are updated. Perhaps it
-        should also pause when going to the Options tab?
+        When tab is switched to profile, the descriptive statistics are updated.
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            if not self.tab1.is_paused:
-                self.tab1.pause()
+            # if not self.tab1.is_paused:
+            #     self.tab1.pause()
             self.tab4.update_descriptive_statistics()
-        # A 'hack' to ensure that dropdown menus don't take focus immediate when you switch tabs by focusing the banner
-        # image instead :)
+        # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
+        # banner image instead :)
         self.img_panel.focus_force()
 
     @staticmethod
@@ -361,6 +360,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         cache = self.load_state_file()
         cache['active_state'] = self.tab1.save_state()
         cache['active_state'].update(dict(drops=self.tab2.save_state()))
+        cache['extra_data']['Game mode'] = self.tab4.game_mode.get()
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)
