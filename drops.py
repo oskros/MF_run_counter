@@ -2,6 +2,7 @@ import tk_dynamic as tkd
 import tkinter as tk
 from tkinter import ttk
 import autocompletion
+import tk_utils
 
 
 class Drops(tkd.Frame):
@@ -20,8 +21,8 @@ class Drops(tkd.Frame):
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
 
-        self.m = tkd.Text(lf, height=5, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=0, name='droplist')
-        self.m.bind('<FocusOut>', lambda e: self.m.tag_remove('currentLine', 1.0, tk.END))
+        self.m = tkd.Text(lf, height=5, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=1, name='droplist')
+
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
@@ -57,19 +58,25 @@ class Drops(tkd.Frame):
     def delete(self):
         if self.focus_get()._name == 'droplist':
             cur_row = self.m.get('insert linestart', 'insert lineend+1c').strip()
-            sep = cur_row.find(':')
-            run_no = cur_row[:sep].replace('Run ', '')
-            drop = cur_row[sep+2:]
-            self.drops[run_no].remove(drop)
-            self.m.config(state=tk.NORMAL)
-            self.m.delete('insert linestart', 'insert lineend+1c')
-            self.m.config(state=tk.DISABLED)
+            resp = tk_utils.mbox(msg='Do you want to delete the row:\n%s' % cur_row, title='Warning')
+            if resp is True:
+                sep = cur_row.find(':')
+                run_no = cur_row[:sep].replace('Run ', '')
+                drop = cur_row[sep+2:]
+                self.drops[run_no].remove(drop)
+                self.m.config(state=tk.NORMAL)
+                self.m.delete('insert linestart', 'insert lineend+1c')
+                self.m.config(state=tk.DISABLED)
+
+                self.parent.img_panel.focus_force()
 
     def save_state(self):
         return self.drops
 
     def load_from_state(self, state):
+        self.m.config(state=tk.NORMAL)
         self.m.delete(1.0, tk.END)
+        self.m.config(state=tk.DISABLED)
         self.drops = state.get('drops', dict())
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:

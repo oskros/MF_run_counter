@@ -144,6 +144,7 @@ class Profile(tkd.Frame):
         if self.main_frame.automode:
             self.main_frame.toggle_automode(self.char_name.get(), self.game_mode.get())
         self.main_frame.tab3.tab3.char_var.set(self.char_name.get())
+        self.main_frame.tab3.tab3.game_mode.set(self.game_mode.get())
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()
@@ -154,12 +155,9 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You need to have at least one profile, create a new profile before deleting this one.')
             return
 
-        # Open window at the center of the application
-        xc = self.root.winfo_rootx() - self.root.winfo_width()//6
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile?\nThis will permanently delete all records stored for the profile.', title='WARNING', coords=(xc, yc))
+        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile?\nThis will permanently delete all records stored for the profile.', title='WARNING')
         if resp1 is True:
-            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile?\nFinal warning!', b1='Cancel', b2='OK', title='WARNING', coords=(xc,yc))
+            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile?\nFinal warning!', b1='Cancel', b2='OK', title='WARNING')
             if resp2 is False:  # False here because we switch buttons around in second confirmation
                 file = 'Profiles/%s.json' % chosen
                 os.remove(file)
@@ -180,16 +178,14 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You cannot delete profile history from here. Please delete all sessions manually, or delete the profile instead')
             return
 
-        # Open window at the center of the application
-        xc = self.root.winfo_rootx() + self.root.winfo_width()//8
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive? It will be permanently deleted', title='WARNING', coords=(xc, yc))
+        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive? It will be permanently deleted', title='WARNING')
         if resp:
             if chosen == 'Active session':
                 # Here we simply reset the timer module
-                self.main_frame.reset_session()
+                self.main_frame.ResetSession()
                 self.main_frame.SaveActiveState()
-                self.selected_archive.set('Active session')
+                self.selected_archive.set('Profile history')
+                self.update_descriptive_statistics()
                 return
 
             # Load the profile .json, delete the selected session and save the modified dictionary back to the .json

@@ -269,10 +269,11 @@ class Text(tk.Text):
         tk.Text.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
 
-        self.tag_configure('currentLine', background='#1874CD', foreground='white')#background='#e9e9e9')
-        # self.bind('<Key>', lambda _: self.highlight_line())
+        self.tag_configure('currentLine', background='#1874CD', foreground='white')
         self.bind('<Button-1>', lambda _: self.highlight_line())
-        # self.highlight_line(delay=0)
+
+        self.bind('<FocusOut>', lambda e: self.tag_remove('currentLine', 1.0, tk.END))
+        self.bind('<FocusIn>', lambda e: self.tag_add('currentLine', 'insert linestart', 'insert lineend+1c'))
 
     @classmethod
     def set_config(cls, **val):
@@ -286,7 +287,7 @@ class Text(tk.Text):
 
     def highlight_line(self, delay=10):
         def delayed_highlight():
-            self.tag_remove('currentLine', 1.0, "end")
+            self.tag_remove('currentLine', 1.0, tk.END)
             self.tag_add('currentLine', 'insert linestart', 'insert lineend+1c')
         # This bound function is called before the cursor actually moves.
         # So delay checking the cursor position and moving the highlight 10 ms.
