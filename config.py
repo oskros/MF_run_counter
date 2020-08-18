@@ -136,7 +136,7 @@ class Config:
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
         cfg['OPTIONS']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
         cfg['OPTIONS']['autocomplete'] = str(parent.autocomplete)
-        cfg['OPTIONS']['item_shortnames'] = str(parent.autocomplete)
+        cfg['OPTIONS']['item_shortnames'] = str(parent.item_shortnames)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
