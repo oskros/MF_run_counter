@@ -68,6 +68,7 @@ The program automatically checks if a new version is available on start-up, prov
 
 ### Color themes
 Three different themes for the application have been created, which the user can choose between under Options -> General
+
     ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/color_themes.png?raw=true)
 
 ### Extra options
