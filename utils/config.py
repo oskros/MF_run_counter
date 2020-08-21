@@ -3,6 +3,7 @@ import os
 import configparser
 import system_hotkey
 from tkinter import messagebox
+mf_config_path = 'mf_config.ini'
 
 
 class Config:
@@ -79,19 +80,19 @@ class Config:
 
     @staticmethod
     def delete_config_file():
-        if os.path.isfile('../mf_config.ini'):
-            os.remove('../mf_config.ini')
+        if os.path.isfile(mf_config_path):
+            os.remove(mf_config_path)
 
     @staticmethod
     def build_config_file(config):
-        with open('../mf_config.ini', 'w') as fo:
+        with open(mf_config_path, 'w') as fo:
             config.write(fo)
 
     def load_config_file(self):
-        if not os.path.isfile('../mf_config.ini'):
+        if not os.path.isfile(mf_config_path):
             self.build_config_file(self.default_config())
         parser = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        with open('../mf_config.ini') as fi:
+        with open(mf_config_path) as fi:
             parser.read_file(fi)
 
         if 'automode' in parser['DEFAULT'] and eval(parser['DEFAULT']['automode']) is True and 'game_path' not in parser['DEFAULT']:
