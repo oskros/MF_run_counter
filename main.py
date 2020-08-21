@@ -188,10 +188,10 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         self.tab1.toggle_automode(char_name=char_name, game_mode=game_mode)
 
     def toggle_tab_keys_global(self):
-        # """
-        # Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
-        # the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
-        # """
+        """
+        Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
+        the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
+        """
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
