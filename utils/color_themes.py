@@ -1,5 +1,6 @@
 from tkinter import ttk
-import tk_dynamic as tkd
+from utils import tk_dynamic as tkd
+
 available_themes = ['blue', 'dark', 'vista']  # , 'default', 'winnative', 'clam', 'alt']
 
 

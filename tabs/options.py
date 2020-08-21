@@ -1,13 +1,12 @@
-from color_themes import available_themes
+from utils.color_themes import available_themes
 import sys
 import tkinter as tk
 from tkinter import messagebox
-from color_themes import Theme
-import tk_dynamic as tkd
+from utils.color_themes import Theme
+from utils import tk_dynamic as tkd, tk_utils, config
 from tkinter import messagebox, ttk
 import system_hotkey
-import tk_utils
-import config
+
 LAB_HEIGHT = 26
 LAB_WIDTH = 179
 

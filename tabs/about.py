@@ -1,5 +1,5 @@
 from init import *
-import tk_dynamic as tkd
+from utils import tk_dynamic as tkd
 import tkinter as tk
 import webbrowser
 

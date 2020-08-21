@@ -7,18 +7,16 @@ import traceback
 import win32api
 import win32gui
 import win32con
-import github_releases
-from config import Config
-from options import Options
-from profiles import Profile
-from color_themes import Theme, available_themes
-from tkinter import ttk, messagebox
-import tk_utils
+from utils.config import Config
+from tabs.options import Options
+from tabs.profiles import Profile
+from utils.color_themes import Theme, available_themes
+from tkinter import messagebox
 import tkinter as tk
-import tk_dynamic as tkd
-from about import About
-from drops import Drops
-from mf_timer import MFRunTimer
+from utils import tk_dynamic as tkd, tk_utils, github_releases
+from tabs.about import About
+from tabs.drops import Drops
+from tabs.mf_timer import MFRunTimer
 
 # FIXME: Add option to export/upload to google sheets
 # FIXME: Better handling of drops in general - big revamp..
@@ -29,7 +27,7 @@ from mf_timer import MFRunTimer
 # FIXME: d2 overlay mode with only text - could be hard
 
 
-class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
+class MainFrame(Config):
     def __init__(self):
         # Create root
         self.root = tkd.Tk()
@@ -99,16 +97,16 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         img = tk.PhotoImage(file=d2banner)
         self.img_panel = tkd.Label(self.root, image=img)
         self.img_panel.pack()
-        self.img_panel.bind("<ButtonPress-1>", self._start_move)
-        self.img_panel.bind("<ButtonRelease-1>", self._stop_move)
-        self.img_panel.bind("<B1-Motion>", self._on_motion)
-        self.root.bind("<Left>", self._moveleft)
-        self.root.bind("<Right>", self._moveright)
-        self.root.bind("<Up>", self._moveup)
-        self.root.bind("<Down>", self._movedown)
+        self.img_panel.bind("<ButtonPress-1>", self.root.start_move)
+        self.img_panel.bind("<ButtonRelease-1>", self.root.stop_move)
+        self.img_panel.bind("<B1-Motion>", self.root.on_motion)
+        self.root.bind("<Left>", self.root.moveleft)
+        self.root.bind("<Right>", self.root.moveright)
+        self.root.bind("<Up>", self.root.moveup)
+        self.root.bind("<Down>", self.root.movedown)
 
         # Build tabs
-        self.tabcontrol = ttk.Notebook(self.root)
+        self.tabcontrol = tkd.Notebook(self.root)
         self.tab4 = Profile(self, parent=self.tabcontrol)
         self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
         self.tabcontrol.add(self.tab1, text='Timer')
@@ -135,11 +133,11 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self._next_tab))
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self._prev_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
-            self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
-            self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
+            self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
+            self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
         # Load save state and start autosave process
         active_state = self.load_state_file()
@@ -195,13 +193,13 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self._next_tab))
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self._prev_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
+            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
             self.tab3.tab2.hk.unregister(['control', 'shift', 'next'])
             self.tab3.tab2.hk.unregister(['control', 'shift', 'prior'])
-            self.root.bind_all('<Control-Shift-Next>', lambda event: self._next_tab())
-            self.root.bind_all('<Control-Shift-Prior>', lambda event: self._prev_tab())
+            self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
+            self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
     def toggle_drop_tab(self):
         """
@@ -212,7 +210,7 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=613, width=240)
+            self.root.config(borderwidth=2, relief='raised', height=605, width=240)
             self.tab2.pack(side=tk.BOTTOM)
             self.tab2.m.config(height=8, width=24)
             self.drop_lab.pack(side=tk.BOTTOM)

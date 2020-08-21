@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 
 class Toplevel(tk.Toplevel):
@@ -62,6 +63,67 @@ class Tk(tk.Tk):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
         tk.Tk.destroy(self)
+
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
+
+    def stop_move(self, event):
+        self.x = None
+        self.y = None
+
+    def on_motion(self, event):
+        try:
+            deltax = event.x - self.x
+            deltay = event.y - self.y
+        except (TypeError, AttributeError):
+            return
+        x = self.winfo_x() + deltax
+        y = self.winfo_y() + deltay
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveleft(self, event):
+        x = self.winfo_x() - 1
+        y = self.winfo_y()
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveright(self, event):
+        x = self.winfo_x() + 1
+        y = self.winfo_y()
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveup(self, event):
+        x = self.winfo_x()
+        y = self.winfo_y() - 1
+        self.geometry("+%s+%s" % (x, y))
+
+    def movedown(self, event):
+        x = self.winfo_x()
+        y = self.winfo_y() + 1
+        self.geometry("+%s+%s" % (x, y))
+
+
+class Notebook(ttk.Notebook):
+    def __init__(self, master=None, **kwargs):
+        ttk.Notebook.__init__(self, master=master, **kwargs)
+
+    def next_tab(self):
+        tabs = self.tabs()
+        cur_tab = self.select()
+
+        nxt_idx = tabs.index(cur_tab) + 1
+        if nxt_idx >= len(tabs):
+            nxt_idx = 0
+        self.select(tabs[nxt_idx])
+
+    def prev_tab(self):
+        tabs = self.tabs()
+        cur_tab = self.select()
+
+        prev_idx = tabs.index(cur_tab) - 1
+        if prev_idx < 0:
+            prev_idx = len(tabs) - 1
+        self.select(tabs[prev_idx])
 
 
 class Label(tk.Label):

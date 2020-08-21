@@ -1,9 +1,7 @@
 import os
 import time
-import sound
-import tk_utils
 import tkinter as tk
-import tk_dynamic as tkd
+from utils import tk_dynamic as tkd, tk_utils, sound
 from tkinter import ttk
 
 

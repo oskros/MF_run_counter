@@ -1,7 +1,6 @@
 import tkinter as tk
 import time
 import win32gui, win32con
-from init import *
 
 
 class TranspTest:

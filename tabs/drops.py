@@ -1,8 +1,6 @@
-import tk_dynamic as tkd
+from utils import tk_dynamic as tkd, tk_utils, autocompletion
 import tkinter as tk
 from tkinter import ttk
-import autocompletion
-import tk_utils
 
 
 class Drops(tkd.Frame):

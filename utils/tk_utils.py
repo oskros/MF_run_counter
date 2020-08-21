@@ -1,5 +1,5 @@
 from init import *
-import tk_dynamic as tkd
+from utils import tk_dynamic as tkd
 import tkinter as tk
 from tkinter import messagebox, ttk
 import webbrowser
@@ -12,66 +12,6 @@ def build_time_str(elap):
     seconds = int(elap - hours * 3600.0 - minutes * 60.0)
     hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
     return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
-
-
-class TabSwitch:
-    def _next_tab(self):
-        tabs = self.tabcontrol.tabs()
-        cur_tab = self.tabcontrol.select()
-
-        nxt_idx = tabs.index(cur_tab) + 1
-        if nxt_idx >= len(tabs):
-            nxt_idx = 0
-        self.tabcontrol.select(tabs[nxt_idx])
-
-    def _prev_tab(self):
-        tabs = self.tabcontrol.tabs()
-        cur_tab = self.tabcontrol.select()
-
-        prev_idx = tabs.index(cur_tab) - 1
-        if prev_idx < 0:
-            prev_idx = len(tabs) - 1
-        self.tabcontrol.select(tabs[prev_idx])
-
-
-class MovingFrame:
-    def _start_move(self, event):
-        self.x = event.x
-        self.y = event.y
-
-    def _stop_move(self, event):
-        self.x = None
-        self.y = None
-
-    def _on_motion(self, event):
-        try:
-            deltax = event.x - self.x
-            deltay = event.y - self.y
-        except (TypeError, AttributeError):
-            return
-        x = self.root.winfo_x() + deltax
-        y = self.root.winfo_y() + deltay
-        self.root.geometry("+%s+%s" % (x, y))
-
-    def _moveleft(self, event):
-        x = self.root.winfo_x() - 1
-        y = self.root.winfo_y()
-        self.root.geometry("+%s+%s" % (x, y))
-
-    def _moveright(self, event):
-        x = self.root.winfo_x() + 1
-        y = self.root.winfo_y()
-        self.root.geometry("+%s+%s" % (x, y))
-
-    def _moveup(self, event):
-        x = self.root.winfo_x()
-        y = self.root.winfo_y() - 1
-        self.root.geometry("+%s+%s" % (x, y))
-
-    def _movedown(self, event):
-        x = self.root.winfo_x()
-        y = self.root.winfo_y() + 1
-        self.root.geometry("+%s+%s" % (x, y))
 
 
 def get_monitor_from_coord(x, y):
@@ -110,7 +50,7 @@ class RegistrationForm:
         geom = get_displaced_coords(root, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
-        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
         self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
         if first_profile:
@@ -196,7 +136,7 @@ class MultiEntryBox(object):
         self.enum = len(entries)
         root = self.root = tk.Tk()
         self.root.focus_set()
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
         root.title(title)
         self.root.wm_attributes("-topmost", True)
 
@@ -266,7 +206,7 @@ class MessageBox(object):
     def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
         root = self.root = tk.Tk()
         self.root.focus_set()
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
         root.title(title)
         # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
