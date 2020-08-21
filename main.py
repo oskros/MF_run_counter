@@ -334,13 +334,14 @@ class MainFrame(Config):
             # Stop any active run and load current session info from timer and drop module.
             self.tab1.stop()
             active = self.tab1.save_state()
+            self.tab4.tot_laps += len(active['laps'])
             active.update(dict(drops=self.tab2.save_state()))
 
             # Update session dropdown for the profile
             stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             self.tab4.available_archive.append(stamp)
             self.tab4.archive_dropdown['values'] = self.tab4.available_archive
-
+            # self.tab4.update_descriptive_statistics()
             # Update profile .json with the session
             state = self.load_state_file()
             state['active_state'] = dict()

@@ -15,6 +15,7 @@ class Profile(tkd.Frame):
         self.root = parent
         self.main_frame = main_frame
         self.active_profile = tk.StringVar()
+        self.tot_laps = 0
 
         if self.main_frame.active_profile == '':
             self._add_new_profile(first_profile=True)
@@ -144,6 +145,7 @@ class Profile(tkd.Frame):
             self.main_frame.toggle_automode(self.char_name.get(), self.game_mode.get())
         self.main_frame.tab3.tab3.char_var.set(self.char_name.get())
         self.main_frame.tab3.tab3.game_mode.set(self.game_mode.get())
+        self.main_frame.tab1._set_laps(add_lap=self.main_frame.tab1.is_running)
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()
@@ -197,13 +199,13 @@ class Profile(tkd.Frame):
             # Update archive dropdown and descriptive statistics
             self.available_archive.remove(chosen)
             self.archive_dropdown['values'] = self.available_archive
-            self.selected_archive.set('Active session')
+            self.selected_archive.set('Profile history')
             self.update_descriptive_statistics()
 
     def update_descriptive_statistics(self):
         active = self.main_frame.load_state_file()
         chosen = self.archive_dropdown.get()
-
+        self.tot_laps = len(sum([v.get('laps', []) for k, v in active.items() if k not in ['active_state', 'extra_data']], []))
         if chosen == 'Profile history':
             laps = []
             session_time = 0
@@ -218,12 +220,16 @@ class Profile(tkd.Frame):
 
             # Append data for active session from timer module
             laps.extend(self.main_frame.tab1.laps)
+            if self.main_frame.tab1.is_running:
+                laps.extend([0])
             session_time += self.main_frame.tab1.session_time
             # dropcount += len(self.main_frame.tab2.drops) FIXME: New version with dictionary style drops
             for drop, val in self.main_frame.tab2.drops.items():
                 dropcount += len(val)
         elif chosen == 'Active session':
-            laps = self.main_frame.tab1.laps
+            laps = self.main_frame.tab1.laps.copy()
+            if self.main_frame.tab1.is_running:
+                laps.extend([0])
             session_time = self.main_frame.tab1.session_time
             dropcount = sum(len(val) for val in self.main_frame.tab2.drops.values())
         else:

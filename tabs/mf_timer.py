@@ -19,6 +19,7 @@ class MFRunTimer(tkd.Frame):
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
+        self.total_laps = tk.StringVar()
         self.min_lap = tk.StringVar()
         self.avg_lap = tk.StringVar()
         self.laps = []
@@ -41,14 +42,15 @@ class MFRunTimer(tkd.Frame):
         l2f = tkd.Frame(self)
         l2f.pack(pady=2)
         tkd.Label(l2f, text='---- Run count:', font=('arial', 12)).pack(side=tk.LEFT)
-        tkd.RunLabel(l2f, textvariable=self.no_of_laps, font='arial 15').pack(side=tk.LEFT)
+        tkd.RunLabel(l2f, textvariable=self.no_of_laps, font='arial 17').pack(side=tk.LEFT)
+        tkd.RunLabel(l2f, textvariable=self.total_laps, font='helvetica 12').pack(side=tk.LEFT)
         tkd.Label(l2f, text='----', font=('arial', 12)).pack(side=tk.LEFT)
-        self._set_laps(is_running=False)
+        self._set_laps(add_lap=False)
 
-        tkd.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tkd.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=1, padx=2)
         self._set_fastest()
 
-        tkd.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=3, padx=2)
+        tkd.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=1, padx=2)
         self._set_average()
 
         lf0 = tkd.Frame(self)
@@ -88,11 +90,12 @@ class MFRunTimer(tkd.Frame):
         else:
             self.timestr.set(time_str)
 
-    def _set_laps(self, is_running):
+    def _set_laps(self, add_lap):
         run_count = len(self.laps)
-        if is_running:
+        if add_lap:
             run_count += 1
         self.no_of_laps.set(run_count)
+        self.total_laps.set('(' + str(run_count + self.main_frame.tab4.tot_laps) + ')')
 
     def _set_fastest(self):
         if self.laps:
@@ -113,7 +116,7 @@ class MFRunTimer(tkd.Frame):
         self._session_start = time.time() - self.session_time
         for lap in state.get('laps', []):
             self.lap(lap, force=True)
-        self._set_laps(is_running=False)
+        self._set_laps(add_lap=False)
         self._set_fastest()
         self._set_average()
         self._set_time(self.session_time, for_session=True)
@@ -162,7 +165,7 @@ class MFRunTimer(tkd.Frame):
             str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
             self.m.insert(tk.END, 'Run ' + str_n + ': ' + tk_utils.build_time_str(self.laps[-1]))
             self.m.yview_moveto(1)
-            self._set_laps(is_running=False)
+            self._set_laps(add_lap=False)
             self._set_fastest()
             self._set_average()
 
@@ -170,7 +173,7 @@ class MFRunTimer(tkd.Frame):
         if self.laps:
             self.m.delete(tk.END)
             self.laps.pop()
-            self._set_laps(is_running=self.is_running)
+            self._set_laps(add_lap=self.is_running)
             self._set_fastest()
             self._set_average()
 
@@ -221,7 +224,7 @@ class MFRunTimer(tkd.Frame):
         self.m.delete(0, tk.END)
         self._set_time(self._laptime, for_session=False)
         self._set_time(self.session_time, for_session=True)
-        self._set_laps(is_running=self.is_running)
+        self._set_laps(add_lap=self.is_running)
         self._set_fastest()
         self._set_average()
 
