@@ -316,7 +316,9 @@ class MainFrame(Config, tk_utils.MovingFrame, tk_utils.TabSwitch):
         """
         self.tab1.reset_session()
         self.tab2.drops = dict()
-        self.tab2.m.delete(0, tk.END)
+        self.tab2.m.config(state=tk.NORMAL)
+        self.tab2.m.delete(1.0, tk.END)
+        self.tab2.m.config(state=tk.DISABLED)
 
     def ArchiveReset(self):
         """
