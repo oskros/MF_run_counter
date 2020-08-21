@@ -259,7 +259,7 @@ class Profile(tkd.Frame):
         disp_coords = tk_utils.get_displaced_coords(self.main_frame.root, 450, 450)
         new_win.geometry(disp_coords)
         new_win.focus_get()
-        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
+        new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         title = tkd.Label(new_win, text='Archive browser', font='Helvetica 14')
 
         # Handle how loading of session data should be treated in the 3 different cases

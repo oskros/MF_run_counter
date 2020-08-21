@@ -50,7 +50,7 @@ class RegistrationForm:
         geom = get_displaced_coords(root, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
-        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
+        self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
         if first_profile:
@@ -136,7 +136,7 @@ class MultiEntryBox(object):
         self.enum = len(entries)
         root = self.root = tk.Tk()
         self.root.focus_set()
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         root.title(title)
         self.root.wm_attributes("-topmost", True)
 
@@ -206,7 +206,7 @@ class MessageBox(object):
     def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
         root = self.root = tk.Tk()
         self.root.focus_set()
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'icon.ico'))
+        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         root.title(title)
         # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
