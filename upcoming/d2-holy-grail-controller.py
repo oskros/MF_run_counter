@@ -147,8 +147,8 @@ def update_grail_dict(dct, item_upg_dict):
         if key.startswith('Rainbow Facet'):
             rbf = key.replace('(', '').replace(')', '').split(' ')
             dmg_type = rbf[2]
-            activate_type = rbf[3]
-            dct['data']['uniques']['other']['rainbow facet (jewel)'][activate_type.lower()][dmg_type.lower()] = {'wasFound': item_upg_dict.pop(key)}
+            activate_type = ' '.join(rbf[3:]).lower()
+            dct['data']['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type] = {'wasFound': item_upg_dict.pop(key)}
 
     dct['data'] = update_items(deepcopy(dct['data']), item_upg_dict)
     return dct
@@ -172,5 +172,5 @@ if __name__ == '__main__':
     username = input('username')
     password = input('password')
     grail = get_grail(uid=username, proxies=p_addresses)
-    updated_grail = update_grail_dict(dct=grail, item_upg_dict={'Stormshield': False, 'Shadow Dancer': False})
+    updated_grail = update_grail_dict(dct=grail, item_upg_dict={'Rainbow Facet (Cold Level Up)': True, 'Rainbow Facet (Light Die)': True})
     put_grail(uid=username, pwd=password, data=updated_grail, proxies=p_addresses)
