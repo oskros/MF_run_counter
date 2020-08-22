@@ -66,14 +66,16 @@ FULL_ITEM_LIST = ["Aldur's Advance", "Aldur's Deception", "Aldur's Rhythm", "Ald
                   "Ondal's Almighty", "Ondal's Wisdom", "Orb of Corruption", "Ormus' Robes", "Ort Rune",
                   "Peasant Crown", "Pelta Lunata", "Pierre Tombale Couant", "Plague Bearer", "Pluckeye",
                   "Pompeii's Wrath", "Pul Rune", "Pus Spitter", "Que-Hegan's Wisdom", "Radamant's Sphere",
-                  "Rainbow Facet", "Rakescar", "Ral Rune", "Rattlecage", "Raven Claw", "Raven Frost",
-                  "Ravenlore", "Razor's Edge", "Razorswitch", "Razortail", "Razortine", "Ribcracker", "Riphook",
-                  "Ripsaw", "Rite of Passage", "Rixot's Keen", "Rockfleece", "Rockstopper", "Rogue's Bow",
-                  "Rune Master", "Rusthandle", "Sander's Paragon", "Sander's Riprap", "Sander's Superstition",
-                  "Sander's Taboo", "Sandstorm Trek", "Saracen's Chance", "Sazabi's Cobalt Redeemer",
-                  "Sazabi's Ghost Liberator", "Sazabi's Mental Sheath", "Schaefer's Hammer", "Seraph's Hymn",
-                  "Serpent Lord", "Shadow Dancer", "Shadow Killer", "Shadowfang", "Shael Rune", "Shaftstop",
-                  "Sigon's Gage", "Sigon's Guard", "Sigon's Sabot", "Sigon's Shelter", "Sigon's Visor",
+                  "Rainbow Facet (Cold Die)", "Rainbow Facet (Cold Level Up)", "Rainbow Facet (Fire Die)",
+                  "Rainbow Facet (Fire Level Up)", "Rainbow Facet (Light Die)", "Rainbow Facet (Light Level Up)",
+                  "Rainbow Facet (Poison Die)", "Rainbow Facet (Poison Level Up)", "Rakescar", "Ral Rune", "Rattlecage",
+                  "Raven Claw", "Raven Frost", "Ravenlore", "Razor's Edge", "Razorswitch", "Razortail", "Razortine",
+                  "Ribcracker", "Riphook", "Ripsaw", "Rite of Passage", "Rixot's Keen", "Rockfleece", "Rockstopper",
+                  "Rogue's Bow", "Rune Master", "Rusthandle", "Sander's Paragon", "Sander's Riprap",
+                  "Sander's Superstition", "Sander's Taboo", "Sandstorm Trek", "Saracen's Chance",
+                  "Sazabi's Cobalt Redeemer", "Sazabi's Ghost Liberator", "Sazabi's Mental Sheath", "Schaefer's Hammer",
+                  "Seraph's Hymn", "Serpent Lord", "Shadow Dancer", "Shadow Killer", "Shadowfang", "Shael Rune",
+                  "Shaftstop", "Sigon's Gage", "Sigon's Guard", "Sigon's Sabot", "Sigon's Shelter", "Sigon's Visor",
                   "Sigon's Wrap", "Silks of the Victor", "Silkweave", "Skewer of Krintiz",
                   "Skin of the Flayed One", "Skin of the Vipermagi", "Skull Collector", "Skull Splitter",
                   "Skullder's Ire", "Skystrike", "Snakecord", "Snowclash", "Sol Rune", "Soul Drainer",
@@ -118,7 +120,7 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'Angelic Armor': 'Angelic Mantle',
                 'Angelic Weapon': 'Angelic Sickle',
                 'BK ring': "Bul-Kathos' Wedding Band",
-                'CoA': 'Crown Of Ages',
+                'CoA': 'Crown of Ages',
                 'DF': "Death's Fathom",
                 'G Angel': 'Guardian Angel',
                 'GAngel': 'Guardian Angel',
@@ -147,7 +149,7 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Immortal King's Belt": "Immortal King's Detail",
                 "Immortal King's Boots": "Immortal King's Pillar",
                 "Immortal King's Gloves": "Immortal King's Forge",
-                'LoH': 'Laying Of Hands',
+                'LoH': 'Laying of Hands',
                 "M'avina's Bow": "M'avina's Caster",
                 "M'avina's Armor": "M'avina's Embrace",
                 "M'avina's Gloves": "M'avina's Icy Clutch",
@@ -156,13 +158,28 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "M'avina's Helm": "M'avina's True Sight",
                 'Mahim Oak': 'The Mahim-Oak Curio',
                 'Nagel Ring': 'Nagelring',
-                'OOC': 'Orb Of Corruption',
+                'OOC': 'Orb of Corruption',
                 'Occu': 'The Oculus',
                 'Occy': 'The Oculus',
                 "Que Hegan's Wisdom": "Que-Hegan's Wisdom",
-                'RBF': 'Rainbow Facet',
+                'RBF cold die': 'Rainbow Facet (Cold Die)',
+                'RBF cold level up': 'Rainbow Facet (Cold Level Up)',
+                'RBF fire die': 'Rainbow Facet (Fire Die)',
+                'RBF fire level up': 'Rainbow Facet (Fire Level Up)',
+                'RBF light die': 'Rainbow Facet (Light Die)',
+                'RBF light level up': 'Rainbow Facet (Light Level Up)',
+                'RBF poison die': 'Rainbow Facet (Poison Die)',
+                'RBF poison level up': 'Rainbow Facet (Poison Level Up)',
+                'Rainbow Facet cold die': 'Rainbow Facet (Cold Die)',
+                'Rainbow Facet cold level up': 'Rainbow Facet (Cold Level Up)',
+                'Rainbow Facet fire die': 'Rainbow Facet (Fire Die)',
+                'Rainbow Facet fire level up': 'Rainbow Facet (Fire Level Up)',
+                'Rainbow Facet light die': 'Rainbow Facet (Light Die)',
+                'Rainbow Facet light level up': 'Rainbow Facet (Light Level Up)',
+                'Rainbow Facet poison die': 'Rainbow Facet (Poison Die)',
+                'Rainbow Facet poison level up': 'Rainbow Facet (Poison Level Up)',
                 'Shako': 'Harlequin Crest',
-                'SoE': 'String Of Ears',
+                'SoE': 'String of Ears',
                 'SoJ': 'Stone of Jordan',
                 'SS': 'Stormshield',
                 "Sigon's Armor": "Sigon's Shelter",
@@ -269,7 +286,14 @@ ITEM_SHORTNAMES = {"Aldur's Advance": "Aldur's Boots",
                    "Ondal's Almighty": "Ondal's Helm",
                    "Ondal's Wisdom": "Ondal's Staff",
                    "Ormus' Robes": 'Ormus',
-                   'Rainbow Facet': 'RBF',
+                   'Rainbow Facet (Cold Die)': 'RBF (Cold Die)',
+                   'Rainbow Facet (Cold Level Up)': 'RBF (Cold Level Up)',
+                   'Rainbow Facet (Fire Die)': 'RBF (Fire Die)',
+                   'Rainbow Facet (Fire Level Up)': 'RBF (Fire Level Up)',
+                   'Rainbow Facet (Light Die)': 'RBF (Light Die)',
+                   'Rainbow Facet (Light Level Up)': 'RBF (Light Level Up)',
+                   'Rainbow Facet (Poison Die)': 'RBF (Poison Die)',
+                   'Rainbow Facet (Poison Level Up)': 'RBF (Poison Level Up)',
                    "Sander's Paragon": "Sander's Helm",
                    "Sander's Riprap": "Sander's Boots",
                    "Sander's Superstition": "Sander's Wand",
@@ -317,10 +341,9 @@ ITEM_SHORTNAMES = {"Aldur's Advance": "Aldur's Boots",
 
 
 class AutocompleteEntry:
-    def __init__(self, master, width, textvariable, enable=True, shortnames=True):
+    def __init__(self, master, width, textvariable, enable=True):
         self.chosen = None
         self.enable = enable
-        self.shortnames = shortnames
         self.master = master
         self.width = width
         self.var = textvariable
@@ -414,15 +437,12 @@ class AutocompleteEntry:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
-                if False:#self.shortnames:
-                    out.add(ITEM_SHORTNAMES.get(i_name, i_name))
-                else:
-                    out.add(i_name)
+                out.add(i_name)
         return sorted(out)
 
 
 class ACMbox(object):
-    def __init__(self, title, enable=True, shortnames=True):
+    def __init__(self, title, enable=True):
         self.root = tk.Toplevel()
         self.root.geometry(
             '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
@@ -439,7 +459,7 @@ class ACMbox(object):
         tk.Label(frm_1, text='Input your drop...').pack()
 
         tw = tk.StringVar()
-        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, shortnames=shortnames)
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
@@ -461,9 +481,9 @@ class ACMbox(object):
             self.entry.selection(event)
         else:
             item_name = self.entry.chosen
-            item_shortname = ITEM_SHORTNAMES.get(item_name, item_name)
             user_input = self.entry.var.get().strip()
-            self.returning = item_name, item_shortname, user_input
+            extra_input = user_input.replace(item_name, '').strip() if item_name is not None else ''
+            self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input}
             self.root.quit()
 
     def close_mod(self, event=None):
@@ -475,8 +495,8 @@ class ACMbox(object):
             self.root.quit()
 
 
-def acbox(title='Drop', enable=True, shortnames=True):
-    msgbox = ACMbox(title, enable=enable, shortnames=shortnames)
+def acbox(title='Drop', enable=True):
+    msgbox = ACMbox(title, enable=enable)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
@@ -485,4 +505,4 @@ def acbox(title='Drop', enable=True, shortnames=True):
 
 
 if __name__ == '__main__':
-    print(acbox(enable=True, shortnames=True))
+    print(acbox(enable=True))

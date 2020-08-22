@@ -30,22 +30,22 @@ class Drops(tkd.Frame):
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
     def add_drop(self):
-        drop = autocompletion.acbox(enable=self.parent.autocomplete, shortnames=self.parent.item_shortnames)
-        # print(drop)
-        if not drop or drop[1] == '':
+        drop = autocompletion.acbox(enable=self.parent.autocomplete)
+        if not drop or drop['input'] == '':
             return
+        if drop['item_name'] is not None and self.parent.item_shortnames:
+            shortname = autocompletion.ITEM_SHORTNAMES.get(drop['item_name'], drop['item_name'])
+            drop['input'] = shortname + ' ' + drop['extra']
+        print(drop)
         run_no = len(self.tab1.laps)
         if self.tab1.is_running:
             run_no += 1
-        if drop[0] is not None and self.parent.item_shortnames:
-            drop_display = drop[1] + ' ' + drop[2].replace(drop[0], '').strip()
-        else:
-            drop_display = drop[2]
-        self.drops.setdefault(str(run_no), []).append(drop_display.strip())
-        self.display_drop(drop=drop_display.strip(), run_no=run_no)
+
+        self.drops.setdefault(str(run_no), []).append(drop)
+        self.display_drop(drop=drop, run_no=run_no)
 
     def display_drop(self, drop, run_no):
-        line = 'Run %s: %s' % (run_no, drop)
+        line = 'Run %s: %s' % (run_no, drop['input'])
         if self.m.get('1.0', tk.END) != '\n':
             line = '\n' + line
         self.m.config(state=tk.NORMAL)
@@ -61,7 +61,7 @@ class Drops(tkd.Frame):
                 sep = cur_row.find(':')
                 run_no = cur_row[:sep].replace('Run ', '')
                 drop = cur_row[sep+2:]
-                self.drops[run_no].remove(drop)
+                self.drops[run_no].remove(next(d for d in self.drops[run_no] if d['input'] == drop))
                 self.m.config(state=tk.NORMAL)
                 self.m.delete('insert linestart', 'insert lineend+1c')
                 self.m.config(state=tk.DISABLED)
@@ -76,6 +76,10 @@ class Drops(tkd.Frame):
         self.m.delete(1.0, tk.END)
         self.m.config(state=tk.DISABLED)
         self.drops = state.get('drops', dict())
+        for k, v in self.drops.items():
+            for i in range(len(v)):
+                if not isinstance(v[i], dict):
+                    self.drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)

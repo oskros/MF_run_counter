@@ -187,20 +187,21 @@ class Profile(tkd.Frame):
                 self.main_frame.SaveActiveState()
                 self.selected_archive.set('Profile history')
                 self.update_descriptive_statistics()
-                return
+            else:
+                # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
+                cache = self.main_frame.load_state_file()
+                removed = cache.pop(chosen, None)
+                file = 'Profiles/%s.json' % self.active_profile.get()
+                with open(file, 'w') as fo:
+                    json.dump(cache, fo, indent=2)
 
-            # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
-            cache = self.main_frame.load_state_file()
-            cache.pop(chosen, None)
-            file = 'Profiles/%s.json' % self.active_profile.get()
-            with open(file, 'w') as fo:
-                json.dump(cache, fo, indent=2)
-
-            # Update archive dropdown and descriptive statistics
-            self.available_archive.remove(chosen)
-            self.archive_dropdown['values'] = self.available_archive
-            self.selected_archive.set('Profile history')
-            self.update_descriptive_statistics()
+                # Update archive dropdown and descriptive statistics
+                self.available_archive.remove(chosen)
+                self.archive_dropdown['values'] = self.available_archive
+                self.selected_archive.set('Profile history')
+                self.tot_laps -= len(removed.get('laps', []))
+                self.main_frame.tab1._set_laps(self.main_frame.tab1.is_running)
+                self.update_descriptive_statistics()
 
     def update_descriptive_statistics(self):
         active = self.main_frame.load_state_file()
@@ -223,7 +224,6 @@ class Profile(tkd.Frame):
             if self.main_frame.tab1.is_running:
                 laps.extend([0])
             session_time += self.main_frame.tab1.session_time
-            # dropcount += len(self.main_frame.tab2.drops) FIXME: New version with dictionary style drops
             for drop, val in self.main_frame.tab2.drops.items():
                 dropcount += len(val)
         elif chosen == 'Active session':
@@ -328,9 +328,15 @@ class Profile(tkd.Frame):
                   ['Time spent in runs: ', str(round(pct, 2)) + '%'],
                   ['']]
 
+        # Backwards compatibility with old drop format
+        for k, v in drops.items():
+            for i in range(len(v)):
+                if not isinstance(v[i], dict):
+                    drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
+
         # If drops were added before first run is started, we make sure to include them in output anyway
         if '0' in drops.keys():
-            output.append(['Run 0: ', 'NO_TIME', *drops['0']])
+            output.append(['Run 0: ', 'NO_TIME', *[d['input'] for d in drops['0']]])
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
@@ -338,16 +344,16 @@ class Profile(tkd.Frame):
             droplst = drops.get(str(n), [])
             tmp = ['Run ' + str_n + ': ', tk_utils.build_time_str(lap)]
             if droplst:
-                tmp += droplst
+                tmp += [d['input'] for d in droplst]
             output.append(tmp)
 
         # List all drops collected and show them below the individual runs (good for doing data work on output file)
-        out_drops = sorted(sum(drops.values(), []))
+        out_drops = sorted(sum(drops.values(), []), key=lambda x: x['input'])
         if out_drops:
             output.append([''])
             output.append(['All listed drops:'])
             for drop in out_drops:
-                output.append([drop])
+                output.append([drop['input']])
             # for drop in drops:
             #     output.append(['Run ' + str(drop['Run']) + ': ', drop['Name'] + ' ' + drop['Stats']])
 

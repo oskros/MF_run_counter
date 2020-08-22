@@ -138,10 +138,19 @@ def update_grail_dict(dct, item_upg_dict):
                 dct[k] = update_items(v, item_upg_dict)
         return dct
 
-    try:
-        dct['data'] = update_items(deepcopy(dct['data']), item_upg_dict)
-    except KeyError:
+    if 'data' not in dct:
         raise KeyError("This is a blank holy grail profile, and cannot be modified before you have checked at least one item through the webpage UI.")
+
+    # Holy grail app handles rainbow facets in a non-standard way compared to all other items, need to align with API as
+    # well
+    for key in list(item_upg_dict.keys()):
+        if key.startswith('Rainbow Facet'):
+            rbf = key.replace('(', '').replace(')', '').split(' ')
+            dmg_type = rbf[2]
+            activate_type = rbf[3]
+            dct['data']['uniques']['other']['rainbow facet (jewel)'][activate_type.lower()][dmg_type.lower()] = {'wasFound': item_upg_dict.pop(key)}
+
+    dct['data'] = update_items(deepcopy(dct['data']), item_upg_dict)
     return dct
 
 
@@ -159,14 +168,6 @@ def put_grail(uid, pwd, data, proxies=None):
 
 
 if __name__ == '__main__':
-    # p_addresses = {
-    #     'http': 'http://g48606:Osk27ros@dk.client-swg.oneadr.net:8080',
-    #     'https': 'http://g48606:Osk27ros@dk.client-swg.oneadr.net:8080'
-    # }
-    #
-    # username = 'oskros@outlook.dk'
-    # password = 'amulet'
-
     p_addresses = None
     username = input('username')
     password = input('password')
