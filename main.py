@@ -18,9 +18,9 @@ from tabs.about import About
 from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
 
-# FIXME: Add option to export/upload to google sheets
-# FIXME: Need to differentiate between rainbow facets to align with grail webpage
+
 # FIXME: Show active profile on main tab somehow
+# FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Ingame holy grail support
 # FIXME: d2 overlay mode with only text - could be hard
@@ -328,7 +328,7 @@ class MainFrame(Config):
         if not self.tab1.laps and not self.tab2.drops:
             self.ResetSession()
             return
-        user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc])
+        user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc], master_root=self.root)
         if user_confirm:
             # Stop any active run and load current session info from timer and drop module.
             self.tab1.stop()

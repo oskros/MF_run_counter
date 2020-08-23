@@ -34,6 +34,20 @@ def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
     max_x = mon.width + min_x
     max_y = mon.height + min_y
 
+    return max(min(pos_x, max_x - app_x - 10), min_x - 5), max(min(pos_y, max_y - app_y), min_y)
+
+
+def get_displaced_geom(root, app_x, app_y, pos_x=None, pos_y=None):
+    if pos_x is None:
+        pos_x = root.winfo_rootx()
+    if pos_y is None:
+        pos_y = root.winfo_rooty()
+    mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+    min_x = mon.x
+    min_y = mon.y
+    max_x = mon.width + min_x
+    max_y = mon.height + min_y
+
     displaced_x = max(min(pos_x, max_x - app_x - 10), min_x - 5)
     displaced_y = max(min(pos_y, max_y - app_y), min_y)
 
@@ -47,7 +61,7 @@ class RegistrationForm:
         self.new_win.wm_attributes('-topmost', 1)
         self.new_win.resizable(False, False)
 
-        geom = get_displaced_coords(root, 290, 185, coords[0], coords[1])
+        geom = get_displaced_geom(root, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
@@ -193,6 +207,7 @@ class MultiEntryBox(object):
         self.returning = None
         self.root.quit()
 
+
 def mebox(entries, coords=False, title='Message'):
     msgbox = MultiEntryBox(entries, coords, title)
     msgbox.root.mainloop()
@@ -203,17 +218,17 @@ def mebox(entries, coords=False, title='Message'):
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink):
-        root = self.root = tk.Tk()
+    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master_root=None):
+        self.root = tk.Tk()
         self.root.focus_set()
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        root.title(title)
+        self.root.title(title)
         # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
         self.msg = str(msg)
 
         # ctrl+c to copy self.msg
-        root.bind('<Control-c>', func=self.to_clip)
+        self.root.bind('<Control-c>', func=self.to_clip)
 
         # default values for the buttons to return
         self.b1_return = True
@@ -226,7 +241,7 @@ class MessageBox(object):
             b2, self.b2_return = b2
 
         # main frame
-        frm_1 = tk.Frame(root)
+        frm_1 = tk.Frame(self.root)
         frm_1.pack(ipadx=4, ipady=2)
 
         # the message
@@ -259,25 +274,27 @@ class MessageBox(object):
             btn_2.pack(side='left')
 
         # The enter button will trigger button 1, while escape will close the window
-        root.bind('<KeyPress-Return>', func=self.b1_action)
-        root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
+        self.root.bind('<KeyPress-Return>', func=self.b1_action)
+        self.root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
 
         # Roughly center the box on screen. For accuracy see: https://stackoverflow.com/a/10018670/1217270
-        root.update_idletasks()
-        if coords:
+        self.root.update_idletasks()
+        if coords and master_root:
+            xp, yp = get_displaced_coords(master_root, self.root.winfo_width(), self.root.winfo_height(), coords[0], coords[1])
+        elif coords:
             xp = coords[0]
             yp = coords[1]
         else:
-            xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
-            yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
-        geom = (root.winfo_width(), root.winfo_height(), xp, yp)
-        root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
+            xp = (self.root.winfo_screenwidth() // 2) - (self.root.winfo_width() // 2)
+            yp = (self.root.winfo_screenheight() // 2) - (self.root.winfo_height() // 2)
+        geom = (self.root.winfo_width(), self.root.winfo_height(), xp, yp)
+        self.root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
 
         # call self.close_mod when the close button is pressed
-        root.protocol("WM_DELETE_WINDOW", self.close_mod)
+        self.root.protocol("WM_DELETE_WINDOW", self.close_mod)
 
         # a trick to activate the window (on windows 7)
-        root.deiconify()
+        self.root.deiconify()
 
     def b1_action(self, event=None):
         try:
@@ -303,8 +320,8 @@ class MessageBox(object):
         self.root.clipboard_append(self.msg)
 
 
-def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink=''):
-    msgbox = MessageBox(msg, b1, b2, entry, coords, title, hyperlink)
+def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master_root=None):
+    msgbox = MessageBox(msg, b1, b2, entry, coords, title, hyperlink, master_root)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
