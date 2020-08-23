@@ -16,7 +16,7 @@ class Grail(tkd.Frame):
         self.username = tk.StringVar()
         self.password = tk.StringVar()
         self.username.set('oskros@outlook.dk')
-        self.password.set('amulet')
+        self.password.set('')
 
         self.exist_unique_armor = tk.StringVar()
         self.owned_unique_armor = tk.StringVar()
