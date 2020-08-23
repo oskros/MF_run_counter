@@ -95,7 +95,7 @@ class MFRunTimer(tkd.Frame):
         if add_lap:
             run_count += 1
         self.no_of_laps.set(run_count)
-        self.total_laps.set('(' + str(run_count + self.main_frame.tab4.tot_laps) + ')')
+        self.total_laps.set('(' + str(run_count + self.main_frame.profile_tab.tot_laps) + ')')
 
     def _set_fastest(self):
         if self.laps:

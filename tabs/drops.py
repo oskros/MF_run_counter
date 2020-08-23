@@ -4,11 +4,11 @@ from tkinter import ttk
 
 
 class Drops(tkd.Frame):
-    def __init__(self, tab1, parent=None, **kw):
+    def __init__(self, timer_tab, parent=None, **kw):
         tkd.Frame.__init__(self, parent.root, kw)
         self.parent = parent
         self.drops = dict()
-        self.tab1 = tab1
+        self.timer_tab = timer_tab
 
         self._make_widgets()
         # self.load_item_library()
@@ -37,8 +37,8 @@ class Drops(tkd.Frame):
             shortname = autocompletion.ITEM_SHORTNAMES.get(drop['item_name'], drop['item_name'])
             drop['input'] = shortname + ' ' + drop['extra']
         print(drop)
-        run_no = len(self.tab1.laps)
-        if self.tab1.is_running:
+        run_no = len(self.timer_tab.laps)
+        if self.timer_tab.is_running:
             run_no += 1
 
         self.drops.setdefault(str(run_no), []).append(drop)

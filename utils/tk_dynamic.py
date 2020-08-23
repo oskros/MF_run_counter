@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import webbrowser
 
 
 class Toplevel(tk.Toplevel):
@@ -144,12 +145,33 @@ class Label(tk.Label):
         tk.Label.destroy(self)
 
 
-class Hyperlink(tk.Label):
+class ListboxLabel(tk.Label):
     objects = []
 
     def __init__(self, *args, **kwargs):
         tk.Label.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.Label.destroy(self)
+
+
+class Hyperlink(tk.Label):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        hyperlink = kwargs.pop('hyperlink')
+        cs = kwargs.pop('cursor', 'hand2')
+        tk.Label.__init__(self, *args, **kwargs, cursor=cs)
+        self.__class__.objects.append(self)
+        self.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
 
     @classmethod
     def set_config(cls, **val):
@@ -196,6 +218,24 @@ class Frame(tk.Frame):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
         tk.Frame.destroy(self)
+
+
+class ListboxFrame(tk.LabelFrame):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        tk.LabelFrame.__init__(self, *args, **kwargs)
+        self.__class__.objects.append(self)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.LabelFrame.destroy(self)
 
 
 class Button(tk.Button):

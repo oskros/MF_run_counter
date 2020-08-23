@@ -94,6 +94,10 @@ class Profile(tkd.Frame):
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
                 self._add_new_profile(first_profile=first_profile)
                 return
+            elif profile_name == 'grail':
+                messagebox.showerror('Reserved name', '"grail" is a reserved profile name, please choose another one.')
+                self._add_new_profile(first_profile=first_profile)
+                return
             if not first_profile and profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 self._add_new_profile(first_profile=first_profile)
@@ -143,9 +147,9 @@ class Profile(tkd.Frame):
         self.update_descriptive_statistics()
         if self.main_frame.automode:
             self.main_frame.toggle_automode(self.char_name.get(), self.game_mode.get())
-        self.main_frame.tab3.tab3.char_var.set(self.char_name.get())
-        self.main_frame.tab3.tab3.game_mode.set(self.game_mode.get())
-        self.main_frame.tab1._set_laps(add_lap=self.main_frame.tab1.is_running)
+        self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
+        self.main_frame.options_tab.tab3.game_mode.set(self.game_mode.get())
+        self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()
@@ -200,7 +204,7 @@ class Profile(tkd.Frame):
                 self.archive_dropdown['values'] = self.available_archive
                 self.selected_archive.set('Profile history')
                 self.tot_laps -= len(removed.get('laps', []))
-                self.main_frame.tab1._set_laps(self.main_frame.tab1.is_running)
+                self.main_frame.timer_tab._set_laps(self.main_frame.timer_tab.is_running)
                 self.update_descriptive_statistics()
 
     def update_descriptive_statistics(self):
@@ -220,17 +224,17 @@ class Profile(tkd.Frame):
                     dropcount += len(val)
 
             # Append data for active session from timer module
-            laps.extend(self.main_frame.tab1.laps)
-            if self.main_frame.tab1.is_running:
+            laps.extend(self.main_frame.timer_tab.laps)
+            if self.main_frame.timer_tab.is_running:
                 laps.extend([0])
-            session_time += self.main_frame.tab1.session_time
-            for drop, val in self.main_frame.tab2.drops.items():
+            session_time += self.main_frame.timer_tab.session_time
+            for drop, val in self.main_frame.drops_tab.drops.items():
                 dropcount += len(val)
         elif chosen == 'Active session':
-            laps = self.main_frame.tab1.laps.copy()
-            if self.main_frame.tab1.is_running:
+            laps = self.main_frame.timer_tab.laps.copy()
+            if self.main_frame.timer_tab.is_running:
                 laps.extend([0])
-            session_time = self.main_frame.tab1.session_time
+            session_time = self.main_frame.timer_tab.session_time
             dropcount = sum(len(val) for val in self.main_frame.tab2.drops.values())
         else:
             laps = active[chosen].get('laps', [])
@@ -271,9 +275,9 @@ class Profile(tkd.Frame):
         # Handle how loading of session data should be treated in the 3 different cases
         if chosen == 'Active session':
             # Load directly from timer module
-            session_time = self.main_frame.tab1.session_time
-            laps = self.main_frame.tab1.laps
-            drops = self.main_frame.tab2.drops
+            session_time = self.main_frame.timer_tab.session_time
+            laps = self.main_frame.timer_tab.laps
+            drops = self.main_frame.drops_tab.drops
         elif chosen == 'Profile history':
             # Load everything from profile .json, and append data from timer module
             active = self.main_frame.load_state_file()
@@ -289,10 +293,10 @@ class Profile(tkd.Frame):
                 session_time += active[key].get('session_time', 0)
 
             # Append data for active session from timer module
-            for run_no, run_drop in self.main_frame.tab2.drops.items():
+            for run_no, run_drop in self.main_frame.drops_tab.drops.items():
                 drops[str(int(run_no) + len(laps))] = run_drop
-            laps.extend(self.main_frame.tab1.laps)
-            session_time += self.main_frame.tab1.session_time
+            laps.extend(self.main_frame.timer_tab.laps)
+            session_time += self.main_frame.timer_tab.session_time
         else:
             # Load selected session data from profile .json
             active = self.main_frame.load_state_file()

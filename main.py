@@ -17,6 +17,7 @@ from utils import tk_dynamic as tkd, tk_utils, github_releases
 from tabs.about import About
 from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
+from tabs.grail import Grail
 
 
 # FIXME: Show active profile on main tab somehow
@@ -71,7 +72,7 @@ class MainFrame(Config):
 
         # Load profile info
         self.make_profile_folder()
-        self.profiles = [x[:-5] for x in os.listdir('Profiles') if x.endswith('.json')]
+        self.profiles = [x[:-5] for x in os.listdir('Profiles') if x.endswith('.json') and not x == 'grail.json']
         self.active_profile = self.cfg['DEFAULT']['active_profile']
         if len(self.profiles) == 0:
             self.active_profile = ''
@@ -106,34 +107,38 @@ class MainFrame(Config):
 
         # Build tabs
         self.tabcontrol = tkd.Notebook(self.root)
-        self.tab4 = Profile(self, parent=self.tabcontrol)
-        self.tab1 = MFRunTimer(self, parent=self.tabcontrol)
-        self.tabcontrol.add(self.tab1, text='Timer')
-        self.tab2 = Drops(self.tab1, parent=self)
+        self.profile_tab = Profile(self, parent=self.tabcontrol)
+        self.timer_tab = MFRunTimer(self, parent=self.tabcontrol)
+        self.drops_tab = Drops(self.timer_tab, parent=self)
+        self.options_tab = Options(self, self.timer_tab, self.drops_tab, parent=self.tabcontrol)
+        self.grail_tab = Grail(self, parent=self.tabcontrol)
+        self.about_tab = About(parent=self.tabcontrol)
+
+        self.tabcontrol.add(self.timer_tab, text='Timer')
         self.toggle_drop_tab()
-        self.tab3 = Options(self, self.tab1, self.tab2, parent=self.tabcontrol)
-        self.tabcontrol.add(self.tab3, text='Options')
-        self.tabcontrol.add(self.tab4, text='Profile')
-        self.tab5 = About(parent=self.tabcontrol)
-        self.tabcontrol.add(self.tab5, text='About')
+        self.tabcontrol.add(self.options_tab, text='Options')
+        self.tabcontrol.add(self.profile_tab, text='Profile')
+        self.tabcontrol.add(self.grail_tab, text='Grail')
+        self.tabcontrol.add(self.about_tab, text='About')
+
         self.tabcontrol.pack(expand=1, fill='both')
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
-        self.tab4.update_descriptive_statistics()
+        self.profile_tab.update_descriptive_statistics()
 
         # Add buttons to main widget
         lf = tkd.LabelFrame(self.root, height=35)
         lf.propagate(False)  # dont allow buttons to modify label frame size
         lf.pack(expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Start\nnew run', command=self.tab1.stop_start).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='End\nthis run', command=self.tab1.stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Add\ndrop', command=self.tab2.add_drop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Reset\nlap', command=self.tab1.reset_lap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Start\nnew run', command=self.timer_tab.stop_start).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='End\nthis run', command=self.timer_tab.stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Add\ndrop', command=self.drops_tab.add_drop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        tkd.Button(lf, text='Reset\nlap', command=self.timer_tab.reset_lap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         tkd.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
+            self.options_tab.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
+            self.options_tab.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
             self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
@@ -154,14 +159,14 @@ class MainFrame(Config):
         self.root.mainloop()
 
     def game_path(self):
-        game_mode = self.tab4.game_mode.get()
+        game_mode = self.profile_tab.game_mode.get()
         if game_mode == 'Single Player':
             return self.SP_game_path
         else:
             return self.MP_game_path
 
     def character_file_extension(self):
-        game_mode = self.tab4.game_mode.get()
+        game_mode = self.profile_tab.game_mode.get()
         if game_mode == 'Single Player':
             return '.d2s'
         else:
@@ -176,13 +181,13 @@ class MainFrame(Config):
         if hasattr(self, 'am_lab'):
             self.am_lab.destroy()
         if char_name is None:
-            char_name = self.tab4.char_name.get()
+            char_name = self.profile_tab.char_name.get()
         if game_mode is None:
-            game_mode = self.tab4.game_mode.get()
+            game_mode = self.profile_tab.game_mode.get()
         if self.automode:
             self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
             self.am_lab.place(x=1, y=1)
-        self.tab1.toggle_automode(char_name=char_name, game_mode=game_mode)
+        self.timer_tab.toggle_automode(char_name=char_name, game_mode=game_mode)
 
     def toggle_tab_keys_global(self):
         """
@@ -192,11 +197,11 @@ class MainFrame(Config):
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
-            self.tab3.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
-            self.tab3.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
+            self.options_tab.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
+            self.options_tab.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
-            self.tab3.tab2.hk.unregister(['control', 'shift', 'next'])
-            self.tab3.tab2.hk.unregister(['control', 'shift', 'prior'])
+            self.options_tab.tab2.hk.unregister(['control', 'shift', 'next'])
+            self.options_tab.tab2.hk.unregister(['control', 'shift', 'prior'])
             self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
@@ -210,17 +215,17 @@ class MainFrame(Config):
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
             self.root.config(borderwidth=2, relief='raised', height=605, width=240)
-            self.tab2.pack(side=tk.BOTTOM)
-            self.tab2.m.config(height=8, width=24)
+            self.drops_tab.pack(side=tk.BOTTOM)
+            self.drops_tab.m.config(height=8, width=24)
             self.drop_lab.pack(side=tk.BOTTOM)
         else:
             if hasattr(self, 'drop_lab'):
                 self.drop_lab.forget()
-                self.tab2.forget()
+                self.drops_tab.forget()
             self.root.config(borderwidth=2, relief='raised', height=405, width=240)
-            self.tabcontrol.add(self.tab2, text='Drops')
-            self.tabcontrol.insert(1, self.tab2)
-            self.tab2.m.config(height=8, width=23)
+            self.tabcontrol.add(self.drops_tab, text='Drops')
+            self.tabcontrol.insert(1, self.drops_tab)
+            self.drops_tab.m.config(height=8, width=23)
 
     def process_queue(self):
         """
@@ -274,9 +279,9 @@ class MainFrame(Config):
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            # if not self.tab1.is_paused:
-            #     self.tab1.pause()
-            self.tab4.update_descriptive_statistics()
+            # if not self.timer_tab.is_paused:
+            #     self.timer_tab.pause()
+            self.profile_tab.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
         # banner image instead :)
         self.img_panel.focus_force()
@@ -311,11 +316,11 @@ class MainFrame(Config):
         """
         Resets session for the timer module and drops from the drops module
         """
-        self.tab1.reset_session()
-        self.tab2.drops = dict()
-        self.tab2.m.config(state=tk.NORMAL)
-        self.tab2.m.delete(1.0, tk.END)
-        self.tab2.m.config(state=tk.DISABLED)
+        self.timer_tab.reset_session()
+        self.drops_tab.drops = dict()
+        self.drops_tab.m.config(state=tk.NORMAL)
+        self.drops_tab.m.delete(1.0, tk.END)
+        self.drops_tab.m.config(state=tk.DISABLED)
 
     def ArchiveReset(self):
         """
@@ -325,22 +330,22 @@ class MainFrame(Config):
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
 
-        if not self.tab1.laps and not self.tab2.drops:
+        if not self.timer_tab.laps and not self.drops_tab.drops:
             self.ResetSession()
             return
         user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc], master_root=self.root)
         if user_confirm:
             # Stop any active run and load current session info from timer and drop module.
-            self.tab1.stop()
-            active = self.tab1.save_state()
-            self.tab4.tot_laps += len(active['laps'])
-            active.update(dict(drops=self.tab2.save_state()))
+            self.timer_tab.stop()
+            active = self.timer_tab.save_state()
+            self.profile_tab.tot_laps += len(active['laps'])
+            active.update(dict(drops=self.drops_tab.save_state()))
 
             # Update session dropdown for the profile
             stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            self.tab4.available_archive.append(stamp)
-            self.tab4.archive_dropdown['values'] = self.tab4.available_archive
-            # self.tab4.update_descriptive_statistics()
+            self.profile_tab.available_archive.append(stamp)
+            self.profile_tab.archive_dropdown['values'] = self.profile_tab.available_archive
+            # self.profile_tab.update_descriptive_statistics()
             # Update profile .json with the session
             state = self.load_state_file()
             state['active_state'] = dict()
@@ -358,8 +363,8 @@ class MainFrame(Config):
         and when you change the active profile in the profiles tab.
         """
         active_state = state.get('active_state', dict())
-        self.tab1.load_from_state(active_state)
-        self.tab2.load_from_state(active_state)
+        self.timer_tab.load_from_state(active_state)
+        self.drops_tab.load_from_state(active_state)
 
     def SaveActiveState(self):
         """
@@ -367,20 +372,23 @@ class MainFrame(Config):
         it is saved to file.
         """
         cache = self.load_state_file()
-        cache['active_state'] = self.tab1.save_state()
-        cache['active_state'].update(dict(drops=self.tab2.save_state()))
-        cache['extra_data']['Game mode'] = self.tab4.game_mode.get()
+        cache['active_state'] = self.timer_tab.save_state()
+        cache['active_state'].update(dict(drops=self.drops_tab.save_state()))
+        if 'extra_data' not in cache:
+            cache['extra_data'] = dict()
+        cache['extra_data']['Game mode'] = self.profile_tab.game_mode.get()
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)
+        self.grail_tab.save_grail()
 
     def Quit(self):
         """
         Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
         terminating all active threads.
         """
-        if self.tab1.is_running:
-            self.tab1.stop()
+        if self.timer_tab.is_running:
+            self.timer_tab.stop()
         self.update_config(self)
         self.SaveActiveState()
         os._exit(0)

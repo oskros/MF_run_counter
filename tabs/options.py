@@ -145,7 +145,7 @@ class Automode(General):
                                      '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_mode = tk.StringVar()
-        self.game_mode.set(self.main_frame.tab4.game_mode.get())
+        self.game_mode.set(self.main_frame.profile_tab.game_mode.get())
         cb = ttk.Combobox(lf, textvariable=self.game_mode, state='readonly', values=['Single Player', 'Multiplayer'])
         cb.bind("<FocusOut>", lambda e: cb.selection_clear())
         cb.config(width=12)
@@ -157,7 +157,7 @@ class Automode(General):
         lf2.pack(expand=False, fill=tk.X)
 
         self.char_var = tk.StringVar()
-        self.char_var.set(self.main_frame.tab4.char_name.get())
+        self.char_var.set(self.main_frame.profile_tab.char_name.get())
         cn_lab = tkd.Label(lf2, text='Character name')
         cn_lab.pack(side=tk.LEFT)
         tk_utils.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
@@ -192,7 +192,7 @@ class Automode(General):
             tk.messagebox.showerror('Path', 'Failed to find save folder path for single player. Please enter manually')
 
     def update_game_mode(self):
-        self.main_frame.tab4.game_mode.set(self.game_mode.get())
+        self.main_frame.profile_tab.game_mode.set(self.game_mode.get())
         self.main_frame.toggle_automode()
 
     def apply_path_ch(self):
