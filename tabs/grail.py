@@ -64,11 +64,11 @@ class Grail(tkd.Frame):
         tkd.Entry(hfr2, textvariable=self.password, show="*", width=18).pack(side=tk.LEFT)
 
         descr = tkd.ListboxFrame(self)
-        descr.pack(side=tk.BOTTOM)
+        descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
         self._make_row(descr, 0, '', 'Exist', 'Owned', 'Left', '%', only_text=True)
-        self._make_row(descr, 1, 'Unique Armor', self.exist_unique_armor, self.owned_unique_armor, self.remaining_unique_armor, self.perc_unique_armor)
-        self._make_row(descr, 2, 'Unique Weapons', self.exist_unique_weapons, self.owned_unique_weapons, self.remaining_unique_weapons, self.perc_unique_weapons)
-        self._make_row(descr, 3, 'Unique Other', self.exist_unique_other, self.owned_unique_other, self.remaining_unique_other, self.perc_unique_other)
+        self._make_row(descr, 1, 'Uniq Armor', self.exist_unique_armor, self.owned_unique_armor, self.remaining_unique_armor, self.perc_unique_armor)
+        self._make_row(descr, 2, 'Uniq Weapons', self.exist_unique_weapons, self.owned_unique_weapons, self.remaining_unique_weapons, self.perc_unique_weapons)
+        self._make_row(descr, 3, 'Uniq Other', self.exist_unique_other, self.owned_unique_other, self.remaining_unique_other, self.perc_unique_other)
         self._make_row(descr, 4, 'Sets', self.exist_sets, self.owned_sets, self.remaining_sets, self.perc_sets)
         self._make_row(descr, 5, 'Total', self.exist_total, self.owned_total, self.remaining_total, self.perc_total)
 
