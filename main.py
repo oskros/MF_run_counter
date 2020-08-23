@@ -19,7 +19,7 @@ from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
 from tabs.grail import Grail
 
-
+# FIXME: Add ability to write 'Eth' in front of item names
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
