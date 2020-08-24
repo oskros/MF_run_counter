@@ -1,26 +1,10 @@
 from init import *
 from utils import tk_dynamic as tkd
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 import webbrowser
-import screeninfo
 
-
-def build_time_str(elap):
-    hours = int(elap / 3600)
-    minutes = int(elap / 60 - hours * 60.0)
-    seconds = int(elap - hours * 3600.0 - minutes * 60.0)
-    hseconds = int((elap - hours * 3600.0 - minutes * 60.0 - seconds) * 10)
-    return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
-
-
-def get_monitor_from_coord(x, y):
-    monitors = screeninfo.get_monitors()
-
-    for m in reversed(monitors):
-        if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
-            return m
-    return monitors[0]
+from utils.other_utils import get_monitor_from_coord
 
 
 def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
@@ -337,22 +321,6 @@ def add_circle(parent, pixels, color):
     canvas.create_circle_arc(cpix, cpix, pixels // 2.2, style="arc", outline="white", width=pixels // 12.5,
                              start=270 - 25, end=270 + 25)
     return canvas, circ_id
-
-
-def test_mapfile_path(game_path, char_name):
-    if not os.path.exists(game_path) or game_path in ['', '.']:
-        messagebox.showerror('Game path error', """Game path not found, please update the path in options (for PoD, it's ending with "/Path of Diablo/Save/Path of Diablo") \n\n"""
-                                                'This session will continue in manual mode.')
-        return False
-    elif char_name == '':
-        messagebox.showerror('Character name missing', 'Chosen profile has no character name specified. Create a new profile with a character name to use automode\n\n'
-                                                       'This session will continue in manual mode.')
-        return False
-    elif not os.path.exists(os.path.join(game_path, char_name)):
-        messagebox.showerror('Character file not found', 'Map file for specified character not found. Make sure the character name in chosen profile is identical to your in-game character name. If not, create a new profile with the correct character name\n\n'
-                                                         'This session will continue in manual mode')
-        return False
-    return True
 
 
 class Tooltip(object):

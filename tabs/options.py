@@ -3,7 +3,7 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 from utils.color_themes import Theme
-from utils import tk_dynamic as tkd, tk_utils, config
+from utils import tk_dynamic as tkd, tk_utils, config, other_utils
 from tkinter import messagebox, ttk
 import system_hotkey
 
@@ -81,7 +81,7 @@ class General(tkd.Frame):
             tk_utils.create_tooltip(lab, comment)
 
         self.run_delay = tk.StringVar()
-        self.run_delay.set(eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
+        self.run_delay.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
         tkd.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
         self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
 
@@ -101,7 +101,7 @@ class General(tkd.Frame):
         off_button = tkd.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=5)
         on_button = tkd.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=5, padx=3)
 
-        if eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
+        if other_utils.safe_eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
             on_button.invoke()
             setattr(self, flag_attr + '_invoked', True)
         else:
@@ -114,7 +114,7 @@ class General(tkd.Frame):
         off_button.pack(side=tk.RIGHT)
 
     def toggle_button(self, attr):
-        val = eval(getattr(self, attr).get())
+        val = other_utils.safe_eval(getattr(self, attr).get())
         if bool(val) == getattr(self, attr + '_invoked'):
             return
         setattr(self, attr + '_invoked', bool(val))
@@ -216,13 +216,13 @@ class Hotkeys(tkd.Frame):
         tkd.Label(lf, text='Key          ', font='Helvetica 11 bold', justify=tk.LEFT, width=9).pack(side=tk.RIGHT)
         tkd.Label(lf, text=' Modifier', font='Helvetica 11 bold', justify=tk.LEFT, width=7).pack(side=tk.RIGHT)
 
-        self.add_hotkey(label_name='Start new run', keys=eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.stop_start)
-        self.add_hotkey(label_name='End run', keys=eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.stop)
-        self.add_hotkey(label_name='Delete prev', keys=eval(main_frame.cfg['KEYBINDS']['delete_prev_key']), func=timer_frame.delete_prev)
-        self.add_hotkey(label_name='Pause', keys=eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.pause)
-        self.add_hotkey(label_name='Add drop', keys=eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.add_drop)
-        self.add_hotkey(label_name='Reset lap', keys=eval(main_frame.cfg['KEYBINDS']['reset_key']), func=timer_frame.reset_lap)
-        self.add_hotkey(label_name='Make unclickable', keys=eval(main_frame.cfg['KEYBINDS']['make_unclickable']), func=main_frame.set_clickthrough)
+        self.add_hotkey(label_name='Start new run', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['start_key']), func=timer_frame.stop_start)
+        self.add_hotkey(label_name='End run', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['end_key']), func=timer_frame.stop)
+        self.add_hotkey(label_name='Delete prev', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['delete_prev_key']), func=timer_frame.delete_prev)
+        self.add_hotkey(label_name='Pause', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['pause_key']), func=timer_frame.pause)
+        self.add_hotkey(label_name='Add drop', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['drop_key']), func=drop_frame.add_drop)
+        self.add_hotkey(label_name='Reset lap', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['reset_key']), func=timer_frame.reset_lap)
+        self.add_hotkey(label_name='Make unclickable', keys=other_utils.safe_eval(main_frame.cfg['KEYBINDS']['make_unclickable']), func=main_frame.set_clickthrough)
 
     def add_hotkey(self, label_name, keys, func):
         if keys[0].lower() not in map(lambda x: x.lower(), self.modifier_options) or keys[1].lower() not in map(lambda x: x.lower(), self.character_options):

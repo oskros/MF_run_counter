@@ -1,6 +1,8 @@
 import os
 import time
 import tkinter as tk
+
+import utils.other_utils
 from utils import tk_dynamic as tkd, tk_utils, sound
 from tkinter import ttk
 
@@ -83,7 +85,7 @@ class MFRunTimer(tkd.Frame):
         self._game_check = self.after(50, self._check_entered_game)
 
     def _set_time(self, elap, for_session):
-        time_str = tk_utils.build_time_str(elap)
+        time_str = utils.other_utils.build_time_str(elap)
         if for_session:
             self.session_time_str = time_str
             self.sessionstr.set('Session time: ' + self.session_time_str)
@@ -99,13 +101,13 @@ class MFRunTimer(tkd.Frame):
 
     def _set_fastest(self):
         if self.laps:
-            self.min_lap.set('Fastest time: %s' % tk_utils.build_time_str(min(self.laps)))
+            self.min_lap.set('Fastest time: %s' % utils.other_utils.build_time_str(min(self.laps)))
         else:
             self.min_lap.set('Fastest time: --:--:--.-')
 
     def _set_average(self):
         if self.laps:
-            self.avg_lap.set('Average time: %s' % tk_utils.build_time_str(sum(self.laps) / len(self.laps)))
+            self.avg_lap.set('Average time: %s' % utils.other_utils.build_time_str(sum(self.laps) / len(self.laps)))
         else:
             self.avg_lap.set('Average time: --:--:--.-')
 
@@ -163,7 +165,7 @@ class MFRunTimer(tkd.Frame):
         if self.is_running or force:
             self.laps.append(laptime)
             str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
-            self.m.insert(tk.END, 'Run ' + str_n + ': ' + tk_utils.build_time_str(self.laps[-1]))
+            self.m.insert(tk.END, 'Run ' + str_n + ': ' + utils.other_utils.build_time_str(self.laps[-1]))
             self.m.yview_moveto(1)
             self._set_laps(add_lap=False)
             self._set_fastest()
@@ -240,7 +242,7 @@ class MFRunTimer(tkd.Frame):
             char_extension = char_name + self.main_frame.character_file_extension()
             self.char_file_path = os.path.join(d2_save_path, char_extension)
 
-            if tk_utils.test_mapfile_path(d2_save_path, char_extension):
+            if utils.other_utils.test_mapfile_path(d2_save_path, char_extension):
                 self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
                 self._check_entered_game()
 

@@ -3,6 +3,7 @@ import sys
 import time
 import json
 import queue
+import base64
 import traceback
 import win32api
 import win32gui
@@ -13,7 +14,7 @@ from tabs.profiles import Profile
 from utils.color_themes import Theme, available_themes
 from tkinter import messagebox
 import tkinter as tk
-from utils import tk_dynamic as tkd, tk_utils, github_releases
+from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils
 from tabs.about import About
 from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
@@ -44,16 +45,19 @@ class MainFrame(Config):
         self.cfg = self.load_config_file()
         self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
         self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
-        self.automode = eval(self.cfg['OPTIONS']['automode'])
-        self.always_on_top = eval(self.cfg['OPTIONS']['always_on_top'])
-        self.tab_switch_keys_global = eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
-        self.check_for_new_version = eval(self.cfg['OPTIONS']['check_for_new_version'])
-        self.enable_sound_effects = eval(self.cfg['OPTIONS']['enable_sound_effects'])
-        self.run_timer_delay_seconds = eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
-        self.pop_up_drop_window = eval(self.cfg['OPTIONS']['pop_up_drop_window'])
+        self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
+        self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
+        self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
+        self.automode = other_utils.safe_eval(self.cfg['OPTIONS']['automode'])
+        self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
+        self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
+        self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
+        self.enable_sound_effects = other_utils.safe_eval(self.cfg['OPTIONS']['enable_sound_effects'])
+        self.run_timer_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
+        self.pop_up_drop_window = other_utils.safe_eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
-        self.autocomplete = eval(self.cfg['OPTIONS']['autocomplete'])
-        self.item_shortnames = eval(self.cfg['OPTIONS']['item_shortnames'])
+        self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
+        self.item_shortnames = other_utils.safe_eval(self.cfg['OPTIONS']['item_shortnames'])
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -83,7 +87,7 @@ class MainFrame(Config):
         self.root.title(self.title)
         self.clickable = True
         self.root.resizable(False, False)
-        self.root.geometry('+%d+%d' % eval(self.cfg['DEFAULT']['window_start_position']))
+        self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -388,8 +392,8 @@ class MainFrame(Config):
         """
         if self.timer_tab.is_running and self.profile_tab.game_mode.get() != 'Single Player' and self.timer_tab.automode_active:
             self.timer_tab.stop()
-        self.update_config(self)
         self.SaveActiveState()
+        self.update_config(self)
         os._exit(0)
 
 

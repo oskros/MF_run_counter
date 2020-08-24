@@ -1,3 +1,4 @@
+import utils.other_utils
 from init import *
 import csv
 import json
@@ -247,10 +248,10 @@ class Profile(tkd.Frame):
 
         # (re-)Populate the listbox with descriptive statistics
         self.descr.delete(0, tk.END)
-        self.descr.insert(tk.END, 'Total session time:   ' + tk_utils.build_time_str(session_time))
-        self.descr.insert(tk.END, 'Total run time:       ' + tk_utils.build_time_str(sum(laps)))
-        self.descr.insert(tk.END, 'Average run time:     ' + tk_utils.build_time_str(avg_lap))
-        self.descr.insert(tk.END, 'Fastest run time:     ' + tk_utils.build_time_str(min(laps, default=0)))
+        self.descr.insert(tk.END, 'Total session time:   ' + utils.other_utils.build_time_str(session_time))
+        self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum(laps)))
+        self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
+        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min(laps, default=0)))
         self.descr.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
         self.descr.insert(tk.END, 'Number of runs: ' + str(len(laps)))
         self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
@@ -325,10 +326,10 @@ class Profile(tkd.Frame):
                   ['Run type: ', self.extra_data.get('Run type', '')],
                   ['Game mode: ', self.extra_data.get('Game mode', 'Single Player')],
                   [''],
-                  ['Total session time:   ', tk_utils.build_time_str(session_time)],
-                  ['Total run time:       ', tk_utils.build_time_str(sum(laps))],
-                  ['Average run time:     ', tk_utils.build_time_str(avg_lap)],
-                  ['Fastest run time:     ', tk_utils.build_time_str(min(laps, default=0))],
+                  ['Total session time:   ', utils.other_utils.build_time_str(session_time)],
+                  ['Total run time:       ', utils.other_utils.build_time_str(sum(laps))],
+                  ['Average run time:     ', utils.other_utils.build_time_str(avg_lap)],
+                  ['Fastest run time:     ', utils.other_utils.build_time_str(min(laps, default=0))],
                   ['Time spent in runs: ', str(round(pct, 2)) + '%'],
                   ['']]
 
@@ -346,7 +347,7 @@ class Profile(tkd.Frame):
         for n, lap in enumerate(laps, 1):
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             droplst = drops.get(str(n), [])
-            tmp = ['Run ' + str_n + ': ', tk_utils.build_time_str(lap)]
+            tmp = ['Run ' + str_n + ': ', utils.other_utils.build_time_str(lap)]
             if droplst:
                 tmp += [d['input'] for d in droplst]
             output.append(tmp)

@@ -15,8 +15,8 @@ class Grail(tkd.Frame):
         self.grail = self.load_grail()
         self.username = tk.StringVar()
         self.password = tk.StringVar()
-        self.username.set('oskros@outlook.dk')
-        self.password.set('')
+        self.username.set(self.main_frame.herokuapp_username)
+        self.password.set(self.main_frame.herokuapp_password)
 
         self.exist_unique_armor = tk.StringVar()
         self.owned_unique_armor = tk.StringVar()
@@ -110,6 +110,9 @@ class Grail(tkd.Frame):
         with open(self.file_name, 'w') as fo:
             json.dump(self.grail, fo, indent=2)
 
+        self.main_frame.herokuapp_username = self.username.get()
+        self.main_frame.herokuapp_password = self.password.get()
+
     def count_items(self, dct):
         tot, owned = 0, 0
         for k in dct.keys():
@@ -159,7 +162,8 @@ class Grail(tkd.Frame):
 
     def load_from_herokuapp(self):
         try:
-            herokuapp_grail = herokuapp_controller.get_grail(self.username.get())
+            prox = self.main_frame.webproxies if self.main_frame.webproxies else None
+            herokuapp_grail = herokuapp_controller.get_grail(self.username.get(), proxies=prox)
         except requests.exceptions.HTTPError:
             messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % self.username.get())
             return
