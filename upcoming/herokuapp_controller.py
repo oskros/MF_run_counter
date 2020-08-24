@@ -169,11 +169,14 @@ def put_grail(uid, pwd, data, proxies=None):
 def build_update_list(dct):
     out = []
     for k, v in dct.items():
+        if k in ['Cold', 'Fire', 'Light', 'Poison']:
+            continue
         if isinstance(v, dict):
             if v.get('wasFound', False):
                 out.append(k)
             else:
                 out += build_update_list(v)
+
     return out
 
 

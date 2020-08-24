@@ -48,12 +48,12 @@ class Grail(tkd.Frame):
         bfr = tkd.Frame(self)
         bfr.pack()
 
-        tkd.Button(bfr, text='From drops', command=self.update_grail).pack(side=tk.LEFT)
-        tkd.Button(bfr, text='From herokuapp', command=self.load_from_herokuapp).pack(side=tk.LEFT)
+        tkd.Button(bfr, text='From drops', command=self.get_from_drops).pack(side=tk.LEFT)
+        tkd.Button(bfr, text='From herokuapp', command=self.download_herokuapp).pack(side=tk.LEFT)
         tkd.Button(bfr, text='Reset', command=self.reset_grail).pack(side=tk.LEFT)
 
         tkd.Label(self, text='Synchronization').pack()
-        tkd.Button(self, text='Add to herokuapp', command=self.upload_to_herokuapp).pack()
+        tkd.Button(self, text='Add to herokuapp', command=self.upload_herokuapp).pack()
 
         descr = tkd.ListboxFrame(self)
         # tk.Grid.rowconfigure(descr, 0, weight=1)
@@ -122,6 +122,24 @@ class Grail(tkd.Frame):
                     owned += 1
         return tot, owned
 
+    def owned_items(self):
+        my_items = []
+        def add_items(dct):
+            for k in dct:
+                if k in ['Cold', 'Fire', 'Light', 'Poison']:
+                    continue
+                if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
+                    add_items(dct[k])
+                elif dct[k].get('wasFound', False):
+                    my_items.append(k)
+        add_items(self.grail)
+
+        for activate_type in ['die', 'level up']:
+            for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+                if self.grail['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+                    my_items.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
+        return my_items
+
     def update_statistics(self):
         ua = self.count_items(self.grail['uniques']['armor'])
         self.exist_unique_armor.set(ua[0])
@@ -153,10 +171,27 @@ class Grail(tkd.Frame):
         self.remaining_total.set(t[0] - t[1])
         self.perc_total.set(str(round(t[1]/t[0]*100, 1)) + '%' if t[0] != 0 else '0.0%')
 
-    def update_grail(self):
-        pass
+    def get_from_drops(self):
+        drops = []
+        for p in self.main_frame.profiles:
+            file = 'Profiles/%s.json' % p
+            with open(file, 'r') as fo:
+                state = json.load(fo)
 
-    def load_from_herokuapp(self):
+            for key in state:
+                if key == 'extra_data':
+                    continue
+                elif key == 'active_state' and p == self.main_frame.active_profile:
+                    drops.extend(sum(self.main_frame.drops_tab.drops.values(), []))
+                else:
+                    drops.extend(sum(state[key]['drops'].values(), []))
+
+        grail_items = {x['item_name']: True for x in drops if isinstance(x, dict) and x.get('item_name', None) is not None}
+        print(grail_items)
+        self.grail = herokuapp_controller.update_grail_dict(self.grail, grail_items)
+        self.update_statistics()
+
+    def download_herokuapp(self):
         resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
         if resp is None:
             return
@@ -173,8 +208,34 @@ class Grail(tkd.Frame):
 
         data = herokuapp_grail.get('data', dict())
         upd_dict = {x: True for x in herokuapp_controller.build_update_list(data)}
+        for activate_type in ['die', 'level up']:
+            for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+                if data['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+                    upd_dict.update({'Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()): True})
         self.grail = herokuapp_controller.update_grail_dict(self.grail, upd_dict)
         self.update_statistics()
 
-    def upload_to_herokuapp(self):
-        pass
+    def upload_herokuapp(self):
+        resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
+        if resp is None:
+            return
+        uid, pwd = resp
+        try:
+            prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
+            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
+        except requests.exceptions.HTTPError:
+            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % uid)
+            return
+
+        upd_dict = {x: True for x in self.owned_items()}
+        herokuapp_grail['data'] = herokuapp_controller.update_grail_dict(dct=herokuapp_grail['data'], item_upg_dict=upd_dict)
+
+        try:
+            herokuapp_controller.put_grail(uid=uid, pwd=pwd, data=herokuapp_grail, proxies=prox)
+        except requests.exceptions.HTTPError:
+            messagebox.showerror('Password 401', "Password incorrect for user '%s', try again" % uid)
+
+        self.username.set(uid)
+        self.password.set(pwd)
+
+        messagebox.showinfo('Success', "Upload to '%s' on d2-holy-grail.herokuapp.com successful!" % uid)
