@@ -192,10 +192,10 @@ class Grail(tkd.Frame):
         self.update_statistics()
 
     def download_herokuapp(self):
-        resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
+        resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
         if resp is None:
             return
-        uid, pwd = resp
+        uid = resp[0]
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
             herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
@@ -204,7 +204,6 @@ class Grail(tkd.Frame):
             return
 
         self.username.set(uid)
-        self.password.set(pwd)
 
         data = herokuapp_grail.get('data', dict())
         upd_dict = {x: True for x in herokuapp_controller.build_update_list(data)}
