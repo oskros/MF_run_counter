@@ -19,8 +19,6 @@ from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
 from tabs.grail import Grail
 
-# FIXME: Add ability to write 'Eth' in front of item names
-# FIXME: Closing app in single player mode will remove the current active run
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
@@ -388,7 +386,7 @@ class MainFrame(Config):
         Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
         terminating all active threads.
         """
-        if self.timer_tab.is_running:
+        if self.timer_tab.is_running and self.profile_tab.game_mode.get() != 'Single Player' and self.timer_tab.automode_active:
             self.timer_tab.stop()
         self.update_config(self)
         self.SaveActiveState()

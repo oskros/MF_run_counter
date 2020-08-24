@@ -361,12 +361,19 @@ class AutocompleteEntry:
         self.listboxUp = False
 
     def changed(self, name=None, index=None, mode=None):
-        if self.var.get() == '':
+        var = self.var.get()
+        if var == '':
             if self.listboxUp:
                 self.listbox.destroy()
                 self.listboxUp = False
         else:
-            words = self.comparison() if self.enable else []
+            if self.enable:
+                words = self.comparison(var)
+                if var.lower().startswith('eth '):
+                    words.extend(self.comparison(var[4:], eth=True))
+            else:
+                words = []
+
             if words:
                 if self.listboxUp:
                     self.listbox.destroy()
@@ -424,11 +431,12 @@ class AutocompleteEntry:
                 self.listbox.selection_set(first=hl_idx)
                 self.listbox.activate(hl_idx)
 
-    def comparison(self):
+    @staticmethod
+    def comparison(var, eth=False):
         out = set()
         # regex to append a [']? after all letters, which is an optional argument for adding a hyphen
         # this means that for example typing in "mavinas" and "m'avina's" will yield the same results
-        hyphen_escape = re.sub('([^a-zA-Z]*)', "\\1[']?", re.escape(self.var.get()))
+        hyphen_escape = re.sub('([^a-zA-Z]*)', "\\1[']?", re.escape(var))
         # encapsulating with \b ensures that searches are done only at the start of each word
         # ".*" allows anything to follow after the already typed letters
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
@@ -437,7 +445,11 @@ class AutocompleteEntry:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
-                out.add(i_name)
+                if eth:
+                    if 'Rune' not in i_name and 'Orb of Corruption' not in i_name:
+                        out.add('Eth ' + i_name)
+                else:
+                    out.add(i_name)
         return sorted(out)
 
 
@@ -448,7 +460,7 @@ class ACMbox(object):
             '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
         self.root.update_idletasks()
         self.root.focus_set()
-        self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        # self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.root.title(title)
         self.root.wm_attributes("-topmost", True)
         self.root.resizable(False, False)
@@ -481,8 +493,10 @@ class ACMbox(object):
             self.entry.selection(event)
         else:
             item_name = self.entry.chosen
+            if item_name.startswith('Eth ') and item_name != 'Eth Rune':
+                item_name = item_name[4:]
             user_input = self.entry.var.get().strip()
-            extra_input = user_input.replace(item_name, '').strip() if item_name is not None else ''
+            extra_input = user_input.replace(item_name, '').strip().replace('  ', ' ') if item_name is not None else ''
             self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input}
             self.root.quit()
 
