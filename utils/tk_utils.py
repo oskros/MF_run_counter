@@ -130,9 +130,10 @@ def registration_form(root, coords=None, first_profile=False):
 
 
 class MultiEntryBox(object):
-    def __init__(self, entries, coords, title):
+    def __init__(self, entries, coords, title, defaults=None, masks=None):
         self.enum = len(entries)
-        root = self.root = tk.Tk()
+        root = self.root = tk.Toplevel()
+        # self.root.attributes('-toolwindow', 1)
         self.root.focus_set()
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         root.title(title)
@@ -147,6 +148,10 @@ class MultiEntryBox(object):
             tk.Label(ff, font='arial 11', text=e, width=8).pack(side=tk.LEFT, expand=True, fill=tk.X, pady=3)
             setattr(self, 'e' + str(i), tk.Entry(ff, font=('arial', 11), justify='center'))
             getattr(self, 'e' + str(i)).pack(side=tk.LEFT, expand=True, fill=tk.X)
+            if defaults is not None:
+                getattr(self, 'e' + str(i)).insert(tk.END, defaults[i])
+            if masks is not None and masks[i] is not None:
+                getattr(self, 'e' + str(i)).config(show=masks[i])
             if i == 0:
                 getattr(self, 'e' + str(i)).focus_set()
 
@@ -192,8 +197,8 @@ class MultiEntryBox(object):
         self.root.quit()
 
 
-def mebox(entries, coords=False, title='Message'):
-    msgbox = MultiEntryBox(entries, coords, title)
+def mebox(entries, coords=False, title='Message', defaults=None, masks=None):
+    msgbox = MultiEntryBox(entries, coords, title, defaults, masks)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit

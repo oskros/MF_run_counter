@@ -2,6 +2,7 @@ from init import *
 from utils import tk_dynamic as tkd, tk_utils
 from upcoming import herokuapp_controller
 import tkinter as tk
+from tkinter import ttk
 import json
 import requests
 from tkinter import messagebox
@@ -54,37 +55,32 @@ class Grail(tkd.Frame):
         tkd.Label(self, text='Synchronization').pack()
         tkd.Button(self, text='Add to herokuapp', command=self.upload_to_herokuapp).pack()
 
-        hfr1 = tkd.Frame(self)
-        hfr1.pack(expand=True, fill=tk.X)
-        tkd.Label(hfr1, text='Username', width=18).pack(side=tk.LEFT, padx=[0,5])
-        tkd.Label(hfr1, text='Password').pack(side=tk.LEFT)
-        hfr2 = tkd.Frame(self)
-        hfr2.pack(expand=False, fill=None)
-        tkd.Entry(hfr2, textvariable=self.username, width=18).pack(side=tk.LEFT, padx=[0,5])
-        tkd.Entry(hfr2, textvariable=self.password, show="*", width=18).pack(side=tk.LEFT)
-
         descr = tkd.ListboxFrame(self)
+        # tk.Grid.rowconfigure(descr, 0, weight=1)
+        # tk.Grid.columnconfigure(descr, 0, weight=1)
         descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
         self._make_row(descr, 0, '', 'Exist', 'Owned', 'Left', '%', only_text=True)
-        self._make_row(descr, 1, 'Uniq Armor', self.exist_unique_armor, self.owned_unique_armor, self.remaining_unique_armor, self.perc_unique_armor)
-        self._make_row(descr, 2, 'Uniq Weapons', self.exist_unique_weapons, self.owned_unique_weapons, self.remaining_unique_weapons, self.perc_unique_weapons)
-        self._make_row(descr, 3, 'Uniq Other', self.exist_unique_other, self.owned_unique_other, self.remaining_unique_other, self.perc_unique_other)
-        self._make_row(descr, 4, 'Sets', self.exist_sets, self.owned_sets, self.remaining_sets, self.perc_sets)
-        self._make_row(descr, 5, 'Total', self.exist_total, self.owned_total, self.remaining_total, self.perc_total)
+        # ttk.Separator(descr, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=6, sticky='ew')
+        # ttk.Separator(descr, orient=tk.VERTICAL).grid(row=0, column=1, rowspan=7, sticky='ns')
+        self._make_row(descr, 2, 'Uniq Armor', self.exist_unique_armor, self.owned_unique_armor, self.remaining_unique_armor, self.perc_unique_armor)
+        self._make_row(descr, 3, 'Uniq Weapons', self.exist_unique_weapons, self.owned_unique_weapons, self.remaining_unique_weapons, self.perc_unique_weapons)
+        self._make_row(descr, 4, 'Uniq Other', self.exist_unique_other, self.owned_unique_other, self.remaining_unique_other, self.perc_unique_other)
+        self._make_row(descr, 5, 'Sets', self.exist_sets, self.owned_sets, self.remaining_sets, self.perc_sets)
+        self._make_row(descr, 6, 'Total', self.exist_total, self.owned_total, self.remaining_total, self.perc_total)
 
     @staticmethod
     def _make_row(master, row, title, exist, owned, remaining, perc, only_text=False):
         tkd.ListboxLabel(master, text=title, justify=tk.LEFT).grid(sticky=tk.W, row=row, column=0)
         if only_text:
-            tkd.ListboxLabel(master, text=exist).grid(row=row, column=1)
-            tkd.ListboxLabel(master, text=owned).grid(row=row, column=2)
-            tkd.ListboxLabel(master, text=remaining).grid(row=row, column=3)
-            tkd.ListboxLabel(master, text=perc).grid(row=row, column=4)
+            tkd.ListboxLabel(master, text=exist).grid(row=row, column=2)
+            tkd.ListboxLabel(master, text=owned).grid(row=row, column=3)
+            tkd.ListboxLabel(master, text=remaining).grid(row=row, column=4)
+            tkd.ListboxLabel(master, text=perc).grid(row=row, column=5)
         else:
-            tkd.ListboxLabel(master, textvariable=exist).grid(row=row, column=1)
-            tkd.ListboxLabel(master, textvariable=owned).grid(row=row, column=2)
-            tkd.ListboxLabel(master, textvariable=remaining).grid(row=row, column=3)
-            tkd.ListboxLabel(master, textvariable=perc).grid(row=row, column=4)
+            tkd.ListboxLabel(master, textvariable=exist).grid(row=row, column=2)
+            tkd.ListboxLabel(master, textvariable=owned).grid(row=row, column=3)
+            tkd.ListboxLabel(master, textvariable=remaining).grid(row=row, column=4)
+            tkd.ListboxLabel(master, textvariable=perc).grid(row=row, column=5)
 
     def reset_grail(self):
         resp = tk_utils.mbox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING')
@@ -161,12 +157,19 @@ class Grail(tkd.Frame):
         pass
 
     def load_from_herokuapp(self):
-        try:
-            prox = self.main_frame.webproxies if self.main_frame.webproxies else None
-            herokuapp_grail = herokuapp_controller.get_grail(self.username.get(), proxies=prox)
-        except requests.exceptions.HTTPError:
-            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % self.username.get())
+        resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
+        if resp is None:
             return
+        uid, pwd = resp
+        try:
+            prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
+            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
+        except requests.exceptions.HTTPError:
+            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % uid)
+            return
+
+        self.username.set(uid)
+        self.password.set(pwd)
 
         data = herokuapp_grail.get('data', dict())
         upd_dict = {x: True for x in herokuapp_controller.build_update_list(data)}
