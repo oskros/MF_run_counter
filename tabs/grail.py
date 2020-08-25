@@ -223,7 +223,7 @@ class Grail(tkd.Frame):
         cols = ["Item", "Item Group 0", "Item Group 1", "Item Class", "Quality", "Rarity", "Class restriction",
                 "Base Item", "TC", "QLVL", "Roll rarity", "Roll chance", "Found"]
 
-        list_frame = tkd.Frame(window)
+        list_frame = tk.Frame(window)
         vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(window, orient=tk.HORIZONTAL)
         tree = tkd.Treeview(list_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)#, activestyle='none', font=('courier', 10))
