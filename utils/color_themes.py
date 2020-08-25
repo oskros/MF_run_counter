@@ -26,6 +26,7 @@ class Theme:
             # Widgets
             self.button_color = 'SkyBlue1'
             self.activebutton_color = 'alice blue'
+            self.active_checkbox_color = 'alice blue'
             self.listbox_color = 'alice blue'
             self.listbox_color_stats = 'alice blue'
             self.pause_button_color = 'DodgerBlue2'
@@ -76,6 +77,7 @@ class Theme:
             # Widgets
             self.button_color = 'grey40'
             self.activebutton_color = 'grey78'
+            self.active_checkbox_color = 'gray20'
             # self.listbox_color_stats = 'grey90'
             self.listbox_color = 'grey33'
             self.listbox_color_stats = self.listbox_color
@@ -127,6 +129,7 @@ class Theme:
             # Widgets
             self.button_color = default_color
             self.activebutton_color = 'white'
+            self.active_checkbox_color = 'white'
             self.listbox_color = 'white'
             self.listbox_color_stats = 'white'
             self.pause_button_color = 'deep sky blue'
@@ -135,6 +138,7 @@ class Theme:
 
             # Text
             self.text_color = 'black'
+            self.checkbox_text = 'black'
             self.run_count_color = 'red'
             self.hyperlink_color = 'blue'
             self.listbox_text = 'black'
@@ -213,3 +217,4 @@ class Theme:
         tkd.Text.set_config(bg=self.listbox_color, fg=self.listbox_text)
         tkd.ListboxLabel.set_config(bg=self.listbox_color, fg=self.listbox_text)
         tkd.ListboxFrame.set_config(bg=self.listbox_color)
+        tkd.Checkbutton.set_config(activebackground=self.label_color, activeforeground=self.text_color, background=self.label_color, foreground=self.text_color, selectcolor=self.active_checkbox_color)

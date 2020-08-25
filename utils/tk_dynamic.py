@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
+from functools import partial
 
 
 class Toplevel(tk.Toplevel):
@@ -145,6 +146,24 @@ class Label(tk.Label):
         tk.Label.destroy(self)
 
 
+class Checkbutton(tk.Checkbutton):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        tk.Checkbutton.__init__(self, *args, **kwargs)
+        self.__class__.objects.append(self)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.Checkbutton.destroy(self)
+
+
 class ListboxLabel(tk.Label):
     objects = []
 
@@ -242,8 +261,11 @@ class Button(tk.Button):
     objects = []
 
     def __init__(self, *args, **kwargs):
+        tooltip = kwargs.pop('tooltip', None)
         tk.Button.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
+        if tooltip is not None:
+            create_tooltip(self, tooltip)
 
     @classmethod
     def set_config(cls, **val):
@@ -395,3 +417,62 @@ class Text(tk.Text):
         # So delay checking the cursor position and moving the highlight 10 ms.
 
         self.after(delay, delayed_highlight)
+
+
+class Tooltip(object):
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 57
+        y = y + cy + self.widget.winfo_rooty() +27
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        self.tipwindow.wm_attributes('-topmost', True)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                         background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                         font=("tahoma", "8", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+def create_tooltip(widget, text):
+    tooltip = Tooltip(widget)
+    widget.bind('<Enter>', lambda event: tooltip.showtip(text))
+    widget.bind('<Leave>', lambda event: tooltip.hidetip())
+
+
+class Treeview(ttk.Treeview):
+    def heading(self, column, sort_by=None, **kwargs):
+        if sort_by and not hasattr(kwargs, 'command'):
+            func = getattr(self, f"_sort_by_{sort_by}", None)
+            if func:
+                kwargs['command'] = partial(func, column, False)
+        return super().heading(column, **kwargs)
+
+    def _sort(self, column, reverse, data_type, callback):
+        l = [(self.set(k, column), k) for k in self.get_children('')]
+        l.sort(key=lambda t: data_type(t[0]), reverse=reverse)
+        for index, (_, k) in enumerate(l):
+            self.move(k, '', index)
+        self.heading(column, command=partial(callback, column, not reverse))
+
+    def _sort_by_num(self, column, reverse):
+        self._sort(column, reverse, lambda x: float('inf') if x == '' else float(x), self._sort_by_num)
+
+    def _sort_by_name(self, column, reverse):
+        self._sort(column, reverse, str, self._sort_by_name)

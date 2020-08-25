@@ -46,7 +46,7 @@ class General(tkd.Frame):
         lab = tkd.Label(lf, text='Active theme')
         lab.pack(side=tk.LEFT)
         if comment is not None:
-            tk_utils.create_tooltip(lab, comment)
+            tkd.create_tooltip(lab, comment)
 
         self.active_theme = tk.StringVar()
         self.active_theme.set(self.main_frame.active_theme)
@@ -78,7 +78,7 @@ class General(tkd.Frame):
         lab = tkd.Label(lf, text='Start run delay (seconds)')
         lab.pack(side=tk.LEFT)
         if comment is not None:
-            tk_utils.create_tooltip(lab, comment)
+            tkd.create_tooltip(lab, comment)
 
         self.run_delay = tk.StringVar()
         self.run_delay.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
@@ -93,7 +93,7 @@ class General(tkd.Frame):
         lab = tkd.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
         if comment is not None:
-            tk_utils.create_tooltip(lab, comment)
+            tkd.create_tooltip(lab, comment)
 
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_')
         setattr(self, flag_attr, tk.StringVar(lf))
@@ -141,7 +141,7 @@ class Automode(General):
 
         lab = tkd.Label(lf, text='Game mode')
         lab.pack(side=tk.LEFT)
-        tk_utils.create_tooltip(lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+        tkd.create_tooltip(lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
                                      '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_mode = tk.StringVar()
@@ -160,7 +160,7 @@ class Automode(General):
         self.char_var.set(self.main_frame.profile_tab.char_name.get())
         cn_lab = tkd.Label(lf2, text='Character name')
         cn_lab.pack(side=tk.LEFT)
-        tk_utils.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
+        tkd.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
         tkd.Label(lf2, textvariable=self.char_var).pack(side=tk.RIGHT)
 
         tkd.Label(self, text='Game path (Single Player)').pack(pady=[10, 0])

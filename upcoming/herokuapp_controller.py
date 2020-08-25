@@ -82,51 +82,51 @@ default_data = {
                               'necromancer': {'Homunculus': {}, 'Boneflame': {}, 'Darkforce Spawn': {}},
                               'paladin': {'Herald of Zakarum': {}, 'Alma Negra': {}, 'Dragonscale': {}},
                               'sorceress': {'The Oculus': {}, "Death's Fathom": {}, "Eschuta's Temper": {}}}}},
-     'sets': {'Angelic Raiment': {'Angelic Wings': {}, 'Angelic Halo': {}, 'Angelic Mantle': {}, 'Angelic Sickle': {}},
-              "Arcanna's Tricks": {"Arcanna's Sign": {}, "Arcanna's Head": {}, "Arcanna's Flesh": {}, "Arcanna's Deathwand": {}},
-              'Arctic Gear': {'Arctic Mitts': {}, 'Arctic Binding': {}, 'Arctic Furs': {}, 'Arctic Horn': {}},
-              "Berserker's Arsenal": {"Berserker's Hatchet": {}, "Berserker's Hauberk": {}, "Berserker's Headgear": {}},
-              "Cathan's Traps": {"Cathan's Seal": {}, "Cathan's Sigil": {}, "Cathan's Visage": {}, "Cathan's Mesh": {}, "Cathan's Rule": {}},
-              "Civerb's Vestments": {"Civerb's Cudgel": {}, "Civerb's Ward": {}, "Civerb's Icon": {}},
-              "Cleglaw's Brace": {"Cleglaw's Tooth": {}, "Cleglaw's Claw": {}, "Cleglaw's Pincers": {}},
-              "Death's Disguise": {"Death's Touch": {}, "Death's Guard": {}, "Death's Hand": {}},
-              "Hsaru's Defense": {"Hsarus' Iron Stay": {}, "Hsarus' Iron Fist": {}, "Hsarus' Iron Heel": {}},
-              'Infernal Tools': {'Infernal Sign': {}, 'Infernal Torch': {}, 'Infernal Cranium': {}},
-              "Iratha's Finery": {"Iratha's Coil": {}, "Iratha's Cuff": {}, "Iratha's Cord": {}, "Iratha's Collar": {}},
-              "Isenhart's Armory": {"Isenhart's Lightbrand": {}, "Isenhart's Case": {}, "Isenhart's Horns": {}, "Isenhart's Parry": {}},
-              "Milabrega's Regalia": {"Milabrega's Rod": {}, "Milabrega's Robe": {}, "Milabrega's Diadem": {}, "Milabrega's Orb": {}},
-              "Sigon's Complete Steel": {"Sigon's Shelter": {}, "Sigon's Visor": {}, "Sigon's Guard": {}, "Sigon's Gage": {}, "Sigon's Sabot": {}, "Sigon's Wrap": {}},
-              "Tancred's Battlegear": {"Tancred's Skull": {}, "Tancred's Weird": {}, "Tancred's Hobnails": {}, "Tancred's Spine": {}, "Tancred's Crowbill": {}},
-              "Vidala's Rig": {"Vidala's Snare": {}, "Vidala's Ambush": {}, "Vidala's Fetlock": {}, "Vidala's Barb": {}},
+    'sets': {'Angelic Raiment': {'Angelic Wings': {}, 'Angelic Halo': {}, 'Angelic Mantle': {}, 'Angelic Sickle': {}},
+             "Arcanna's Tricks": {"Arcanna's Sign": {}, "Arcanna's Head": {}, "Arcanna's Flesh": {}, "Arcanna's Deathwand": {}},
+             'Arctic Gear': {'Arctic Mitts': {}, 'Arctic Binding': {}, 'Arctic Furs': {}, 'Arctic Horn': {}},
+             "Berserker's Arsenal": {"Berserker's Hatchet": {}, "Berserker's Hauberk": {}, "Berserker's Headgear": {}},
+             "Cathan's Traps": {"Cathan's Seal": {}, "Cathan's Sigil": {}, "Cathan's Visage": {}, "Cathan's Mesh": {}, "Cathan's Rule": {}},
+             "Civerb's Vestments": {"Civerb's Cudgel": {}, "Civerb's Ward": {}, "Civerb's Icon": {}},
+             "Cleglaw's Brace": {"Cleglaw's Tooth": {}, "Cleglaw's Claw": {}, "Cleglaw's Pincers": {}},
+             "Death's Disguise": {"Death's Touch": {}, "Death's Guard": {}, "Death's Hand": {}},
+             "Hsaru's Defense": {"Hsarus' Iron Stay": {}, "Hsarus' Iron Fist": {}, "Hsarus' Iron Heel": {}},
+             'Infernal Tools': {'Infernal Sign': {}, 'Infernal Torch': {}, 'Infernal Cranium': {}},
+             "Iratha's Finery": {"Iratha's Coil": {}, "Iratha's Cuff": {}, "Iratha's Cord": {}, "Iratha's Collar": {}},
+             "Isenhart's Armory": {"Isenhart's Lightbrand": {}, "Isenhart's Case": {}, "Isenhart's Horns": {}, "Isenhart's Parry": {}},
+             "Milabrega's Regalia": {"Milabrega's Rod": {}, "Milabrega's Robe": {}, "Milabrega's Diadem": {}, "Milabrega's Orb": {}},
+             "Sigon's Complete Steel": {"Sigon's Shelter": {}, "Sigon's Visor": {}, "Sigon's Guard": {}, "Sigon's Gage": {}, "Sigon's Sabot": {}, "Sigon's Wrap": {}},
+             "Tancred's Battlegear": {"Tancred's Skull": {}, "Tancred's Weird": {}, "Tancred's Hobnails": {}, "Tancred's Spine": {}, "Tancred's Crowbill": {}},
+             "Vidala's Rig": {"Vidala's Snare": {}, "Vidala's Ambush": {}, "Vidala's Fetlock": {}, "Vidala's Barb": {}},
 
-              "Aldur's Watchtower": {"Aldur's Rhythm": {}, "Aldur's Stony Gaze": {}, "Aldur's Deception": {}, "Aldur's Advance": {}},
-              "Bul-Kathos' Children": {"Bul-Kathos' Sacred Charge": {}, "Bul-Kathos' Tribal Guardian": {}},
-              "Cow King's Leathers": {"Cow King's Horns": {}, "Cow King's Hide": {}, "Cow King's Hooves": {}},
-              "Griswold's Legacy": {"Griswold's Redemption": {}, "Griswold's Valor": {}, "Griswold's Heart": {}, "Griswold's Honor": {}},
-              "Heaven's Brethren": {"Dangoon's Teaching": {}, "Haemosu's Adamant": {}, "Taebaek's Glory": {}, "Ondal's Almighty": {}},
-              "Hwanin's Majesty": {"Hwanin's Justice": {}, "Hwanin's Refuge": {}, "Hwanin's Splendor": {}, "Hwanin's Blessing": {}},
-              'Immortal King': {"Immortal King's Stone Crusher": {}, "Immortal King's Will": {}, "Immortal King's Soul Cage": {}, "Immortal King's Detail": {}, "Immortal King's Forge": {}, "Immortal King's Pillar": {}},
-              "M'avina's Battle Hymn": {"M'avina's Caster": {}, "M'avina's Embrace": {}, "M'avina's True Sight": {}, "M'avina's Tenet": {}, "M'avina's Icy Clutch": {}},
-              "Naj's Ancient Vestige": {"Naj's Circlet": {}, "Naj's Light Plate": {}, "Naj's Puzzler": {}},
-              "Natalya's Odium": {"Natalya's Mark": {}, "Natalya's Shadow": {}, "Natalya's Totem": {}, "Natalya's Soul": {}},
-              "Orphan's Call": {"Whitstan's Guard": {}, "Guillaume's Face": {}, "Wilhelm's Pride": {}, "Magnus' Skin": {}},
-              "Sander's Folly": {"Sander's Superstition": {}, "Sander's Paragon": {}, "Sander's Taboo": {}, "Sander's Riprap": {}},
-              "Sazabi's Grand Tribute": {"Sazabi's Cobalt Redeemer": {}, "Sazabi's Ghost Liberator": {}, "Sazabi's Mental Sheath": {}},
-              "Tal Rasha's Wrappings": {"Tal Rasha's Adjudication": {}, "Tal Rasha's Lidless Eye": {}, "Tal Rasha's Guardianship": {}, "Tal Rasha's Horadric Crest": {}, "Tal Rasha's Fine Spun Cloth": {}},
-              'The Disciple': {'Dark Adherent': {}, 'Credendum': {}, 'Laying of Hands': {}, 'Rite of Passage': {}, 'Telling of Beads': {}},
-              "Trang-Oul's Avatar": {"Trang-Oul's Guise": {}, "Trang-Oul's Scales": {}, "Trang-Oul's Girth": {}, "Trang-Oul's Claws": {}, "Trang-Oul's Wing": {}}}}
+             "Aldur's Watchtower": {"Aldur's Rhythm": {}, "Aldur's Stony Gaze": {}, "Aldur's Deception": {}, "Aldur's Advance": {}},
+             "Bul-Kathos' Children": {"Bul-Kathos' Sacred Charge": {}, "Bul-Kathos' Tribal Guardian": {}},
+             "Cow King's Leathers": {"Cow King's Horns": {}, "Cow King's Hide": {}, "Cow King's Hooves": {}},
+             "Griswold's Legacy": {"Griswold's Redemption": {}, "Griswold's Valor": {}, "Griswold's Heart": {}, "Griswold's Honor": {}},
+             "Heaven's Brethren": {"Dangoon's Teaching": {}, "Haemosu's Adamant": {}, "Taebaek's Glory": {}, "Ondal's Almighty": {}},
+             "Hwanin's Majesty": {"Hwanin's Justice": {}, "Hwanin's Refuge": {}, "Hwanin's Splendor": {}, "Hwanin's Blessing": {}},
+             'Immortal King': {"Immortal King's Stone Crusher": {}, "Immortal King's Will": {}, "Immortal King's Soul Cage": {}, "Immortal King's Detail": {}, "Immortal King's Forge": {}, "Immortal King's Pillar": {}},
+             "M'avina's Battle Hymn": {"M'avina's Caster": {}, "M'avina's Embrace": {}, "M'avina's True Sight": {}, "M'avina's Tenet": {}, "M'avina's Icy Clutch": {}},
+             "Naj's Ancient Vestige": {"Naj's Circlet": {}, "Naj's Light Plate": {}, "Naj's Puzzler": {}},
+             "Natalya's Odium": {"Natalya's Mark": {}, "Natalya's Shadow": {}, "Natalya's Totem": {}, "Natalya's Soul": {}},
+             "Orphan's Call": {"Whitstan's Guard": {}, "Guillaume's Face": {}, "Wilhelm's Pride": {}, "Magnus' Skin": {}},
+             "Sander's Folly": {"Sander's Superstition": {}, "Sander's Paragon": {}, "Sander's Taboo": {}, "Sander's Riprap": {}},
+             "Sazabi's Grand Tribute": {"Sazabi's Cobalt Redeemer": {}, "Sazabi's Ghost Liberator": {}, "Sazabi's Mental Sheath": {}},
+             "Tal Rasha's Wrappings": {"Tal Rasha's Adjudication": {}, "Tal Rasha's Lidless Eye": {}, "Tal Rasha's Guardianship": {}, "Tal Rasha's Horadric Crest": {}, "Tal Rasha's Fine Spun Cloth": {}},
+             'The Disciple': {'Dark Adherent': {}, 'Credendum': {}, 'Laying of Hands': {}, 'Rite of Passage': {}, 'Telling of Beads': {}},
+             "Trang-Oul's Avatar": {"Trang-Oul's Guise": {}, "Trang-Oul's Scales": {}, "Trang-Oul's Girth": {}, "Trang-Oul's Claws": {}, "Trang-Oul's Wing": {}}}}
 
 
-def get_grail(uid, proxies=None, as_ordered=False):
+def get_grail(uid, proxies=None):
     try:
         req = requests.get(url=api_page + uid, proxies=proxies)
     except Exception as e:
         raise e
     req.raise_for_status()
-    if as_ordered:
-        return req.json(object_pairs_hook=OrderedDict)
-    else:
-        return req.json()
+    out = req.json()
+    if out.get('data', None) is None:
+        out['data'] = default_data
+    return out
 
 
 def update_grail_dict(dct, item_upg_dict):
@@ -135,15 +135,16 @@ def update_grail_dict(dct, item_upg_dict):
             return dct
         for k, v in dct.items():
             if k in item_upg_dict:
-                dct[k] = {'wasFound': item_upg_dict.pop(k)}
+                dct[k].update({'wasFound': item_upg_dict.pop(k)})
             elif isinstance(v, dict):
                 dct[k] = update_items(v, item_upg_dict)
         return dct
 
-    # Holy grail app handles rainbow facets in a non-standard way compared to all other items, need to align with API as
-    # well
+    # Deepcopy input nested dict to ensure original input is not changed
     dct = deepcopy(dct)
-    for key in list(item_upg_dict.keys()):
+
+    # Holy grail app handles rainbow facets in a non-standard way compared to all other items, need to align with API
+    for key in list(item_upg_dict):  # call "list" to make a copy of keys, since we pop them below
         if key.startswith('Rainbow Facet'):
             rbf = key.replace('(', '').replace(')', '').split(' ')
             dmg_type = rbf[2]
@@ -151,6 +152,25 @@ def update_grail_dict(dct, item_upg_dict):
             dct['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type] = {'wasFound': item_upg_dict.pop(key)}
 
     return update_items(dct, item_upg_dict)
+
+
+def owned_items(grail_dict):
+    def add_items(dct):
+        for k in dct:
+            if k in ['Cold', 'Fire', 'Light', 'Poison']:
+                continue
+            if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
+                add_items(dct[k])
+            elif dct[k].get('wasFound', False):
+                my_items.append(k)
+    my_items = []
+    add_items(grail_dict)
+
+    for activate_type in ['die', 'level up']:
+        for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+            if grail_dict['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+                my_items.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
+    return my_items
 
 
 def put_grail(uid, pwd, data, proxies=None):
@@ -166,18 +186,41 @@ def put_grail(uid, pwd, data, proxies=None):
     return req.status_code
 
 
-def build_update_list(dct):
-    out = []
-    for k, v in dct.items():
-        if k in ['Cold', 'Fire', 'Light', 'Poison']:
-            continue
-        if isinstance(v, dict):
-            if v.get('wasFound', False):
-                out.append(k)
-            else:
-                out += build_update_list(v)
+def count_items(dct):
+    tot, owned = 0, 0
+    for k in dct.keys():
+        if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
+            tmp = count_items(dct[k])
+            tot += tmp[0]
+            owned += tmp[1]
+        else:
+            tot += 1
+            if dct[k].get('wasFound', False):
+                owned += 1
+    return tot, owned
 
-    return out
+
+def build_update_lst(dct):
+    def recursive_update_list(dct):
+        out = []
+        for k, v in dct.items():
+            if k in ['Cold', 'Fire', 'Light', 'Poison']:
+                continue
+            if isinstance(v, dict):
+                if v.get('wasFound', False):
+                    out.append(k)
+                else:
+                    out += recursive_update_list(v)
+
+        return out
+
+    lst = recursive_update_list(dct)
+    for activate_type in ['die', 'level up']:
+        for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+            if dct['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+                lst.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
+
+    return lst
 
 
 if __name__ == '__main__':
