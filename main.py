@@ -29,10 +29,11 @@ from tabs.grail import Grail
 
 # FIXME: Update table when changing something in grail browser (or show message that its not updated)
 # FIXME: Fix different style not highlighting headers properly in treeview
-# FIXME: When logging a new item, add to grail
 # FIXME: Scrollbars in grail browser
 # FIXME: Filter owned/missing items in grail table
 # FIXME: Option for overwriting found items when uploading to herokuapp
+# FIXME: Add star (*) to display if item was a grailer
+# FIXME: Make grail table and grail toggler in different windows (tk.Tk and tk.Toplevel)
 
 # FIXME: d2 overlay mode with only text - could be hard
 
