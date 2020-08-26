@@ -77,10 +77,8 @@ class Grail(tkd.Frame):
     def update_statistics(self):
         for v in self.vars_to_update:
             keys = [] if v == 'total' else [v.replace('_', ' ').replace('uniq', 'Unique').title()]
-            # keys = ['Uniques' if x == 'uniq' else x.title() for x in v.split('_') if x != 'total']
             cond = {'Item Group ' + str(i): k for i, k in enumerate(keys)}
             count = self.count_grail(cond)
-            # count = herokuapp_controller.count_items(reduce(operator.getitem, keys, self.grail))
 
             getattr(self, 'exist_' + v).set(count[0])
             getattr(self, 'owned_' + v).set(count[1])
@@ -254,7 +252,7 @@ class Grail(tkd.Frame):
 
     def build_grail_table(self):
         cols = ["Item", "Base Item", "Item Class", "Quality", "Rarity", "Class restriction",
-                "TC", "QLVL", "Roll rarity", "Roll chance", "Found"]
+                "TC", "QLVL", "Roll rarity", "Roll chance", "Drop Andariel", "Drop Mephisto", "Drop Diablo", "Drop Pindleskin", "Found"]
         tree_frame = tkd.Frame(self.main_tree_frame)
         vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(self.main_tree_frame, orient=tk.HORIZONTAL)
@@ -269,7 +267,8 @@ class Grail(tkd.Frame):
 
         tree['columns'] = cols
         for col in cols:
-            tree.column(col, stretch=tk.YES, minwidth=10, width=120)
+            minwidth = 120 if col in ['Item', 'Base Item'] else 0
+            tree.column(col, stretch=tk.YES, minwidth=minwidth, width=120)
             tree.heading(col, text=col, sort_by='num' if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance'] else 'name')
 
         for item in self.grail:
