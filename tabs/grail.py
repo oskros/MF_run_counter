@@ -1,7 +1,6 @@
 from init import *
-from utils import tk_dynamic as tkd, tk_utils
+from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller
 from utils.color_themes import Theme
-from upcoming import herokuapp_controller
 import tkinter as tk
 from tkinter import ttk
 import json

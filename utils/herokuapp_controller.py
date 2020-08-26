@@ -128,6 +128,8 @@ def get_grail(uid, proxies=None):
     req.raise_for_status()
     out = req.json()
     if out.get('data', None) is None:
+        dd = deepcopy(default_data)
+        del dd['runes']
         out['data'] = default_data
     return out
 
@@ -176,10 +178,8 @@ def owned_items(grail_dict):
     return my_items
 
 
-def put_grail(uid, pwd, in_data, proxies=None):
-    data = deepcopy(in_data)
+def put_grail(uid, pwd, data, proxies=None):
     data['password'] = pwd
-    del data['data']['runes']
     data['grail'] = data['data']
     del data['data']
 

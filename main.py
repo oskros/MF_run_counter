@@ -24,12 +24,13 @@ from tabs.grail import Grail
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Delete run by selection
-# FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- hmm
+# FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
 
 # FIXME: Update table when changing something in grail browser (or show message that its not updated)
 # FIXME: When logging a new item, add to grail
 # FIXME: Scrollbars in grail browser
 # FIXME: Filter owned/missing items in grail table
+# FIXME: Option for overwriting found items when uploading to herokuapp
 
 # FIXME: d2 overlay mode with only text - could be hard
 
