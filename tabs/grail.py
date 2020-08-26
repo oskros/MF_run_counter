@@ -220,6 +220,7 @@ class Grail(tkd.Frame):
     def browse_grail(self):
         window = tk.Toplevel()
         window.resizable(width=1, height=1)
+        window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         cols = ["Item", "Item Group 0", "Item Group 1", "Item Class", "Quality", "Rarity", "Class restriction",
                 "Base Item", "TC", "QLVL", "Roll rarity", "Roll chance", "Found"]
 
@@ -237,11 +238,15 @@ class Grail(tkd.Frame):
 
         tree['columns'] = cols
         for col in cols:
-            tree.column(col, stretch=tk.NO, minwidth=0, width=120)
+            tree.column(col, stretch=tk.YES, minwidth=10, width=120)
             tree.heading(col, text=col, sort_by='num' if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance'] else 'name')
 
         for item in self.grail:
-            tree.insert('', tk.END, values=list(item.values()))
+            tag = 'Owned' if item.get('Found', False) else 'Missing'
+            tree.insert('', tk.END, values=list(item.values()), tags=(tag,))
+
+        tree.tag_configure('Owned', background='#e6ffe6')
+        tree.tag_configure('Missing', background='peach puff')
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
