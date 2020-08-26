@@ -104,14 +104,15 @@ class Grail(tkd.Frame):
     def sync_local_grail(self):
         msg = 'Updated local grail file with:'
         if self.sync_herokuapp.get():
-            self.get_grail_from_herokuapp()
-            msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
+            resp = self.get_grail_from_herokuapp()
+            if resp:
+                msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
         if self.sync_drops.get():
             self.get_grail_from_drops()
             msg += '\n\n- Drops from all saved profiles'
 
         self.update_statistics()
-        if self.sync_herokuapp.get() or self.sync_drops.get():
+        if (self.sync_herokuapp.get() and resp) or self.sync_drops.get():
             messagebox.showinfo('Grail update', msg)
         else:
             messagebox.showerror('Grail update', 'No update choices selected')
@@ -200,6 +201,7 @@ class Grail(tkd.Frame):
         data = herokuapp_grail.get('data', dict())
         upd_lst = herokuapp_controller.build_update_lst(data)
         self.update_grail_from_list(lst=upd_lst)
+        return resp
 
     def upload_to_herokuapp(self):
         resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
