@@ -36,9 +36,9 @@ class Grail(tkd.Frame):
         tkd.Checkbutton(bfr1, text='Herokuapp', variable=self.sync_herokuapp).pack(side=tk.LEFT)
 
         bfr2 = tkd.Frame(self)
-        bfr2.pack()
-        tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail).pack(pady=4, side=tk.LEFT)
-        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp).pack(pady=4, side=tk.LEFT)
+        bfr2.pack(pady=12)
+        tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail).pack(padx=2, side=tk.LEFT)
+        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp).pack(padx=2, side=tk.LEFT)
 
         browse_btn = tkd.Button(self, text='Browse grail', borderwidth=3, command=self.browse_grail)
         browse_btn.propagate(False)

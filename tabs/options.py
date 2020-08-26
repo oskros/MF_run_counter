@@ -34,7 +34,6 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
         self.add_flag(flag_name='Pop-up drop window', comment='Make the "drops" window appear below the main widget, instead of having it as a separate tab')
         self.add_flag(flag_name='Autocomplete', comment='Enable autocompletion of drop names when adding found items')
-        self.add_flag(flag_name='Item Shortnames', comment='Only works when Autocomplete is enabled!\n\nInstead of inserting the full item name, the "slang" name for the item will be used instead, if one exists.\nE.g. "Harlequin Crest" would be inserted as "Shako"')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
         self.add_delay_option(comment='Add an artificial delay to the "start run" command')
 

@@ -4,15 +4,13 @@ from tkinter import ttk
 
 
 class Drops(tkd.Frame):
-    def __init__(self, timer_tab, parent=None, **kw):
+    def __init__(self, main_frame, parent=None, **kw):
         tkd.Frame.__init__(self, parent.root, kw)
         self.parent = parent
         self.drops = dict()
-        self.timer_tab = timer_tab
+        self.main_frame = main_frame
 
         self._make_widgets()
-        # self.load_item_library()
-        # a = 0
 
     def _make_widgets(self):
         lf = tkd.Frame(self)
@@ -33,12 +31,17 @@ class Drops(tkd.Frame):
         drop = autocompletion.acbox(enable=self.parent.autocomplete)
         if not drop or drop['input'] == '':
             return
-        if drop['item_name'] is not None and self.parent.item_shortnames:
-            shortname = autocompletion.ITEM_SHORTNAMES.get(drop['item_name'], drop['item_name'])
-            drop['input'] = shortname + ' ' + drop['extra']
-        print(drop)
-        run_no = len(self.timer_tab.laps)
-        if self.timer_tab.is_running:
+        if drop['item_name'] is not None:
+            for i, item in enumerate(self.main_frame.grail_tab.grail):
+                if item['Item'] == drop['item_name']:
+                    if item.get('Found', False) is False:
+                        if tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item"):
+                            self.main_frame.grail_tab.grail[i].update({'Found': True})
+                            self.main_frame.grail_tab.update_statistics()
+                    break
+
+        run_no = len(self.main_frame.timer_tab.laps)
+        if self.main_frame.timer_tab.is_running:
             run_no += 1
 
         self.drops.setdefault(str(run_no), []).append(drop)
@@ -83,20 +86,3 @@ class Drops(tkd.Frame):
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
-
-    # def load_item_library(self):
-    #     import pandas as pd
-    #     lib = pd.read_csv('item_library.csv', index_col='Item')
-    #     alias_cols = [c for c in lib.columns if c.lower().startswith('alias')]
-    #     lib['Alias'] = lib[alias_cols].values.tolist()
-    #     pre_dict = lib['Alias'].to_dict()
-    #     self.item_alias = {l: k for k, v in pre_dict.items() for l in v if str(l) != 'nan'}
-    #
-    #     for c in alias_cols + ['Alias']:
-    #         del lib[c]
-    #     self.item_library = lib
-    #
-    # def lookup_item(self, item_alias):
-    #     x = item_alias.lower()
-    #     item_name = ' '.join(w.capitalize() for w in self.item_alias.get(x, x).split())
-    #     return dict(Name=item_name, Alias=item_alias)

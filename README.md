@@ -78,6 +78,5 @@ In the config file you have the option to set the following to 0 (False) or 1 (T
 - enable_sound_effects: choose whether a sound should be played when pressing start/stop buttons
 - pop-up_drop_window: show the drop window below the main application
 - autocomplete: autocompletion of item names when typing them into the "add drop" window
-- item_shortnames: when items are added to the droplist, if a shortname alias exists for that item it will be added instead of the full name (e.g. Shako instead of Harlequin Crest or Wizzy instead of Wizardspike)
 - active_theme: change the theme of the application between dark/blue/vista
 - start_run_delay: add an artificial delay to the start run button (requested by a user)

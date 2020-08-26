@@ -25,8 +25,10 @@ from tabs.grail import Grail
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Delete run by selection
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
+# FIXME: Total run count in the top of archive browser
 
 # FIXME: Update table when changing something in grail browser (or show message that its not updated)
+# FIXME: Fix different style not highlighting headers properly in treeview
 # FIXME: When logging a new item, add to grail
 # FIXME: Scrollbars in grail browser
 # FIXME: Filter owned/missing items in grail table
@@ -65,7 +67,6 @@ class MainFrame(Config):
         self.pop_up_drop_window = other_utils.safe_eval(self.cfg['OPTIONS']['pop_up_drop_window'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
         self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
-        self.item_shortnames = other_utils.safe_eval(self.cfg['OPTIONS']['item_shortnames'])
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -120,7 +121,7 @@ class MainFrame(Config):
         self.tabcontrol = tkd.Notebook(self.root)
         self.profile_tab = Profile(self, parent=self.tabcontrol)
         self.timer_tab = MFRunTimer(self, parent=self.tabcontrol)
-        self.drops_tab = Drops(self.timer_tab, parent=self)
+        self.drops_tab = Drops(self, parent=self)
         self.options_tab = Options(self, self.timer_tab, self.drops_tab, parent=self.tabcontrol)
         self.grail_tab = Grail(self, parent=self.tabcontrol)
         self.about_tab = About(parent=self.tabcontrol)
