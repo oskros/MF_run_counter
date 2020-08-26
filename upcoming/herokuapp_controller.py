@@ -114,7 +114,10 @@ default_data = {
              "Sazabi's Grand Tribute": {"Sazabi's Cobalt Redeemer": {}, "Sazabi's Ghost Liberator": {}, "Sazabi's Mental Sheath": {}},
              "Tal Rasha's Wrappings": {"Tal Rasha's Adjudication": {}, "Tal Rasha's Lidless Eye": {}, "Tal Rasha's Guardianship": {}, "Tal Rasha's Horadric Crest": {}, "Tal Rasha's Fine Spun Cloth": {}},
              'The Disciple': {'Dark Adherent': {}, 'Credendum': {}, 'Laying of Hands': {}, 'Rite of Passage': {}, 'Telling of Beads': {}},
-             "Trang-Oul's Avatar": {"Trang-Oul's Guise": {}, "Trang-Oul's Scales": {}, "Trang-Oul's Girth": {}, "Trang-Oul's Claws": {}, "Trang-Oul's Wing": {}}}}
+             "Trang-Oul's Avatar": {"Trang-Oul's Guise": {}, "Trang-Oul's Scales": {}, "Trang-Oul's Girth": {}, "Trang-Oul's Claws": {}, "Trang-Oul's Wing": {}}},
+    'runes': {'low runes': {'El Rune': {}, 'Eld Rune': {}, 'Tir Rune': {}, 'Nef Rune': {}, 'Eth Rune': {}, 'Ith Rune': {}, 'Tal Rune': {}, 'Ral Rune': {}, 'Ort Rune': {}, 'Thul Rune': {}, 'Amn Rune': {}, 'Sol Rune': {}, 'Shael Rune': {}, 'Dol Rune': {}},
+              'middle runes': {'Hel Rune': {}, 'Io Rune': {}, 'Lum Rune': {}, 'Ko Rune': {}, 'Fal Rune': {}, 'Lem Rune': {}, 'Pul Rune': {}, 'Um Rune': {}, 'Mal Rune': {}},
+              'high runes': {'Ist Rune': {}, 'Gul Rune': {}, 'Vex Rune': {}, 'Ohm Rune': {}, 'Lo Rune': {}, 'Sur Rune': {}, 'Ber Rune': {}, 'Jah Rune': {}, 'Cham Rune': {}, 'Zod Rune': {}}}}
 
 
 def get_grail(uid, proxies=None):
@@ -173,8 +176,10 @@ def owned_items(grail_dict):
     return my_items
 
 
-def put_grail(uid, pwd, data, proxies=None):
+def put_grail(uid, pwd, in_data, proxies=None):
+    data = deepcopy(in_data)
     data['password'] = pwd
+    del data['data']['runes']
     data['grail'] = data['data']
     del data['data']
 

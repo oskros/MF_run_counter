@@ -1,5 +1,6 @@
 from init import *
 from utils import tk_dynamic as tkd, tk_utils
+from utils.color_themes import Theme
 from upcoming import herokuapp_controller
 import tkinter as tk
 from tkinter import ttk
@@ -20,6 +21,8 @@ class Grail(tkd.Frame):
         self.sync_drops = tk.IntVar()
         self.sync_herokuapp = tk.IntVar()
         self.vars_to_update = []
+        self.grail_table_open = False
+        self.grail_dict_display_open = False
 
         self._make_widgets()
         self.update_statistics()
@@ -74,7 +77,8 @@ class Grail(tkd.Frame):
 
     def update_statistics(self):
         for v in self.vars_to_update:
-            keys = ['Uniques' if x == 'uniq' else x.title() for x in v.split('_') if x != 'total']
+            keys = [] if v == 'total' else [v.replace('_', ' ').replace('uniq', 'Unique').title()]
+            # keys = ['Uniques' if x == 'uniq' else x.title() for x in v.split('_') if x != 'total']
             cond = {'Item Group ' + str(i): k for i, k in enumerate(keys)}
             count = self.count_grail(cond)
             # count = herokuapp_controller.count_items(reduce(operator.getitem, keys, self.grail))
@@ -173,6 +177,13 @@ class Grail(tkd.Frame):
             if item.get('Item', None) in lst:
                 self.grail[i].update({'Found': True})
 
+    def update_grail_from_name(self, name):
+        for i, item in enumerate(self.grail):
+            if item.get('Item', None) == name:
+                self.grail[i].update({'Found': not item.get('Found', False)})
+                self.update_statistics()
+                return
+
     def get_grail_from_herokuapp(self):
         resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
         if resp is None:
@@ -218,23 +229,42 @@ class Grail(tkd.Frame):
         messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
 
     def browse_grail(self):
-        window = tk.Toplevel()
+        window = tkd.Toplevel()
+        window.title('Grail browser')
+        window.state('zoomed')
         window.resizable(width=1, height=1)
         window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        cols = ["Item", "Item Group 0", "Item Group 1", "Item Class", "Quality", "Rarity", "Class restriction",
-                "Base Item", "TC", "QLVL", "Roll rarity", "Roll chance", "Found"]
 
-        list_frame = tk.Frame(window)
-        vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
-        hscroll = ttk.Scrollbar(window, orient=tk.HORIZONTAL)
-        tree = tkd.Treeview(list_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)#, activestyle='none', font=('courier', 10))
+        button_frame = tkd.Frame(window)
+        button_frame.pack(side=tk.LEFT)
+        tkd.Button(button_frame, text='Show\nGrail\nTable', command=self.toggle_grail_table, width=8).pack()
+        tkd.Button(button_frame, text='Show\nGrail\nToggler', command=self.toggle_grail_dict_display, width=8).pack()
+
+        self.main_tree_frame = tkd.Frame(window)
+        self.main_dict_frame = tkd.Frame(window)
+
+        self.build_grail_dict_display()
+        self.build_grail_table()
+
+        theme = Theme(self.main_frame.active_theme)
+        theme.update_colors()
+
+        self.toggle_grail_table()
+
+    def build_grail_table(self):
+        cols = ["Item", "Base Item", "Item Class", "Quality", "Rarity", "Class restriction",
+                "TC", "QLVL", "Roll rarity", "Roll chance", "Found"]
+        tree_frame = tkd.Frame(self.main_tree_frame)
+        vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll = ttk.Scrollbar(self.main_tree_frame, orient=tk.HORIZONTAL)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)#, activestyle='none', font=('courier', 10))
         hscroll.config(command=tree.xview)
         vscroll.config(command=tree.yview)
 
         vscroll.pack(side=tk.RIGHT, fill=tk.Y)
         tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
-        list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
         for col in cols:
@@ -243,10 +273,66 @@ class Grail(tkd.Frame):
 
         for item in self.grail:
             tag = 'Owned' if item.get('Found', False) else 'Missing'
-            tree.insert('', tk.END, values=list(item.values()), tags=(tag,))
+            tree.insert('', tk.END, values=[v for k, v in item.items() if k in cols], tags=(tag,))
 
         tree.tag_configure('Owned', background='#e6ffe6')
         tree.tag_configure('Missing', background='peach puff')
+
+    def build_grail_dict_display(self):
+        def rec_checkbox_add(master, frame, dct, rows=4, depth=None):
+            if depth is None:
+                depth = []
+            cnt = 0
+            for k, v in dct.items():
+                if v == dict() or 'wasFound' in v:
+                    found = v.get('wasFound', False)
+                    if k in ['Cold', 'Fire', 'Light', 'Poison']:
+                        var_name = 'Rainbow Facet (%s %s)' % (k, depth[-1].title())
+                        i_name = var_name
+                    else:
+                        var_name = k.replace("'", "1").replace(' ', '_')
+                        i_name = k
+                    setattr(master, var_name, tk.IntVar(value=found))
+                    tkd.Checkbutton(frame, text=k, variable=getattr(master, var_name), command=lambda _k=i_name: master.update_grail_from_name(_k)).pack(expand=True, anchor=tk.W)
+                else:
+                    if len(depth) == 0:
+                        if cnt % rows == 0:
+                            topframe = tkd.Frame(frame)
+                            topframe.pack(side=tk.LEFT, expand=True, anchor=tk.NW)
+                        new_frame = tkd.Frame(topframe)
+                        new_frame.pack(side=tk.TOP, expand=True, anchor=tk.NW, fill=tk.Y, pady=[0, 30])
+                        cnt += 1
+                    else:
+                        new_frame = tkd.Frame(frame)
+                        new_frame.pack(side=tk.LEFT, expand=True, anchor=tk.N)
+
+                    txt = k.title().replace("'S", "'s").replace("'A", "'a")
+                    tkd.Label(new_frame, text=txt, font='Arial 15 bold').pack(expand=True, anchor=tk.N)
+                    rec_checkbox_add(master, new_frame, v, rows, depth + [k])
+
+        upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
+        nested_grail = herokuapp_controller.update_grail_dict(dct=herokuapp_controller.default_data, item_upg_dict=upd_dict)
+
+        tabcontrol = ttk.Notebook(self.main_dict_frame)
+        tabcontrol.pack(expand=True, fill=tk.BOTH)
+
+        unique_armor = tkd.Frame(tabcontrol)
+        unique_weapons = tkd.Frame(tabcontrol)
+        unique_other = tkd.Frame(tabcontrol)
+        sets = tkd.Frame(tabcontrol)
+        runes = tkd.Frame(tabcontrol)
+
+        rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
+        rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
+        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
+        rec_checkbox_add(self, sets, nested_grail['sets'], 5)
+        rec_checkbox_add(self, runes, nested_grail['runes'], 1)
+
+        tabcontrol.add(unique_armor, text='Unique Armor')
+        tabcontrol.add(unique_weapons, text='Unique Weapons')
+        tabcontrol.add(unique_other, text='Unique Other')
+        tabcontrol.add(sets, text='Sets')
+        tabcontrol.add(runes, text='Runes')
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
@@ -258,3 +344,25 @@ class Grail(tkd.Frame):
 
         # reverse sort next time
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
+
+    def toggle_grail_table(self):
+        if self.grail_table_open:
+            self.main_tree_frame.forget()
+            self.grail_table_open = False
+        else:
+            if self.grail_dict_display_open:
+                self.main_dict_frame.forget()
+                self.grail_dict_display_open = False
+            self.main_tree_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            self.grail_table_open = True
+
+    def toggle_grail_dict_display(self):
+        if self.grail_dict_display_open:
+            self.main_dict_frame.forget()
+            self.grail_dict_display_open = False
+        else:
+            if self.grail_table_open:
+                self.main_tree_frame.forget()
+                self.grail_table_open = False
+            self.main_dict_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            self.grail_dict_display_open = True

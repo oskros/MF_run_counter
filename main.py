@@ -23,7 +23,14 @@ from tabs.grail import Grail
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
-# FIXME: Ingame holy grail support
+# FIXME: Delete run by selection
+# FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- hmm
+
+# FIXME: Update table when changing something in grail browser (or show message that its not updated)
+# FIXME: When logging a new item, add to grail
+# FIXME: Scrollbars in grail browser
+# FIXME: Filter owned/missing items in grail table
+
 # FIXME: d2 overlay mode with only text - could be hard
 
 

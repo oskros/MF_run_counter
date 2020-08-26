@@ -383,7 +383,6 @@ class Profile(tkd.Frame):
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
 
         theme = Theme(self.main_frame.active_theme)
-        theme.apply_theme_style()
         theme.update_colors()
 
     @staticmethod
