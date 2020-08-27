@@ -34,6 +34,7 @@ from tabs.grail import Grail
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: Add star (*) to display if item was a grailer
 # FIXME: Make grail table and grail toggler in different windows (tk.Tk and tk.Toplevel)
+# FIXME: Add lines between rows in treeview
 
 # FIXME: d2 overlay mode with only text - could be hard
 
