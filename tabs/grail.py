@@ -249,6 +249,95 @@ class Grail(tkd.Frame):
 
         messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
 
+    def open_grail_controller(self):
+        def rec_checkbox_add(master, frame, dct, rows=4, depth=None):
+            # Default arguments cannot be mutable
+            if depth is None:
+                depth = []
+
+            # Init count to determine number of rows before adding a new column
+            cnt = 0
+            for k, v in dct.items():
+                # Bottom of tree nodes are either empty dicts or has the 'wasFound' key
+                if v == dict() or 'wasFound' in v:
+                    found = v.get('wasFound', False)
+
+                    # Due to weird handling of rainbow facets in herokuapp, we utilise the saved stack of keys (in the
+                    # 'depth' variable) to determine the appropriate item name
+                    if k in ['Cold', 'Fire', 'Light', 'Poison']:
+                        i_name = 'Rainbow Facet (%s %s)' % (k, depth[-1].title())
+                        var_name = 'grail_item_' + i_name.replace("'", "1").replace(' ', '_')
+                    else:
+                        # Replace characters that cannot be used in variable names
+                        var_name = 'grail_item_' + k.replace("'", "1").replace(' ', '_')
+                        i_name = k
+
+                    # Define an IntVar as a class attribute that we can later call when needed. Then build the
+                    # checkbutton, noting that the lambda needs to be passed a default argument, otherwise it will
+                    # overwrite its own definition at each iteration
+                    setattr(master, var_name, tk.IntVar(value=found))
+                    tkd.Checkbutton(frame, text=k, variable=getattr(master, var_name), command=lambda _k=i_name: master.update_grail_from_name(_k)).pack(expand=True, anchor=tk.W)
+                # We are not at the bottom of tree node, thus we will create a child node and call recursively
+                else:
+                    # When at top node, determine if a new column should be made or not, based on number of rows
+                    if len(depth) == 0:
+                        if cnt % rows == 0:
+                            topframe = tkd.Frame(frame)
+                            topframe.pack(side=tk.LEFT, expand=True, anchor=tk.NW)
+                        new_frame = tkd.Frame(topframe)
+                        new_frame.pack(side=tk.TOP, expand=True, anchor=tk.NW, fill=tk.Y, pady=[0, 30])
+                        cnt += 1
+                    else:
+                        new_frame = tkd.Frame(frame)
+                        new_frame.pack(side=tk.LEFT, expand=True, anchor=tk.N)
+
+                    # .title() function bugs out with apostrophes. Handle the specific issues hardcoded here
+                    txt = k.title().replace("'S", "'s").replace("'A", "'a")
+                    tkd.Label(new_frame, text=txt, font='Arial 15 bold').pack(expand=True, anchor=tk.N)
+                    rec_checkbox_add(master, new_frame, v, rows, depth + [k])
+
+        # We dont allow more than one open window of the grail controller
+        if win32gui.FindWindow(None, 'Grail controller'):
+            return
+
+        # Initialise the TopLevel window (important we use TopLevel instead of Tk, to pass over information between
+        # the defined widgets and the main app)
+        window = tkd.Toplevel()
+        window.title('Grail controller')
+        window.resizable(True, True)
+        window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+
+        # Build nested dict with information from the current grail
+        upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
+        # FIXME: This inherits the spelling mistake for "Hsarus' Defense" --> Need Nasicus to update this
+        nested_grail = herokuapp_controller.update_grail_dict(dct=herokuapp_controller.default_data, item_upg_dict=upd_dict)
+
+        tabcontrol = ttk.Notebook(window)
+        tabcontrol.pack(expand=True, fill=tk.BOTH)
+
+        # Build the new tabs
+        unique_armor = tkd.Frame(tabcontrol)
+        unique_weapons = tkd.Frame(tabcontrol)
+        unique_other = tkd.Frame(tabcontrol)
+        sets = tkd.Frame(tabcontrol)
+        runes = tkd.Frame(tabcontrol)
+
+        tabcontrol.add(unique_armor, text='Unique Armor')
+        tabcontrol.add(unique_weapons, text='Unique Weapons')
+        tabcontrol.add(unique_other, text='Unique Other')
+        tabcontrol.add(sets, text='Sets')
+        tabcontrol.add(runes, text='Runes')
+
+        rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
+        rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
+        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
+        rec_checkbox_add(self, sets, nested_grail['sets'], 5)
+        rec_checkbox_add(self, runes, nested_grail['runes'], 1)
+
+        # Make sure to update the theme for the newly created widgets
+        theme = Theme(self.main_frame.active_theme)
+        theme.update_colors()
+
     def open_grail_table(self):
         if win32gui.FindWindow(None, 'Item table'):
             return
@@ -279,15 +368,18 @@ class Grail(tkd.Frame):
             self.tree.column(col, stretch=tk.YES, minwidth=0, width=120)
             if col in ['TC', 'QLVL', 'Roll rarity']:
                 sort_by = 'num'
+                sort_key = lambda x: float('-inf') if x == '' else float(x)
             elif col in ['Roll chance']:
                 sort_by = 'perc'
+                sort_key = lambda x: float('-inf') if x == '' else float(x[:-1])
             else:
                 sort_by = 'name'
+                sort_key = lambda x: x
             self.tree.heading(col, text=col, sort_by=sort_by)
 
             name = 'combofilter_' + col
             self.filters.append(name)
-            setattr(self, name, ttk.Combobox(combofr, values=sorted(set(str(x[col]) for x in self.grail).union({''})), state="readonly", width=1))
+            setattr(self, name, ttk.Combobox(combofr, values=sorted(set(str(x[col]) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
 
@@ -299,72 +391,6 @@ class Grail(tkd.Frame):
         self.tree.tag_configure('Missing', background='peach puff')
 
         self.grail_table_open = True
-
-    def open_grail_controller(self):
-        def rec_checkbox_add(master, frame, dct, rows=4, depth=None):
-            if depth is None:
-                depth = []
-            cnt = 0
-            for k, v in dct.items():
-                if v == dict() or 'wasFound' in v:
-                    found = v.get('wasFound', False)
-                    if k in ['Cold', 'Fire', 'Light', 'Poison']:
-                        var_name = 'Rainbow Facet (%s %s)' % (k, depth[-1].title())
-                        i_name = var_name
-                    else:
-                        var_name = 'grail_item_' + k.replace("'", "1").replace(' ', '_')
-                        i_name = k
-                    setattr(master, var_name, tk.IntVar(value=found))
-                    tkd.Checkbutton(frame, text=k, variable=getattr(master, var_name), command=lambda _k=i_name: master.update_grail_from_name(_k)).pack(expand=True, anchor=tk.W)
-                else:
-                    if len(depth) == 0:
-                        if cnt % rows == 0:
-                            topframe = tkd.Frame(frame)
-                            topframe.pack(side=tk.LEFT, expand=True, anchor=tk.NW)
-                        new_frame = tkd.Frame(topframe)
-                        new_frame.pack(side=tk.TOP, expand=True, anchor=tk.NW, fill=tk.Y, pady=[0, 30])
-                        cnt += 1
-                    else:
-                        new_frame = tkd.Frame(frame)
-                        new_frame.pack(side=tk.LEFT, expand=True, anchor=tk.N)
-
-                    txt = k.title().replace("'S", "'s").replace("'A", "'a")
-                    tkd.Label(new_frame, text=txt, font='Arial 15 bold').pack(expand=True, anchor=tk.N)
-                    rec_checkbox_add(master, new_frame, v, rows, depth + [k])
-
-        if win32gui.FindWindow(None, 'Grail controller'):
-            return
-        window = tkd.Toplevel()
-        window.title('Grail controller')
-        window.resizable(True, True)
-        window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-
-        upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
-        nested_grail = herokuapp_controller.update_grail_dict(dct=herokuapp_controller.default_data, item_upg_dict=upd_dict)
-
-        tabcontrol = ttk.Notebook(window)
-        tabcontrol.pack(expand=True, fill=tk.BOTH)
-
-        unique_armor = tkd.Frame(tabcontrol)
-        unique_weapons = tkd.Frame(tabcontrol)
-        unique_other = tkd.Frame(tabcontrol)
-        sets = tkd.Frame(tabcontrol)
-        runes = tkd.Frame(tabcontrol)
-
-        tabcontrol.add(unique_armor, text='Unique Armor')
-        tabcontrol.add(unique_weapons, text='Unique Weapons')
-        tabcontrol.add(unique_other, text='Unique Other')
-        tabcontrol.add(sets, text='Sets')
-        tabcontrol.add(runes, text='Runes')
-
-        rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
-        rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
-        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
-        rec_checkbox_add(self, sets, nested_grail['sets'], 5)
-        rec_checkbox_add(self, runes, nested_grail['runes'], 1)
-
-        theme = Theme(self.main_frame.active_theme)
-        theme.update_colors()
 
     def select_from_filters(self, event=None):
         self.tree.delete(*self.tree.get_children())
@@ -378,4 +404,5 @@ class Grail(tkd.Frame):
     def close_grail_table(self, window):
         self.grail_table_open = False
         window.destroy()
+
 
