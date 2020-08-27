@@ -330,6 +330,7 @@ class Profile(tkd.Frame):
                   ['Total run time:       ', utils.other_utils.build_time_str(sum(laps))],
                   ['Average run time:     ', utils.other_utils.build_time_str(avg_lap)],
                   ['Fastest run time:     ', utils.other_utils.build_time_str(min(laps, default=0))],
+                  ['Number of runs:       ', str(len(laps))],
                   ['Time spent in runs: ', str(round(pct, 2)) + '%'],
                   ['']]
 

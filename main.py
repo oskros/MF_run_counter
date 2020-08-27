@@ -25,16 +25,8 @@ from tabs.grail import Grail
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Delete run by selection
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
-# FIXME: Total run count in the top of archive browser
 
-# FIXME: Update table when changing something in grail browser (or show message that its not updated)
-# FIXME: Fix different style not highlighting headers properly in treeview
-# FIXME: Scrollbars in grail browser
-# FIXME: Filter owned/missing items in grail table
 # FIXME: Option for overwriting found items when uploading to herokuapp
-# FIXME: Add star (*) to display if item was a grailer
-# FIXME: Make grail table and grail toggler in different windows (tk.Tk and tk.Toplevel)
-# FIXME: Add lines between rows in treeview
 
 # FIXME: d2 overlay mode with only text - could be hard
 

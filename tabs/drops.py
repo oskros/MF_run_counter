@@ -36,8 +36,8 @@ class Drops(tkd.Frame):
                 if item['Item'] == drop['item_name']:
                     if item.get('Found', False) is False:
                         if tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item"):
-                            self.main_frame.grail_tab.grail[i].update({'Found': True})
-                            self.main_frame.grail_tab.update_statistics()
+                            self.main_frame.grail_tab.update_grail_from_index(i)
+                            drop['input'] = '(*) ' + drop['input']
                     break
 
         run_no = len(self.main_frame.timer_tab.laps)
