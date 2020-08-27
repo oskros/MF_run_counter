@@ -270,7 +270,13 @@ class Grail(tkd.Frame):
         self.filters = []
         for col in self.cols:
             self.tree.column(col, stretch=tk.YES, minwidth=0, width=120)
-            self.tree.heading(col, text=col, sort_by='num' if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance'] else 'name')
+            if col in ['TC', 'QLVL', 'Roll rarity']:
+                sort_by = 'num'
+            elif col in ['Roll chance']:
+                sort_by = 'perc'
+            else:
+                sort_by = 'name'
+            self.tree.heading(col, text=col, sort_by=sort_by)
 
             name = 'combofilter_' + col
             self.filters.append(name)

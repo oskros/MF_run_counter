@@ -474,5 +474,8 @@ class Treeview(ttk.Treeview):
     def _sort_by_num(self, column, reverse):
         self._sort(column, reverse, lambda x: float('inf') if x == '' else float(x), self._sort_by_num)
 
+    def _sort_by_perc(self, column, reverse):
+        self._sort(column, reverse, lambda x: float('inf') if x == '' else float(x[:-1]), self._sort_by_perc)
+
     def _sort_by_name(self, column, reverse):
         self._sort(column, reverse, str, self._sort_by_name)
