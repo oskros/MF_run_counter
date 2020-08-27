@@ -45,7 +45,7 @@ class Grail(tkd.Frame):
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)
-        tkd.Button(bfr3, text='Grail table', borderwidth=3, command=self.open_grail_table, width=1).pack(side=tk.LEFT, fill=tk.X, padx=[1, 0], pady=1, expand=tk.YES)
+        tkd.Button(bfr3, text='Item table', borderwidth=3, command=self.open_grail_table, width=1).pack(side=tk.LEFT, fill=tk.X, padx=[1, 0], pady=1, expand=tk.YES)
         tkd.Button(bfr3, text='Grail controller', borderwidth=3, command=self.open_grail_controller, width=1).pack(side=tk.LEFT, fill=tk.X, padx=1, pady=1, expand=tk.YES)
 
         descr = tkd.ListboxFrame(self)
@@ -250,10 +250,10 @@ class Grail(tkd.Frame):
         messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
 
     def open_grail_table(self):
-        if win32gui.FindWindow(None, 'Grail table'):
+        if win32gui.FindWindow(None, 'Item table'):
             return
         window = tk.Tk()
-        window.title('Grail table')
+        window.title('Item table')
         window.state('zoomed')
         window.resizable(True, True)
         window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
