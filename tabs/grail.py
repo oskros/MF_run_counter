@@ -34,14 +34,14 @@ class Grail(tkd.Frame):
         bfr1.propagate(False)
         bfr1.pack(expand=False, fill=tk.X, padx=1, pady=1)
 
-        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1).pack(side=tk.LEFT, padx=[1, 15], pady=1)
+        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail file to include items logged either\nin your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
         tkd.Checkbutton(bfr1, text='Drops', variable=self.sync_drops).pack(side=tk.LEFT)
         tkd.Checkbutton(bfr1, text='Herokuapp', variable=self.sync_herokuapp).pack(side=tk.LEFT)
 
         bfr2 = tkd.Frame(self)
         bfr2.pack(pady=12)
-        tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail).pack(padx=2, side=tk.LEFT)
-        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp).pack(padx=2, side=tk.LEFT)
+        tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail, tooltip='Sets all your items in your local grail to "Not found"').pack(padx=2, side=tk.LEFT)
+        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=2, side=tk.LEFT)
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)
@@ -102,17 +102,21 @@ class Grail(tkd.Frame):
         return tot, owned
 
     def sync_local_grail(self):
+        item_lst = []
         msg = 'Updated local grail file with:'
         if self.sync_herokuapp.get():
-            resp = self.get_grail_from_herokuapp()
+            resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
             if resp:
+                uid = resp[0]
+                item_lst.extend(self.get_grail_from_herokuapp(uid))
                 msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
         if self.sync_drops.get():
-            self.get_grail_from_drops()
+            item_lst.extend(self.get_grail_from_drops())
             msg += '\n\n- Drops from all saved profiles'
 
-        self.update_statistics()
-        if (self.sync_herokuapp.get() and resp) or self.sync_drops.get():
+        if item_lst:
+            self.update_grail_from_list(item_lst)
+            self.update_statistics()
             if self.grail_table_open:
                 self.select_from_filters()
             messagebox.showinfo('Grail update', msg)
@@ -124,6 +128,11 @@ class Grail(tkd.Frame):
         if resp:
             self.grail = self.create_empty_grail()
             self.update_statistics()
+            if self.grail_table_open:
+                self.select_from_filters()
+            for var in dir(self):
+                if var.startswith('grail_item'):
+                    getattr(self, var).set(0)
 
     def create_empty_grail(self):
         lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'item_library.csv')
@@ -172,12 +181,14 @@ class Grail(tkd.Frame):
         grail_items = [x['item_name'] for x in drops if isinstance(x, dict) and x.get('item_name', None) is not None]
 
         # Update grail items
-        self.update_grail_from_list(grail_items)
+        return grail_items
 
     def update_grail_from_list(self, lst):
         for i, item in enumerate(self.grail):
             if item.get('Item', None) in lst:
                 self.grail[i].update({'Found': True})
+                if hasattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')):
+                    getattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')).set(1)
 
     def update_grail_from_name(self, name):
         for i, item in enumerate(self.grail):
@@ -194,14 +205,10 @@ class Grail(tkd.Frame):
         self.update_statistics()
         if self.grail_table_open:
             self.select_from_filters()
-        if hasattr(self, self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')):
-            getattr(self, self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')).set(1)
+        if hasattr(self, 'grail_item_' + self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')):
+            getattr(self, 'grail_item_' + self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')).set(1)
 
-    def get_grail_from_herokuapp(self):
-        resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
-        if resp is None:
-            return
-        uid = resp[0]
+    def get_grail_from_herokuapp(self, uid):
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
             herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
@@ -213,8 +220,8 @@ class Grail(tkd.Frame):
 
         data = herokuapp_grail.get('data', dict())
         upd_lst = herokuapp_controller.build_update_lst(data)
-        self.update_grail_from_list(lst=upd_lst)
-        return resp
+        # self.update_grail_from_list(lst=upd_lst)
+        return upd_lst
 
     def upload_to_herokuapp(self):
         resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
@@ -305,7 +312,7 @@ class Grail(tkd.Frame):
                         var_name = 'Rainbow Facet (%s %s)' % (k, depth[-1].title())
                         i_name = var_name
                     else:
-                        var_name = k.replace("'", "1").replace(' ', '_')
+                        var_name = 'grail_item_' + k.replace("'", "1").replace(' ', '_')
                         i_name = k
                     setattr(master, var_name, tk.IntVar(value=found))
                     tkd.Checkbutton(frame, text=k, variable=getattr(master, var_name), command=lambda _k=i_name: master.update_grail_from_name(_k)).pack(expand=True, anchor=tk.W)

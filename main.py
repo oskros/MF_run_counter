@@ -27,7 +27,6 @@ from tabs.grail import Grail
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
-
 # FIXME: d2 overlay mode with only text - could be hard
 
 
