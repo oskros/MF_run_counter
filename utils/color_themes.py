@@ -1,7 +1,8 @@
 from tkinter import ttk
 from utils import tk_dynamic as tkd
 
-available_themes = ['blue', 'dark', 'vista']  # , 'default', 'winnative', 'clam', 'alt']
+available_themes = ['blue', 'dark', 'light']  # , 'default', 'winnative', 'clam', 'alt']
+used_base_style = 'clam'
 
 
 class Theme:
@@ -10,7 +11,7 @@ class Theme:
         if self.used_theme == 'blue':
             # General
             default_color = 'LightSkyBlue1'
-            self.ttk_style = 'clam'
+            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -61,7 +62,7 @@ class Theme:
         elif self.used_theme == 'dark':
             # General
             default_color = 'black'
-            self.ttk_style = 'clam'
+            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -110,10 +111,11 @@ class Theme:
             self.sb_bordercolor = 'grey50'
             self.sb_arrowcolor = 'white'
             self.sb_select_btn = 'grey35'
-        else:
+
+        elif self.used_theme == 'light':
             # General
             default_color = '#f0f0ed'
-            self.ttk_style = 'vista'
+            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -148,55 +150,58 @@ class Theme:
             # Selecting Comboboxes
             self.combohighlight_color = 'blue'  # Highlight selection color
             self.combofield_color = 'white'  # Background of the combobox
-            self.dropdown_button_color = 'white'  # Color of the dropdown button
+            self.dropdown_button_color = 'grey90'  # Color of the dropdown button
             self.combo_listbox_foreground = 'black'
             self.combo_listbox_selectbackground = 'black'
             self.combo_listbox_selectforeground = 'white'
 
             # Scrollbars
-            self.sb_btn_background = 'grey50'
-            self.sb_btn_border_se = 'black'
-            self.sb_btn_border_nw = 'white'
-            self.sb_bar_background = 'grey70'
-            self.sb_bordercolor = 'grey50'
-            self.sb_arrowcolor = 'white'
-            self.sb_select_btn = 'grey35'
+            self.sb_btn_background = 'grey70'
+            self.sb_btn_border_se = 'grey70'
+            self.sb_btn_border_nw = 'grey70'
+            self.sb_bar_background = default_color
+            self.sb_bordercolor = default_color
+            self.sb_arrowcolor = 'black'
+            self.sb_select_btn = 'grey50'
+        else:
+            raise ValueError("Chosen theme doesn't exist")
 
     def apply_theme_style(self):
         style = ttk.Style()
-        style_name = 'my_' + self.used_theme if self.used_theme != 'vista' else self.used_theme
-        if style_name not in style.theme_names() and self.used_theme != 'vista':
-            style.theme_create(style_name, parent=self.ttk_style,
-                               settings={'TCombobox': {
-                                             'configure': {'selectbackground': self.combohighlight_color,
-                                                           # 'selectforeground': 'grey90',
-                                                           'fieldbackground': self.combofield_color,
-                                                           'background': self.dropdown_button_color}
-                                         },
-                                         "TNotebook": {
-                                             "configure": {"background": self.notebook_background_color,
-                                                           "tabmargins": [2, 4, 2, 0]}
-                                         },
-                                         "TNotebook.Tab": {
-                                             "configure": {"padding": [2, 1],
-                                                           "background": self.tab_background_color,
-                                                           "foreground": self.text_color,
-                                                           "lightcolor": self.border_color},
-                                             "map": {"background": [("selected", self.selected_tab_color),
-                                                                    ("active", self.hover_tab_background_color)],
-                                                     "expand": [("selected", [2, 1, 2, 0])]}},
-                                         "TScrollbar": {
-                                             "configure": {
-                                                 "background": self.sb_btn_background,
-                                                 "darkcolor": self.sb_btn_border_se,
-                                                 "lightcolor": self.sb_btn_border_nw,
-                                                 "troughcolor": self.sb_bar_background,
-                                                 "bordercolor": self.sb_bordercolor,
-                                                 "arrowcolor": self.sb_arrowcolor,
-                                             },
-                                             "map": {"background": [("active", self.sb_select_btn)]}
-                                         }
-                                         })
+        style_name = 'my_' + self.used_theme
+        if style_name not in style.theme_names():
+            settings = {'TCombobox': {
+                'configure': {'selectbackground': self.combohighlight_color,
+                              # 'selectforeground': 'grey90',
+                              'fieldbackground': self.combofield_color,
+                              'background': self.dropdown_button_color,
+                              }
+            },
+                "TNotebook": {
+                    "configure": {"background": self.notebook_background_color,
+                                  "tabmargins": [2, 4, 2, 0]}
+                },
+                "TNotebook.Tab": {
+                    "configure": {"padding": [2, 1],
+                                  "background": self.tab_background_color,
+                                  "foreground": self.text_color,
+                                  "lightcolor": self.border_color},
+                    "map": {"background": [("selected", self.selected_tab_color),
+                                           ("active", self.hover_tab_background_color)],
+                            "expand": [("selected", [2, 1, 2, 0])]}},
+                "TScrollbar": {
+                    "configure": {
+                        "background": self.sb_btn_background,
+                        "darkcolor": self.sb_btn_border_se,
+                        "lightcolor": self.sb_btn_border_nw,
+                        "troughcolor": self.sb_bar_background,
+                        "bordercolor": self.sb_bordercolor,
+                        "arrowcolor": self.sb_arrowcolor,
+                    },
+                    "map": {"background": [("active", self.sb_select_btn)]}
+                },
+            }
+            style.theme_create(style_name, parent=self.ttk_style, settings=settings)
         style.theme_use(style_name)
 
     def update_colors(self):

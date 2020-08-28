@@ -341,21 +341,21 @@ class Grail(tkd.Frame):
     def open_grail_table(self):
         if win32gui.FindWindow(None, 'Item table'):
             return
-        window = tk.Tk()
+        window = tk.Toplevel()
         window.title('Item table')
         window.state('zoomed')
         window.resizable(True, True)
         window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         window.protocol("WM_DELETE_WINDOW", lambda: self.close_grail_table(window))
 
-        tree_frame = tk.Frame(window)
+        tree_frame = tkd.Frame(window)
         vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(window, orient=tk.HORIZONTAL)
         self.tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=self.cols)
         hscroll.config(command=self.tree.xview)
         vscroll.config(command=self.tree.yview)
 
-        combofr = tk.Frame(tree_frame)
+        combofr = tkd.Frame(tree_frame)
         vscroll.pack(side=tk.RIGHT, fill=tk.Y)
         combofr.pack(fill=tk.X)
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -365,7 +365,7 @@ class Grail(tkd.Frame):
         self.tree['columns'] = self.cols
         self.filters = []
         for col in self.cols:
-            self.tree.column(col, stretch=tk.YES, minwidth=0, width=120)
+            self.tree.column(col, stretch=tk.YES, minwidth=0, width=80)
             if col in ['TC', 'QLVL', 'Roll rarity']:
                 sort_by = 'num'
                 sort_key = lambda x: float('-inf') if x == '' else float(x)
