@@ -168,8 +168,9 @@ class Automode(General):
         tkd.Entry(self, textvariable=self.SP_game_path).pack(fill=tk.BOTH, padx=4)
         bf1 = tkd.Frame(self)
         bf1.pack()
-        tkd.Button(bf1, text='Get', command=lambda: self.get_game_path(is_sp=True)).pack(side=tk.LEFT)
-        tkd.Button(bf1, text='Apply', command=self.apply_path_ch).pack(side=tk.LEFT)
+        tkd.Button(bf1, text='Get', command=lambda: self.get_game_path(is_sp=True),
+                   tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually').pack(side=tk.LEFT, padx=1)
+        tkd.Button(bf1, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path').pack(side=tk.LEFT)
 
         tkd.Label(self, text='Game path (Multiplayer)').pack(pady=[10,0])
         self.MP_game_path = tk.StringVar()
@@ -177,8 +178,9 @@ class Automode(General):
         tkd.Entry(self, textvariable=self.MP_game_path).pack(fill=tk.BOTH, padx=4)
         bf2 = tkd.Frame(self)
         bf2.pack()
-        tkd.Button(bf2, text='Get', command=lambda: self.get_game_path(is_sp=False)).pack(side=tk.LEFT)
-        tkd.Button(bf2, text='Apply', command=self.apply_path_ch).pack(side=tk.LEFT)
+        tkd.Button(bf2, text='Get', command=lambda: self.get_game_path(is_sp=False),
+                   tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually').pack(side=tk.LEFT, padx=1)
+        tkd.Button(bf2, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path').pack(side=tk.LEFT)
 
     def get_game_path(self, is_sp=True):
         found_path = config.Config.find_SP_game_path() if is_sp else config.Config.find_MP_game_path()
