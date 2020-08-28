@@ -112,7 +112,7 @@ class Theme:
             self.sb_arrowcolor = 'white'
             self.sb_select_btn = 'grey35'
 
-        elif self.used_theme == 'light':
+        else:
             # General
             default_color = '#f0f0ed'
             self.ttk_style = used_base_style
@@ -163,8 +163,6 @@ class Theme:
             self.sb_bordercolor = default_color
             self.sb_arrowcolor = 'black'
             self.sb_select_btn = 'grey50'
-        else:
-            raise ValueError("Chosen theme doesn't exist")
 
     def apply_theme_style(self):
         style = ttk.Style()
