@@ -39,6 +39,11 @@ In case a drop was added by mistake, it can be deleted by highlighting it and cl
 ### Profiles
 In the profile tab it is possible to create a separate run profile for each character and run type (eg. Chaos, Cows, Meph, etc.). In the profile tab you can view each saved session in the archive browser, where it is also possible to save the results to a .txt file or copy to clipboard. Profile data is saved as a .json under the "Profiles" folder that is created the first time you run the program.
 
+### Grail logging
+There is a tab called "Grail" - Here you can track all your progress in completing the d2 holy grail of collecting all items (and runes). Every time you add a new item that hasn't been found before, it can be added to the grail! Then it will appear in your found items with a "(\*)" in front of the name, to indicate it was a grailer. Furthermore, there is support with d2-holy-grail.herokuapp.com - You can both sync your local grail with the already logged progress there, and also upload any progress back to the webpage again! 
+In order to view your grail progress there is both a "Grail controller" view, which is similar to the one found on herokuapp, but also a "Item table" view, where you see all items in a table with tons of information about each item.
+You can also sync your local grail with already found items. Unfortunately, it is not possible to sync with any items added in your profiles prior to version 1.2.0, sorry!
+
 ### Session timer
 The session timer will start as soon as you open the program and run as long as the program is open (an not put on pause).
 
