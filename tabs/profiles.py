@@ -354,14 +354,12 @@ class Profile(tkd.Frame):
             output.append(tmp)
 
         # List all drops collected and show them below the individual runs (good for doing data work on output file)
-        out_drops = sorted(sum(drops.values(), []), key=lambda x: x['input'])
-        if out_drops:
+        if drops:
             output.append([''])
             output.append(['All listed drops:'])
-            for drop in out_drops:
-                output.append([drop['input']])
-            # for drop in drops:
-            #     output.append(['Run ' + str(drop['Run']) + ': ', drop['Name'] + ' ' + drop['Stats']])
+            for run_no, drop in drops.items():
+                str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
+                output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
 
         # Format string list to be shown in the archive browser
         for op in output:

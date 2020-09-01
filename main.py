@@ -24,9 +24,13 @@ from tabs.grail import Grail
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 # FIXME: Delete run by selection
+
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
+# FIXME: Add charms for unid mode (Nihla/Diablo/Baal sc/gc)
+
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
+# FIXME: Retain order of item table when adding new drops
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
