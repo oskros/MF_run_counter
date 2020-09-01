@@ -1,5 +1,5 @@
 # Diablo 2 MF run counter
-You can find a video where I describe the application in detail here: https://www.youtube.com/watch?v=e4vcg8MdvrY&t=46s
+You can find a video where I describe the application in detail here (NB: Not fully up to date - this video is missing explanation of new features such as "automode", "autocompletion of item names" and "grail tracking"): https://www.youtube.com/watch?v=e4vcg8MdvrY&t=46s
 
 
 ![GUI](https://github.com/oskros/MF_counter_releases/blob/master/media/UI_showcase.png?raw=true)
