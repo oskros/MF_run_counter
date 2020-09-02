@@ -36,11 +36,6 @@ class Profile(tkd.Frame):
         profile_frame.propagate(False)
         profile_frame.pack()
 
-        # if self.main_frame.active_theme != 'default':
-        #     self.option_add("*TCombobox*Listbox*Background", self.main_frame.entry_color)
-        #     self.option_add("*TCombobox*Listbox*Foreground", self.main_frame.combo_listbox_foreground)
-        #     self.option_add("*TCombobox*Listbox*selectBackground", self.main_frame.combo_listbox_selectbackground)
-        #     self.option_add("*TCombobox*Listbox*selectForeground", self.main_frame.combo_listbox_selectforeground)
         self.active_profile.set(self.main_frame.active_profile)
         self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
@@ -64,7 +59,6 @@ class Profile(tkd.Frame):
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.bind("<<ComboboxSelected>>", lambda e: self.update_descriptive_statistics())
         self.archive_dropdown.bind("<FocusOut>", lambda e: self.archive_dropdown.selection_clear())
-        # self.archive_dropdown.bind("<Right>", lambda e: self.archive_dropdown.set(self.archive_dropdown.current()+1))
         self.archive_dropdown.pack(side=tk.LEFT)
 
         tkd.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
@@ -107,7 +101,7 @@ class Profile(tkd.Frame):
             # Add new profile to profile tab
             self.main_frame.profiles.append(profile_name)
             if not first_profile:
-                self.profile_dropdown['values'] = self.main_frame.profiles
+                self.profile_dropdown['values'] = self.main_frame.sorted_profiles()
 
             # Change active profile to the newly created profile
             self.active_profile.set(profile_name)
@@ -147,10 +141,11 @@ class Profile(tkd.Frame):
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
         if self.main_frame.automode:
-            self.main_frame.toggle_automode(self.char_name.get(), self.game_mode.get())
+            self.main_frame.toggle_automode(self.char_name.get())
         self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
         self.main_frame.options_tab.tab3.game_mode.set(self.game_mode.get())
         self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)
+        self.profile_dropdown['values'] = [act] + [x for x in self.main_frame.sorted_profiles() if x != act]
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import webbrowser
 from functools import partial
+import screeninfo
 
 
 class Toplevel(tk.Toplevel):
@@ -426,22 +427,55 @@ class Tooltip(object):
         self.id = None
         self.x = self.y = 0
 
+    # @staticmethod
+    # def get_monitor_from_coord(x, y):
+    #     monitors = screeninfo.get_monitors()
+    #
+    #     for m in reversed(monitors):
+    #         if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
+    #             return m
+    #     return monitors[0]
+    #
+    # def get_displaced_geom(self, root, window_width, window_height, pos_x, pos_y):
+    #     mon = self.get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+    #     min_x = mon.x
+    #     min_y = mon.y
+    #     max_x = mon.width + min_x
+    #     max_y = mon.height + min_y
+    #
+    #     displaced_x = max(min(pos_x, max_x - window_width), min_x - 5)
+    #     displaced_y = max(min(pos_y, max_y - window_height), min_y)
+    #
+    #     return '%sx%s+%s+%s' % (window_width, window_height, displaced_x, displaced_y)
+
     def showtip(self, text):
         "Display text in tooltip window"
         self.text = text
         if self.tipwindow or not self.text:
             return
         x, y, cx, cy = self.widget.bbox("insert")
+
         x = x + self.widget.winfo_rootx() + 57
-        y = y + cy + self.widget.winfo_rooty() +27
+        y = y + cy + self.widget.winfo_rooty() + 27
+
         self.tipwindow = tw = tk.Toplevel(self.widget)
         self.tipwindow.wm_attributes('-topmost', True)
         tw.wm_overrideredirect(1)
-        tw.wm_geometry("+%d+%d" % (x, y))
+
+        # tw.wm_geometry("+%d+%d" % (x, y))
         label = tk.Label(tw, text=self.text, justify=tk.LEFT,
                          background="#ffffe0", relief=tk.SOLID, borderwidth=1,
                          font=("tahoma", "8", "normal"))
         label.pack(ipadx=1)
+
+
+        # tw.update()
+        # geom = self.get_displaced_geom(self.widget, self.tipwindow.winfo_width(), self.tipwindow.winfo_height(), x, y)
+        # tw.wm_geometry(geom)
+
+        geom = "+%d+%d" % (x, y)
+        tw.wm_geometry(geom)
+
 
     def hidetip(self):
         tw = self.tipwindow

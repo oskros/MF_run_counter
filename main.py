@@ -23,7 +23,6 @@ from tabs.grail import Grail
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 # FIXME: When turning off autocompletion of drops, fallback to the old drops window?
-# FIXME: Delete run by selection
 
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
 # FIXME: Add charms for unid mode (Nihla/Diablo/Baal sc/gc)
@@ -90,7 +89,8 @@ class MainFrame(Config):
             self.active_profile = ''
         elif len(self.profiles) > 0 and self.active_profile not in self.profiles:
             self.active_profile = self.profiles[0]
-        self.profiles = sorted(self.profiles)  # FIXME: Sort by update time
+
+        self.profiles = self.sorted_profiles()
 
         # Modify root window
         self.root.title(self.title)
@@ -170,6 +170,9 @@ class MainFrame(Config):
         # Start the program
         self.root.mainloop()
 
+    def sorted_profiles(self):
+        return sorted(self.profiles, key=lambda x: os.stat('Profiles/%s.json' % x).st_mtime, reverse=True)
+
     def game_path(self):
         game_mode = self.profile_tab.game_mode.get()
         if game_mode == 'Single Player':
@@ -184,7 +187,7 @@ class MainFrame(Config):
         else:
             return '.map'
 
-    def toggle_automode(self, char_name=None, game_mode=None):
+    def toggle_automode(self, char_name=None):
         """
         Enables or disables automode. Shows a small label on top of the banner image with the text "Automode" when
         automode is activated. Takes an optional argument "char_name" which is used by the profile manager when changing
@@ -194,12 +197,10 @@ class MainFrame(Config):
             self.am_lab.destroy()
         if char_name is None:
             char_name = self.profile_tab.char_name.get()
-        if game_mode is None:
-            game_mode = self.profile_tab.game_mode.get()
         if self.automode:
             self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
             self.am_lab.place(x=1, y=1)
-        self.timer_tab.toggle_automode(char_name=char_name, game_mode=game_mode)
+        self.timer_tab.toggle_automode(char_name=char_name)
 
     def toggle_tab_keys_global(self):
         """

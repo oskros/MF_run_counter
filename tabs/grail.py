@@ -220,7 +220,6 @@ class Grail(tkd.Frame):
 
         data = herokuapp_grail.get('data', dict())
         upd_lst = herokuapp_controller.build_update_lst(data)
-        # self.update_grail_from_list(lst=upd_lst)
         return upd_lst
 
     def upload_to_herokuapp(self):

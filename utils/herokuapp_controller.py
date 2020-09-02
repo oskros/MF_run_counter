@@ -1,7 +1,6 @@
 import requests
 import json
 from copy import deepcopy
-from collections import OrderedDict
 
 api_page = 'http://d2-holy-grail.herokuapp.com/api/grail/'
 default_data = {
@@ -159,23 +158,23 @@ def update_grail_dict(dct, item_upg_dict):
     return update_items(dct, item_upg_dict)
 
 
-def owned_items(grail_dict):
-    def add_items(dct):
-        for k in dct:
-            if k in ['Cold', 'Fire', 'Light', 'Poison']:
-                continue
-            if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
-                add_items(dct[k])
-            elif dct[k].get('wasFound', False):
-                my_items.append(k)
-    my_items = []
-    add_items(grail_dict)
-
-    for activate_type in ['die', 'level up']:
-        for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
-            if grail_dict['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
-                my_items.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
-    return my_items
+# def owned_items(grail_dict):
+#     def add_items(dct):
+#         for k in dct:
+#             if k in ['Cold', 'Fire', 'Light', 'Poison']:
+#                 continue
+#             if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
+#                 add_items(dct[k])
+#             elif dct[k].get('wasFound', False):
+#                 my_items.append(k)
+#     my_items = []
+#     add_items(grail_dict)
+#
+#     for activate_type in ['die', 'level up']:
+#         for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+#             if grail_dict['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+#                 my_items.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
+#     return my_items
 
 
 def put_grail(uid, pwd, data, proxies=None):
@@ -191,18 +190,18 @@ def put_grail(uid, pwd, data, proxies=None):
     return req.status_code
 
 
-def count_items(dct):
-    tot, owned = 0, 0
-    for k in dct.keys():
-        if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
-            tmp = count_items(dct[k])
-            tot += tmp[0]
-            owned += tmp[1]
-        else:
-            tot += 1
-            if dct[k].get('wasFound', False):
-                owned += 1
-    return tot, owned
+# def count_items(dct):
+#     tot, owned = 0, 0
+#     for k in dct.keys():
+#         if isinstance(dct[k], dict) and dct[k] and 'wasFound' not in dct[k]:
+#             tmp = count_items(dct[k])
+#             tot += tmp[0]
+#             owned += tmp[1]
+#         else:
+#             tot += 1
+#             if dct[k].get('wasFound', False):
+#                 owned += 1
+#     return tot, owned
 
 
 def build_update_lst(dct):

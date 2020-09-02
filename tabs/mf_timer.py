@@ -35,35 +35,35 @@ class MFRunTimer(tkd.Frame):
         flt.pack(fill=tk.X, expand=tk.NO)
         self.c1, self.circ_id = tk_utils.add_circle(flt, 14, 'red')
         self.c1.grid(row=0, column=0, padx=3, pady=3)
-        tkd.Label(flt, textvariable=self.sessionstr, font=('arial', 10)).grid(row=0, column=1, sticky=tk.N, padx=20)
+        tkd.Label(flt, textvariable=self.sessionstr, font='arial 10').grid(row=0, column=1, sticky=tk.N, padx=20)
         self._set_time(self.session_time, for_session=True)
 
-        tkd.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=tk.NO, pady=4)
+        tkd.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=False, pady=4)
         self._set_time(0, for_session=False)
 
         l2f = tkd.Frame(self)
         l2f.pack(pady=2)
-        tkd.Label(l2f, text='---- Run count:', font=('arial', 12)).pack(side=tk.LEFT)
+        tkd.Label(l2f, text='---- Run count:', font='arial 12').pack(side=tk.LEFT)
         tkd.RunLabel(l2f, textvariable=self.no_of_laps, font='arial 17').pack(side=tk.LEFT)
         tkd.RunLabel(l2f, textvariable=self.total_laps, font='helvetica 12').pack(side=tk.LEFT)
-        tkd.Label(l2f, text='----', font=('arial', 12)).pack(side=tk.LEFT)
+        tkd.Label(l2f, text='----', font='arial 12').pack(side=tk.LEFT)
         self._set_laps(add_lap=False)
 
-        tkd.Label(self, textvariable=self.min_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=1, padx=2)
+        tkd.Label(self, textvariable=self.min_lap, font='arial 11').pack(fill=tk.X, expand=False, pady=1, padx=2)
         self._set_fastest()
 
-        tkd.Label(self, textvariable=self.avg_lap, font=('arial', 11)).pack(fill=tk.X, expand=tk.NO, pady=1, padx=2)
+        tkd.Label(self, textvariable=self.avg_lap, font='arial 11').pack(fill=tk.X, expand=False, pady=1, padx=2)
         self._set_average()
 
         lf0 = tkd.Frame(self)
         lf0.pack()
         scrollbar = ttk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tkd.Listbox(lf0, selectmode=tk.BROWSE, height=5, yscrollcommand=scrollbar.set, font=('courier', 12), activestyle='none')
+        self.m = tkd.Listbox(lf0, selectmode=tk.BROWSE, height=5, yscrollcommand=scrollbar.set, font='courier 12', activestyle=tk.NONE)
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
         self.m.bind('<Delete>', lambda e: self.delete_selected_run())
         # self.m.bindtags((self.m, self, "all"))
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
@@ -80,7 +80,6 @@ class MFRunTimer(tkd.Frame):
     def _check_entered_game(self):
         stamp = os.stat(self.char_file_path).st_mtime
         if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
-            print(stamp - self.cached_file_stamp)
             self.stop_start()
             self.cached_file_stamp = stamp
         self._game_check = self.after(50, self._check_entered_game)
@@ -182,7 +181,7 @@ class MFRunTimer(tkd.Frame):
 
     def delete_selected_run(self):
         sel = self.m.selection_get()
-        resp = tk_utils.mbox(msg='Do you want to delete the row:\n%s' % sel, title='Warning')
+        resp = tk_utils.mbox(msg='Do you want to delete the run:\n%s' % sel, title='Warning')
         if resp:
             all_runs = self.m.get(0, tk.END)
             sel_idx = all_runs.index(sel)
@@ -217,8 +216,6 @@ class MFRunTimer(tkd.Frame):
             if self.is_running:
                 self.after_cancel(self._timer)
             self.after_cancel(self._sess_timer)
-            # if hasattr(self, '_game_check'):
-            #     self.after_cancel(self._game_check)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
@@ -231,7 +228,6 @@ class MFRunTimer(tkd.Frame):
 
             if self.automode_active:
                 self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
-                # self._check_entered_game()
             self.is_paused = False
 
     def reset_lap(self):
@@ -258,7 +254,7 @@ class MFRunTimer(tkd.Frame):
     def save_state(self):
         return dict(laps=self.laps, session_time=self.session_time)
 
-    def toggle_automode(self, char_name, game_mode):
+    def toggle_automode(self, char_name):
         if self.main_frame.automode:
             if hasattr(self, '_game_check'):
                 self.after_cancel(self._game_check)
