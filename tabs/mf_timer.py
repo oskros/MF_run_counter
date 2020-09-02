@@ -191,12 +191,14 @@ class MFRunTimer(tkd.Frame):
             self.m.delete(sel_idx, tk.END)
 
             for run in all_runs[sel_idx+1:]:
-                run_no = run[:run.find(':')][run[:run.find(':')].rfind(' ')+1:]
+                tmp = run[:run.find(':')]
+                run_no = tmp[tmp.rfind(' ')+1:]
                 prev_no = str(int(run_no) - 1)
                 if len(prev_no) < len(run_no):
-                    self.m.insert(run.replace(run_no, ' ' + prev_no))
+                    self.m.insert(tk.END, run.replace(run_no, ' ' + prev_no))
                 else:
                     self.m.insert(tk.END, run.replace(run_no, prev_no))
+            self.m.yview_moveto(1)
 
             self._set_laps(add_lap=self.is_running)
             self._set_fastest()
