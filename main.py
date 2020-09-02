@@ -31,6 +31,7 @@ from tabs.grail import Grail
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
+# FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
@@ -398,7 +399,7 @@ class MainFrame(Config):
         Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
         terminating all active threads.
         """
-        if self.timer_tab.is_running and self.profile_tab.game_mode.get() != 'Single Player' and self.timer_tab.automode_active:
+        if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active):
             self.timer_tab.stop()
         self.SaveActiveState()
         self.update_config(self)

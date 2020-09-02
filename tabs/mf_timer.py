@@ -58,10 +58,11 @@ class MFRunTimer(tkd.Frame):
         lf0 = tkd.Frame(self)
         lf0.pack()
         scrollbar = ttk.Scrollbar(lf0, orient=tk.VERTICAL)
-        self.m = tkd.Listbox(lf0, selectmode=tk.EXTENDED, height=5, yscrollcommand=scrollbar.set, activestyle='none', font=('courier', 12))
+        self.m = tkd.Listbox(lf0, selectmode=tk.BROWSE, height=5, yscrollcommand=scrollbar.set, font=('courier', 12), activestyle='none')
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
-        self.m.bindtags((self.m, self, "all"))
+        self.m.bind('<Delete>', lambda e: self.delete_selected_run())
+        # self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
@@ -175,6 +176,28 @@ class MFRunTimer(tkd.Frame):
         if self.laps:
             self.m.delete(tk.END)
             self.laps.pop()
+            self._set_laps(add_lap=self.is_running)
+            self._set_fastest()
+            self._set_average()
+
+    def delete_selected_run(self):
+        sel = self.m.selection_get()
+        resp = tk_utils.mbox(msg='Do you want to delete the row:\n%s' % sel, title='Warning')
+        if resp:
+            all_runs = self.m.get(0, tk.END)
+            sel_idx = all_runs.index(sel)
+
+            self.laps.pop(sel_idx)
+            self.m.delete(sel_idx, tk.END)
+
+            for run in all_runs[sel_idx+1:]:
+                run_no = run[:run.find(':')][run[:run.find(':')].rfind(' ')+1:]
+                prev_no = str(int(run_no) - 1)
+                if len(prev_no) < len(run_no):
+                    self.m.insert(run.replace(run_no, ' ' + prev_no))
+                else:
+                    self.m.insert(tk.END, run.replace(run_no, prev_no))
+
             self._set_laps(add_lap=self.is_running)
             self._set_fastest()
             self._set_average()

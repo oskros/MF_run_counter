@@ -24,7 +24,7 @@ class Drops(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
         btn = tkd.Button(self, text='Delete selection', command=self.delete)
-        btn.bind_all('<Delete>', lambda e: self.delete())
+        self.m.bind('<Delete>', lambda e: self.delete())
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
     def add_drop(self):
