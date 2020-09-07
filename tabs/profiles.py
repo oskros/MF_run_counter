@@ -221,17 +221,13 @@ class Profile(tkd.Frame):
 
             # Append data for active session from timer module
             laps.extend(self.main_frame.timer_tab.laps)
-            if self.main_frame.timer_tab.is_running:
-                laps.extend([0])
             session_time += self.main_frame.timer_tab.session_time
             for drop, val in self.main_frame.drops_tab.drops.items():
                 dropcount += len(val)
         elif chosen == 'Active session':
             laps = self.main_frame.timer_tab.laps.copy()
-            if self.main_frame.timer_tab.is_running:
-                laps.extend([0])
             session_time = self.main_frame.timer_tab.session_time
-            dropcount = sum(len(val) for val in self.main_frame.tab2.drops.values())
+            dropcount = sum(len(val) for val in self.main_frame.drops_tab.drops.values())
         else:
             laps = active[chosen].get('laps', [])
             session_time = active[chosen].get('session_time', 0)
@@ -240,6 +236,7 @@ class Profile(tkd.Frame):
         # Ensure no division by zero errors by defaulting to displaying 0
         avg_lap = sum(laps) / len(laps) if laps else 0
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
+        no_laps = len(laps) + 1 if self.main_frame.timer_tab.is_running and chosen in ['Active session', 'Profile history'] else len(laps)
 
         # (re-)Populate the listbox with descriptive statistics
         self.descr.delete(0, tk.END)
@@ -248,7 +245,7 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
         self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min(laps, default=0)))
         self.descr.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
-        self.descr.insert(tk.END, 'Number of runs: ' + str(len(laps)))
+        self.descr.insert(tk.END, 'Number of runs: ' + str(no_laps))
         self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
 
     def open_archive_browser(self):
