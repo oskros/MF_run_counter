@@ -172,7 +172,7 @@ class MainFrame(Config):
         self.root.mainloop()
 
     def sorted_profiles(self):
-        return sorted(self.profiles, key=lambda x: os.stat('Profiles/%s.json' % x).st_mtime, reverse=True)
+        return sorted(self.profiles, key=lambda x: os.stat('Profiles/%s.json' % x).st_mtime if os.path.isfile('Profiles/%s.json' % x) else float('inf'), reverse=True)
 
     def game_path(self):
         game_mode = self.profile_tab.game_mode.get()
