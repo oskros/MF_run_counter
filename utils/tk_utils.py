@@ -59,7 +59,14 @@ class RegistrationForm:
 
         self.a1 = self.make_entry_row('Profile name')
         self.a2 = self.make_entry_row('Character name')
-        self.a3 = self.make_entry_row('Run type')
+        # self.a3 = self.make_entry_row('Run type')
+        self.a3 = self.make_combobox_row('Run type', [
+            '(A1) Mausoleum', '(A1) The Countess', '(A1) The Pit', '(A1) Andariel', '(A1) Cows', '-----------------------',
+            '(A2) Ancient Tunnels', '(A2) Summoner', '-----------------------',
+            '(A3) Lower Kurast', '(A3) Travincal', '(A3) Mephisto', '-----------------------',
+            '(A4) River of Flame', '(A4) Chaos Sanctuary', '-----------------------',
+            '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
+            '(A5) Baal', '(A5) Uber Quest'], readonly=False)
         self.a4 = self.make_combobox_row('Game mode', ['Single Player', 'Multiplayer'])
 
         # Restrict input to profile name, only allowing characters that can appear in a windows file name
@@ -92,19 +99,21 @@ class RegistrationForm:
         frame = tk.Frame(self.new_win)
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
-        tk.Label(frame, width=22, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
+        tk.Label(frame, width=16, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
         var = tk.StringVar()
         out = tk.Entry(frame, textvariable=var)
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
         return out
 
-    def make_combobox_row(self, text, values):
+    def make_combobox_row(self, text, values, readonly=True):
         frame = tk.Frame(self.new_win)
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
-        tk.Label(frame, width=22, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
+        tk.Label(frame, width=16, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
         var = tk.StringVar()
-        out = ttk.Combobox(frame, textvariable=var, state='readonly', values=values)
+        out = ttk.Combobox(frame, textvariable=var, values=values)
+        if readonly:
+            out.config(state='readonly')
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
         out.set(values[0])
         return out

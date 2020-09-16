@@ -20,6 +20,7 @@ class Grail(tkd.Frame):
         self.password = tk.StringVar(value=self.main_frame.herokuapp_password)
         self.sync_drops = tk.IntVar()
         self.sync_herokuapp = tk.IntVar()
+        self.reset_local_grail = tk.IntVar()
         self.vars_to_update = []
         self.cols = ["Item", "Base Item", "Item Class", "Quality", "Rarity", "Class restriction", "TC", "QLVL",
                      "Roll rarity", "Roll chance", "Drop Andariel", "Drop Mephisto", "Drop Diablo", "Drop Pindleskin",
@@ -37,11 +38,12 @@ class Grail(tkd.Frame):
         tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail file to include items logged either\nin your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
         tkd.Checkbutton(bfr1, text='Drops', variable=self.sync_drops).pack(side=tk.LEFT)
         tkd.Checkbutton(bfr1, text='Herokuapp', variable=self.sync_herokuapp).pack(side=tk.LEFT)
+        # tkd.Checkbutton(bfr1, text='Reset', variable=self.reset_local_grail, tooltip='Uncheck all items in your local grail').pack(side=tk.LEFT)
 
         bfr2 = tkd.Frame(self)
         bfr2.pack(pady=12)
-        tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail, tooltip='Sets all your items in your local grail to "Not found"').pack(padx=2, side=tk.LEFT)
-        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=2, side=tk.LEFT)
+        # tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail, tooltip='Sets all your items in your local grail to "Not found"').pack(padx=2, side=tk.LEFT)
+        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, width=30, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=2, side=tk.LEFT)
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)

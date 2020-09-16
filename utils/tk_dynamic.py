@@ -151,8 +151,11 @@ class Checkbutton(tk.Checkbutton):
     objects = []
 
     def __init__(self, *args, **kwargs):
+        tooltip = kwargs.pop('tooltip', None)
         tk.Checkbutton.__init__(self, *args, **kwargs)
         self.__class__.objects.append(self)
+        if tooltip is not None:
+            create_tooltip(self, tooltip)
 
     @classmethod
     def set_config(cls, **val):

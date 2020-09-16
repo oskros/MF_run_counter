@@ -32,6 +32,7 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 # FIXME: Only allow one drop window pop-up at a time
+# FIXME: Pause function shouldn't pause session timer
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
