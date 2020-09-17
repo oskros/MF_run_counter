@@ -64,10 +64,13 @@ class Drops(tkd.Frame):
                 sep = cur_row.find(':')
                 run_no = cur_row[:sep].replace('Run ', '')
                 drop = cur_row[sep+2:]
-                self.drops[run_no].remove(next(d for d in self.drops[run_no] if d['input'] == drop))
-                self.m.config(state=tk.NORMAL)
-                self.m.delete('insert linestart', 'insert lineend+1c')
-                self.m.config(state=tk.DISABLED)
+                try:
+                    self.drops[run_no].remove(next(d for d in self.drops[run_no] if d['input'] == drop))
+                    self.m.config(state=tk.NORMAL)
+                    self.m.delete('insert linestart', 'insert lineend+1c')
+                    self.m.config(state=tk.DISABLED)
+                except StopIteration:
+                    pass
 
                 self.parent.img_panel.focus_force()
 
