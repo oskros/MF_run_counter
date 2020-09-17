@@ -350,8 +350,9 @@ class Profile(tkd.Frame):
             output.append([''])
             output.append(['All listed drops:'])
             for run_no, drop in drops.items():
-                str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
-                output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
+                if drop:
+                    str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
+                    output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
 
         # Format string list to be shown in the archive browser
         for op in output:
