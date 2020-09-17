@@ -35,15 +35,13 @@ class Grail(tkd.Frame):
         bfr1.propagate(False)
         bfr1.pack(expand=False, fill=tk.X, padx=1, pady=1)
 
-        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail file to include items logged either\nin your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
-        tkd.Checkbutton(bfr1, text='Drops', variable=self.sync_drops).pack(side=tk.LEFT)
+        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail to include items logged either\nin your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
+        tkd.Checkbutton(bfr1, text='Profiles', variable=self.sync_drops).pack(side=tk.LEFT)
         tkd.Checkbutton(bfr1, text='Herokuapp', variable=self.sync_herokuapp).pack(side=tk.LEFT)
-        # tkd.Checkbutton(bfr1, text='Reset', variable=self.reset_local_grail, tooltip='Uncheck all items in your local grail').pack(side=tk.LEFT)
 
         bfr2 = tkd.Frame(self)
-        bfr2.pack(pady=12)
-        # tkd.Button(bfr2, text='Reset local grail', command=self.reset_grail, tooltip='Sets all your items in your local grail to "Not found"').pack(padx=2, side=tk.LEFT)
-        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, width=30, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=2, side=tk.LEFT)
+        bfr2.pack(pady=12, expand=True, fill=tk.X)
+        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=8, side=tk.LEFT, fill=tk.X, expand=True)
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)
@@ -293,7 +291,8 @@ class Grail(tkd.Frame):
                         new_frame.pack(side=tk.LEFT, expand=True, anchor=tk.N)
 
                     # .title() function bugs out with apostrophes. Handle the specific issues hardcoded here
-                    txt = k.title().replace("'S", "'s").replace("'A", "'a")
+                    # Also, there is a spelling mistake in herokuapp that we fix: Hsaru's -> Hsarus'
+                    txt = k.title().replace("'S", "'s").replace("'A", "'a").replace("Hsaru's", "Hsarus'")
                     tkd.Label(new_frame, text=txt, font='Arial 15 bold').pack(expand=True, anchor=tk.N)
                     rec_checkbox_add(master, new_frame, v, rows, depth + [k])
 
@@ -310,7 +309,6 @@ class Grail(tkd.Frame):
 
         # Build nested dict with information from the current grail
         upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
-        # FIXME: This inherits the spelling mistake for "Hsarus' Defense" --> Need Nasicus to update this
         nested_grail = herokuapp_controller.update_grail_dict(dct=herokuapp_controller.default_data, item_upg_dict=upd_dict)
 
         tabcontrol = ttk.Notebook(window)
@@ -367,12 +365,9 @@ class Grail(tkd.Frame):
         self.filters = []
         for col in self.cols:
             self.tree.column(col, stretch=tk.YES, minwidth=0, width=80)
-            if col in ['TC', 'QLVL', 'Roll rarity']:
+            if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance']:
                 sort_by = 'num'
-                sort_key = lambda x: float('-inf') if x == '' else float(x)
-            elif col in ['Roll chance']:
-                sort_by = 'perc'
-                sort_key = lambda x: float('-inf') if x == '' else float(x[:-1])
+                sort_key = lambda x: float('-inf') if x == '' else float(x.replace('%', ''))
             else:
                 sort_by = 'name'
                 sort_key = lambda x: x
@@ -386,7 +381,7 @@ class Grail(tkd.Frame):
 
         for item in self.grail:
             tag = 'Owned' if item.get('Found', False) else 'Missing'
-            self.tree.insert('', tk.END, values=[v for k, v in item.items() if k in self.cols], tags=(tag,))
+            self.tree.insert('', tk.END, values=[item.get(col, '') for col in self.cols], tags=(tag,))
 
         self.tree.tag_configure('Owned', background='#e6ffe6')
         self.tree.tag_configure('Missing', background='peach puff')
@@ -396,6 +391,7 @@ class Grail(tkd.Frame):
     def select_from_filters(self, event=None):
         self.tree.delete(*self.tree.get_children())
 
+        # The filtering function breaks if column name has underscore in it - potential issue that could be fixed..
         all_filter = lambda x: all(str(x[f.split('_')[-1]]) == getattr(self, f).get() or getattr(self, f).get() == '' for f in self.filters)
         for item in self.grail:
             if all_filter(item):
