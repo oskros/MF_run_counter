@@ -33,6 +33,7 @@ from tabs.grail import Grail
 # FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 # FIXME: Only allow one drop window pop-up at a time
 # FIXME: Pause function shouldn't pause session timer
+# FIXME: Sorting by profile save time should only be impacted by changed runs/drops - Alternatively only save to file if any modifications to drops/runs were made?
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
@@ -389,9 +390,7 @@ class MainFrame(Config):
         cache = self.load_state_file()
         cache['active_state'] = self.timer_tab.save_state()
         cache['active_state'].update(dict(drops=self.drops_tab.save_state()))
-        if 'extra_data' not in cache:
-            cache['extra_data'] = dict()
-        cache['extra_data']['Game mode'] = self.profile_tab.game_mode.get()
+        cache.setdefault('extra_data', dict())['Game mode'] = self.profile_tab.game_mode.get()
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)

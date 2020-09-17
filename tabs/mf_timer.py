@@ -194,9 +194,9 @@ class MFRunTimer(tkd.Frame):
                 run_no = tmp[tmp.rfind(' ')+1:]
                 prev_no = str(int(run_no) - 1)
                 if len(prev_no) < len(run_no):
-                    self.m.insert(tk.END, run.replace(run_no, ' ' + prev_no))
+                    self.m.insert(tk.END, run.replace(run_no, ' ' + prev_no, 1))
                 else:
-                    self.m.insert(tk.END, run.replace(run_no, prev_no))
+                    self.m.insert(tk.END, run.replace(run_no, prev_no, 1))
             self.m.yview_moveto(1)
 
             self._set_laps(add_lap=self.is_running)
