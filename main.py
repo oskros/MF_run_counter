@@ -163,7 +163,6 @@ class MainFrame(Config):
         active_state = self.load_state_file()
         self.LoadActiveState(active_state)
         self.root.after(30000, self._autosave_state)
-        # self.root.after(5000, lambda: 1/0) # for testing purposes
 
         # Apply styling options
         self.theme.apply_theme_style()
@@ -415,8 +414,7 @@ class MainFrame(Config):
 
     def Quit(self):
         """
-        Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
-        terminating all active threads. WARNING: calling os._exit doesn't do proper cleanup, is this an issue?
+        Stops the active run, updates config, saves current state to profile .json, and finally exits the application
         """
         if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active):
             self.timer_tab.stop()
