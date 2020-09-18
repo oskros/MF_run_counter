@@ -22,7 +22,6 @@ from tabs.grail import Grail
 
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
-# FIXME: When turning off autocompletion of drops, fallback to the old drops window?
 
 # FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
 # FIXME: Add charms for unid mode (Nihla/Diablo/Baal sc/gc)
@@ -34,6 +33,9 @@ from tabs.grail import Grail
 # FIXME: Only allow one drop window pop-up at a time
 # FIXME: Pause function shouldn't pause session timer
 # FIXME: Sorting by profile save time should only be impacted by changed runs/drops - Alternatively only save to file if any modifications to drops/runs were made?
+# FIXME: Remove option to turn automode off - it's always good to have
+# FIXME: Auto archive'n'reset
+# FIXME: Auto upload to herokuapp
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard

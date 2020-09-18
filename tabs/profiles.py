@@ -8,6 +8,7 @@ import tkinter as tk
 from utils import tk_dynamic as tkd, tk_utils
 from utils.color_themes import Theme
 from tkinter import ttk, messagebox, filedialog
+from tkinter.font import Font as tkFont
 
 
 class Profile(tkd.Frame):
@@ -259,10 +260,11 @@ class Profile(tkd.Frame):
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
 
-        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 450, 450)
+        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 400, 460)
         new_win.geometry(disp_coords)
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        new_win.minsize(400, 460)
         title = tkd.Label(new_win, text='Archive browser', font='Helvetica 14')
 
         # Handle how loading of session data should be treated in the 3 different cases
@@ -303,27 +305,31 @@ class Profile(tkd.Frame):
         pct = sum(laps) * 100 / session_time if session_time > 0 else 0
 
         # Configure the list frame with scrollbars which displays the archive of the chosen session
-        list_frame = tkd.Frame(new_win)
+        list_win = tkd.Frame(new_win)
+        list_frame = tkd.Frame(list_win)
         vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
-        hscroll = ttk.Scrollbar(new_win, orient=tk.HORIZONTAL)
-        txt_list = tkd.Listbox(list_frame, selectmode=tk.EXTENDED, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, activestyle='none', font=('courier', 10))
-        txt_list.bind('<FocusOut>', lambda e: txt_list.selection_clear(0, tk.END))  # Lose selection when shifting focus
+        hscroll = ttk.Scrollbar(list_win, orient=tk.HORIZONTAL)
+        txt_list = tkd.Text(list_frame, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, font='courier 10', wrap=tk.WORD, state=tk.NORMAL, cursor='', exportselection=1, name='archivebrowser')
+        # txt_list.bind('<FocusOut>', lambda e: txt_list.tag_remove(tk.SEL, "1.0", tk.END))  # Lose selection when shifting focus
+        vscroll.pack(side=tk.RIGHT, fill=tk.Y)
         txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        txt_list.tag_configure("HEADER", font=tkFont(family='courier', size=12, weight='bold', underline=True))
         hscroll.config(command=txt_list.xview)
         vscroll.config(command=txt_list.yview)
-        vscroll.pack(side=tk.LEFT, fill=tk.Y)
+
 
         # Build header for output file with information and descriptive statistics
-        output = [['Character name: ', self.extra_data.get('Character name', '')],
-                  ['Run type: ', self.extra_data.get('Run type', '')],
-                  ['Game mode: ', self.extra_data.get('Game mode', 'Single Player')],
+        output = [['Statistics'],
+                  ['Character name: ', self.extra_data.get('Character name', '')],
+                  ['Run type:       ', self.extra_data.get('Run type', '')],
+                  ['Game mode:      ', self.extra_data.get('Game mode', 'Single Player')],
                   [''],
                   ['Total session time:   ', utils.other_utils.build_time_str(session_time)],
                   ['Total run time:       ', utils.other_utils.build_time_str(sum(laps))],
                   ['Average run time:     ', utils.other_utils.build_time_str(avg_lap)],
                   ['Fastest run time:     ', utils.other_utils.build_time_str(min(laps, default=0))],
                   ['Number of runs:       ', str(len(laps))],
-                  ['Time spent in runs: ', str(round(pct, 2)) + '%'],
+                  ['Time spent in runs:   ', str(round(pct, 2)) + '%'],
                   ['']]
 
         # Backwards compatibility with old drop format
@@ -332,6 +338,17 @@ class Profile(tkd.Frame):
                 if not isinstance(v[i], dict):
                     drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
 
+        # List all drops collected
+        if drops:
+            output.append(['Collected drops'])
+            for run_no, drop in drops.items():
+                if drop:
+                    str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
+                    output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
+            output.append([''])
+
+        if laps:
+            output.append(['Run times'])
         # If drops were added before first run is started, we make sure to include them in output anyway
         if '0' in drops.keys():
             output.append(['Run 0: ', 'NO_TIME', *[d['input'] for d in drops['0']]])
@@ -345,21 +362,40 @@ class Profile(tkd.Frame):
                 tmp += [d['input'] for d in droplst]
             output.append(tmp)
 
-        # List all drops collected and show them below the individual runs (good for doing data work on output file)
-        if drops:
-            output.append([''])
-            output.append(['All listed drops:'])
-            for run_no, drop in drops.items():
-                if drop:
-                    str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
-                    output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
-
         # Format string list to be shown in the archive browser
-        for op in output:
+        for i, op in enumerate(output, 1):
             tmpstr = ''.join(op[:2])
             if len(op) > 2:
                 tmpstr += ' --- ' + ', '.join(op[2:])
+            if txt_list.get('1.0', tk.END) != '\n':
+                tmpstr = '\n' + tmpstr
             txt_list.insert(tk.END, tmpstr)
+            if op[0] in ['Statistics', 'Collected drops', 'Run times']:
+                txt_list.tag_add("HEADER", str(i) + ".0", str(i) + ".0 lineend")
+
+        # Add bold tags
+        # txt_list.tag_add("BOLD", "1.0", "1.15")
+        # txt_list.tag_add("BOLD", "2.0", "2.9")
+        # txt_list.tag_add("BOLD", "3.0", "3.10")
+        # txt_list.tag_add("BOLD", "5.0", "5.19")
+        # txt_list.tag_add("BOLD", "6.0", "6.15")
+        # txt_list.tag_add("BOLD", "7.0", "7.17")
+        # txt_list.tag_add("BOLD", "8.0", "8.17")
+        # txt_list.tag_add("BOLD", "9.0", "9.15")
+        # txt_list.tag_add("BOLD", "10.0", "10.19")
+        # txt_list.tag_add("BOLD", "1.16", "1.0 lineend")
+        # txt_list.tag_add("BOLD", "2.16", "2.0 lineend")
+        # txt_list.tag_add("BOLD", "3.16", "3.0 lineend")
+        # txt_list.tag_add("BOLD", "5.20", "5.0 lineend")
+        # txt_list.tag_add("BOLD", "6.20", "6.0 lineend")
+        # txt_list.tag_add("BOLD", "7.20", "7.0 lineend")
+        # txt_list.tag_add("BOLD", "8.20", "8.0 lineend")
+        # txt_list.tag_add("BOLD", "9.20", "9.0 lineend")
+        # txt_list.tag_add("BOLD", "10.20", "10.0 lineend")
+
+        txt_list.tag_add("HEADER", "12.0", "12.0 lineend")
+
+        txt_list.config(state=tk.DISABLED)
 
         button_frame = tkd.Frame(new_win)
         tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
@@ -370,9 +406,11 @@ class Profile(tkd.Frame):
         # TOP: Title first (furthest up), then list frame
         # BOTTOM: Buttons first (furthest down) and then horizontal scrollbar
         title.pack(side=tk.TOP)
+        list_win.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        button_frame.pack(side=tk.BOTTOM)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
+        button_frame.pack(side=tk.BOTTOM)
+
 
         theme = Theme(self.main_frame.active_theme)
         theme.update_colors()
