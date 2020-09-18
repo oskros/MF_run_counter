@@ -30,10 +30,9 @@ from tabs.grail import Grail
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
-# FIXME: Only allow one drop window pop-up at a time
-# FIXME: Pause function shouldn't pause session timer
+# FIXME: Pause function shouldn't pause session timer??
 # FIXME: Sorting by profile save time should only be impacted by changed runs/drops - Alternatively only save to file if any modifications to drops/runs were made?
-# FIXME: Remove option to turn automode off - it's always good to have
+# FIXME: Remove option to turn autocompletion off - it's always good to have
 # FIXME: Auto archive'n'reset
 # FIXME: Auto upload to herokuapp
 

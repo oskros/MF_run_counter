@@ -6,6 +6,7 @@ from utils.color_themes import Theme
 from utils import tk_dynamic as tkd, tk_utils, config, other_utils
 from tkinter import messagebox, ttk
 import system_hotkey
+import win32gui
 
 LAB_HEIGHT = 26
 LAB_WIDTH = 179
@@ -259,7 +260,7 @@ class Hotkeys(tkd.Frame):
         key.trace_add('write', lambda name, index, mode: self.re_register(action, getattr(self, '_' + action), func))
         if default_key.lower() != 'no_bind':
             reg_key = [keys[1].lower()] if keys[0] == '' else list(map(lambda x: x.lower(), keys))
-            self.hk.register(reg_key, callback=lambda event: self.main_frame.queue.put(func))
+            self.hk.register(reg_key, callback=lambda event: '' if win32gui.FindWindow(None, 'Add drop') else self.main_frame.queue.put(func))
 
     def re_register(self, event, old_hotkey, func):
         new_hotkey = [getattr(self, event + '_m').get(), getattr(self, event + '_e').get()]

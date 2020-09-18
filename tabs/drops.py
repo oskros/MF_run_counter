@@ -28,7 +28,7 @@ class Drops(tkd.Frame):
         btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
     def add_drop(self):
-        drop = autocompletion.acbox(enable=self.parent.autocomplete)
+        drop = autocompletion.acbox(enable=self.parent.autocomplete, title='Add drop')
         if not drop or drop['input'] == '':
             return
         if drop['item_name'] is not None:
