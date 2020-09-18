@@ -81,7 +81,7 @@ In the config file you have the option to set the following to 0 (False) or 1 (T
 - tab_keys_global: choose whether changing tabs with ctrl+shift+pgup/pgdn works system wide, or only when app is in focus (default True)
 - check_for_new_version: choose whether app should search for a new release on GitHub when opening (default True)
 - enable_sound_effects: choose whether a sound should be played when pressing start/stop buttons
-- pop-up_drop_window: show the drop window below the main application
+- show_drops_tab_below: show the drops tab below the main application
 - autocomplete: autocompletion of item names when typing them into the "add drop" window
 - active_theme: change the theme of the application between dark/blue/vista
 - start_run_delay: add an artificial delay to the start run button (requested by a user)

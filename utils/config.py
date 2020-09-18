@@ -62,7 +62,7 @@ class Config:
         config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
         config['OPTIONS']['enable_sound_effects'] = '0'
-        config['OPTIONS']['pop_up_drop_window'] = '1'
+        config['OPTIONS']['show_drops_tab_below'] = '1'
         config['OPTIONS']['active_theme'] = 'light'
         config['OPTIONS']['run_timer_delay_seconds'] = '0.0'
         config['OPTIONS']['autocomplete'] = '1'
@@ -140,7 +140,7 @@ class Config:
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
-        cfg['OPTIONS']['pop_up_drop_window'] = str(parent.pop_up_drop_window)
+        cfg['OPTIONS']['show_drops_tab_below'] = str(parent.show_drops_tab_below)
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
         cfg['OPTIONS']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
         cfg['OPTIONS']['autocomplete'] = str(parent.autocomplete)

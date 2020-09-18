@@ -33,7 +33,7 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Tab switch keys global', comment='Controls whether the <Ctrl-Shift-PgUp/PgDn> hotkeys are global or only works when application has focus')
         self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
-        self.add_flag(flag_name='Pop-up drop window', comment='Make the "drops" window appear below the main widget, instead of having it as a separate tab')
+        self.add_flag(flag_name='Show drops tab below', comment='Make the "drops" tabs appear below the main widget, instead of having it as a separate tab')
         self.add_flag(flag_name='Autocomplete', comment='Enable autocompletion of drop names when adding found items')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
         self.add_delay_option(comment='Add an artificial delay to the "start run" command')
@@ -121,7 +121,7 @@ class General(tkd.Frame):
         setattr(self.main_frame, attr, val)
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
-        elif attr.lower() == 'pop_up_drop_window':
+        elif attr.lower() == 'show_drops_tab_below':
             self.main_frame.toggle_drop_tab()
         elif attr.lower() == 'tab_switch_keys_global':
             self.main_frame.toggle_tab_keys_global()

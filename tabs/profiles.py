@@ -4,6 +4,7 @@ import csv
 import json
 import os
 import sys
+import time
 import tkinter as tk
 from utils import tk_dynamic as tkd, tk_utils
 from utils.color_themes import Theme
@@ -110,7 +111,7 @@ class Profile(tkd.Frame):
             # Create a save file for the new profile
             file = 'Profiles/%s.json' % self.active_profile.get()
             with open(file, 'w') as fo:
-                json.dump({'extra_data': profile}, fo, indent=2)
+                json.dump({'extra_data': {**profile, 'Last update': time.time()}}, fo, indent=2)
 
             # Update active profile
             if not first_profile:
@@ -146,7 +147,7 @@ class Profile(tkd.Frame):
         self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
         self.main_frame.options_tab.tab3.game_mode.set(self.game_mode.get())
         self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)
-        self.profile_dropdown['values'] = [act] + [x for x in self.main_frame.sorted_profiles() if x != act]
+        self.profile_dropdown['values'] = self.main_frame.sorted_profiles()
 
     def _delete_profile(self):
         chosen = self.profile_dropdown.get()

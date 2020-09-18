@@ -75,7 +75,7 @@ class Drops(tkd.Frame):
                 self.parent.img_panel.focus_force()
 
     def save_state(self):
-        return self.drops
+        return dict(drops=self.drops)
 
     def load_from_state(self, state):
         self.m.config(state=tk.NORMAL)

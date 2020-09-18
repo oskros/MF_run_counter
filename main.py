@@ -67,7 +67,7 @@ class MainFrame(Config):
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
         self.enable_sound_effects = other_utils.safe_eval(self.cfg['OPTIONS']['enable_sound_effects'])
         self.run_timer_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
-        self.pop_up_drop_window = other_utils.safe_eval(self.cfg['OPTIONS']['pop_up_drop_window'])
+        self.show_drops_tab_below = other_utils.safe_eval(self.cfg['OPTIONS']['show_drops_tab_below'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
         self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
 
@@ -162,7 +162,8 @@ class MainFrame(Config):
         # Load save state and start autosave process
         active_state = self.load_state_file()
         self.LoadActiveState(active_state)
-        self._autosave_state()
+        self.root.after(30000, self._autosave_state)
+        # self.root.after(5000, lambda: 1/0) # for testing purposes
 
         # Apply styling options
         self.theme.apply_theme_style()
@@ -175,7 +176,15 @@ class MainFrame(Config):
         self.root.mainloop()
 
     def sorted_profiles(self):
-        return sorted(self.profiles, key=lambda x: os.stat('Profiles/%s.json' % x).st_mtime if os.path.isfile('Profiles/%s.json' % x) else float('inf'), reverse=True)
+        def sort_key(x):
+            file = 'Profiles/%s.json' % x
+            if not os.path.isfile(file):
+                return float('inf')
+            else:
+                with open(file, 'r') as fo:
+                    state = json.load(fo)
+                return state.get('extra_data', dict()).get('Last update', os.stat(file).st_mtime)
+        return sorted(self.profiles, key=sort_key, reverse=True)
 
     def game_path(self):
         game_mode = self.profile_tab.game_mode.get()
@@ -227,7 +236,7 @@ class MainFrame(Config):
         Toggles whether the drop tab should be shown below the main application, or as its own tab. Relies on hard-coded
         length and width of the application which means that changing font sizes can mess it up
         """
-        if self.pop_up_drop_window:
+        if self.show_drops_tab_below:
             tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
             if tab_name in self.tabcontrol.tabs():
                 self.tabcontrol.forget(tab_name)
@@ -287,8 +296,8 @@ class MainFrame(Config):
         for bug fixing
         """
         err = traceback.format_exception(*args)
-        tk.messagebox.showerror('Exception occured', err)
-        self.Quit()
+        tk.messagebox.showerror('Exception occured', 'Data before last autosave is lost...\n\n' + ''.join(err))
+        os._exit(0)
 
     def notebook_tab_change(self):
         """
@@ -389,9 +398,16 @@ class MainFrame(Config):
         it is saved to file.
         """
         cache = self.load_state_file()
-        cache['active_state'] = self.timer_tab.save_state()
-        cache['active_state'].update(dict(drops=self.drops_tab.save_state()))
+        timer_state = self.timer_tab.save_state()
+        drops_state = self.drops_tab.save_state()
+        if cache.get('active_state', dict()).get('laps', []) != timer_state.get('laps', []) or cache.get('active_state', dict()).get('drops', dict()) != drops_state.get('drops', dict()):
+            is_updated = True
+        else:
+            is_updated = False
+        cache['active_state'] = {**timer_state, **drops_state}
         cache.setdefault('extra_data', dict())['Game mode'] = self.profile_tab.game_mode.get()
+        if is_updated or 'Last update' not in cache['extra_data']:
+            cache['extra_data']['Last update'] = time.time()
         file = 'Profiles/%s.json' % self.active_profile
         with open(file, 'w') as fo:
             json.dump(cache, fo, indent=2)
@@ -400,13 +416,13 @@ class MainFrame(Config):
     def Quit(self):
         """
         Stops the active run, updates config, saves current state to profile .json, and finally calls 'os._exit',
-        terminating all active threads.
+        terminating all active threads. WARNING: calling os._exit doesn't do proper cleanup, is this an issue?
         """
         if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active):
             self.timer_tab.stop()
         self.SaveActiveState()
         self.update_config(self)
-        os._exit(0)
+        sys.exit()
 
 
 MainFrame()
