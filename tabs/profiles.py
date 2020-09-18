@@ -192,6 +192,7 @@ class Profile(tkd.Frame):
             else:
                 # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
                 cache = self.main_frame.load_state_file()
+                cache.setdefault('extra_data', dict())['Last update'] = time.time()
                 removed = cache.pop(chosen, None)
                 file = 'Profiles/%s.json' % self.active_profile.get()
                 with open(file, 'w') as fo:
@@ -204,6 +205,7 @@ class Profile(tkd.Frame):
                 self.tot_laps -= len(removed.get('laps', []))
                 self.main_frame.timer_tab._set_laps(self.main_frame.timer_tab.is_running)
                 self.update_descriptive_statistics()
+            self.profile_dropdown['values'] = self.main_frame.sorted_profiles()
 
     def update_descriptive_statistics(self):
         active = self.main_frame.load_state_file()

@@ -31,7 +31,8 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 # FIXME: Pause function shouldn't pause session timer??
-# FIXME: Sorting by profile save time should only be impacted by changed runs/drops - Alternatively only save to file if any modifications to drops/runs were made?
+
+# FIXME: Sorting by profile save time: Missing dynamic update when making new runs/drops
 # FIXME: Remove option to turn autocompletion off - it's always good to have
 # FIXME: Auto archive'n'reset
 # FIXME: Auto upload to herokuapp
@@ -306,6 +307,7 @@ class MainFrame(Config):
         if x.endswith('profile'):
             # if not self.timer_tab.is_paused:
             #     self.timer_tab.pause()
+            self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
             self.profile_tab.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
         # banner image instead :)
@@ -375,6 +377,8 @@ class MainFrame(Config):
             state = self.load_state_file()
             state['active_state'] = dict()
             state[stamp] = active
+            state.setdefault('extra_data', dict())['Last update'] = time.time()
+
             file = 'Profiles/%s.json' % self.active_profile
             with open(file, 'w') as fo:
                 json.dump(state, fo, indent=2)
