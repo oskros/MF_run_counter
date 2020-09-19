@@ -34,7 +34,7 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
         self.add_flag(flag_name='Show drops tab below', comment='Make the "drops" tabs appear below the main widget, instead of having it as a separate tab')
-        self.add_flag(flag_name='Autocomplete', comment='Enable autocompletion of drop names when adding found items')
+        # self.add_flag(flag_name='Autocomplete', comment='Enable autocompletion of drop names when adding found items')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
         self.add_delay_option(comment='Add an artificial delay to the "start run" command')
 

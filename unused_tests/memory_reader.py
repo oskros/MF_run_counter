@@ -4,6 +4,8 @@
 # import psutil
 # import sys
 #
+# look here for reading .d2s files: https://github.com/nokka/d2s
+#
 # # input process name
 # nameprocess = "notepad.exe"
 #
@@ -59,6 +61,7 @@ import re
 
 import os
 import ctypes
+
 
 class AdminStateUnknownError(Exception):
     """Cannot determine whether the user is an admin."""
@@ -124,17 +127,17 @@ print(hMod)
 # processHandle.close()
 # base_addr = modules[0] # for me it worked to select the first item in list...
 # print('Base address: %s' % base_addr)
-
-import sys
-sys.exit(1)
-loading = base_adress + 0x30F2C0,
-saving = base_adress + 0x3792F8,
-saving2 = base_adress + 0x3786D0,
-in_game = base_adress + 0x30EE8C,
-in_menu = base_adress + 0x379970,
+#
+# import sys
+# sys.exit(1)
+# loading = base_adress + 0x30F2C0,
+# saving = base_adress + 0x3792F8,
+# saving2 = base_adress + 0x3786D0,
+# in_game = base_adress + 0x30EE8C,
+# in_menu = base_adress + 0x379970,
 # print(pm.read_bytes(pm.process_base.EntryPoint, 255))
 # print(pm.read_bytes(pm.process_base.process_handle, 4))
-read_bytes = pm.read_bytes(base_adress, 10000)
+read_bytes = pm.read_bytes(base_address, 10000)
 # print(read_bytes)
 # print(re.sub(b'[^\x00-\x99f9]', b'', read_bytes).replace(b'\x00', b''))
 

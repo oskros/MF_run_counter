@@ -32,7 +32,6 @@ from tabs.grail import Grail
 # FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 # FIXME: Pause function shouldn't pause session timer??
 
-# FIXME: Sorting by profile save time: Missing dynamic update when making new runs/drops
 # FIXME: Remove option to turn autocompletion off - it's always good to have
 # FIXME: Auto archive'n'reset
 # FIXME: Auto upload to herokuapp
@@ -70,7 +69,7 @@ class MainFrame(Config):
         self.run_timer_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
         self.show_drops_tab_below = other_utils.safe_eval(self.cfg['OPTIONS']['show_drops_tab_below'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
-        self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
+        # self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -307,6 +306,7 @@ class MainFrame(Config):
         if x.endswith('profile'):
             # if not self.timer_tab.is_paused:
             #     self.timer_tab.pause()
+            self.SaveActiveState()
             self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
             self.profile_tab.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
