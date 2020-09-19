@@ -137,7 +137,7 @@ class MFRunTimer(tkd.Frame):
         if not self.is_running:
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
-            delay = self.main_frame.run_timer_delay_seconds
+            delay = self.main_frame.start_run_delay_seconds
             if delay > 0:
                 if self._waiting_for_delay:
                     return

@@ -34,9 +34,10 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
         self.add_flag(flag_name='Show drops tab below', comment='Make the "drops" tabs appear below the main widget, instead of having it as a separate tab')
-        # self.add_flag(flag_name='Autocomplete', comment='Enable autocompletion of drop names when adding found items')
+        self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
-        self.add_delay_option(comment='Add an artificial delay to the "start run" command')
+        self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')
+        self.add_num_entry(flag_name='Auto archive (hours)', comment='Automatically archive&reset if more than configured number\nof hours has passed since last time the profile was used')
 
     def add_theme_choice(self, comment=None):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
@@ -64,26 +65,21 @@ class General(tkd.Frame):
             self.main_frame.theme.apply_theme_style()
             self.main_frame.theme.update_colors()
 
-    def _change_delay(self):
-        new = self.run_delay.get()
-        if new in ['', '-'] or float(new) < 0:
-            return
-        self.main_frame.run_timer_delay_seconds = float(self.run_delay.get())
-
-    def add_delay_option(self, comment=None):
+    def add_num_entry(self, flag_name, comment=None):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
         lf.pack(expand=False, fill=tk.X)
 
-        lab = tkd.Label(lf, text='Start run delay (seconds)')
+        lab = tkd.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
         if comment is not None:
             tkd.create_tooltip(lab, comment)
 
+        flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_').replace('(', '').replace(')', '')
         self.run_delay = tk.StringVar()
-        self.run_delay.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS']['run_timer_delay_seconds']))
-        tkd.Entry(lf, textvariable=self.run_delay).pack(side=tk.RIGHT)
-        self.run_delay.trace_add('write', lambda name, index, mode: self._change_delay())
+        self.run_delay.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS'][flag_attr]))
+        tkd.RestrictedEntry(lf, textvariable=self.run_delay, num_only=True, width=13).pack(side=tk.RIGHT, padx=3)
+        self.run_delay.trace_add('write', lambda name, index, mode: setattr(self.main_frame, flag_attr, float('0' + self.run_delay.get())))
 
     def add_flag(self, flag_name, comment=None):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)

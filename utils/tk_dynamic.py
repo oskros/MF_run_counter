@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import webbrowser
 from functools import partial
-import screeninfo
 
 
 class Toplevel(tk.Toplevel):
@@ -370,6 +369,41 @@ class Entry(tk.Entry):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
         tk.Entry.destroy(self)
+
+
+class RestrictedEntry(tk.Entry):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        self.num_only = kwargs.pop('num_only', False)
+        tk.Entry.__init__(self, *args, **kwargs)
+        if self.num_only:
+            self.allowed_chars = '.0123456789'
+        else:
+            self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+        vcmd = (self.register(self.validate_input), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        self.config(validate='key', validatecommand=vcmd)
+
+        self.__class__.objects.append(self)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.Entry.destroy(self)
+
+    def validate_input(self, *args):
+        if args[0] == '1':
+            if self.num_only and args[4] == '.' and '.' in args[3]:
+                return False
+            return args[4] in self.allowed_chars
+        else:
+            return True
 
 
 class Radiobutton(tk.Radiobutton):

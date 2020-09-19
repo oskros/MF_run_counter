@@ -66,10 +66,11 @@ class MainFrame(Config):
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
         self.enable_sound_effects = other_utils.safe_eval(self.cfg['OPTIONS']['enable_sound_effects'])
-        self.run_timer_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['run_timer_delay_seconds'])
+        self.start_run_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['start_run_delay_seconds'])
         self.show_drops_tab_below = other_utils.safe_eval(self.cfg['OPTIONS']['show_drops_tab_below'])
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
-        # self.autocomplete = other_utils.safe_eval(self.cfg['OPTIONS']['autocomplete'])
+        self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
+        self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
 
         # Load theme
         if self.active_theme not in available_themes:

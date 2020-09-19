@@ -49,17 +49,12 @@ class RegistrationForm:
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        self.allowed_chars = '-_.() abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
-        if first_profile:
-            la = tk.Label(self.new_win, text='Please create your first profile.', font='Helvetica 14')
-        else:
-            la = tk.Label(self.new_win, text='Profile registration', font='Helvetica 14')
-        la.pack()
+        lab_text = 'Please create your first profile.' if first_profile else 'Profile registration'
+        tk.Label(self.new_win, text=lab_text, font='Helvetica 14').pack()
 
-        self.a1 = self.make_entry_row('Profile name')
+        self.a1 = self.make_entry_row('Profile name', restricted=True)
         self.a2 = self.make_entry_row('Character name')
-        # self.a3 = self.make_entry_row('Run type')
         self.a3 = self.make_combobox_row('Run type', [
             '(A1) Mausoleum', '(A1) The Countess', '(A1) The Pit', '(A1) Andariel', '(A1) Cows', '-----------------------',
             '(A2) Ancient Tunnels', '(A2) Summoner', '-----------------------',
@@ -68,10 +63,6 @@ class RegistrationForm:
             '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
             '(A5) Baal', '(A5) Uber Quest'], readonly=False)
         self.a4 = self.make_combobox_row('Game mode', ['Single Player', 'Multiplayer'])
-
-        # Restrict input to profile name, only allowing characters that can appear in a windows file name
-        vcmd = (self.new_win.register(self.validate_input), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
-        self.a1.config(validate='key', validatecommand=vcmd)
 
         tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
         self.new_win.bind('<KeyPress-Return>', func=self.b1_action)
@@ -95,13 +86,16 @@ class RegistrationForm:
             self.returning = x
             self.new_win.quit()
 
-    def make_entry_row(self, text):
+    def make_entry_row(self, text, restricted=False):
         frame = tk.Frame(self.new_win)
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
         tk.Label(frame, width=16, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
         var = tk.StringVar()
-        out = tk.Entry(frame, textvariable=var)
+        if restricted:
+            out = tkd.RestrictedEntry(frame, textvariable=var)
+        else:
+            out = tk.Entry(frame, textvariable=var)
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
         return out
 
@@ -117,12 +111,6 @@ class RegistrationForm:
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
         out.set(values[0])
         return out
-
-    def validate_input(self, *args):
-        if args[0] == '1':
-            return args[4] in self.allowed_chars
-        else:
-            return True
 
     def close_mod(self):
         self.returning = None

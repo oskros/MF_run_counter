@@ -64,8 +64,9 @@ class Config:
         config['OPTIONS']['enable_sound_effects'] = '0'
         config['OPTIONS']['show_drops_tab_below'] = '1'
         config['OPTIONS']['active_theme'] = 'light'
-        config['OPTIONS']['run_timer_delay_seconds'] = '0.0'
-        # config['OPTIONS']['autocomplete'] = '1'
+        config['OPTIONS']['start_run_delay_seconds'] = '0.0'
+        config['OPTIONS']['auto_upload_herokuapp'] = '0'
+        config['OPTIONS']['auto_archive_hours'] = '0.0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -142,8 +143,9 @@ class Config:
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
         cfg['OPTIONS']['show_drops_tab_below'] = str(parent.show_drops_tab_below)
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
-        cfg['OPTIONS']['run_timer_delay_seconds'] = str(parent.run_timer_delay_seconds)
-        # cfg['OPTIONS']['autocomplete'] = str(parent.autocomplete)
+        cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
+        cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)
+        cfg['OPTIONS']['auto_archive_hours'] = str(parent.auto_archive_hours)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
