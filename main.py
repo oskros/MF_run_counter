@@ -4,6 +4,7 @@ import time
 import json
 import queue
 import base64
+import ctypes
 import traceback
 import win32api
 import win32gui
@@ -29,7 +30,6 @@ from tabs.grail import Grail
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
-# FIXME: Grail controller does not fit on a 15.6" screen, does fit on a 23" screen --> solve?
 # FIXME: Pause function shouldn't pause session timer??
 
 # FIXME: Remove option to turn autocompletion off - it's always good to have
@@ -170,6 +170,9 @@ class MainFrame(Config):
 
         # Automode
         self.toggle_automode()
+
+        # A trick to disable windows DPI scaling - FIXME: needs testing
+        ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Start the program
         self.root.mainloop()
