@@ -56,6 +56,35 @@ import re
 # luid = pymem.ressources.structure.LUID()
 # pymem.process.set_debug_privilege()
 
+
+import os
+import ctypes
+
+class AdminStateUnknownError(Exception):
+    """Cannot determine whether the user is an admin."""
+    pass
+
+
+def is_user_admin():
+    # type: () -> bool
+    """Return True if user has admin privileges.
+
+    Raises:
+        AdminStateUnknownError if user privileges cannot be determined.
+    """
+    try:
+        return os.getuid() == 0
+    except AttributeError:
+        pass
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() == 1
+    except AttributeError:
+        raise AdminStateUnknownError
+
+
+print('User admin: %s' % is_user_admin())
+
+
 pm = pymem.Pymem('notepad.exe')
 # pid = pymem.process.process_from_name('Game.exe').th32ProcessID
 
