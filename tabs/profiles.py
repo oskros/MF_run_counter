@@ -34,18 +34,18 @@ class Profile(tkd.Frame):
     def _make_widgets(self):
         tkd.Label(self, text='Select active profile', justify=tk.LEFT).pack(anchor=tk.W)
 
-        profile_frame = tkd.Frame(self, height=28, width=238, pady=2, padx=2)
-        profile_frame.propagate(False)
-        profile_frame.pack()
+        profile_dropdown_frame = tkd.Frame(self, height=28, width=238, pady=2, padx=2)
+        profile_dropdown_frame.propagate(False)
+        profile_dropdown_frame.pack()
 
         self.active_profile.set(self.main_frame.active_profile)
-        self.profile_dropdown = ttk.Combobox(profile_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
+        self.profile_dropdown = ttk.Combobox(profile_dropdown_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
         self.profile_dropdown.bind("<FocusOut>", lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        tkd.Button(profile_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
-        tkd.Button(profile_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
+        tkd.Button(profile_dropdown_frame, text='New...', command=self._add_new_profile).pack(side=tk.LEFT)
+        tkd.Button(profile_dropdown_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
         self.run_type = tk.StringVar(self, value=self.extra_data.get('Run type', ''))
         self.game_mode = tk.StringVar(self, value=self.extra_data.get('Game mode', 'Single Player'))
@@ -61,7 +61,7 @@ class Profile(tkd.Frame):
         self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.bind("<<ComboboxSelected>>", lambda e: self.update_descriptive_statistics())
         self.archive_dropdown.bind("<FocusOut>", lambda e: self.archive_dropdown.selection_clear())
-        self.archive_dropdown.pack(side=tk.LEFT)
+        self.archive_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         tkd.Button(sel_frame, text='Open', command=self.open_archive_browser).pack(side=tk.LEFT)
         tkd.Button(sel_frame, text='Delete', command=self.delete_archived_session).pack(side=tk.LEFT)
