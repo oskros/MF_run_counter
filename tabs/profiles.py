@@ -330,7 +330,6 @@ class Profile(tkd.Frame):
         hscroll.config(command=txt_list.xview)
         vscroll.config(command=txt_list.yview)
 
-
         # Build header for output file with information and descriptive statistics
         output = [['Statistics'],
                   ['Character name: ', self.extra_data.get('Character name', '')],
@@ -353,7 +352,8 @@ class Profile(tkd.Frame):
 
         # List all drops collected
         if drops:
-            output.append(['Collected drops'])
+            if any(drop for drop in drops.values()):
+                output.append(['Collected drops'])
             for run_no, drop in drops.items():
                 if drop:
                     str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
@@ -362,9 +362,6 @@ class Profile(tkd.Frame):
 
         if laps:
             output.append(['Run times'])
-        # If drops were added before first run is started, we make sure to include them in output anyway
-        if '0' in drops.keys():
-            output.append(['Run 0: ', 'NO_TIME', *[d['input'] for d in drops['0']]])
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
@@ -458,11 +455,8 @@ class Profile(tkd.Frame):
         """
         string_lst_corr = list()
         for s in string_lst:
-            if s[0].lower().startswith('run'):
-                tmp = [s[0][:s[0].find(':')]] + s[1:]
-                string_lst_corr.append([' '.join(x.split()) for x in tmp])
-            else:
-                string_lst_corr.append([' '.join(x.split()) for x in s])
+            add = [' '.join(s[0].replace(':', '').split())] + [w for w in s[1:] if w != '']
+            string_lst_corr.append(add)
         f = tk.filedialog.asksaveasfilename(defaultextension='.csv', filetypes=(('.csv', '*.csv'), ('All Files', '*.*')))
         if not f:
             return
