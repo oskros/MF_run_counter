@@ -108,6 +108,7 @@ class General(tkd.Frame):
         on_button.config(command=lambda: self.toggle_button(flag_attr))
         on_button.pack(side=tk.RIGHT)
         off_button.pack(side=tk.RIGHT)
+        return off_button, on_button
 
     def toggle_button(self, attr):
         val = other_utils.safe_eval(getattr(self, attr).get())
@@ -123,6 +124,8 @@ class General(tkd.Frame):
             self.main_frame.toggle_tab_keys_global()
         elif attr.lower() == 'automode':
             self.main_frame.toggle_automode()
+        elif attr.lower() == 'advanced_automode':
+            self.toggle_advanced_automode(confirm=True)
 
 
 class Automode(General):
@@ -130,54 +133,100 @@ class Automode(General):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self.add_flag(flag_name='Automode', comment='Enables automode, which monitors your local character files for updates.\nEvery time an update is registered, the current run terminates and a new one is started')
+        self.advanced_automode_off_button, _ = self.add_flag(flag_name='Advanced automode', comment='Enables advanced automode. This uses d2 memory reading, and can thus\npotentially be seen as cheating when playing multiplayer.\nOnly advised to be used in single player\n\nAdvanced automode makes it possible to identify both when you enter and\nleave games. Thus lobby time and game time can be accurately measured.\nAlso removes the standard automode bugs with dying and games above 5 mins')
 
-        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
-        lf.propagate(False)
-        lf.pack(expand=False, fill=tk.X)
+        self.gamemode_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
+        self.gamemode_frame.propagate(False)
 
-        lab = tkd.Label(lf, text='Game mode')
-        lab.pack(side=tk.LEFT)
-        tkd.create_tooltip(lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
+        self.gamemode_lab = tkd.Label(self.gamemode_frame, text='Game mode')
+        tkd.create_tooltip(self.gamemode_lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
                                      '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_mode = tk.StringVar()
         self.game_mode.set(self.main_frame.profile_tab.game_mode.get())
-        cb = ttk.Combobox(lf, textvariable=self.game_mode, state='readonly', values=['Single Player', 'Multiplayer'])
-        cb.bind("<FocusOut>", lambda e: cb.selection_clear())
-        cb.config(width=12)
-        cb.pack(side=tk.RIGHT)
+        self.gamemode_cb = ttk.Combobox(self.gamemode_frame, textvariable=self.game_mode, state='readonly', values=['Single Player', 'Multiplayer'])
+        self.gamemode_cb.bind("<FocusOut>", lambda e: self.gamemode_cb.selection_clear())
+        self.gamemode_cb.config(width=11)
         self.game_mode.trace_add('write', lambda name, index, mode: self.update_game_mode())
 
-        lf2 = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
-        lf2.propagate(False)
-        lf2.pack(expand=False, fill=tk.X)
+        self.charname_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
+        self.charname_frame.propagate(False)
 
         self.char_var = tk.StringVar()
         self.char_var.set(self.main_frame.profile_tab.char_name.get())
-        cn_lab = tkd.Label(lf2, text='Character name')
-        cn_lab.pack(side=tk.LEFT)
-        tkd.create_tooltip(cn_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
-        tkd.Label(lf2, textvariable=self.char_var).pack(side=tk.RIGHT)
+        self.charname_text_lab = tkd.Label(self.charname_frame, text='Character name')
+        tkd.create_tooltip(self.charname_text_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
+        self.charname_val_lab = tkd.Label(self.charname_frame, textvariable=self.char_var)
 
-        tkd.Label(self, text='Game path (Single Player)').pack(pady=[10, 0])
+        self.sp_path_lab = tkd.Label(self, text='Game path (Single Player)')
         self.SP_game_path = tk.StringVar()
         self.SP_game_path.set(self.main_frame.SP_game_path)
-        tkd.Entry(self, textvariable=self.SP_game_path).pack(fill=tk.BOTH, padx=4)
-        bf1 = tkd.Frame(self)
-        bf1.pack()
-        tkd.Button(bf1, text='Get', command=lambda: self.get_game_path(is_sp=True),
-                   tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually').pack(side=tk.LEFT, padx=1)
-        tkd.Button(bf1, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path').pack(side=tk.LEFT)
+        self.sp_path_entry = tkd.Entry(self, textvariable=self.SP_game_path)
 
-        tkd.Label(self, text='Game path (Multiplayer)').pack(pady=[10,0])
+        self.sp_path_frame = tkd.Frame(self)
+        self.sp_path_get = tkd.Button(self.sp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=True),
+                   tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually')
+        self.sp_path_apply = tkd.Button(self.sp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
+
+        self.mp_path_lab = tkd.Label(self, text='Game path (Multiplayer)')
         self.MP_game_path = tk.StringVar()
         self.MP_game_path.set(self.main_frame.MP_game_path)
-        tkd.Entry(self, textvariable=self.MP_game_path).pack(fill=tk.BOTH, padx=4)
-        bf2 = tkd.Frame(self)
-        bf2.pack()
-        tkd.Button(bf2, text='Get', command=lambda: self.get_game_path(is_sp=False),
-                   tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually').pack(side=tk.LEFT, padx=1)
-        tkd.Button(bf2, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path').pack(side=tk.LEFT)
+        self.mp_path_entry = tkd.Entry(self, textvariable=self.MP_game_path)
+        self.mp_path_frame = tkd.Frame(self)
+
+        self.mp_path_get = tkd.Button(self.mp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=False),
+                   tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually')
+        self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
+
+        self.toggle_advanced_automode(show_error=False)
+
+    def toggle_advanced_automode(self, show_error=True, confirm=False):
+        if self.main_frame.advanced_automode and (confirm is False or tk_utils.mbox(msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, and might result in a ban.\n\nExplanation: Advanced automode utilizes "Memory reading" of the D2 process\nto discover information about the current game state, and this could be deemed cheating\n\nIf you still wish to continue, click "OK"')):
+            self.main_frame.load_memory_reader(force=False, show_err=show_error)
+            if not self.main_frame.is_user_admin:
+                self.main_frame.advanced_automode = 0
+                return self.toggle_advanced_automode(show_error=show_error, confirm=confirm)
+            self.gamemode_frame.forget()
+            self.gamemode_lab.forget()
+            self.gamemode_cb.forget()
+
+            self.charname_frame.forget()
+            self.charname_text_lab.forget()
+            self.charname_val_lab.forget()
+
+            self.sp_path_lab.forget()
+            self.sp_path_entry.forget()
+            self.sp_path_frame.forget()
+            self.sp_path_get.forget()
+            self.sp_path_apply.forget()
+
+            self.mp_path_lab.forget()
+            self.mp_path_entry.forget()
+            self.mp_path_frame.forget()
+            self.mp_path_get.forget()
+            self.mp_path_apply.forget()
+        else:
+            self.advanced_automode_off_button.invoke()
+            self.gamemode_frame.pack(expand=False, fill=tk.X)
+            self.gamemode_lab.pack(side=tk.LEFT)
+            self.gamemode_cb.pack(side=tk.RIGHT)
+
+            self.charname_frame.pack(expand=False, fill=tk.X)
+            self.charname_text_lab.pack(side=tk.LEFT)
+            self.charname_val_lab.pack(side=tk.RIGHT)
+
+            self.sp_path_lab.pack(pady=[0, 0])
+            self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
+            self.sp_path_frame.pack()
+            self.sp_path_get.pack(side=tk.LEFT, padx=1)
+            self.sp_path_apply.pack(side=tk.LEFT)
+
+            self.mp_path_lab.pack(pady=[0, 0])
+            self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
+            self.mp_path_frame.pack()
+            self.mp_path_get.pack(side=tk.LEFT, padx=1)
+            self.mp_path_apply.pack(side=tk.LEFT)
+        self.main_frame.toggle_automode()
 
     def get_game_path(self, is_sp=True):
         found_path = config.Config.find_SP_game_path() if is_sp else config.Config.find_MP_game_path()

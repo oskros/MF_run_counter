@@ -31,10 +31,9 @@ def elevate_access(func):
 
 class D2Reader:
     def __init__(self):
-        self.pm = pymem.Pymem('Game.exe')
+        self.pm = pymem.Pymem('Game.exe', verbose=False)
+
         self.d2_ver = self.get_d2_version()
-        if self.d2_ver != '1.13d':
-            raise ValueError('Your game version is "%s", currently only "1.13d" is supported')
 
         self.base_address = self.pm.process_base.lpBaseOfDll
 
@@ -52,10 +51,36 @@ class D2Reader:
                      '1.0.13.60': '1.13c'}
         return patch_map.get(raw_version, None)
 
+    def in_game(self):
+        if self.d2_ver == '1.13d':
+            world_addr = self.dll_addrs['D2Game.dll'] + 0x111C10
+        elif self.d2_ver == '1.13c':
+            world_addr = self.dll_addrs['D2Game.dll'] + 0x111C24
+        else:
+            raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
+
+        return bool(self.pm.read_int(world_addr))
+
 
 if __name__ == '__main__':
-    reader = elevate_access(D2Reader)
-    players_x_addr = reader.dll_addrs['D2Game.dll'] + 0x111C44
+    # D2Reader()
+    print(elevate_access(lambda: eval('D2Reader().in_game()')))
+    # players_x_addr = reader.dll_addrs['D2Game.dll'] + 0x111C44
+    # selected_inv_addr = reader.dll_addrs['D2Client.dll'] + 0x11CB28
+    # get_item_name_addr = reader.dll_addrs['D2Client.dll'] + 0x958C0
 
-    print(reader.d2_ver)
-    print(reader.pm.read_int(players_x_addr))
+    # ping_addr = reader.dll_addrs['D2Client.dll'] + 0x108764
+    # object_text = reader.dll_addrs['D2Common.dll'] + 0x1ADC0
+    # world = reader.dll_addrs['D2Game.dll'] + 0x111C10
+
+    # print(reader.d2_ver)
+    # print(reader.pm.read_int(players_x_addr))
+    # print(reader.pm.read_int(selected_inv_addr))
+    # print(reader.pm.read_int(get_item_name_addr))
+    # print(reader.pm.read_int(ping_addr))
+    # print(reader.pm.read_int(world))
+    # print(reader.pm.read_int(object_text))
+    # print(reader.pm.read_bytes(object_text, 100))
+
+    # print(reader.pm.read_string(test_addr, 10))
+    # print(reader.pm.read_char(test_addr))

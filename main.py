@@ -2,6 +2,7 @@ from init import *
 import sys
 import time
 import json
+import pymem
 import queue
 import base64
 import ctypes
@@ -9,6 +10,7 @@ import traceback
 import win32api
 import win32gui
 import win32con
+from memory_reader import reader
 from utils.config import Config
 from tabs.options import Options
 from tabs.profiles import Profile
@@ -32,9 +34,8 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Pause function shouldn't pause session timer??
 
-# FIXME: Remove option to turn autocompletion off - it's always good to have
-# FIXME: Auto archive'n'reset
-# FIXME: Auto upload to herokuapp
+# FIXME: Ability to select which run to archive drop on
+# FIXME: Advanced automode still crashes if incorrect character name / game path is provided, even though this doesnt matter
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
@@ -62,6 +63,7 @@ class MainFrame(Config):
         self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
         self.automode = other_utils.safe_eval(self.cfg['OPTIONS']['automode'])
+        self.advanced_automode = other_utils.safe_eval(self.cfg['OPTIONS']['advanced_automode'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -71,6 +73,10 @@ class MainFrame(Config):
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
+
+        # Initiate d2loader for memory reading
+        self.is_user_admin = reader.is_user_admin()
+        self.load_memory_reader(force=True, show_err=self.advanced_automode)
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -180,6 +186,21 @@ class MainFrame(Config):
 
         # Start the program
         self.root.mainloop()
+
+    def load_memory_reader(self, force=False, show_err=True):
+        if force or hasattr(self, 'reader_error'):
+            try:
+                assert bool(self.advanced_automode) is True
+                assert self.is_user_admin is True
+                self.d2_reader = reader.D2Reader()
+                self.cached_is_ingame = self.d2_reader.in_game()
+            except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError) as e:
+                self.reader_error = e
+                self.d2_reader = None
+                self.cached_is_ingame = None
+                if show_err and not self.is_user_admin:
+                    tk.messagebox.showerror('Elevated access rights',
+                                            'You must run the app as ADMIN to initialize memory reader for advanced automode.\nWill revert to standard automode. %s' % self.reader_error)
 
     def sorted_profiles(self):
         def sort_key(x):

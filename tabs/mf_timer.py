@@ -1,7 +1,7 @@
 import os
 import time
 import tkinter as tk
-
+import pymem.exception
 import utils.other_utils
 from utils import tk_dynamic as tkd, tk_utils, sound
 from tkinter import ttk
@@ -77,12 +77,26 @@ class MFRunTimer(tkd.Frame):
         self._set_time(self.session_time, for_session=True)
         self._sess_timer = self.after(50, self._update_session_time)
 
-    def _check_entered_game(self):
-        stamp = os.stat(self.char_file_path).st_mtime
-        if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
-            self.stop_start()
-            self.cached_file_stamp = stamp
-        self._game_check = self.after(50, self._check_entered_game)
+    def _check_entered_game(self, advanced_mode=False):
+        if advanced_mode and self.main_frame.is_user_admin:
+            try:
+                is_ingame = self.main_frame.d2_reader.in_game()
+            except (pymem.exception.MemoryReadError, AttributeError, KeyError) as e:
+                self.main_frame.load_memory_reader(force=True, show_err=False)
+                self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
+                return
+            if self.main_frame.cached_is_ingame and not is_ingame:
+                self.stop()
+                self.main_frame.cached_is_ingame = is_ingame
+            elif not self.main_frame.cached_is_ingame and is_ingame:
+                self.start()
+                self.main_frame.cached_is_ingame = is_ingame
+        else:
+            stamp = os.stat(self.char_file_path).st_mtime
+            if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
+                self.stop_start()
+                self.cached_file_stamp = stamp
+        self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
 
     def _set_time(self, elap, for_session):
         time_str = utils.other_utils.build_time_str(elap)
@@ -265,7 +279,7 @@ class MFRunTimer(tkd.Frame):
 
             if utils.other_utils.test_mapfile_path(d2_save_path, char_extension):
                 self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
-                self._check_entered_game()
+                self._check_entered_game(self.main_frame.advanced_automode)
 
                 self.automode_active = True
             else:
