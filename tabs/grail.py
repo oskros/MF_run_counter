@@ -41,7 +41,7 @@ class Grail(tkd.Frame):
 
         bfr2 = tkd.Frame(self)
         bfr2.pack(pady=12, expand=True, fill=tk.X)
-        tkd.Button(bfr2, text='Upload to herokuapp', command=self.upload_to_herokuapp, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=8, side=tk.LEFT, fill=tk.X, expand=True)
+        tkd.Button(bfr2, text='Upload grail to herokuapp', command=self.upload_to_herokuapp, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=8, side=tk.LEFT, fill=tk.X, expand=True)
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)
@@ -222,31 +222,34 @@ class Grail(tkd.Frame):
         upd_lst = herokuapp_controller.build_update_lst(data)
         return upd_lst
 
-    def upload_to_herokuapp(self):
-        resp = tk_utils.mebox(entries=['Username', 'Password'], title='d2-holy-grail.herokuapp', defaults=[self.username.get(), self.password.get()], masks=[None, "*"])
+    def upload_to_herokuapp(self, upd_dict=None, show_confirm=True, pop_up_msg=None, pop_up_title='d2-holy-grail.herokuapp'):
+        resp = tk_utils.mebox(entries=['Username', 'Password'], title=pop_up_title, defaults=[self.username.get(), self.password.get()], masks=[None, "*"], msg=pop_up_msg)
         if resp is None:
-            return
+            return None
         uid, pwd = resp
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
             herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
         except requests.exceptions.HTTPError:
-            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % uid)
-            return
+            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com. Try again" % uid)
+            return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
 
-        upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
+        if upd_dict is None:
+            upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
         herokuapp_grail['data'] = herokuapp_controller.update_grail_dict(dct=herokuapp_grail['data'], item_upg_dict=upd_dict)
 
         try:
             herokuapp_controller.put_grail(uid=uid, pwd=pwd, data=herokuapp_grail, proxies=prox)
         except requests.exceptions.HTTPError:
             messagebox.showerror('Password 401', "Password incorrect for user '%s', try again" % uid)
-            return
+            return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
 
         self.username.set(uid)
         self.password.set(pwd)
 
-        messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
+        if show_confirm:
+            messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
+        return True
 
     def open_grail_controller(self):
         def rec_checkbox_add(master, frame, dct, rows=4, depth=None):

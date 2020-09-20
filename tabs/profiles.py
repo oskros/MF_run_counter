@@ -89,16 +89,13 @@ class Profile(tkd.Frame):
             # Handle non-allowed profile names
             if profile_name == '':
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
-                self._add_new_profile(first_profile=first_profile)
-                return
+                return self._add_new_profile(first_profile=first_profile)
             elif profile_name == 'grail':
                 messagebox.showerror('Reserved name', '"grail" is a reserved profile name, please choose another one.')
-                self._add_new_profile(first_profile=first_profile)
-                return
+                return self._add_new_profile(first_profile=first_profile)
             if not first_profile and profile_name in self.profile_dropdown['values']:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
-                self._add_new_profile(first_profile=first_profile)
-                return
+                return self._add_new_profile(first_profile=first_profile)
 
             # Add new profile to profile tab
             self.main_frame.profiles.append(profile_name)
@@ -192,7 +189,7 @@ class Profile(tkd.Frame):
             else:
                 # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
                 cache = self.main_frame.load_state_file()
-                cache.setdefault('extra_data', dict())['Last update'] = time.time()
+                # cache.setdefault('extra_data', dict())['Last update'] = time.time()
                 removed = cache.pop(chosen, None)
                 file = 'Profiles/%s.json' % self.active_profile.get()
                 with open(file, 'w') as fo:

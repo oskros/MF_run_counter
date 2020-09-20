@@ -225,11 +225,9 @@ class AutocompleteEntry:
         self.entry.focus()
 
         self.var.trace_add('write', lambda name, index, mode: self.changed(name, index, mode))
-        self.master.unbind_all('<<NextWindow>>')
-        self.master.unbind_all('<<PrevWindow>>')
-        self.master.bind_all("<Tab>", self.selection)
-        self.master.bind_all("<Up>", self.move_up)
-        self.master.bind_all("<Down>", self.move_down)
+        self.entry.bind("<Up>", self.move_up)
+        self.entry.bind("<Down>", self.move_down)
+        self.entry.bind("<Tab>", self.selection)
 
         self.listboxUp = False
 
@@ -252,6 +250,7 @@ class AutocompleteEntry:
                     self.listbox.destroy()
                 self.listbox = tk.Listbox(self.master, width=self.width, height=min(len(words), 6))
                 self.listbox.bind("<Double-Button-1>", self.selection)
+                self.listbox.bind("<Tab>", self.selection)
                 self.listbox.place(relx=0, rely=0.3)
                 self.listbox.tkraise()
                 self.listboxUp = True

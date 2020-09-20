@@ -353,19 +353,18 @@ class MainFrame(Config):
         self.drops_tab.m.delete(1.0, tk.END)
         self.drops_tab.m.config(state=tk.DISABLED)
 
-    def ArchiveReset(self):
+    def ArchiveReset(self, skip_confirm=False):
         """
         If any laps or drops have been recorded, this function saves the current session to the profile archive, and
         resets all info in the active session. In case no runs/drops are recorded, the session timer is simply reset
         """
-        xc = self.root.winfo_rootx() - self.root.winfo_width()//12
-        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-
         if not self.timer_tab.laps and not self.drops_tab.drops:
             self.ResetSession()
             return
-        user_confirm = tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc], master_root=self.root)
-        if user_confirm:
+
+        xc = self.root.winfo_rootx() - self.root.winfo_width()//12
+        yc = self.root.winfo_rooty() + self.root.winfo_height()//3
+        if skip_confirm or tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc], master_root=self.root):
             # Stop any active run and load current session info from timer and drop module.
             self.timer_tab.stop()
             active = self.timer_tab.save_state()

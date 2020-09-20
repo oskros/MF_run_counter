@@ -35,7 +35,14 @@ class Drops(tkd.Frame):
             for i, item in enumerate(self.main_frame.grail_tab.grail):
                 if item['Item'] == drop['item_name']:
                     if item.get('Found', False) is False:
-                        if tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item"):
+                        if self.main_frame.auto_upload_herokuapp:
+                            resp = self.main_frame.grail_tab.upload_to_herokuapp(upd_dict={item['Item']: True},
+                                                                                 show_confirm=False,
+                                                                                 pop_up_msg="Congrats, a new drop! Add it to grail?\n\nHerokuapp login info:",
+                                                                                 pop_up_title="Grail item")
+                        else:
+                            resp = tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item")
+                        if resp is not None:
                             self.main_frame.grail_tab.update_grail_from_index(i)
                             drop['input'] = '(*) ' + drop['input']
                     break

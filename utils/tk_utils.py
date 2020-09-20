@@ -127,7 +127,7 @@ def registration_form(root, coords=None, first_profile=False):
 
 
 class MultiEntryBox(object):
-    def __init__(self, entries, coords, title, defaults=None, masks=None):
+    def __init__(self, entries, coords, title, defaults=None, masks=None, msg=None):
         self.enum = len(entries)
         root = self.root = tk.Toplevel()
         # self.root.attributes('-toolwindow', 1)
@@ -135,6 +135,12 @@ class MultiEntryBox(object):
         self.root.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         root.title(title)
         self.root.wm_attributes("-topmost", True)
+
+        if msg is not None:
+            frm_0 = tk.Frame(root)
+            frm_0.pack()
+            message = tk.Label(frm_0, text=str(msg), font=('arial', 11))
+            message.pack(padx=8, pady=8)
 
         frm_1 = tk.Frame(root)
         frm_1.pack(ipadx=4, ipady=2)
@@ -194,8 +200,8 @@ class MultiEntryBox(object):
         self.root.quit()
 
 
-def mebox(entries, coords=False, title='Message', defaults=None, masks=None):
-    msgbox = MultiEntryBox(entries, coords, title, defaults, masks)
+def mebox(entries, coords=False, title='Message', defaults=None, masks=None, msg=None):
+    msgbox = MultiEntryBox(entries, coords, title, defaults, masks, msg)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
