@@ -394,7 +394,7 @@ class MainFrame(Config):
             self.timer_tab.stop()
             active = self.timer_tab.save_state()
             self.profile_tab.tot_laps += len(active['laps'])
-            active.update(dict(drops=self.drops_tab.save_state()))
+            active.update(self.drops_tab.save_state())
 
             # Update session dropdown for the profile
             stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
