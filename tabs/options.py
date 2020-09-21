@@ -122,19 +122,17 @@ class General(tkd.Frame):
             self.main_frame.toggle_drop_tab()
         elif attr.lower() == 'tab_switch_keys_global':
             self.main_frame.toggle_tab_keys_global()
-        elif attr.lower() == 'automode':
-            self.main_frame.toggle_automode()
-        elif attr.lower() == 'advanced_automode':
-            self.toggle_advanced_automode(confirm=True)
 
 
 class Automode(General):
     def __init__(self, main_frame, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
-        self.add_flag(flag_name='Automode', comment='Enables automode, which monitors your local character files for updates.\nEvery time an update is registered, the current run terminates and a new one is started')
-        self.advanced_automode_off_button, _ = self.add_flag(flag_name='Advanced automode', comment='Enables advanced automode. This uses d2 memory reading, and can thus\npotentially be seen as cheating when playing multiplayer.\nOnly advised to be used in single player\n\nAdvanced automode makes it possible to identify both when you enter and\nleave games. Thus lobby time and game time can be accurately measured.\nAlso removes the standard automode bugs with dying and games above 5 mins')
+        self.automode_off_btn, _, _ = self.add_automode_flag()
 
+        self.make_widgets()
+
+    def make_widgets(self):
         self.gamemode_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         self.gamemode_frame.propagate(False)
 
@@ -165,7 +163,7 @@ class Automode(General):
 
         self.sp_path_frame = tkd.Frame(self)
         self.sp_path_get = tkd.Button(self.sp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=True),
-                   tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually')
+                                      tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually')
         self.sp_path_apply = tkd.Button(self.sp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
         self.mp_path_lab = tkd.Label(self, text='Game path (Multiplayer)')
@@ -175,38 +173,17 @@ class Automode(General):
         self.mp_path_frame = tkd.Frame(self)
 
         self.mp_path_get = tkd.Button(self.mp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=False),
-                   tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually')
+                                      tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually')
         self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
-        self.toggle_advanced_automode(show_error=False)
+        self.toggle_automode_btn(first=True)
 
-    def toggle_advanced_automode(self, show_error=True, confirm=False):
-        if self.main_frame.advanced_automode and (confirm is False or tk_utils.mbox(msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, and might result in a ban.\n\nExplanation: Advanced automode utilizes "Memory reading" of the D2 process\nto discover information about the current game state, and this could be deemed cheating\n\nIf you still wish to continue, click "OK"')):
-            self.main_frame.load_memory_reader(force=False, show_err=show_error)
-            if not self.main_frame.is_user_admin:
-                self.main_frame.advanced_automode = 0
-                return self.toggle_advanced_automode(show_error=show_error, confirm=confirm)
-            self.gamemode_frame.forget()
-            self.gamemode_lab.forget()
-            self.gamemode_cb.forget()
-
-            self.charname_frame.forget()
-            self.charname_text_lab.forget()
-            self.charname_val_lab.forget()
-
-            self.sp_path_lab.forget()
-            self.sp_path_entry.forget()
-            self.sp_path_frame.forget()
-            self.sp_path_get.forget()
-            self.sp_path_apply.forget()
-
-            self.mp_path_lab.forget()
-            self.mp_path_entry.forget()
-            self.mp_path_frame.forget()
-            self.mp_path_get.forget()
-            self.mp_path_apply.forget()
-        else:
-            self.advanced_automode_off_button.invoke()
+    def toggle_automode_btn(self, first=False, show_error=True):
+        got_val = other_utils.safe_eval(self.automode_var.get())
+        if first is False and self.main_frame.automode == got_val:
+            return
+        self.main_frame.automode = got_val
+        if got_val == 1:
             self.gamemode_frame.pack(expand=False, fill=tk.X)
             self.gamemode_lab.pack(side=tk.LEFT)
             self.gamemode_cb.pack(side=tk.RIGHT)
@@ -226,7 +203,45 @@ class Automode(General):
             self.mp_path_frame.pack()
             self.mp_path_get.pack(side=tk.LEFT, padx=1)
             self.mp_path_apply.pack(side=tk.LEFT)
-        self.main_frame.toggle_automode()
+        else:
+            self.gamemode_frame.forget()
+            self.gamemode_lab.forget()
+            self.gamemode_cb.forget()
+
+            self.charname_frame.forget()
+            self.charname_text_lab.forget()
+            self.charname_val_lab.forget()
+
+            self.sp_path_lab.forget()
+            self.sp_path_entry.forget()
+            self.sp_path_frame.forget()
+            self.sp_path_get.forget()
+            self.sp_path_apply.forget()
+
+            self.mp_path_lab.forget()
+            self.mp_path_entry.forget()
+            self.mp_path_frame.forget()
+            self.mp_path_get.forget()
+            self.mp_path_apply.forget()
+
+        if got_val == 2:
+            if first is False and not tk_utils.mbox(
+                    msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, and might result in a ban.\n\n'
+                        'Explanation: Advanced automode utilizes "Memory reading" of the D2 process\n'
+                        'to discover information about the current game state, and this could be deemed cheating\n\n'
+                        'If you still wish to continue, click "OK"'):
+                self.automode_off_btn.invoke()
+                self.automode_var.set('0')
+                return self.toggle_automode_btn(first=first, show_error=show_error)
+            else:
+                self.main_frame.load_memory_reader(force=False, show_err=show_error)
+                if not self.main_frame.is_user_admin:
+                    self.automode_off_btn.invoke()
+                    self.automode_var.set('0')
+                    return self.toggle_automode_btn(first=first, show_error=show_error)
+
+        if not first:
+            self.main_frame.toggle_automode()
 
     def get_game_path(self, is_sp=True):
         found_path = config.Config.find_SP_game_path() if is_sp else config.Config.find_MP_game_path()
@@ -246,6 +261,35 @@ class Automode(General):
         self.main_frame.SP_game_path = self.SP_game_path.get()
         self.main_frame.MP_game_path = self.MP_game_path.get()
         self.main_frame.toggle_automode()
+
+    def add_automode_flag(self):
+        lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
+        lf.propagate(False)
+        lf.pack(expand=False, fill=tk.X)
+
+        lab = tkd.Label(lf, text='Automode', tooltip='Enable automode for monitoring when you enter and exit games')
+        lab.pack(side=tk.LEFT)
+
+        self.automode_var = tk.StringVar(lf)
+        off_btn = tkd.Radiobutton(lf, text='Off', variable=self.automode_var, indicatoron=False, value=0, width=5, padx=4)
+        simple_btn = tkd.Radiobutton(lf, text='Simple', variable=self.automode_var, indicatoron=False, value=1, width=5, padx=3)
+        adv_btn = tkd.Radiobutton(lf, text='Advanced', variable=self.automode_var, indicatoron=False, value=2, width=7, padx=3)
+
+        cfg_mode = other_utils.safe_eval(self.main_frame.cfg['OPTIONS']['automode'])
+        if cfg_mode == 2:
+            adv_btn.invoke()
+        elif cfg_mode == 1:
+            simple_btn.invoke()
+        else:
+            off_btn.invoke()
+
+        off_btn.config(command=self.toggle_automode_btn)
+        simple_btn.config(command=self.toggle_automode_btn)
+        adv_btn.config(command=self.toggle_automode_btn)
+        adv_btn.pack(side=tk.RIGHT)
+        simple_btn.pack(side=tk.RIGHT)
+        off_btn.pack(side=tk.RIGHT)
+        return off_btn, simple_btn, adv_btn
 
 
 class Hotkeys(tkd.Frame):

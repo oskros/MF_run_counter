@@ -58,7 +58,6 @@ class Config:
 
         config.add_section('OPTIONS')
         config['OPTIONS']['automode'] = '0'
-        config['OPTIONS']['advanced_automode'] = '0'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
@@ -138,7 +137,6 @@ class Config:
 
         # Update flags
         cfg['OPTIONS']['automode'] = str(parent.automode)
-        cfg['OPTIONS']['advanced_automode'] = str(parent.advanced_automode)
         cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)

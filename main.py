@@ -63,7 +63,6 @@ class MainFrame(Config):
         self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
         self.automode = other_utils.safe_eval(self.cfg['OPTIONS']['automode'])
-        self.advanced_automode = other_utils.safe_eval(self.cfg['OPTIONS']['advanced_automode'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -76,7 +75,7 @@ class MainFrame(Config):
 
         # Initiate d2loader for memory reading
         self.is_user_admin = reader.is_user_admin()
-        self.load_memory_reader(force=True, show_err=self.advanced_automode)
+        self.load_memory_reader(force=True, show_err=self.automode == 2)
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -190,7 +189,7 @@ class MainFrame(Config):
     def load_memory_reader(self, force=False, show_err=True):
         if force or hasattr(self, 'reader_error'):
             try:
-                assert bool(self.advanced_automode) is True
+                assert self.automode == 2
                 assert self.is_user_admin is True
                 self.d2_reader = reader.D2Reader()
                 self.cached_is_ingame = self.d2_reader.in_game()
