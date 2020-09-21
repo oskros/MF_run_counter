@@ -45,8 +45,21 @@ if is_user_admin():
 
     players_x = pm.read_int(PlayersX)
     print(players_x)
-    with open('C:/users/oskro/Desktop/test_txt.txt', 'w') as f:
-        f.write(str(players_x))
+
+    player_unit_ptr = pm.read_int(address=addrs['D2Client.dll'] + 0x00101024)
+    statlist = pm.read_int(player_unit_ptr + 0x005C)
+    full_stats = hex(abs(pm.read_int(statlist + 0x0010))) == '0x80000000'
+    stat_array_addr = pm.read_int(statlist + 0x0048) if full_stats else pm.read_int(statlist + 0x0024)
+    stat_array_len = pm.read_short(statlist + 0x004C)
+
+    vals = []
+    for i in range(0, stat_array_len):
+        cur_addr = stat_array_addr + i * 8
+        histatid = pm.read_short(cur_addr + 0x00)
+        lostatid = pm.read_short(cur_addr + 0x02)
+        value = pm.read_uint(cur_addr + 0x04)
+        vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
+    # 12: level, 13: experience, 80: mf, 105: fcr
 
     fixed_file_info = win32api.GetFileVersionInfo(pm.process_base.filename.decode(), '\\')
     raw_version = '{:d}.{:d}.{:d}.{:d}'.format(
@@ -60,3 +73,10 @@ if is_user_admin():
     print(patch)
 else:
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+
+
+    # full_stats = hex(abs(pm.read_int(statlist + 0x0010))) == '0x80000000'
+    # if full_stats:
+    #     stat_array = pm.read_int(statlist + 0x0048)
+    # else:
+    #     stat_array = pm.read_int(statlist + 0x0024)

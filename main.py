@@ -35,7 +35,7 @@ from tabs.grail import Grail
 # FIXME: Pause function shouldn't pause session timer??
 
 # FIXME: Ability to select which run to archive drop on
-# FIXME: Advanced automode still crashes if incorrect character name / game path is provided, even though this doesnt matter
+# FIXMe. Auto archive'n'reset should label session using last update time rather than current time
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
