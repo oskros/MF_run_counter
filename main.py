@@ -75,7 +75,7 @@ class MainFrame(Config):
 
         # Initiate d2loader for memory reading
         self.is_user_admin = reader.is_user_admin()
-        self.load_memory_reader(force=True, show_err=self.automode == 2)
+        self.load_memory_reader(show_err=False)
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -186,20 +186,19 @@ class MainFrame(Config):
         # Start the program
         self.root.mainloop()
 
-    def load_memory_reader(self, force=False, show_err=True):
-        if force or hasattr(self, 'reader_error'):
-            try:
-                assert self.automode == 2
-                assert self.is_user_admin is True
-                self.d2_reader = reader.D2Reader()
-                self.cached_is_ingame = self.d2_reader.in_game()
-            except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError) as e:
-                self.reader_error = e
-                self.d2_reader = None
-                self.cached_is_ingame = None
-                if show_err and not self.is_user_admin:
-                    tk.messagebox.showerror('Elevated access rights',
-                                            'You must run the app as ADMIN to initialize memory reader for advanced automode.\nWill revert to standard automode. %s' % self.reader_error)
+    def load_memory_reader(self, show_err=True):
+        try:
+            assert self.automode == 2
+            assert self.is_user_admin is True
+            self.d2_reader = reader.D2Reader()
+            self.cached_is_ingame = self.d2_reader.in_game()
+        except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError) as e:
+            self.reader_error = e
+            self.d2_reader = None
+            self.cached_is_ingame = None
+            if show_err and not self.is_user_admin:
+                tk.messagebox.showerror('Elevated access rights',
+                                        'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling automode. %s' % self.reader_error)
 
     def sorted_profiles(self):
         def sort_key(x):

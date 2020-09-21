@@ -83,7 +83,7 @@ class MFRunTimer(tkd.Frame):
             try:
                 is_ingame = self.main_frame.d2_reader.in_game()
             except (pymem.exception.MemoryReadError, AttributeError, KeyError) as e:
-                self.main_frame.load_memory_reader(force=True, show_err=False)
+                self.main_frame.load_memory_reader(show_err=False)
                 self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
                 return
 
