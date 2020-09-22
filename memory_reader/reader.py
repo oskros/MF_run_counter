@@ -161,6 +161,15 @@ class D2Reader:
 
         return bool(self.pm.read_uint(world_addr))
 
+    def players_x(self):
+        if self.d2_ver == '1.13d':
+            players_x = self.pm.read_int(self.dll_addrs['D2Game.dll'] + 0x111C44)
+        elif self.d2_ver == '1.13c':
+            players_x = self.pm.read_int(self.dll_addrs['D2Game.dll'] + 0x111C1C)
+        else:
+            raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
+        return players_x
+
     def player_unit_stats(self):
         if self.d2_ver == '1.13d':
             player_unit_ptr = self.pm.read_uint(self.dll_addrs['D2Client.dll'] + 0x00101024)
@@ -169,6 +178,7 @@ class D2Reader:
         else:
             raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
 
+        char_name = self.pm.read_string(self.pm.read_uint(player_unit_ptr + 0x14))
         statlist = self.pm.read_uint(player_unit_ptr + 0x005C)
         full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
         stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
@@ -185,9 +195,11 @@ class D2Reader:
         # 12: level, 13: experience, 80: mf, 105: fcr
 
         out = dict()
+        out['Name'] = char_name
         out['Level'] = next((v['value'] for v in vals if v['lostatid'] == 12 and v['histatid'] == 0), -1)
         out['Exp'] = next((v['value'] for v in vals if v['lostatid'] == 13 and v['histatid'] == 0), -1)
         out['Exp next'] = EXP_TABLE[out['Level']]['Next'] + EXP_TABLE[out['Level']]['Experience']
+        out['Exp missing'] = out['Exp next'] - out['Exp']
         out['Exp %'] = (out['Exp'] - EXP_TABLE[out['Level']]['Experience']) / EXP_TABLE[out['Level']]['Next']
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
         # out['FCR'] = next((v['value'] for v in vals if v['lostatid'] == 105 and v['histatid'] == 0), -1)

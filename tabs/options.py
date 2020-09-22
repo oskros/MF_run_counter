@@ -177,9 +177,14 @@ class Automode(General):
         self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
         # Stuff for advanced mode
-        self.exp_tracker = tkd.Button(self, text='Pop-up advanced\nstats tracker', height=2, font='20', command=lambda: stats_tracker.StatsTracker(main_frame=self.main_frame))
+        self.exp_tracker = tkd.Button(self, text='Pop-up advanced\nstats tracker', height=2, font='20', command=self.open_stats_tracker)
 
         self.toggle_automode_btn(first=True)
+
+    def open_stats_tracker(self):
+        if win32gui.FindWindow(None, 'Stats tracker'):
+            return
+        self.stats_tracker = stats_tracker.StatsTracker(main_frame=self.main_frame)
 
     def toggle_automode_btn(self, first=False, show_error=True):
         got_val = other_utils.safe_eval(self.automode_var.get())
@@ -245,6 +250,8 @@ class Automode(General):
                 else:
                     self.exp_tracker.pack(pady=20)
         else:
+            if hasattr(self, 'stats_tracker'):
+                self.stats_tracker.destroy()
             self.exp_tracker.forget()
 
         if not first:
