@@ -82,8 +82,8 @@ class StatsTracker(tkd.Toplevel):
             self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
             if hasattr(self, 'curr_run_xp') and self.session_char_xp != self.curr_run_xp:
                 self.xp_runs.add(self.session_char_xp - self.curr_run_xp)
-                avg_run = sum(self.xp_runs)/len(self.xp_runs)
-                self.runs_level_sv.set('{:.0f}'.format(self.session_char_xp_missing/avg_run))
+                self.avg_run = sum(self.xp_runs)/len(self.xp_runs)
+                self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing/self.avg_run//1)))
             self.curr_run_xp = self.session_char_xp
             self.exp_run_sv.set('0')
             return
@@ -121,6 +121,8 @@ class StatsTracker(tkd.Toplevel):
         self.session_char_xp_missing = player_unit_stats['Exp missing']
         self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
         self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
+        if hasattr(self, 'avg_run'):
+            self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
 
     @staticmethod
     def format_time(hours):

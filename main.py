@@ -447,7 +447,7 @@ class MainFrame(Config):
         """
         Stops the active run, updates config, saves current state to profile .json, and finally exits the application
         """
-        if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active):
+        if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active and self.automode == 1):
             self.timer_tab.stop()
         self.SaveActiveState()
         self.update_config(self)
