@@ -1,22 +1,20 @@
 from init import *
-from utils import tk_dynamic as tkd, tk_utils, color_themes
+from utils import tk_dynamic as tkd, tk_utils, color_themes, other_utils
 import pymem.exception
 import tkinter as tk
 import time
 import os
 
-#FIXME: Quit if turning off advanced automode
+
 class StatsTracker(tkd.Toplevel):
     def __init__(self, main_frame, **kw):
-        tkd.Toplevel.__init__(self, **kw)
+        tkd.Toplevel.__init__(self, main_frame.root, **kw)
         self.main_frame = main_frame
 
         self.title('Stats tracker')
         self.wm_attributes('-topmost', main_frame.always_on_top)
 
-        disp_coords = tk_utils.get_displaced_geom(main_frame.root, 240, 299)
-        self.geometry(disp_coords)
-        self.focus_get()
+        self.geometry('238x299+%s+%s' % other_utils.safe_eval(main_frame.cfg['AUTOMODE']['advanced_tracker_position']))
         self.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
         self.resizable(False, False)
 
@@ -29,6 +27,11 @@ class StatsTracker(tkd.Toplevel):
         self.xp_runs = set()
 
         self.make_widgets()
+
+        self.bind("<Left>", self.moveleft)
+        self.bind("<Right>", self.moveright)
+        self.bind("<Up>", self.moveup)
+        self.bind("<Down>", self.movedown)
 
         color_themes.Theme(main_frame.active_theme).update_colors()
         self._update_loop()
@@ -50,7 +53,7 @@ class StatsTracker(tkd.Toplevel):
         lf3 = tkd.LabelFrame(self)
         lf3.pack(expand=False, fill=tk.X, padx=1)
         self.exp_level_sv = self.create_row('Exp to level', lf=lf3)
-        self.hours_level_sv = self.create_row('Hours to level', lf=lf3)
+        self.hours_level_sv = self.create_row('Time to level', lf=lf3)
         self.runs_level_sv = self.create_row('Runs to level', lf=lf3)
 
     def create_row(self, var_name, lf, default_val='-----'):
@@ -73,16 +76,19 @@ class StatsTracker(tkd.Toplevel):
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
             players_x = self.main_frame.d2_reader.players_x()
         except (pymem.exception.MemoryReadError, AttributeError, KeyError, pymem.exception.WinAPIError, pymem.exception.ProcessError) as e:
+            # My horrible way of determining whether a run has ended. Should be done in a better way for sure..
             self.xp_hour_session = 3600 * self.session_char_xp_diff / (time.time() + 0.0001 - self.session_char_time_start)
             self.exp_hour_sv.set('{:,.0f}'.format(self.xp_hour_session))
-            self.hours_level_sv.set('{:,.2f}'.format(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
+            self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
             if hasattr(self, 'curr_run_xp') and self.session_char_xp != self.curr_run_xp:
                 self.xp_runs.add(self.session_char_xp - self.curr_run_xp)
                 avg_run = sum(self.xp_runs)/len(self.xp_runs)
-                self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing/avg_run//1)))
+                self.runs_level_sv.set('{:.0f}'.format(self.session_char_xp_missing/avg_run))
             self.curr_run_xp = self.session_char_xp
             self.exp_run_sv.set('0')
             return
+
+        # Game has not loaded PlayerUnitStats yet
         if player_unit_stats['Exp'] == -1:
             return
 
@@ -90,7 +96,7 @@ class StatsTracker(tkd.Toplevel):
             self.curr_run_xp = player_unit_stats['Exp']
 
         new_name = player_unit_stats['Name']
-        if new_name != self.name_sv.get():
+        if new_name != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get():
             self.session_char_xp_start = player_unit_stats['Exp']
             self.session_char_time_start = time.time()
             self.curr_run_xp = self.session_char_xp_start
@@ -114,5 +120,15 @@ class StatsTracker(tkd.Toplevel):
 
         self.session_char_xp_missing = player_unit_stats['Exp missing']
         self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
-        self.hours_level_sv.set('{:.2f}'.format(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
+        self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / self.xp_hour_session) if self.xp_hour_session > 0 else '-----')
 
+    @staticmethod
+    def format_time(hours):
+        h = hours // 1
+        m = int(round((hours % 1)*60))
+        return '%02dh:%02dm' % (h, m)
+
+    def destroy(self):
+        self.main_frame.cfg['AUTOMODE']['advanced_tracker_position'] = str((self.winfo_x(), self.winfo_y()))
+        tkd.Toplevel.destroy(self)
+        delattr(self.main_frame.options_tab.tab3, 'stats_tracker')

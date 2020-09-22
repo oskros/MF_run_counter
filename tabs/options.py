@@ -131,6 +131,8 @@ class Automode(General):
         self.automode_off_btn, _, _ = self.add_automode_flag()
 
         self.make_widgets()
+        if self.main_frame.automode == 2 and other_utils.safe_eval(self.main_frame.cfg['AUTOMODE']['advanced_tracker_open']):
+            self.open_stats_tracker()
 
     def make_widgets(self):
         self.gamemode_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
@@ -289,7 +291,7 @@ class Automode(General):
         simple_btn = tkd.Radiobutton(lf, text='Simple', variable=self.automode_var, indicatoron=False, value=1, width=5, padx=3)
         adv_btn = tkd.Radiobutton(lf, text='Advanced', variable=self.automode_var, indicatoron=False, value=2, width=7, padx=3)
 
-        cfg_mode = other_utils.safe_eval(self.main_frame.cfg['OPTIONS']['automode'])
+        cfg_mode = other_utils.safe_eval(self.main_frame.cfg['AUTOMODE']['automode'])
         if cfg_mode == 2:
             adv_btn.invoke()
         elif cfg_mode == 1:

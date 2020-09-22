@@ -21,6 +21,44 @@ class Toplevel(tk.Toplevel):
         del self.__class__.objects[cur_obj]
         tk.Toplevel.destroy(self)
 
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
+
+    def stop_move(self, event):
+        self.x = None
+        self.y = None
+
+    def on_motion(self, event):
+        try:
+            deltax = event.x - self.x
+            deltay = event.y - self.y
+        except (TypeError, AttributeError):
+            return
+        x = self.winfo_x() + deltax
+        y = self.winfo_y() + deltay
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveleft(self, event):
+        x = self.winfo_x() - 1
+        y = self.winfo_y()
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveright(self, event):
+        x = self.winfo_x() + 1
+        y = self.winfo_y()
+        self.geometry("+%s+%s" % (x, y))
+
+    def moveup(self, event):
+        x = self.winfo_x()
+        y = self.winfo_y() - 1
+        self.geometry("+%s+%s" % (x, y))
+
+    def movedown(self, event):
+        x = self.winfo_x()
+        y = self.winfo_y() + 1
+        self.geometry("+%s+%s" % (x, y))
+
 
 class Canvas(tk.Canvas):
     objects = []

@@ -57,7 +57,6 @@ class Config:
         config['DEFAULT']['webproxies'] = ''
 
         config.add_section('OPTIONS')
-        config['OPTIONS']['automode'] = '0'
         config['OPTIONS']['always_on_top'] = '1'
         config['OPTIONS']['tab_switch_keys_global'] = '0'
         config['OPTIONS']['check_for_new_version'] = '1'
@@ -67,6 +66,11 @@ class Config:
         config['OPTIONS']['start_run_delay_seconds'] = '0.0'
         config['OPTIONS']['auto_upload_herokuapp'] = '0'
         config['OPTIONS']['auto_archive_hours'] = '0.0'
+
+        config.add_section('AUTOMODE')
+        config['AUTOMODE']['automode'] = '0'
+        config['AUTOMODE']['advanced_tracker_open'] = '0'
+        config['AUTOMODE']['advanced_tracker_position'] = str((100, 100))
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -136,7 +140,6 @@ class Config:
         cfg['DEFAULT']['webproxies'] = str(parent.webproxies)
 
         # Update flags
-        cfg['OPTIONS']['automode'] = str(parent.automode)
         cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
@@ -146,6 +149,14 @@ class Config:
         cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
         cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)
         cfg['OPTIONS']['auto_archive_hours'] = str(parent.auto_archive_hours)
+
+        # Update automodes
+        cfg['AUTOMODE']['automode'] = str(parent.automode)
+        if hasattr(parent.options_tab.tab3, 'stats_tracker'):
+            advanced_tracker_open = int(parent.options_tab.tab3.stats_tracker.winfo_ismapped())
+        else:
+            advanced_tracker_open = 0
+        cfg['AUTOMODE']['advanced_tracker_open'] = str(advanced_tracker_open) if parent.automode == 2 else '0'
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
