@@ -48,7 +48,7 @@ if is_user_admin():
 
     player_unit_ptr = pm.read_int(address=addrs['D2Client.dll'] + 0x00101024)
     statlist = pm.read_int(player_unit_ptr + 0x005C)
-    full_stats = hex(abs(pm.read_int(statlist + 0x0010))) == '0x80000000'
+    full_stats = hex(pm.read_uint(statlist + 0x0010)) == '0x80000000'
     stat_array_addr = pm.read_int(statlist + 0x0048) if full_stats else pm.read_int(statlist + 0x0024)
     stat_array_len = pm.read_short(statlist + 0x004C)
 
@@ -60,6 +60,7 @@ if is_user_admin():
         value = pm.read_uint(cur_addr + 0x04)
         vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
     # 12: level, 13: experience, 80: mf, 105: fcr
+    # experience table: http://classic.battle.net/diablo2exp/basics/levels.shtml
 
     fixed_file_info = win32api.GetFileVersionInfo(pm.process_base.filename.decode(), '\\')
     raw_version = '{:d}.{:d}.{:d}.{:d}'.format(

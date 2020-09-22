@@ -3,7 +3,7 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 from utils.color_themes import Theme
-from utils import tk_dynamic as tkd, tk_utils, config, other_utils
+from utils import tk_dynamic as tkd, tk_utils, config, other_utils, stats_tracker
 from tkinter import messagebox, ttk
 import system_hotkey
 import win32gui
@@ -176,6 +176,9 @@ class Automode(General):
                                       tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually')
         self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
+        # Stuff for advanced mode
+        self.exp_tracker = tkd.Button(self, text='Pop-up advanced\nstats tracker', height=2, font='20', command=lambda: stats_tracker.StatsTracker(main_frame=self.main_frame))
+
         self.toggle_automode_btn(first=True)
 
     def toggle_automode_btn(self, first=False, show_error=True):
@@ -239,6 +242,10 @@ class Automode(General):
                     self.automode_off_btn.invoke()
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
+                else:
+                    self.exp_tracker.pack(pady=20)
+        else:
+            self.exp_tracker.forget()
 
         if not first:
             self.main_frame.toggle_automode()
