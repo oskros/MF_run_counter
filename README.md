@@ -51,7 +51,7 @@ The session timer will start as soon as you open the program and run as long as 
 In case you need to take a break from the computer, the counter can be paused by using the assigned hotkey (default 'control+space'). This will pause both the run timer (if a run is active) and the session timer.
 
 ### Saving results
-The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Archive & reset" button to reset the session and archive the session results to the profile. In the archive browser, it is possible to save a session or the full profile history to a .txt or .csv file, or copy to clipboard - Example of the .txt file is included below.
+The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Archive session" button to reset the session and archive the session results to the profile. In the archive browser, it is possible to save a session or the full profile history to a .txt or .csv file, or copy to clipboard - Example of the .txt file is included below.
                   
       Total session time: 00:04:30.5
       Total run time:     00:04:17.3

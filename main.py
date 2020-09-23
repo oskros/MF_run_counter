@@ -35,7 +35,9 @@ from tabs.grail import Grail
 # FIXME: Pause function shouldn't pause session timer??
 
 # FIXME: Ability to select which run to archive drop on
-# FIXMe. Auto archive'n'reset should label session using last update time rather than current time
+# FIXME: Auto archive'n'reset should label session using last update time rather than current time
+# FIXME: Test if works on 1.13c and 1.14 (NotImplementedError handling)
+# FIXME: Pop-up saying advanced stats cannot be opened without advanced automode
 
 # FIXME: Option for overwriting found items when uploading to herokuapp
 # FIXME: d2 overlay mode with only text - could be hard
@@ -152,7 +154,7 @@ class MainFrame(Config):
         btn_frame = tkd.Frame(self.root)
         btn_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP)
         tkd.Button(btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[2, 1], pady=1)
-        tkd.Button(btn_frame, text='Archive & reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0,1], pady=1)
+        tkd.Button(btn_frame, text='Archive session', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0,1], pady=1)
 
         self.drops_frame.pack(fill=tk.BOTH, expand=True)
         self.toggle_drops_frame(show=self.show_drops_tab_below)
@@ -160,12 +162,12 @@ class MainFrame(Config):
         self.drops_caret.propagate(False)
         self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2,1], pady=[0, 1])
 
+        tracker_is_active = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2 and self.is_user_admin
         self.advanced_stats_tracker = stats_tracker.StatsTracker(self)
-        self.advanced_stats_caret = tkd.CaretButton(self.root, active=other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2,
-                                                    text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
+        self.advanced_stats_caret = tkd.CaretButton(self.root, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
         self.advanced_stats_caret.propagate(False)
         self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
-        self.toggle_advanced_stats_frame(show=other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']))
+        self.toggle_advanced_stats_frame(show=tracker_is_active)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -190,7 +192,7 @@ class MainFrame(Config):
         # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
-        # Used if auto archive & reset is activated
+        # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
 
         # Start the program
@@ -208,7 +210,8 @@ class MainFrame(Config):
             assert self.is_user_admin is True
             self.d2_reader = reader.D2Reader()
             self.cached_is_ingame = self.d2_reader.in_game()
-        except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError, pymem.exception.ProcessError, AttributeError, pymem.exception.WinAPIError) as e:
+        except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
+                pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError) as e:
             self.reader_error = e
             self.d2_reader = None
             self.cached_is_ingame = None
@@ -286,12 +289,14 @@ class MainFrame(Config):
         self.img_panel.focus_force()
 
     def toggle_advanced_stats_frame(self, show=None):
+        if show is None:
+            show = self.advanced_stats_caret.active
         if self.automode != 2:
+            if show:
+                messagebox.showerror('Error', 'You need to active "Advanced auto mode" in Options->Automode to see advanced stats')
             show = False
             self.advanced_stats_caret.toggle_image(active=False)
         tracker_height = 300
-        if show is None:
-            show = self.advanced_stats_caret.active
         if show:
             self.root.update()
             self.root.config(height=self.root.winfo_height()+tracker_height)

@@ -137,7 +137,7 @@ class D2Reader:
 
         self.base_address = self.pm.process_base.lpBaseOfDll
 
-        dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll']
+        dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll', 'D2CLIENT.dll']
         self.dll_addrs = {x.name: x.lpBaseOfDll for x in self.pm.list_modules() if x.name in dlls}
 
     def get_d2_version(self):
@@ -151,15 +151,25 @@ class D2Reader:
                      '1.0.13.60': '1.13c'}
         return patch_map.get(raw_version, None)
 
-    def in_game(self):
-        if self.d2_ver == '1.13d':
-            world_addr = self.dll_addrs['D2Game.dll'] + 0x111C10
-        elif self.d2_ver == '1.13c':
-            world_addr = self.dll_addrs['D2Game.dll'] + 0x111C24
-        else:
-            raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
+    # def in_game_old(self):
+    #     if self.d2_ver == '1.13d':
+    #         world_addr = self.dll_addrs['D2Game.dll'] + 0x111C10
+    #     elif self.d2_ver == '1.13c':
+    #         world_addr = self.dll_addrs['D2Game.dll'] + 0x111C24
+    #     else:
+    #         raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
+    #
+    #     # print(self.pm.read_uint(world_addr))
+    #     return bool(self.pm.read_uint(world_addr))
 
-        return bool(self.pm.read_uint(world_addr))
+    def in_game(self):
+        player_unit_ptr = self._player_unit_ptr()
+        try:
+            self.pm.read_string(self.pm.read_uint(player_unit_ptr + 0x14))
+            return True
+        except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
+                pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
+            return False
 
     def players_x(self):
         if self.d2_ver == '1.13d':
@@ -170,13 +180,18 @@ class D2Reader:
             raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
         return players_x
 
-    def player_unit_stats(self):
+    def _player_unit_ptr(self):
+        client_addr = self.dll_addrs['D2Client.dll'] if 'D2Client.dll' in self.dll_addrs else self.dll_addrs['D2CLIENT.dll']
         if self.d2_ver == '1.13d':
-            player_unit_ptr = self.pm.read_uint(self.dll_addrs['D2Client.dll'] + 0x00101024)
+            player_unit_ptr = self.pm.read_uint(client_addr + 0x00101024)
         elif self.d2_ver == '1.13c':
-            player_unit_ptr = self.pm.read_uint(self.dll_addrs['D2Client.dll'] + 0x0010A60C)
+            player_unit_ptr = self.pm.read_uint(client_addr + 0x0010A60C)
         else:
             raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
+        return player_unit_ptr
+
+    def player_unit_stats(self):
+        player_unit_ptr = self._player_unit_ptr()
 
         char_name = self.pm.read_string(self.pm.read_uint(player_unit_ptr + 0x14))
         statlist = self.pm.read_uint(player_unit_ptr + 0x005C)

@@ -38,10 +38,12 @@ if is_user_admin():
     base_address = pm.process_base.lpBaseOfDll
     print('Base address: %s' % base_address)
 
-    dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll']
+    dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll', 'D2CLIENT.dll']
     addrs = {x.name: x.lpBaseOfDll for x in pm.list_modules() if x.name in dlls}
 
     PlayersX = addrs['D2Game.dll'] + 0x111C44
+    world_addr = addrs['D2Game.dll'] + 0x111C10
+    print(pm.read_int(world_addr))
 
     players_x = pm.read_int(PlayersX)
     print(players_x)

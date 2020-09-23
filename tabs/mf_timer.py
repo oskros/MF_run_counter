@@ -82,7 +82,8 @@ class MFRunTimer(tkd.Frame):
             # Handle exceptions occurring with the memory reading (for example if d2 was closed while app is running)
             try:
                 is_ingame = self.main_frame.d2_reader.in_game()
-            except (pymem.exception.MemoryReadError, AttributeError, KeyError, pymem.exception.WinAPIError, pymem.exception.ProcessError) as e:
+            except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
+                    pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
                 self.main_frame.load_memory_reader(show_err=False)
                 self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
                 return

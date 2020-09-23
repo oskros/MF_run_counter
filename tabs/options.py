@@ -36,7 +36,7 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp.com')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
         self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')
-        self.add_num_entry(flag_name='Auto archive (hours)', comment='Automatically calls "Archive & Reset" if more than configured number\nof hours have passed since last time the profile was used\nDisabled when equal to zero (0.0)\n\nThis is checked when app is opened and when profile is changed')
+        self.add_num_entry(flag_name='Auto archive (hours)', comment='Automatically calls "Archive session" if more than configured number\nof hours have passed since last time the profile was used\nDisabled when equal to zero (0.0)\n\nThis is checked when app is opened and when profile is changed')
 
     def add_theme_choice(self, comment=None):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
