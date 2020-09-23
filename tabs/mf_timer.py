@@ -61,7 +61,7 @@ class MFRunTimer(tkd.Frame):
         self.m = tkd.Listbox(lf0, selectmode=tk.BROWSE, height=5, yscrollcommand=scrollbar.set, font='courier 12', activestyle=tk.NONE)
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
-        self.m.bind('<Delete>', lambda e: self.delete_selected_run())
+        # self.m.bind('<Delete>', lambda e: self.delete_selected_run())
         # self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
         scrollbar.config(command=self.m.yview)
@@ -199,9 +199,10 @@ class MFRunTimer(tkd.Frame):
             self._set_average()
 
     def delete_selected_run(self):
+        if not self.m.curselection():
+            return
         sel = self.m.selection_get()
-        resp = tk_utils.mbox(msg='Do you want to delete the run:\n%s' % sel, title='Warning')
-        if resp:
+        if tk_utils.mbox(msg='Do you want to delete the run:\n%s' % sel, title='Warning'):
             all_runs = self.m.get(0, tk.END)
             sel_idx = all_runs.index(sel)
 

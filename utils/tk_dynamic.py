@@ -1,3 +1,5 @@
+from init import *
+import os, sys
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
@@ -591,3 +593,42 @@ class Treeview(ttk.Treeview):
 
     def _sort_by_name(self, column, reverse):
         self._sort(column, reverse, str, self._sort_by_name)
+
+
+class CaretButton(Button):
+    def __init__(self, root, command=lambda: None, active=False, **kwargs):
+        tooltip = kwargs.pop('tooltip', None)
+        self.command = lambda: self.run_command(command)
+        up_arrow_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'caret-up.png')
+        dn_arrow_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'caret-down.png')
+
+        pic_geom = (374, 43)
+        new_geom = (130, 14)
+
+        self.up_arrow = tk.PhotoImage(file=up_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
+        self.dn_arrow = tk.PhotoImage(file=dn_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
+
+        self.active = bool(active)
+        Button.__init__(self, root, image=self.up_arrow if self.active else self.dn_arrow, command=self.command, **kwargs)
+        if tooltip is not None:
+            create_tooltip(self, tooltip)
+
+    def run_command(self, command):
+        self.active = not self.active
+        # print(self.active)
+        self.config(image=self.up_arrow if self.active else self.dn_arrow)
+        command()
+
+    def toggle_image(self, active=None):
+        if active is None:
+            self.active = not self.active
+        else:
+            self.active = active
+        self.config(image=self.up_arrow if self.active else self.dn_arrow)
+
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    CaretButton(root, active=False).pack()
+
+    root.mainloop()

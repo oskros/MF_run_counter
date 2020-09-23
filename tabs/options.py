@@ -33,7 +33,6 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Tab switch keys global', comment='Controls whether the <Ctrl-Shift-PgUp/PgDn> hotkeys are global or only works when application has focus')
         self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
-        self.add_flag(flag_name='Show drops tab below', comment='Make the "drops" tabs appear below the main widget, instead of having it as a separate tab')
         self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp.com')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
         self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')
@@ -118,8 +117,6 @@ class General(tkd.Frame):
         setattr(self.main_frame, attr, val)
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
-        elif attr.lower() == 'show_drops_tab_below':
-            self.main_frame.toggle_drop_tab()
         elif attr.lower() == 'tab_switch_keys_global':
             self.main_frame.toggle_tab_keys_global()
 
@@ -131,16 +128,18 @@ class Automode(General):
         self.automode_off_btn, _, _ = self.add_automode_flag()
 
         self.make_widgets()
-        if self.main_frame.automode == 2 and other_utils.safe_eval(self.main_frame.cfg['AUTOMODE']['advanced_tracker_open']):
-            self.open_stats_tracker()
+        # if self.main_frame.automode == 2 and other_utils.safe_eval(self.main_frame.cfg['AUTOMODE']['advanced_tracker_open']):
+        #     self.open_stats_tracker()
 
     def make_widgets(self):
         self.gamemode_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         self.gamemode_frame.propagate(False)
 
-        self.gamemode_lab = tkd.Label(self.gamemode_frame, text='Game mode')
-        tkd.create_tooltip(self.gamemode_lab, 'If Multiplayer is selected, the .map file is used to check for updates.\nThus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n'
-                                     '\nIf Single Player is selected the .d2s file is used to check for updates.\nThus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
+        self.gamemode_lab = tkd.Label(self.gamemode_frame, text='Game mode', tooltip=
+        'If Multiplayer is selected, the .map file is used to check for updates.\n'
+        'Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n\n'
+        'If Single Player is selected the .d2s file is used to check for updates.\n'
+        'Thus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
 
         self.game_mode = tk.StringVar()
         self.game_mode.set(self.main_frame.profile_tab.game_mode.get())
@@ -154,8 +153,9 @@ class Automode(General):
 
         self.char_var = tk.StringVar()
         self.char_var.set(self.main_frame.profile_tab.char_name.get())
-        self.charname_text_lab = tkd.Label(self.charname_frame, text='Character name')
-        tkd.create_tooltip(self.charname_text_lab, 'Your character name is inferred from the active profile.\nMake sure the character name in your profile is matching your in-game character name')
+        self.charname_text_lab = tkd.Label(self.charname_frame, text='Character name', tooltip=
+        'Your character name is inferred from the active profile.\n'
+        'Make sure the character name in your profile is matching your in-game character name')
         self.charname_val_lab = tkd.Label(self.charname_frame, textvariable=self.char_var)
 
         self.sp_path_lab = tkd.Label(self, text='Game path (Single Player)')
@@ -164,8 +164,9 @@ class Automode(General):
         self.sp_path_entry = tkd.Entry(self, textvariable=self.SP_game_path)
 
         self.sp_path_frame = tkd.Frame(self)
-        self.sp_path_get = tkd.Button(self.sp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=True),
-                                      tooltip='The app tries to automatically find your game path for single player\nIf nothing is returned you have to type it in manually')
+        self.sp_path_get = tkd.Button(self.sp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=True), tooltip=
+        'The app tries to automatically find your game path for single player\n'
+        'If nothing is returned you have to type it in manually')
         self.sp_path_apply = tkd.Button(self.sp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
         self.mp_path_lab = tkd.Label(self, text='Game path (Multiplayer)')
@@ -174,18 +175,26 @@ class Automode(General):
         self.mp_path_entry = tkd.Entry(self, textvariable=self.MP_game_path)
         self.mp_path_frame = tkd.Frame(self)
 
-        self.mp_path_get = tkd.Button(self.mp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=False),
-                                      tooltip='The app tries to automatically find your game path for multiplayer\nIf nothing is returned you have to type it in manually')
+        self.mp_path_get = tkd.Button(self.mp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=False), tooltip=
+        'The app tries to automatically find your game path for multiplayer\n'
+        'If nothing is returned you have to type it in manually')
         self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
         # Stuff for advanced mode
-        self.exp_tracker = tkd.Button(self, text='Pop-up advanced\nstats tracker', height=2, font='20', command=self.open_stats_tracker)
+        self.advanced_automode_warning = tkd.Label(self, text=
+        '"Advanced automode" is highly \n'
+        'discouraged when playing\n'
+        'multiplayer, and might result\n'
+        'in a ban.\n\n'
+        'Explanation: Advanced automode\n'
+        'utilizes "Memory reading" of the\n'
+        'D2 process to discover information\n'
+        'about the current game state,\n'
+        'and this could be deemed cheating', justify=tk.LEFT)
 
         self.toggle_automode_btn(first=True)
 
     def open_stats_tracker(self):
-        if win32gui.FindWindow(None, 'Stats tracker'):
-            return
         self.stats_tracker = stats_tracker.StatsTracker(main_frame=self.main_frame)
 
     def toggle_automode_btn(self, first=False, show_error=True):
@@ -250,11 +259,11 @@ class Automode(General):
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
                 else:
-                    self.exp_tracker.pack(pady=20)
+                    self.advanced_automode_warning.pack(pady=20)
         else:
-            if hasattr(self, 'stats_tracker'):
-                self.stats_tracker.destroy()
-            self.exp_tracker.forget()
+            if not first and self.main_frame.advanced_stats_caret.active:
+                self.main_frame.advanced_stats_caret.invoke()
+            self.advanced_automode_warning.forget()
 
         if not first:
             self.main_frame.toggle_automode()

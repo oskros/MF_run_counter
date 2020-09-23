@@ -144,7 +144,7 @@ class Config:
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
-        cfg['OPTIONS']['show_drops_tab_below'] = str(parent.show_drops_tab_below)
+        cfg['OPTIONS']['show_drops_tab_below'] = str(int(parent.show_drops_tab_below))
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
         cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
         cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)
@@ -152,11 +152,7 @@ class Config:
 
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)
-        if hasattr(parent.options_tab.tab3, 'stats_tracker'):
-            advanced_tracker_open = int(parent.options_tab.tab3.stats_tracker.winfo_ismapped())
-        else:
-            advanced_tracker_open = 0
-        cfg['AUTOMODE']['advanced_tracker_open'] = str(advanced_tracker_open) if parent.automode == 2 else '0'
+        cfg['AUTOMODE']['advanced_tracker_open'] = str(int(parent.advanced_stats_caret.active)) if parent.automode == 2 else '0'
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

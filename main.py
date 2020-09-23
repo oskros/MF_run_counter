@@ -17,7 +17,7 @@ from tabs.profiles import Profile
 from utils.color_themes import Theme, available_themes
 from tkinter import messagebox
 import tkinter as tk
-from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils
+from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils, stats_tracker
 from tabs.about import About
 from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
@@ -81,7 +81,6 @@ class MainFrame(Config):
         if self.active_theme not in available_themes:
             self.active_theme = 'vista'
         self.theme = Theme(used_theme=self.active_theme)
-        self.drop_lab = tkd.Label(self.root, text='Drops', font='helvetica 14', bg=self.theme.label_color, fg=self.theme.text_color)
 
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
@@ -107,6 +106,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
+        self.root.config(borderwidth=2, height=439, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -122,40 +122,50 @@ class MainFrame(Config):
         self.img_panel.bind("<ButtonPress-1>", self.root.start_move)
         self.img_panel.bind("<ButtonRelease-1>", self.root.stop_move)
         self.img_panel.bind("<B1-Motion>", self.root.on_motion)
+        self.root.bind("<Delete>", self.delete_selection)
         self.root.bind("<Left>", self.root.moveleft)
         self.root.bind("<Right>", self.root.moveright)
         self.root.bind("<Up>", self.root.moveup)
         self.root.bind("<Down>", self.root.movedown)
 
         # Build tabs
+        self.drops_frame = tkd.Frame(self.root)
         self.tabcontrol = tkd.Notebook(self.root)
         self.profile_tab = Profile(self, parent=self.tabcontrol)
         self.timer_tab = MFRunTimer(self, parent=self.tabcontrol)
-        self.drops_tab = Drops(self, parent=self)
+        self.drops_tab = Drops(self, parent=self.drops_frame)
         self.options_tab = Options(self, self.timer_tab, self.drops_tab, parent=self.tabcontrol)
         self.grail_tab = Grail(self, parent=self.tabcontrol)
         self.about_tab = About(parent=self.tabcontrol)
 
         self.tabcontrol.add(self.timer_tab, text='Timer')
-        self.toggle_drop_tab()
         self.tabcontrol.add(self.options_tab, text='Options')
         self.tabcontrol.add(self.profile_tab, text='Profile')
         self.tabcontrol.add(self.grail_tab, text='Grail')
         self.tabcontrol.add(self.about_tab, text='About')
 
-        self.tabcontrol.pack(expand=1, fill='both')
+        self.tabcontrol.pack(expand=False, fill=tk.BOTH)
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
         self.profile_tab.update_descriptive_statistics()
 
         # Add buttons to main widget
-        lf = tkd.LabelFrame(self.root, height=35)
-        lf.propagate(False)  # dont allow buttons to modify label frame size
-        lf.pack(expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Start\nnew run', command=self.timer_tab.stop_start).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='End\nthis run', command=self.timer_tab.stop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Add\ndrop', command=self.drops_tab.add_drop).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Reset\nlap', command=self.timer_tab.reset_lap).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        tkd.Button(lf, text='Archive\n& reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        btn_frame = tkd.Frame(self.root)
+        btn_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP)
+        tkd.Button(btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[2, 1], pady=1)
+        tkd.Button(btn_frame, text='Archive & reset', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0,1], pady=1)
+
+        self.drops_frame.pack(fill=tk.BOTH, expand=True)
+        self.toggle_drops_frame(show=self.show_drops_tab_below)
+        self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_tab_below, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
+        self.drops_caret.propagate(False)
+        self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2,1], pady=[0, 1])
+
+        self.advanced_stats_tracker = stats_tracker.StatsTracker(self)
+        self.advanced_stats_caret = tkd.CaretButton(self.root, active=other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2,
+                                                    text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
+        self.advanced_stats_caret.propagate(False)
+        self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
+        self.toggle_advanced_stats_frame(show=other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']))
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -177,7 +187,7 @@ class MainFrame(Config):
         # Automode
         self.toggle_automode()
 
-        # A trick to disable windows DPI scaling (the app doesnt work well with scaling, unfortunately)
+        # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Used if auto archive & reset is activated
@@ -185,6 +195,12 @@ class MainFrame(Config):
 
         # Start the program
         self.root.mainloop()
+
+    def delete_selection(self, event=None):
+        if self.timer_tab.m.curselection():
+            self.timer_tab.delete_selected_run()
+        elif self.drops_tab.focus_get()._name == 'droplist':
+            self.drops_tab.delete_selected_drops()
 
     def load_memory_reader(self, show_err=True):
         try:
@@ -256,27 +272,37 @@ class MainFrame(Config):
             self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
-    def toggle_drop_tab(self):
-        """
-        Toggles whether the drop tab should be shown below the main application, or as its own tab. Relies on hard-coded
-        length and width of the application which means that changing font sizes can mess it up
-        """
-        if self.show_drops_tab_below:
-            tab_name = next((x for x in self.tabcontrol.tabs() if x.endswith('drops')), '')
-            if tab_name in self.tabcontrol.tabs():
-                self.tabcontrol.forget(tab_name)
-            self.root.config(borderwidth=2, relief='raised', height=605, width=240)
-            self.drops_tab.pack(side=tk.BOTTOM)
-            self.drops_tab.m.config(height=8, width=24)
-            self.drop_lab.pack(side=tk.BOTTOM)
+    def toggle_drops_frame(self, show=None):
+        if show is None:
+            show = self.drops_caret.active
+        if show:
+            self.root.config(height=self.root.winfo_height()+174)
+            self.drops_tab.pack(pady=[0, 2])
         else:
-            if hasattr(self, 'drop_lab'):
-                self.drop_lab.forget()
+            if hasattr(self, 'drops_tab') and self.drops_tab.winfo_ismapped():
                 self.drops_tab.forget()
-            self.root.config(borderwidth=2, relief='raised', height=405, width=240)
-            self.tabcontrol.add(self.drops_tab, text='Drops')
-            self.tabcontrol.insert(1, self.drops_tab)
-            self.drops_tab.m.config(height=8, width=23)
+                self.root.config(height=self.root.winfo_height()-174)
+        self.show_drops_tab_below = show
+        self.img_panel.focus_force()
+
+    def toggle_advanced_stats_frame(self, show=None):
+        if self.automode != 2:
+            show = False
+            self.advanced_stats_caret.toggle_image(active=False)
+        tracker_height = 300
+        if show is None:
+            show = self.advanced_stats_caret.active
+        if show:
+            self.root.update()
+            self.root.config(height=self.root.winfo_height()+tracker_height)
+            self.advanced_stats_tracker.pack()
+            self.advanced_stats_tracker.update_loop()
+        else:
+            if hasattr(self.advanced_stats_tracker, 'after_updater'):
+                self.advanced_stats_tracker.forget()
+                self.root.config(height=self.root.winfo_height()-tracker_height)
+                self.advanced_stats_tracker.after_cancel(self.advanced_stats_tracker.after_updater)
+                delattr(self.advanced_stats_tracker, 'after_updater')
 
     def process_queue(self):
         """

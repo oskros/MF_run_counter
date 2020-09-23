@@ -4,28 +4,24 @@ from tkinter import ttk
 
 
 class Drops(tkd.Frame):
-    def __init__(self, main_frame, parent=None, **kw):
-        tkd.Frame.__init__(self, parent.root, kw)
-        self.parent = parent
+    def __init__(self, main_frame, parent, **kw):
+        tkd.Frame.__init__(self, parent, **kw)
         self.drops = dict()
         self.main_frame = main_frame
 
         self._make_widgets()
 
     def _make_widgets(self):
+        tkd.Label(self, text='Drops', font='helvetica 14').pack()
         lf = tkd.Frame(self)
         lf.pack(expand=1, fill=tk.BOTH)
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
 
-        self.m = tkd.Text(lf, height=5, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=1, name='droplist')
+        self.m = tkd.Text(lf, height=8, width=23, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=1, name='droplist', borderwidth=2)
 
-        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(2, 1), padx=1)
+        self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(1, 2), padx=1)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
-
-        btn = tkd.Button(self, text='Delete selection', command=self.delete)
-        self.m.bind('<Delete>', lambda e: self.delete())
-        btn.pack(side=tk.BOTTOM, pady=(1, 2))
 
     def add_drop(self):
         drop = autocompletion.acbox(enable=True, title='Add drop')
@@ -36,10 +32,11 @@ class Drops(tkd.Frame):
                 if item['Item'] == drop['item_name']:
                     if item.get('Found', False) is False:
                         if self.main_frame.auto_upload_herokuapp:
-                            resp = self.main_frame.grail_tab.upload_to_herokuapp(upd_dict={item['Item']: True},
-                                                                                 show_confirm=False,
-                                                                                 pop_up_msg="Congrats, a new drop! Add it to grail?\n\nHerokuapp login info:",
-                                                                                 pop_up_title="Grail item")
+                            resp = self.main_frame.grail_tab.upload_to_herokuapp(
+                                upd_dict={item['Item']: True},
+                                show_confirm=False,
+                                pop_up_msg="Congrats, a new drop! Add it to grail?\n\nHerokuapp login info:",
+                                pop_up_title="Grail item")
                         else:
                             resp = tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item")
                         if resp is not None:
@@ -63,7 +60,7 @@ class Drops(tkd.Frame):
         self.m.yview_moveto(1)
         self.m.config(state=tk.DISABLED)
 
-    def delete(self):
+    def delete_selected_drops(self):
         if self.focus_get()._name == 'droplist':
             cur_row = self.m.get('insert linestart', 'insert lineend+1c').strip()
             resp = tk_utils.mbox(msg='Do you want to delete the row:\n%s' % cur_row, title='Warning')
@@ -79,7 +76,7 @@ class Drops(tkd.Frame):
                 except StopIteration:
                     pass
 
-                self.parent.img_panel.focus_force()
+            self.main_frame.img_panel.focus_force()
 
     def save_state(self):
         return dict(drops=self.drops)

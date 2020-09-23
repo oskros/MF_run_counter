@@ -1,22 +1,15 @@
-from init import *
-from utils import tk_dynamic as tkd, tk_utils, color_themes, other_utils
+from utils import tk_dynamic as tkd, color_themes
 import pymem.exception
 import tkinter as tk
 import time
-import os
+# FIXME: Add session stuff from StatsTracker to profile..
+# FIXME: Pause Statstracker when calling pause?
 
 
-class StatsTracker(tkd.Toplevel):
+class StatsTracker(tkd.Frame):
     def __init__(self, main_frame, **kw):
-        tkd.Toplevel.__init__(self, main_frame.root, **kw)
+        tkd.Frame.__init__(self, main_frame.root, **kw)
         self.main_frame = main_frame
-
-        self.title('Stats tracker')
-        self.wm_attributes('-topmost', main_frame.always_on_top)
-
-        self.geometry('238x299+%s+%s' % other_utils.safe_eval(main_frame.cfg['AUTOMODE']['advanced_tracker_position']))
-        self.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        self.resizable(False, False)
 
         self.session_char_xp_start = 0
         self.session_char_xp = 0
@@ -28,13 +21,7 @@ class StatsTracker(tkd.Toplevel):
 
         self.make_widgets()
 
-        self.bind("<Left>", self.moveleft)
-        self.bind("<Right>", self.moveright)
-        self.bind("<Up>", self.moveup)
-        self.bind("<Down>", self.movedown)
-
         color_themes.Theme(main_frame.active_theme).update_colors()
-        self._update_loop()
 
     def make_widgets(self):
         tkd.Label(self, text='Advanced stats tracker', font='Helvetica 15').pack()
@@ -67,9 +54,10 @@ class StatsTracker(tkd.Toplevel):
 
         return sv
 
-    def _update_loop(self):
+    def update_loop(self):
         self._update_vars()
-        self._updater = self.after(600, self._update_loop)
+        # print(time.time())
+        self.after_updater = self.after(600, self.update_loop)
 
     def _update_vars(self):
         try:
@@ -131,6 +119,5 @@ class StatsTracker(tkd.Toplevel):
         return '%02dh:%02dm' % (h, m)
 
     def destroy(self):
-        self.main_frame.cfg['AUTOMODE']['advanced_tracker_position'] = str((self.winfo_x(), self.winfo_y()))
-        tkd.Toplevel.destroy(self)
-        delattr(self.main_frame.options_tab.tab3, 'stats_tracker')
+        self.after_cancel(self.after_updater)
+        tkd.Frame.destroy(self)
