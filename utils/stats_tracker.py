@@ -4,6 +4,7 @@ import tkinter as tk
 import time
 # FIXME: Add session stuff from StatsTracker to profile..
 # FIXME: Pause Statstracker when calling pause?
+# FIXME: XP tracker doesn't work from lvl 1 (-1 xp)
 
 
 class StatsTracker(tkd.Frame):
