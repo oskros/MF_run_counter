@@ -192,7 +192,7 @@ class MainFrame(Config):
             assert self.is_user_admin is True
             self.d2_reader = reader.D2Reader()
             self.cached_is_ingame = self.d2_reader.in_game()
-        except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError) as e:
+        except (AssertionError, pymem.exception.ProcessNotFound, NotImplementedError, KeyError, pymem.exception.ProcessError, AttributeError, pymem.exception.WinAPIError) as e:
             self.reader_error = e
             self.d2_reader = None
             self.cached_is_ingame = None
