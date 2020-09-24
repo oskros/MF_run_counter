@@ -57,10 +57,10 @@ class RegistrationForm:
         self.a2 = self.make_entry_row('Character name')
         self.a3 = self.make_combobox_row('Run type', [
             '(A1) Mausoleum', '(A1) The Countess', '(A1) The Pit', '(A1) Andariel', '(A1) Cows', '-----------------------',
-            '(A2) Ancient Tunnels', '(A2) Summoner', '-----------------------',
-            '(A3) Lower Kurast', '(A3) Travincal', '(A3) Mephisto', '-----------------------',
-            '(A4) River of Flame', '(A4) Chaos Sanctuary', '-----------------------',
-            '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
+            '(A2) Maggot Lair', '(A2) Ancient Tunnels', '(A2) Summoner', '-----------------------',
+            '(A3) Lower Kurast', '(A3) Sewers', '(A3) Kurast Temples', '(A3) Travincal', '(A3) Mephisto', '-----------------------',
+            '(A4) River of Flame', '(A4) Chaos Sanctuary', '(A4) Diablo', '-----------------------',
+            '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Drifter Cavern', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
             '(A5) Baal', '(A5) Uber Quest'], readonly=False)
         self.a4 = self.make_combobox_row('Game mode', ['Single Player', 'Multiplayer'])
 

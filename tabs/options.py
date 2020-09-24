@@ -3,7 +3,7 @@ import sys
 import tkinter as tk
 from tkinter import messagebox
 from utils.color_themes import Theme
-from utils import tk_dynamic as tkd, tk_utils, config, other_utils, stats_tracker
+from utils import tk_dynamic as tkd, tk_utils, config, other_utils
 from tkinter import messagebox, ttk
 import system_hotkey
 import win32gui
@@ -193,9 +193,6 @@ class Automode(General):
         'and this could be deemed cheating', justify=tk.LEFT)
 
         self.toggle_automode_btn(first=True)
-
-    def open_stats_tracker(self):
-        self.stats_tracker = stats_tracker.StatsTracker(main_frame=self.main_frame)
 
     def toggle_automode_btn(self, first=False, show_error=True):
         got_val = other_utils.safe_eval(self.automode_var.get())

@@ -138,7 +138,30 @@ class D2Reader:
         self.base_address = self.pm.process_base.lpBaseOfDll
 
         dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll', 'D2CLIENT.dll']
-        self.dll_addrs = {x.name: x.lpBaseOfDll for x in self.pm.list_modules() if x.name in dlls}
+        dll_addrs = {x.name: x.lpBaseOfDll for x in self.pm.list_modules() if x.name in dlls}
+        self.d2common = dll_addrs.get('D2Common.dll', 0)
+        self.d2launch = dll_addrs.get('D2Launch.dll', 0)
+        self.d2lang   = dll_addrs.get('D2Lang.dll', 0)
+        self.d2net    = dll_addrs.get('D2Net.dll', 0)
+        self.d2game   = dll_addrs.get('D2Game.dll', 0)
+        self.d2client = dll_addrs.get('D2Client.dll', dll_addrs.get('D2CLIENT.dll', 0))
+
+        self.world_ptr = None
+        self.players_x_ptr = None
+        self.player_unit_ptr = None
+        self.map_ptrs()
+
+    def map_ptrs(self):
+        if self.d2_ver == '1.13c':
+            self.world_ptr       = self.d2game   + 0x111C24
+            self.players_x_ptr   = self.d2game   + 0x111C1C
+            self.player_unit_ptr = self.d2client + 0x0010A60C
+        elif self.d2_ver == '1.13d':
+            self.world_ptr       = self.d2game   + 0x111C10
+            self.players_x_ptr   = self.d2game   + 0x111C44
+            self.player_unit_ptr = self.d2client + 0x00101024
+        else:
+            raise NotImplementedError
 
     def get_d2_version(self):
         fixed_file_info = win32api.GetFileVersionInfo(self.pm.process_base.filename.decode(), '\\')
@@ -151,50 +174,25 @@ class D2Reader:
                      '1.0.13.60': '1.13c'}
         return patch_map.get(raw_version, None)
 
-    # def in_game_old(self):
-    #     if self.d2_ver == '1.13d':
-    #         world_addr = self.dll_addrs['D2Game.dll'] + 0x111C10
-    #     elif self.d2_ver == '1.13c':
-    #         world_addr = self.dll_addrs['D2Game.dll'] + 0x111C24
-    #     else:
-    #         raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
-    #
-    #     # print(self.pm.read_uint(world_addr))
-    #     return bool(self.pm.read_uint(world_addr))
+    def in_game_sp(self):
+        # This approach only works in single player
+        return bool(self.pm.read_uint(self.world_ptr))
 
     def in_game(self):
-        player_unit_ptr = self._player_unit_ptr()
+        # FIXME: Inappropriate way of testing whether character is in-game, and could create unexpected results
+        player_unit = self.pm.read_uint(self.player_unit_ptr)
         try:
-            self.pm.read_string(self.pm.read_uint(player_unit_ptr + 0x14))
+            # Gets character name - returns memory error out of game
+            self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
             return True
-        except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
+        except pymem.exception.MemoryReadError:
             return False
 
-    def players_x(self):
-        if self.d2_ver == '1.13d':
-            players_x = self.pm.read_int(self.dll_addrs['D2Game.dll'] + 0x111C44)
-        elif self.d2_ver == '1.13c':
-            players_x = self.pm.read_int(self.dll_addrs['D2Game.dll'] + 0x111C1C)
-        else:
-            raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
-        return players_x
-
-    def _player_unit_ptr(self):
-        client_addr = self.dll_addrs['D2Client.dll'] if 'D2Client.dll' in self.dll_addrs else self.dll_addrs['D2CLIENT.dll']
-        if self.d2_ver == '1.13d':
-            player_unit_ptr = self.pm.read_uint(client_addr + 0x00101024)
-        elif self.d2_ver == '1.13c':
-            player_unit_ptr = self.pm.read_uint(client_addr + 0x0010A60C)
-        else:
-            raise NotImplementedError("Addresses for other versions than 1.13c and 1.13d not implemented yet")
-        return player_unit_ptr
-
     def player_unit_stats(self):
-        player_unit_ptr = self._player_unit_ptr()
+        player_unit = self.pm.read_uint(self.player_unit_ptr)
 
-        char_name = self.pm.read_string(self.pm.read_uint(player_unit_ptr + 0x14))
-        statlist = self.pm.read_uint(player_unit_ptr + 0x005C)
+        char_name = self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
+        statlist = self.pm.read_uint(player_unit + 0x005C)
         full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
         stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
         stat_array_len = self.pm.read_short(statlist + 0x004C)
@@ -207,7 +205,7 @@ class D2Reader:
             value = self.pm.read_uint(cur_addr + 0x04)
 
             vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
-        # 12: level, 13: experience, 80: mf, 105: fcr
+        # lostatid: 12=level, 13=experience, 80=mf, 105=fcr
 
         out = dict()
         out['Name'] = char_name
@@ -217,7 +215,7 @@ class D2Reader:
         out['Exp missing'] = out['Exp next'] - out['Exp']
         out['Exp %'] = (out['Exp'] - EXP_TABLE[out['Level']]['Experience']) / EXP_TABLE[out['Level']]['Next']
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
-        # out['FCR'] = next((v['value'] for v in vals if v['lostatid'] == 105 and v['histatid'] == 0), -1)
+        out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
 
 

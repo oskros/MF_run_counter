@@ -17,7 +17,8 @@ from tabs.profiles import Profile
 from utils.color_themes import Theme, available_themes
 from tkinter import messagebox
 import tkinter as tk
-from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils, stats_tracker
+from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils
+from tabs.stats_tracker import StatsTracker
 from tabs.about import About
 from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
@@ -163,7 +164,7 @@ class MainFrame(Config):
         self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2,1], pady=[0, 1])
 
         tracker_is_active = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2 and self.is_user_admin
-        self.advanced_stats_tracker = stats_tracker.StatsTracker(self)
+        self.advanced_stats_tracker = StatsTracker(self)
         self.advanced_stats_caret = tkd.CaretButton(self.root, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
         self.advanced_stats_caret.propagate(False)
         self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])

@@ -93,7 +93,7 @@ class Profile(tkd.Frame):
             elif profile_name == 'grail':
                 messagebox.showerror('Reserved name', '"grail" is a reserved profile name, please choose another one.')
                 return self._add_new_profile(first_profile=first_profile)
-            if not first_profile and profile_name in self.profile_dropdown['values']:
+            if not first_profile and profile_name.lower() in [x.lower() for x in self.profile_dropdown['values']]:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
                 return self._add_new_profile(first_profile=first_profile)
 
