@@ -88,6 +88,8 @@ class StatsTracker(tkd.Frame):
             self.session_char_xp_start = player_unit_stats['Exp']
             self.session_char_time_start = time.time()
             self.curr_run_xp = self.session_char_xp_start
+        # Reset data when level up or when changing character to avoid bugs..
+        self.reset_when_changes(player_unit_stats=player_unit_stats)
 
         self.name_sv.set(player_unit_stats['Name'])
         self.level_sv.set(player_unit_stats['Level'])
@@ -163,6 +165,7 @@ class StatsTracker(tkd.Frame):
         self.mf_sv.set('-----')
         self.players_x_sv.set('-----')
 
+        self.exp_sv.set('0')
         self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
         self.exp_session_sv.set('{:,.0f}'.format(self.session_char_xp - self.session_char_xp_start))
         if len(self.session_xp_runs) > 0:
