@@ -132,6 +132,15 @@ class StatsTracker(tkd.Frame):
         self.mf_sv.set('-----')
         self.players_x_sv.set('-----')
 
+        self.exp_sv.set('0')
+        self.exp_session_sv.set('0')
+        self.exp_run_sv.set('0')
+        self.exp_hour_sv.set('0')
+
+        self.exp_level_sv.set('0')
+        self.hours_level_sv.set('0')
+        self.runs_level_sv.set('0')
+
     def save_state(self):
         return dict(session_char_xp_start=self.session_char_xp_start,
                     session_char_xp=self.session_char_xp,
