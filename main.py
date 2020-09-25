@@ -34,6 +34,7 @@ from tabs.grail import Grail
 # FIXME: Ability to select which run to archive drop on
 # FIXME: Test if works on 1.13c
 # FIXME: Add session stuff from StatsTracker to profile..
+# FIXME: Advanced automode and 2 diablo instances...?
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
