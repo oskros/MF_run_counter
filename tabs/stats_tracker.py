@@ -113,7 +113,7 @@ class StatsTracker(tkd.Frame):
             self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
 
     def reset_when_changes(self, player_unit_stats):
-        if player_unit_stats['Name'] != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get():
+        if self.name_sv.get() != '-----' and (player_unit_stats['Name'] != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get()):
             self.session_char_xp_start = player_unit_stats['Exp']
             self.session_char_time_start = time.time()
             self.curr_run_xp = self.session_char_xp_start
