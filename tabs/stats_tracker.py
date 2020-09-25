@@ -146,14 +146,14 @@ class StatsTracker(tkd.Frame):
     def save_state(self):
         return dict(session_char_xp_start=self.session_char_xp_start,
                     session_char_xp=self.session_char_xp,
-                    session_char_time_start=self.session_char_time_start,
+                    session_char_time_start=time.time() - self.session_char_time_start,
                     session_char_xp_missing=self.session_char_xp_missing,
                     session_xp_runs=list(self.session_xp_runs))
 
     def load_from_state(self, active_state):
         self.session_char_xp_start = active_state.get('session_char_xp_start', 0)
         self.session_char_xp = active_state.get('session_char_xp', 0)
-        self.session_char_time_start = active_state.get('session_char_time_start', time.time())
+        self.session_char_time_start = time.time() - active_state.get('session_char_time_start', 0)
         self.session_char_xp_missing = active_state.get('session_char_xp_missing', 0)
         self.session_xp_runs = set(active_state.get('session_xp_runs', set()))
 
