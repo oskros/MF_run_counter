@@ -106,7 +106,7 @@ class StatsTracker(tkd.Frame):
 
         self.session_char_xp_missing = player_unit_stats['Exp missing']
         self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
-        self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '-----')
+        self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
         if len(self.session_xp_runs) > 0:
             self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
 
@@ -124,6 +124,13 @@ class StatsTracker(tkd.Frame):
         self.session_char_time_start = time.time()
         self.session_char_xp_missing = 0
         self.session_xp_runs = set()
+        if hasattr(self, 'curr_run_xp'):
+            delattr(self, 'curr_run_xp')
+
+        self.name_sv.set('-----')
+        self.level_sv.set('-----')
+        self.mf_sv.set('-----')
+        self.players_x_sv.set('-----')
 
     def save_state(self):
         return dict(session_char_xp_start=self.session_char_xp_start,
