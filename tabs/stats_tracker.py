@@ -3,8 +3,6 @@ import pymem.exception
 import tkinter as tk
 import time
 # FIXME: Add session stuff from StatsTracker to profile..
-# FIXME: Pause Statstracker when calling pause?
-# FIXME: XP tracker doesn't work from lvl 1 (-1 xp)
 
 
 class StatsTracker(tkd.Frame):
@@ -82,10 +80,8 @@ class StatsTracker(tkd.Frame):
             self.exp_run_sv.set('0')
             return
 
-        # Game has not loaded PlayerUnitStats yet
-        # FIXME: This creates a bug for new characters - If they have zero experience gained we will never go further
-        # FIXME: Could remediate by considering level as well?
-        if player_unit_stats['Exp'] == -1:
+        # Game has not loaded PlayerUnitStats yet (new created characters don't have the XP stat, so need an exception)
+        if player_unit_stats['Exp'] == -1 and player_unit_stats['Level'] != 1:
             return
 
         if not hasattr(self, 'curr_run_xp'):

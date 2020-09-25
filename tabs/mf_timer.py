@@ -61,8 +61,6 @@ class MFRunTimer(tkd.Frame):
         self.m = tkd.Listbox(lf0, selectmode=tk.BROWSE, height=5, yscrollcommand=scrollbar.set, font='courier 12', activestyle=tk.NONE)
         self.m.bind('<FocusOut>', lambda e: self.m.selection_clear(0, tk.END))
         self.m.bind('<MouseWheel>', lambda e: self.m.yview_scroll(int(-1 * (e.delta / 120)), "units"))
-        # self.m.bind('<Delete>', lambda e: self.delete_selected_run())
-        # self.m.bindtags((self.m, self, "all"))
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=5)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
@@ -233,19 +231,19 @@ class MFRunTimer(tkd.Frame):
 
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
-            self._set_time(self.session_time, for_session=True)
+            # self._set_time(self.session_time, for_session=True)
             if self.is_running:
                 self.after_cancel(self._timer)
-            self.after_cancel(self._sess_timer)
+            # self.after_cancel(self._sess_timer)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
             self._start = time.time() - self._laptime
-            self._session_start = time.time() - self.session_time
+            # self._session_start = time.time() - self.session_time
             if self.is_running:
                 self.c1.itemconfigure(self.circ_id, fill='green3')
                 self._update_lap_time()
-            self._update_session_time()
+            # self._update_session_time()
 
             if self.automode_active:
                 if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):
@@ -253,7 +251,8 @@ class MFRunTimer(tkd.Frame):
                 elif self.main_frame.automode == 2:
                     try:
                         self.main_frame.cached_is_ingame = self.main_frame.d2_reader.in_game()
-                    except (pymem.exception.MemoryReadError, AttributeError, KeyError) as e:
+                    except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
+                            pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
                         pass
             self.is_paused = False
 
