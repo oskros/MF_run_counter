@@ -93,3 +93,9 @@ class Drops(tkd.Frame):
         for run in sorted(self.drops.keys(), key=lambda x: int(x)):
             for drop in self.drops[run]:
                 self.display_drop(drop=drop, run_no=run)
+
+    def reset_session(self):
+        self.drops = dict()
+        self.m.config(state=tk.NORMAL)
+        self.m.delete(1.0, tk.END)
+        self.m.config(state=tk.DISABLED)

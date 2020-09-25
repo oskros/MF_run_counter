@@ -165,7 +165,6 @@ class MainFrame(Config):
         self.advanced_stats_caret = tkd.CaretButton(self.root, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
         self.advanced_stats_caret.propagate(False)
         self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
-        self.toggle_advanced_stats_frame(show=tracker_is_active)
 
         # Register binds for changing tabs
         if self.tab_switch_keys_global:
@@ -184,8 +183,9 @@ class MainFrame(Config):
         self.theme.apply_theme_style()
         self.theme.update_colors()
 
-        # Automode
+        # Automode and advanced stats loop
         self.toggle_automode()
+        self.toggle_advanced_stats_frame(show=tracker_is_active)
 
         # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
@@ -401,10 +401,8 @@ class MainFrame(Config):
         Resets session for the timer module and drops from the drops module
         """
         self.timer_tab.reset_session()
-        self.drops_tab.drops = dict()
-        self.drops_tab.m.config(state=tk.NORMAL)
-        self.drops_tab.m.delete(1.0, tk.END)
-        self.drops_tab.m.config(state=tk.DISABLED)
+        self.drops_tab.reset_session()
+        self.advanced_stats_tracker.reset_session()
 
     def ArchiveReset(self, skip_confirm=False, notify_msg=None, stamp_from_epoch=None):
         """
@@ -425,6 +423,7 @@ class MainFrame(Config):
             active = self.timer_tab.save_state()
             self.profile_tab.tot_laps += len(active['laps'])
             active.update(self.drops_tab.save_state())
+            active.update(self.advanced_stats_tracker.save_state())
 
             # Update session dropdown for the profile
             if stamp_from_epoch is None:
@@ -434,6 +433,7 @@ class MainFrame(Config):
             self.profile_tab.available_archive.append(stamp)
             self.profile_tab.archive_dropdown['values'] = self.profile_tab.available_archive
             # self.profile_tab.update_descriptive_statistics()
+
             # Update profile .json with the session
             state = self.load_state_file()
             state['active_state'] = dict()
@@ -455,6 +455,7 @@ class MainFrame(Config):
         active_state = state.get('active_state', dict())
         self.timer_tab.load_from_state(active_state)
         self.drops_tab.load_from_state(active_state)
+        self.advanced_stats_tracker.load_from_state(active_state)
 
     def SaveActiveState(self):
         """
@@ -464,11 +465,12 @@ class MainFrame(Config):
         cache = self.load_state_file()
         timer_state = self.timer_tab.save_state()
         drops_state = self.drops_tab.save_state()
+        advanced_stats_state = self.advanced_stats_tracker.save_state()
         if cache.get('active_state', dict()).get('laps', []) != timer_state.get('laps', []) or cache.get('active_state', dict()).get('drops', dict()) != drops_state.get('drops', dict()):
             is_updated = True
         else:
             is_updated = False
-        cache['active_state'] = {**timer_state, **drops_state}
+        cache['active_state'] = {**timer_state, **drops_state, **advanced_stats_state}
         cache.setdefault('extra_data', dict())['Game mode'] = self.profile_tab.game_mode.get()
         if is_updated or 'Last update' not in cache['extra_data']:
             cache['extra_data']['Last update'] = time.time()

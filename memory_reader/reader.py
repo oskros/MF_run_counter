@@ -211,9 +211,9 @@ class D2Reader:
         out['Name'] = char_name
         out['Level'] = next((v['value'] for v in vals if v['lostatid'] == 12 and v['histatid'] == 0), -1)
         out['Exp'] = next((v['value'] for v in vals if v['lostatid'] == 13 and v['histatid'] == 0), -1)
-        out['Exp next'] = EXP_TABLE[out['Level']]['Next'] + EXP_TABLE[out['Level']]['Experience']
+        out['Exp next'] = EXP_TABLE.get(out['Level'], dict()).get('Next', -1) + EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)
         out['Exp missing'] = out['Exp next'] - out['Exp']
-        out['Exp %'] = (out['Exp'] - EXP_TABLE[out['Level']]['Experience']) / EXP_TABLE[out['Level']]['Next']
+        out['Exp %'] = (out['Exp'] - EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)) / EXP_TABLE.get(out['Level'], dict()).get('Next', 1)
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
