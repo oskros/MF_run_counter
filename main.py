@@ -362,8 +362,6 @@ class MainFrame(Config):
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            # if not self.timer_tab.is_paused:
-            #     self.timer_tab.pause()
             self.SaveActiveState()
             self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
             self.profile_tab.update_descriptive_statistics()

@@ -94,8 +94,12 @@ class Config:
 
     @staticmethod
     def build_config_file(config):
-        with open(mf_config_path, 'w') as fo:
-            config.write(fo)
+        try:
+            with open(mf_config_path, 'w') as fo:
+                config.write(fo)
+        except PermissionError as e:
+            messagebox.showerror('Permission error', 'You have placed "mf_timer.exe" in a restricted folder - Move "mf_timer.exe" to a non-restricted folder, or open it as admin.\n\n%s' % e)
+            sys.exit(0)
 
     def load_config_file(self):
         if not os.path.isfile(mf_config_path):
