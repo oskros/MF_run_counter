@@ -199,6 +199,7 @@ class Automode(General):
         if first is False and self.main_frame.automode == got_val:
             return
         self.main_frame.automode = got_val
+
         if got_val == 1:
             self.gamemode_frame.pack(expand=False, fill=tk.X)
             self.gamemode_lab.pack(side=tk.LEFT)
@@ -246,13 +247,11 @@ class Automode(General):
                         'Explanation: Advanced automode utilizes "Memory reading" of the D2 process\n'
                         'to discover information about the current game state, and this could be deemed cheating\n\n'
                         'If you still wish to continue, click "OK"'):
-                self.automode_off_btn.invoke()
                 self.automode_var.set('0')
                 return self.toggle_automode_btn(first=first, show_error=show_error)
             else:
                 self.main_frame.load_memory_reader(show_err=show_error)
-                if not self.main_frame.is_user_admin:
-                    self.automode_off_btn.invoke()
+                if not self.main_frame.is_user_admin or not self.main_frame.d2_version_supported:
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
                 else:

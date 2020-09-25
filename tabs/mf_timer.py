@@ -1,9 +1,8 @@
 import os
 import time
 import tkinter as tk
-import pymem.exception
 import utils.other_utils
-from utils import tk_dynamic as tkd, tk_utils, sound
+from utils import tk_dynamic as tkd, tk_utils, sound, other_utils
 from tkinter import ttk
 
 
@@ -80,10 +79,13 @@ class MFRunTimer(tkd.Frame):
             # Handle exceptions occurring with the memory reading (for example if d2 was closed while app is running)
             try:
                 is_ingame = self.main_frame.d2_reader.in_game()
-            except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                    pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
+            except other_utils.pymem_err_list:
                 self.main_frame.load_memory_reader(show_err=False)
-                self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
+                if self.main_frame.d2_version_supported is False:
+                    self.main_frame.options_tab.tab3.automode_var.set('0')
+                    self.main_frame.options_tab.tab3.toggle_automode_btn(first=False, show_error=False)
+                else:
+                    self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
                 return
 
             # Stop when exiting game, and start when entering game (NB: not calling stop/start)
@@ -251,8 +253,7 @@ class MFRunTimer(tkd.Frame):
                 elif self.main_frame.automode == 2:
                     try:
                         self.main_frame.cached_is_ingame = self.main_frame.d2_reader.in_game()
-                    except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                            pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError):
+                    except other_utils.pymem_err_list:
                         pass
             self.is_paused = False
 
@@ -281,10 +282,10 @@ class MFRunTimer(tkd.Frame):
         return dict(laps=self.laps, session_time=self.session_time)
 
     def toggle_automode(self, char_name):
-        if self.main_frame.automode:
-            if hasattr(self, '_game_check'):
-                self.after_cancel(self._game_check)
+        if hasattr(self, '_game_check'):
+            self.after_cancel(self._game_check)
 
+        if self.main_frame.automode:
             if self.main_frame.automode == 1:
                 d2_save_path = os.path.normpath(self.main_frame.game_path())
                 char_extension = char_name + self.main_frame.character_file_extension()
@@ -301,11 +302,9 @@ class MFRunTimer(tkd.Frame):
             elif self.main_frame.automode == 2:
                 try:
                     self.main_frame.cached_is_ingame = self.main_frame.d2_reader.in_game()
-                except (pymem.exception.MemoryReadError, AttributeError, KeyError) as e:
+                except other_utils.pymem_err_list:
                     pass
                 self._check_entered_game(advanced_mode=True)
                 self.automode_active = True
-
-        elif hasattr(self, '_game_check'):
-            self.after_cancel(self._game_check)
+        else:
             self.automode_active = False

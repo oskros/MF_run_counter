@@ -161,7 +161,7 @@ class D2Reader:
             self.players_x_ptr   = self.d2game   + 0x111C44
             self.player_unit_ptr = self.d2client + 0x00101024
         else:
-            raise NotImplementedError
+            raise NotImplementedError(str(self.d2_ver))
 
     def get_d2_version(self):
         fixed_file_info = win32api.GetFileVersionInfo(self.pm.process_base.filename.decode(), '\\')

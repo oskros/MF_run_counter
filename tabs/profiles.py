@@ -150,13 +150,14 @@ class Profile(tkd.Frame):
 
     def auto_reset_session(self):
         if self.main_frame.auto_archive_hours > 0:
-            last_upd = self.extra_data.get('Last update', time.time())
+            last_upd = float(self.extra_data.get('Last update', time.time()))
             elap_since = (time.time() - last_upd) / 3600
             if elap_since > self.main_frame.auto_archive_hours:
                 self.main_frame.ArchiveReset(
                     skip_confirm=True,
                     notify_msg='-- ACTIVE SESSION WAS AUTOMATICALLY ARCHIVED! --\n\n'
-                               'You have set auto archive to %s hours and %s hours have elapsed since last change to the active session of this profile' % (self.main_frame.auto_archive_hours, round(elap_since, 4))
+                               'You have set auto archive to %s hours and %s hours have elapsed since last change to the active session of this profile' % (self.main_frame.auto_archive_hours, round(elap_since, 4)),
+                    stamp_from_epoch=last_upd
                 )
 
     def _delete_profile(self):

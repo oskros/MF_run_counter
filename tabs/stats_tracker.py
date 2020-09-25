@@ -1,8 +1,6 @@
-from utils import tk_dynamic as tkd, color_themes
-import pymem.exception
+from utils import tk_dynamic as tkd, color_themes, other_utils
 import tkinter as tk
 import time
-# FIXME: Add session stuff from StatsTracker to profile..
 
 
 class StatsTracker(tkd.Frame):
@@ -63,8 +61,7 @@ class StatsTracker(tkd.Frame):
     def _update_vars(self):
         try:
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
-        except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError) as e:
+        except other_utils.pymem_err_list as e:
 
             # Update time dependent variables when outside a game instance (in menu for example)
             self.xp_hour_session = 3600 * self.session_char_xp_diff / (time.time() + 0.0001 - self.session_char_time_start)

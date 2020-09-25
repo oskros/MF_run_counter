@@ -1,6 +1,7 @@
 import os
 from tkinter import messagebox
 import screeninfo
+import pymem.exception
 
 
 def safe_eval(inp_str):
@@ -43,3 +44,7 @@ def test_mapfile_path(game_path, char_name):
                                                          'This session will continue in manual mode')
         return False
     return True
+
+
+pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
+                  pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError)

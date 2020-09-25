@@ -27,21 +27,15 @@ from tabs.grail import Grail
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 
-# FIXME: Add an "Unid" prefix, and autocompletion for magic/rare/bases -- normal/unid mode?
-# FIXME: Add charms for unid mode (Nihla/Diablo/Baal sc/gc)
-
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
-# FIXME: Pause function shouldn't pause session timer??
 
 # FIXME: Ability to select which run to archive drop on
-# FIXME: Auto archive'n'reset should label session using last update time rather than current time
-# FIXME: Test if works on 1.13c and 1.14 (NotImplementedError handling)
-# FIXME: Pop-up saying advanced stats cannot be opened without advanced automode
+# FIXME: Test if works on 1.13c
+# FIXME: Add session stuff from StatsTracker to profile..
 
-# FIXME: Option for overwriting found items when uploading to herokuapp
-# FIXME: d2 overlay mode with only text - could be hard
+# FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
 
 class MainFrame(Config):
@@ -78,7 +72,9 @@ class MainFrame(Config):
 
         # Initiate d2loader for memory reading
         self.is_user_admin = reader.is_user_admin()
-        self.load_memory_reader(show_err=False)
+        self.d2_version_supported = True
+        self.d2_reader = None
+        self.cached_is_ingame = None
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -211,14 +207,18 @@ class MainFrame(Config):
             assert self.is_user_admin is True
             self.d2_reader = reader.D2Reader()
             self.cached_is_ingame = self.d2_reader.in_game()
-        except (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError) as e:
-            self.reader_error = e
+        except other_utils.pymem_err_list as e:
+            if e.__class__ is NotImplementedError:
+                if self.d2_version_supported is True or show_err:
+                    tk.messagebox.showerror('D2 version error', 'Advanced automode only supports D2 patch versions 1.13c and 1.13d, your version is "%s".\n\nDisabling automode.' % e)
+                self.d2_version_supported = False
+            else:
+                self.d2_version_supported = True
             self.d2_reader = None
             self.cached_is_ingame = None
             if show_err and not self.is_user_admin:
                 tk.messagebox.showerror('Elevated access rights',
-                                        'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling automode. %s' % self.reader_error)
+                                        'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling automode. %s' % e)
 
     def sorted_profiles(self):
         def sort_key(x):
@@ -407,7 +407,7 @@ class MainFrame(Config):
         self.drops_tab.m.delete(1.0, tk.END)
         self.drops_tab.m.config(state=tk.DISABLED)
 
-    def ArchiveReset(self, skip_confirm=False, notify_msg=None):
+    def ArchiveReset(self, skip_confirm=False, notify_msg=None, stamp_from_epoch=None):
         """
         If any laps or drops have been recorded, this function saves the current session to the profile archive, and
         resets all info in the active session. In case no runs/drops are recorded, the session timer is simply reset
@@ -428,7 +428,10 @@ class MainFrame(Config):
             active.update(self.drops_tab.save_state())
 
             # Update session dropdown for the profile
-            stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            if stamp_from_epoch is None:
+                stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            else:
+                stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stamp_from_epoch))
             self.profile_tab.available_archive.append(stamp)
             self.profile_tab.archive_dropdown['values'] = self.profile_tab.available_archive
             # self.profile_tab.update_descriptive_statistics()
