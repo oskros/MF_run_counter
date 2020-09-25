@@ -7,7 +7,7 @@ You can find a video where I describe the application in detail here (NB: Not fu
 ## How to use
 NB: Working on Windows 7 and Windows 10 (I have not tested on any other OS, but probably it wouldn't work)
 1) To run on your computer, go to releases (https://github.com/oskros/MF_counter_releases/releases) and download the .exe file from the latest release. 
-2) Place the .exe file in your preferred folder
+2) Place the .exe file in your preferred folder (don't place it in a folder that requires admin rights to write to)
 3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for Windows to recognize me lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
     ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/Unrecognized1.png?raw=true)
@@ -76,12 +76,4 @@ Three different themes for the application have been created, which the user can
     ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/color_themes.png?raw=true)
 
 ### Extra options
-In the config file you have the option to set the following to 0 (False) or 1 (True). This is also possible from within the application under "Options" and then under "General".
-- always_on_top: choose whether the app window is on top of other programs (default True)
-- tab_keys_global: choose whether changing tabs with ctrl+shift+pgup/pgdn works system wide, or only when app is in focus (default True)
-- check_for_new_version: choose whether app should search for a new release on GitHub when opening (default True)
-- enable_sound_effects: choose whether a sound should be played when pressing start/stop buttons
-- show_drops_tab_below: show the drops tab below the main application
-- autocomplete: autocompletion of item names when typing them into the "add drop" window
-- active_theme: change the theme of the application between dark/blue/vista
-- start_run_delay: add an artificial delay to the start run button (requested by a user)
+In the Options tab you can turn on or off specific features in the application, and change the colour theme
