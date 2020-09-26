@@ -281,6 +281,7 @@ class MainFrame(Config):
         if show is None:
             show = self.drops_caret.active
         if show:
+            self.root.update()
             self.root.config(height=self.root.winfo_height()+174)
             self.drops_tab.pack(pady=[0, 2])
         else:
