@@ -1,6 +1,7 @@
 from utils import tk_dynamic as tkd, color_themes, other_utils
 import tkinter as tk
 import time
+# import logging
 
 
 class StatsTracker(tkd.Frame):
@@ -61,6 +62,7 @@ class StatsTracker(tkd.Frame):
         try:
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
         except other_utils.pymem_err_list as e:
+            # logging.debug('Update vars for stats tracker failed with error: %s' % e)
 
             # Update time dependent variables when outside a game instance (in menu for example)
             xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (time.time() + 0.0001 - self.session_char_time_start)
@@ -78,6 +80,7 @@ class StatsTracker(tkd.Frame):
 
         # Game has not loaded PlayerUnitStats yet (new created characters don't have the XP stat, so need an exception)
         if player_unit_stats['Exp'] == -1 and player_unit_stats['Level'] != 1:
+            # logging.debug('Failed to find XP and level, assuming stats are not loaded yet')
             return
 
         if not hasattr(self, 'curr_run_xp'):

@@ -2,9 +2,9 @@ from init import *
 import sys
 import time
 import json
-import pymem
 import queue
 import base64
+import logging
 import ctypes
 import traceback
 import win32api
@@ -32,9 +32,10 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 
 # FIXME: Ability to select which run to archive drop on
-# FIXME: Test if works on 1.13c
 # FIXME: Advanced automode and 2 diablo instances...?
 # FIXME: Archive reset should always use last update time as stamp
+# FIXME: Save relative XP gained in the XP tracker
+# FIXME: Build a proper logger
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
@@ -43,6 +44,13 @@ class MainFrame(Config):
     def __init__(self):
         # Create root
         self.root = tkd.Tk()
+
+        # Create logger
+        # logging.basicConfig(filename='mf_counter.log',
+        #                     filemode='w',
+        #                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+        #                     datefmt='%H:%M:%S',
+        #                     level=logging.DEBUG)
 
         # Check if application is already open
         self.title = 'MF run counter'
@@ -106,7 +114,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=439, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=444, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -209,9 +217,10 @@ class MainFrame(Config):
             self.d2_reader = reader.D2Reader()
             self.cached_is_ingame = self.d2_reader.in_game()
         except other_utils.pymem_err_list as e:
+            # logging.debug('D2memory read error: %s' % e)
             if e.__class__ is NotImplementedError:
                 if self.d2_version_supported is True or show_err:
-                    tk.messagebox.showerror('D2 version error', 'Advanced automode only supports D2 patch versions 1.13c and 1.13d, your version is "%s".\n\nDisabling automode.' % e)
+                    tk.messagebox.showerror('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % e)
                 self.d2_version_supported = False
             else:
                 self.d2_version_supported = True
