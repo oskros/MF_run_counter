@@ -45,6 +45,13 @@ from tabs.grail import Grail
 
 class MainFrame(Config):
     def __init__(self):
+        # Create error logger
+        lh = logging.FileHandler(filename='mf_timer.log', mode='w', delay=True)
+        logging.basicConfig(handlers=[lh],
+                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.WARNING)
+
         # Check OS
         self.os_platform = platform.system()
         self.os_release = platform.release()
@@ -53,13 +60,6 @@ class MainFrame(Config):
 
         # Create root
         self.root = tkd.Tk()
-
-        # Create logger
-        # logging.basicConfig(filename='mf_counter.log',
-        #                     filemode='w',
-        #                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-        #                     datefmt='%H:%M:%S',
-        #                     level=logging.DEBUG)
 
         # Check if application is already open
         self.title = 'MF run counter'
@@ -72,6 +72,7 @@ class MainFrame(Config):
 
         # Build/load config file
         self.cfg = self.load_config_file()
+        logging.getLogger().setLevel(getattr(logging, self.cfg['DEFAULT']['logging_level']))
         self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
         self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
         self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
@@ -91,9 +92,8 @@ class MainFrame(Config):
 
         # Initiate d2loader for memory reading
         self.is_user_admin = reader.is_user_admin()
-        self.d2_version_supported = True
+        self.advanced_error_thrown = False
         self.d2_reader = None
-        self.cached_is_ingame = None
 
         # Load theme
         if self.active_theme not in available_themes:
@@ -222,24 +222,36 @@ class MainFrame(Config):
             self.drops_tab.delete_selected_drops()
 
     def load_memory_reader(self, show_err=True):
-        try:
-            assert self.automode == 2
-            assert self.is_user_admin is True
-            self.d2_reader = reader.D2Reader()
-            self.cached_is_ingame = self.d2_reader.in_game()
-        except other_utils.pymem_err_list as e:
-            # logging.debug('D2memory read error: %s' % e)
-            if e.__class__ is NotImplementedError:
-                if self.d2_version_supported is True or show_err:
-                    tk.messagebox.showerror('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % e)
-                self.d2_version_supported = False
-            else:
-                self.d2_version_supported = True
+        err = None
+        if not self.is_user_admin:
+            err = ('Elevated access rights', 'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling advanced automode.')
             self.d2_reader = None
-            self.cached_is_ingame = None
-            if show_err and not self.is_user_admin:
-                tk.messagebox.showerror('Elevated access rights',
-                                        'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling automode. %s' % e)
+        elif self.automode != 2:
+            err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
+            self.d2_reader = None
+        elif reader.number_of_processes_with_name(reader.D2_GAME_EXE) > 1:
+            err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
+            self.d2_reader = None
+        elif not reader.process_exists(reader.D2_GAME_EXE):
+            self.d2_reader = None
+        else:
+            try:
+                self.d2_reader = reader.D2Reader()
+                if not self.d2_reader.patch_supported:
+                    err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
+                if self.d2_reader.dlls_loaded:
+                    self.d2_reader.map_ptrs()
+                else:
+                    self.d2_reader = None
+            except other_utils.pymem_err_list as e:
+                logging.debug('Load reader error: %s' % e)
+                self.d2_reader = None
+
+        if err is not None and (not self.advanced_error_thrown or show_err):
+            messagebox.showerror(*err)
+            self.advanced_error_thrown = True
+        else:
+            self.advanced_error_thrown = False
 
     def sorted_profiles(self):
         def sort_key(x):
@@ -514,10 +526,5 @@ class MainFrame(Config):
 try:
     MainFrame()
 except Exception as e:
-    logging.basicConfig(filename='mf_timer.log',
-                        filemode='w',
-                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                        datefmt='%H:%M:%S',
-                        level=logging.DEBUG)
-    logging.debug(e)
+    logging.exception(e)
     raise e

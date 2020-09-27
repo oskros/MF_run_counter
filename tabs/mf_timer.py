@@ -1,5 +1,6 @@
 import os
 import time
+import logging
 import tkinter as tk
 import utils.other_utils
 from utils import tk_dynamic as tkd, tk_utils, sound, other_utils
@@ -17,6 +18,7 @@ class MFRunTimer(tkd.Frame):
         self.is_running = False
         self.is_paused = False
         self._waiting_for_delay = False
+        self.cached_is_ingame = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
@@ -75,27 +77,34 @@ class MFRunTimer(tkd.Frame):
         self._sess_timer = self.after(50, self._update_session_time)
 
     def _check_entered_game(self, advanced_mode=False):
-        if advanced_mode and self.main_frame.is_user_admin:
-            # Handle exceptions occurring with the memory reading (for example if d2 was closed while app is running)
-            try:
-                is_ingame = self.main_frame.d2_reader.in_game()
-            except other_utils.pymem_err_list:
+        if advanced_mode:
+            if self.main_frame.d2_reader is None:
                 self.main_frame.load_memory_reader(show_err=False)
-                if self.main_frame.d2_version_supported is False:
-                    self.main_frame.options_tab.tab3.automode_var.set('0')
-                    self.main_frame.options_tab.tab3.toggle_automode_btn(first=False, show_error=False)
-                else:
-                    self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
+                self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
                 return
+            else:
+                try:
+                    is_ingame = self.main_frame.d2_reader.in_game()
+
+                # Handle exceptions occurring with the memory reading (for example if d2 was closed while app is running)
+                except other_utils.pymem_err_list as e:
+                    logging.debug(e)
+                    self.main_frame.load_memory_reader(show_err=False)
+                    if self.main_frame.advanced_error_thrown:
+                        self.main_frame.options_tab.tab3.automode_var.set('0')
+                        self.main_frame.options_tab.tab3.toggle_automode_btn(first=False, show_error=False)
+                    else:
+                        self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
+                    return
 
             # Stop when exiting game, and start when entering game (NB: not calling stop/start)
-            if self.main_frame.cached_is_ingame and not is_ingame and not self.is_paused:
+            if self.cached_is_ingame and not is_ingame and not self.is_paused:
                 if self.main_frame.stop_when_leaving:
                     self.stop()
-                self.main_frame.cached_is_ingame = is_ingame
-            elif not self.main_frame.cached_is_ingame and is_ingame and not self.is_paused:
+                self.cached_is_ingame = is_ingame
+            elif not self.cached_is_ingame and is_ingame and not self.is_paused:
                 self.stop_start()
-                self.main_frame.cached_is_ingame = is_ingame
+                self.cached_is_ingame = is_ingame
         else:
             # Simple automode - If file was moved / during runtime of the app, it doesn't crash with this line
             stamp = os.stat(self.char_file_path).st_mtime if os.path.isfile(self.char_file_path) else self.cached_file_stamp
@@ -253,7 +262,7 @@ class MFRunTimer(tkd.Frame):
                     self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
                 elif self.main_frame.automode == 2:
                     try:
-                        self.main_frame.cached_is_ingame = self.main_frame.d2_reader.in_game()
+                        self.cached_is_ingame = self.main_frame.d2_reader.in_game()
                     except other_utils.pymem_err_list:
                         pass
             self.is_paused = False
@@ -302,7 +311,7 @@ class MFRunTimer(tkd.Frame):
                     self.main_frame.am_lab.destroy()
             elif self.main_frame.automode == 2:
                 try:
-                    self.main_frame.cached_is_ingame = self.main_frame.d2_reader.in_game()
+                    self.cached_is_ingame = self.main_frame.d2_reader.in_game()
                 except other_utils.pymem_err_list:
                     pass
                 self._check_entered_game(advanced_mode=True)

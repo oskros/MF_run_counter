@@ -258,7 +258,7 @@ class Automode(General):
                 return self.toggle_automode_btn(first=first, show_error=show_error)
             else:
                 self.main_frame.load_memory_reader(show_err=show_error)
-                if not self.main_frame.is_user_admin or not self.main_frame.d2_version_supported:
+                if self.main_frame.advanced_error_thrown:
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
                 else:

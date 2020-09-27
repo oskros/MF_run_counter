@@ -55,6 +55,7 @@ class Config:
         config['DEFAULT']['herokuapp_username'] = ''
         config['DEFAULT']['herokuapp_password'] = ''
         config['DEFAULT']['webproxies'] = ''
+        config['DEFAULT']['logging_level'] = 'WARNING'
 
         config.add_section('OPTIONS')
         config['OPTIONS']['always_on_top'] = '1'

@@ -47,4 +47,4 @@ def test_mapfile_path(game_path, char_name):
 
 
 pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                  pymem.exception.MemoryReadError, NotImplementedError, KeyError, AttributeError, AssertionError)
+                  pymem.exception.MemoryReadError, KeyError, AttributeError)

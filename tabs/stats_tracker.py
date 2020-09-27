@@ -1,7 +1,7 @@
 from utils import tk_dynamic as tkd, color_themes, other_utils
 import tkinter as tk
 import time
-# import logging
+import logging
 
 
 class StatsTracker(tkd.Frame):
@@ -59,28 +59,23 @@ class StatsTracker(tkd.Frame):
         self.after_updater = self.after(600, self.update_loop)
 
     def _update_vars(self):
+        if self.main_frame.d2_reader is None:
+            self.update_while_out_of_game()
+            return
+        if not self.main_frame.timer_tab.cached_is_ingame:
+            self.update_while_out_of_game()
+            return
+
         try:
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
         except other_utils.pymem_err_list as e:
-            # logging.debug('Update vars for stats tracker failed with error: %s' % e)
-
-            # Update time dependent variables when outside a game instance (in menu for example)
-            xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (time.time() + 0.0001 - self.session_char_time_start)
-            self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
-            self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
-
-            # My horrible way of determining whether a run has ended. Should be done in a better way for sure..
-            if hasattr(self, 'curr_run_xp') and self.session_char_xp > self.curr_run_xp:
-                self.session_xp_runs.add(self.session_char_xp - self.curr_run_xp)
-                self.avg_run = sum(self.session_xp_runs) / len(self.session_xp_runs)
-                self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing/self.avg_run//1)))
-            self.curr_run_xp = self.session_char_xp
-            self.exp_run_sv.set('0')
+            logging.debug(e)
+            self.update_while_out_of_game()
             return
 
         # Game has not loaded PlayerUnitStats yet (new created characters don't have the XP stat, so need an exception)
         if player_unit_stats['Exp'] == -1 and player_unit_stats['Level'] != 1:
-            # logging.debug('Failed to find XP and level, assuming stats are not loaded yet')
+            logging.debug('Failed to find XP and level, assuming stats are not loaded yet')
             return
 
         if not hasattr(self, 'curr_run_xp'):
@@ -114,6 +109,20 @@ class StatsTracker(tkd.Frame):
         self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
         if len(self.session_xp_runs) > 0:
             self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
+
+    def update_while_out_of_game(self):
+        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (time.time() + 0.0001 - self.session_char_time_start)
+        self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
+        self.hours_level_sv.set(
+            self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
+
+        # My horrible way of determining whether a run has ended. Should be done in a better way for sure..
+        if hasattr(self, 'curr_run_xp') and self.session_char_xp > self.curr_run_xp:
+            self.session_xp_runs.add(self.session_char_xp - self.curr_run_xp)
+            self.avg_run = sum(self.session_xp_runs) / len(self.session_xp_runs)
+            self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
+        self.curr_run_xp = self.session_char_xp
+        self.exp_run_sv.set('0')
 
     def reset_when_changes(self, player_unit_stats):
         if self.name_sv.get() != '-----' and (player_unit_stats['Name'] != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get()):

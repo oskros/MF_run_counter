@@ -4,8 +4,10 @@ import win32api
 import os
 import ctypes
 import sys
-# import logging
+import logging
 
+D2_GAME_EXE = 'Game.exe'
+D2_SE_EXE = 'D2SE.exe'
 EXP_TABLE = {1: {'Experience': 0, 'Next': 500},
              2: {'Experience': 500, 'Next': 1000},
              3: {'Experience': 1500, 'Next': 2250},
@@ -130,32 +132,49 @@ def elevate_access(func):
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
 
 
+def process_exists(process_name):
+    return pymem.process.process_from_name(process_name) is not None
+
+
+def number_of_processes_with_name(process_name):
+    return sum(1 for x in pymem.process.list_processes() if x.szExeFile.decode('utf-8').lower() == process_name.lower())
+
+
 class D2Reader:
-    def __init__(self):
-        self.pm = pymem.Pymem('Game.exe', verbose=False)
+    def __init__(self, process_name=D2_GAME_EXE):
+        self.pm = pymem.Pymem(process_name, verbose=False)
 
         self.d2_ver = self.get_d2_version()
-        # logging.debug('D2 version: %s' % self.d2_ver)
+        logging.debug('D2 version: %s' % self.d2_ver)
 
         self.base_address = self.pm.process_base.lpBaseOfDll
-        # logging.debug('D2 base address: %s' % self.base_address)
+        logging.debug('D2 base address: %s' % self.base_address)
 
-        dlls = ['D2Common.dll', 'D2Launch.dll', 'D2Lang.dll', 'D2Net.dll', 'D2Game.dll', 'D2Client.dll', 'D2CLIENT.dll']
-        dll_addrs = {x.name: x.lpBaseOfDll for x in self.pm.list_modules() if x.name in dlls}
-        self.d2common = dll_addrs.get('D2Common.dll', 0)
-        self.d2launch = dll_addrs.get('D2Launch.dll', 0)
-        self.d2lang   = dll_addrs.get('D2Lang.dll', 0)
-        self.d2net    = dll_addrs.get('D2Net.dll', 0)
-        self.d2game   = dll_addrs.get('D2Game.dll', 0)
-        self.d2client = dll_addrs.get('D2Client.dll', dll_addrs.get('D2CLIENT.dll', 0))
+        self.dlls_loaded = True
+        self.is_plugy = False
+        self.d2client = None
+        self.d2game = None
+        self.d2net = None
+        # print([x.name for x in self.pm.list_modules()])
+        for mod in self.pm.list_modules():
+            mod_str = mod.name.lower()
+            if mod_str == 'plugy.dll':
+                self.is_plugy = True
+            elif mod_str == 'd2client.dll':
+                self.d2client = mod.lpBaseOfDll
+            elif mod_str == 'd2game.dll':
+                self.d2game = mod.lpBaseOfDll
+            elif mod_str == 'd2net.dll':
+                self.d2net = mod.lpBaseOfDll
 
-        # logging.debug('D2 dlls found: %s' % {x.name: x.lpBaseOfDll for x in self.pm.list_modules() if x.name.lower().startswith('d2')})
-        # logging.debug('DLL addrs found: %s' % dll_addrs)
+        if self.d2_ver in ['1.13c', '1.13d']:
+            if self.d2client is None or self.d2game is None or self.d2net is None:
+                self.dlls_loaded = False
 
+        self.patch_supported = True
         self.world_ptr = None
         self.players_x_ptr = None
         self.player_unit_ptr = None
-        self.map_ptrs()
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
@@ -171,7 +190,7 @@ class D2Reader:
             self.players_x_ptr   = self.base_address + 0x483D70
             self.player_unit_ptr = self.base_address + 0x003A5E74
         else:
-            raise NotImplementedError(str(self.d2_ver))
+            self.patch_supported = False
 
     def get_d2_version(self):
         fixed_file_info = win32api.GetFileVersionInfo(self.pm.process_base.filename.decode(), '\\')
@@ -195,19 +214,15 @@ class D2Reader:
             # Gets character name - returns memory error out of game
             self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
             return True
-        except pymem.exception.MemoryReadError as e:
-            # logging.debug('Didnt find game with error: %s' % e)
+        except pymem.exception.MemoryReadError:
             return False
 
     def player_unit_stats(self):
         player_unit = self.pm.read_uint(self.player_unit_ptr)
-        # logging.debug('Player unit ptr: %s' % player_unit)
 
         char_name = self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
-        # logging.debug('Char name: %s' % char_name)
         statlist = self.pm.read_uint(player_unit + 0x005C)
         full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
-        # logging.debug('Full stats: %s' % full_stats)
         stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
         stat_array_len = self.pm.read_short(statlist + 0x004C)
 
@@ -229,9 +244,7 @@ class D2Reader:
         out['Exp missing'] = out['Exp next'] - out['Exp']
         out['Exp %'] = (out['Exp'] - EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)) / EXP_TABLE.get(out['Level'], dict()).get('Next', 1)
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
-        # logging.debug('Out stats: %s' % out)
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
-        # logging.debug('Players X: %s' % out['Players X'])
         return out
 
 
