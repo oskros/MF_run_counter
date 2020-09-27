@@ -4,7 +4,7 @@ import time
 import json
 import queue
 import base64
-# import logging
+import logging
 import ctypes
 import traceback
 import win32api
@@ -503,4 +503,13 @@ class MainFrame(Config):
         sys.exit()
 
 
-MainFrame()
+try:
+    MainFrame()
+except Exception as e:
+    logging.basicConfig(filename='mf_timer.log',
+                        filemode='w',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+    logging.debug(e)
+    raise e
