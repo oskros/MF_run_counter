@@ -38,7 +38,7 @@ from tabs.grail import Grail
 # FIXME: Archive reset should always use last update time as stamp
 # FIXME: Save relative XP gained in the XP tracker
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual levels
-# FIXME: Build a proper logger
+# FIXME: Add support for D2SE
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
