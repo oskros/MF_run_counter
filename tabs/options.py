@@ -191,13 +191,13 @@ class Automode(General):
         self.advanced_automode_warning = tkd.Label(self, text=
         '"Advanced automode" is highly \n'
         'discouraged when playing\n'
-        'multiplayer, and might result\n'
+        'multiplayer, as it might result\n'
         'in a ban.\n\n'
         'Explanation: Advanced automode\n'
         'utilizes "memory reading" of the\n'
         'D2 process to discover information\n'
         'about the current game state,\n'
-        'and this could be deemed cheating', justify=tk.LEFT)
+        'and this could be deemed cheating.', justify=tk.LEFT)
 
         self.toggle_automode_btn(first=True)
 
@@ -250,8 +250,8 @@ class Automode(General):
 
         if got_val == 2:
             if first is False and not tk_utils.mbox(
-                    msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, and might result in a ban.\n\n'
-                        'Explanation: Advanced automode utilizes "Memory reading" of the D2 process\n'
+                    msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, as it might result in a ban.\n\n'
+                        'Explanation: Advanced automode utilizes "memory reading" of the D2 process\n'
                         'to discover information about the current game state, and this could be deemed cheating\n\n'
                         'If you still wish to continue, click "OK"'):
                 self.automode_var.set('0')
