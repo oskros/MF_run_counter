@@ -246,7 +246,7 @@ class Profile(tkd.Frame):
         else:
             laps = active[chosen].get('laps', [])
             session_time = active[chosen].get('session_time', 0)
-            dropcount = sum(len(val) for val in active[chosen].get('drops', dict()))
+            dropcount = sum(len(val) for val in active[chosen].get('drops', dict()).values())
 
         # Ensure no division by zero errors by defaulting to displaying 0
         avg_lap = sum(laps) / len(laps) if laps else 0
