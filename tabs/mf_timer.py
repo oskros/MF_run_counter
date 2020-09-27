@@ -233,19 +233,19 @@ class MFRunTimer(tkd.Frame):
 
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
-            # self._set_time(self.session_time, for_session=True)
+            self._set_time(self.session_time, for_session=True)
             if self.is_running:
                 self.after_cancel(self._timer)
-            # self.after_cancel(self._sess_timer)
+            self.after_cancel(self._sess_timer)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
             self._start = time.time() - self._laptime
-            # self._session_start = time.time() - self.session_time
+            self._session_start = time.time() - self.session_time
             if self.is_running:
                 self.c1.itemconfigure(self.circ_id, fill='green3')
                 self._update_lap_time()
-            # self._update_session_time()
+            self._update_session_time()
 
             if self.automode_active:
                 if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):

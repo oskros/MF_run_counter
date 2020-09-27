@@ -31,7 +31,6 @@ from tabs.grail import Grail
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
 
-# FIXME: Drops logged in profile text is not correct
 # FIXME: Pause session and XP timer on pause call
 # FIXME: Ability to select which run to archive drop on
 # FIXME: Advanced automode and 2 diablo instances...?
