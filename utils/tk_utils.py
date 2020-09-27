@@ -3,7 +3,6 @@ from utils import tk_dynamic as tkd
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
-
 from utils.other_utils import get_monitor_from_coord
 
 

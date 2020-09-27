@@ -10,6 +10,7 @@ import traceback
 import win32api
 import win32gui
 import win32con
+import platform
 from memory_reader import reader
 from utils.config import Config
 from tabs.options import Options
@@ -44,6 +45,12 @@ from tabs.grail import Grail
 
 class MainFrame(Config):
     def __init__(self):
+        # Check OS
+        self.os_platform = platform.system()
+        self.os_release = platform.release()
+        if not self.os_platform == 'Windows':
+            raise SystemError("MF Run Counter only supports windows")
+
         # Create root
         self.root = tkd.Tk()
 
@@ -199,7 +206,8 @@ class MainFrame(Config):
         self.toggle_advanced_stats_frame(show=tracker_is_active)
 
         # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
-        ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        if self.os_release == '10':
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
