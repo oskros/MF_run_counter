@@ -33,7 +33,7 @@ You are able to customize hotkeys for each of the commands in the application. T
 It is possible to disable a command from having a hotkey by choosing "NO_BIND"
 There are 2 hidden hotkeys: *CTRL+SHIFT+PgDn* and *CTRL+SHIFT+PgUp* for switching between tabs in the app (eg. if you wanna confirm the drop you just added is in fact saved)
 
-### Optional: Manual run counting
+### Manual run counting (Optional)
 Start a new run by using the assigned hotkey (default *ALT+Q*). In case a run is already active, this button will end it and start a new run.
 End the run by using the assigned hotkey (default *ALT+W*).
 In case of mistakes, the previous run can be deleted using the assigned hotkey (default *CTRL+DEL*)
