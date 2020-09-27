@@ -80,10 +80,11 @@ class General(tkd.Frame):
         tkd.RestrictedEntry(lf, textvariable=self.run_delay, num_only=True, width=13).pack(side=tk.RIGHT, padx=3)
         self.run_delay.trace_add('write', lambda name, index, mode: setattr(self.main_frame, flag_attr, float('0' + self.run_delay.get())))
 
-    def add_flag(self, flag_name, comment=None):
+    def add_flag(self, flag_name, comment=None, pack=True, config_section='OPTIONS'):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
-        lf.pack(expand=False, fill=tk.X)
+        if pack:
+            lf.pack(expand=False, fill=tk.X)
 
         lab = tkd.Label(lf, text=flag_name)
         lab.pack(side=tk.LEFT)
@@ -96,7 +97,7 @@ class General(tkd.Frame):
         off_button = tkd.Radiobutton(lf, text='Off', variable=sv, indicatoron=False, value=False, width=4, padx=4)
         on_button = tkd.Radiobutton(lf, text='On', variable=sv, indicatoron=False, value=True, width=4, padx=3)
 
-        if other_utils.safe_eval(self.main_frame.cfg['OPTIONS'][flag_attr]):
+        if other_utils.safe_eval(self.main_frame.cfg[config_section][flag_attr]):
             on_button.invoke()
             setattr(self, flag_attr + '_invoked', True)
         else:
@@ -107,7 +108,7 @@ class General(tkd.Frame):
         on_button.config(command=lambda: self.toggle_button(flag_attr))
         on_button.pack(side=tk.RIGHT)
         off_button.pack(side=tk.RIGHT)
-        return off_button, on_button
+        return lf
 
     def toggle_button(self, attr):
         val = other_utils.safe_eval(getattr(self, attr).get())
@@ -181,13 +182,19 @@ class Automode(General):
         self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
 
         # Stuff for advanced mode
+        self.advanced_mode_stop = self.add_flag(
+            flag_name='Stop when leaving',
+            comment='On: Stops the current run when you exit to menu.\nOff: The run counter will continue ticking until you enter a new game',
+            pack=False,
+            config_section='AUTOMODE'
+        )
         self.advanced_automode_warning = tkd.Label(self, text=
         '"Advanced automode" is highly \n'
         'discouraged when playing\n'
         'multiplayer, and might result\n'
         'in a ban.\n\n'
         'Explanation: Advanced automode\n'
-        'utilizes "Memory reading" of the\n'
+        'utilizes "memory reading" of the\n'
         'D2 process to discover information\n'
         'about the current game state,\n'
         'and this could be deemed cheating', justify=tk.LEFT)
@@ -255,11 +262,13 @@ class Automode(General):
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
                 else:
-                    self.advanced_automode_warning.pack(pady=20)
+                    self.advanced_mode_stop.pack(expand=False, fill=tk.X, pady=4)
+                    self.advanced_automode_warning.pack(pady=10)
         else:
             if not first and self.main_frame.advanced_stats_caret.active:
                 self.main_frame.advanced_stats_caret.invoke()
             self.advanced_automode_warning.forget()
+            self.advanced_mode_stop.forget()
 
         if not first:
             self.main_frame.toggle_automode()

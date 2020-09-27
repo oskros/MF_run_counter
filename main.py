@@ -71,6 +71,7 @@ class MainFrame(Config):
         self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
         self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
+        self.stop_when_leaving = other_utils.safe_eval(self.cfg['AUTOMODE']['stop_when_leaving'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -116,7 +117,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=444, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=442, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()

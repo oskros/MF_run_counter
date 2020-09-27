@@ -90,10 +90,11 @@ class MFRunTimer(tkd.Frame):
 
             # Stop when exiting game, and start when entering game (NB: not calling stop/start)
             if self.main_frame.cached_is_ingame and not is_ingame and not self.is_paused:
-                self.stop()
+                if self.main_frame.stop_when_leaving:
+                    self.stop()
                 self.main_frame.cached_is_ingame = is_ingame
             elif not self.main_frame.cached_is_ingame and is_ingame and not self.is_paused:
-                self.start()
+                self.stop_start()
                 self.main_frame.cached_is_ingame = is_ingame
         else:
             # Simple automode - If file was moved / during runtime of the app, it doesn't crash with this line

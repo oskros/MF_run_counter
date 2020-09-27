@@ -70,7 +70,7 @@ class Config:
         config.add_section('AUTOMODE')
         config['AUTOMODE']['automode'] = '0'
         config['AUTOMODE']['advanced_tracker_open'] = '0'
-        config['AUTOMODE']['advanced_tracker_position'] = str((100, 100))
+        config['AUTOMODE']['stop_when_leaving'] = '1'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -157,6 +157,7 @@ class Config:
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)
         cfg['AUTOMODE']['advanced_tracker_open'] = str(int(parent.advanced_stats_caret.active)) if parent.automode == 2 else '0'
+        cfg['AUTOMODE']['stop_when_leaving'] = str(parent.stop_when_leaving)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
