@@ -223,20 +223,23 @@ class MainFrame(Config):
 
     def load_memory_reader(self, show_err=True):
         err = None
+        d2_game_open = reader.process_exists(reader.D2_GAME_EXE)
+        d2_se_open = reader.process_exists(reader.D2_SE_EXE)
         if not self.is_user_admin:
             err = ('Elevated access rights', 'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif self.automode != 2:
             err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
             self.d2_reader = None
-        elif reader.number_of_processes_with_name(reader.D2_GAME_EXE) > 1:
+        elif reader.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE]) > 1:
             err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
             self.d2_reader = None
-        elif not reader.process_exists(reader.D2_GAME_EXE):
+        elif not d2_game_open and not d2_se_open:
             self.d2_reader = None
         else:
+            process_name = reader.D2_SE_EXE if d2_se_open else reader.D2_GAME_EXE
             try:
-                self.d2_reader = reader.D2Reader()
+                self.d2_reader = reader.D2Reader(process_name=process_name)
                 if not self.d2_reader.patch_supported:
                     err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
                 if self.d2_reader.dlls_loaded:

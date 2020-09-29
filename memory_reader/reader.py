@@ -136,19 +136,20 @@ def process_exists(process_name):
     return pymem.process.process_from_name(process_name) is not None
 
 
-def number_of_processes_with_name(process_name):
-    return sum(1 for x in pymem.process.list_processes() if x.szExeFile.decode('utf-8').lower() == process_name.lower())
+def number_of_processes_with_names(process_names):
+    return sum(1 for x in pymem.process.list_processes() if x.szExeFile.decode('utf-8').lower() in [x.lower() for x in process_names])
 
 
 class D2Reader:
     def __init__(self, process_name=D2_GAME_EXE):
         self.pm = pymem.Pymem(process_name, verbose=False)
-
-        self.d2_ver = self.get_d2_version()
-        logging.debug('D2 version: %s' % self.d2_ver)
+        self.is_d2se = (process_name == D2_SE_EXE)
 
         self.base_address = self.pm.process_base.lpBaseOfDll
         logging.debug('D2 base address: %s' % self.base_address)
+
+        self.d2_ver = self.get_d2_version()
+        logging.debug('D2 version: %s' % self.d2_ver)
 
         self.dlls_loaded = True
         self.is_plugy = False
@@ -193,6 +194,8 @@ class D2Reader:
             self.patch_supported = False
 
     def get_d2_version(self):
+        if self.is_d2se:
+            return self.pm.read_string(self.base_address + 0x1A049).strip()
         fixed_file_info = win32api.GetFileVersionInfo(self.pm.process_base.filename.decode(), '\\')
         raw_version = '{:d}.{:d}.{:d}.{:d}'.format(
             fixed_file_info['FileVersionMS'] // 65536,
