@@ -4,16 +4,16 @@ You can find a video where I describe the application in detail here
 https://www.youtube.com/watch?v=e4vcg8MdvrY
 
 
-![GUI](https://github.com/oskros/MF_counter_releases/blob/master/media/UI_showcase2.png?raw=true)
+![GUI](https://github.com/oskros/MF_run_counter/blob/master/media/UI_showcase2.png?raw=true)
 
 ## How to use
 NB: Working on Windows 7 and Windows 10 (I have not tested on any other OS, but probably it wouldn't work)
-1) To run on your computer, go to releases (https://github.com/oskros/MF_counter_releases/releases) and download the .exe file from the latest release. 
+1) To run on your computer, go to releases (https://github.com/oskros/MF_run_counter/releases) and download the .exe file from the latest release. 
 2) Place the .exe file in your preferred folder (don't place it in a folder that requires admin rights to write to)
 3) You might be prompted by Windows not recognizing the application publisher (I am not going to pay 100$ a year for Windows to recognize me lol). Simply click "more info" and then "Run anyway" when Windows asks. See pictures below
     
-    ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/Unrecognized1.png?raw=true)
-    ![winblock2](https://github.com/oskros/MF_counter_releases/blob/master/media/Unrecognized2.png?raw=true)
+    ![winblock1](https://github.com/oskros/MF_run_counter/blob/master/media/Unrecognized1.png?raw=true)
+    ![winblock2](https://github.com/oskros/MF_run_counter/blob/master/media/Unrecognized2.png?raw=true)
 4) You can make the application trusted by following the steps suggested here: https://www.windowscentral.com/how-disable-smartscreen-trusted-app-windows-10
 5) The first time you run the .exe file, a config file is created in the same directory as the .exe, named "mf_config.ini", which can be edited in Notepad. While you can edit settings directly in the config file, I would recommend doing it from within the application. At first run, there is also a "Profiles" folder created, which stores save files for each of your created profiles.
 
@@ -93,7 +93,7 @@ The program automatically checks if a new version is available on start-up, prov
 
 ### Color themes
 Three different themes for the application have been created, which the user can choose between under Options 
-    ![winblock1](https://github.com/oskros/MF_counter_releases/blob/master/media/color_themes.png?raw=true)
+    ![winblock1](https://github.com/oskros/MF_run_counter/blob/master/media/color_themes.png?raw=true)
 
 ### Extra options
 In the Options tab you can turn on or off specific features in the application, and change the colour theme
