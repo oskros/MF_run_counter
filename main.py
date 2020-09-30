@@ -244,19 +244,20 @@ class MainFrame(Config):
             process_name = reader.D2_SE_EXE if d2_se_open else reader.D2_GAME_EXE
             try:
                 self.d2_reader = reader.D2Reader(process_name=process_name)
-                if not self.d2_reader.patch_supported:
-                    err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
                 if self.d2_reader.dlls_loaded:
                     self.d2_reader.map_ptrs()
+                    if not self.d2_reader.patch_supported:
+                        err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
                 else:
                     self.d2_reader = None
+
             except other_utils.pymem_err_list as e:
                 logging.debug('Load reader error: %s' % e)
                 self.d2_reader = None
 
         if err is not None and (not self.advanced_error_thrown or show_err):
-            messagebox.showerror(*err)
             self.advanced_error_thrown = True
+            messagebox.showerror(*err)
         else:
             self.advanced_error_thrown = False
 
