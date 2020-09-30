@@ -195,6 +195,14 @@ class D2Reader:
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
             self.player_unit_ptr = self.d2client + 0x101024
+        elif self.d2_ver == '1.14b':
+            self.world_ptr       = self.base_address + 0x47BD78
+            self.players_x_ptr   = self.base_address + 0x47BDB0
+            self.player_unit_ptr = self.base_address + 0x39DEFC
+        elif self.d2_ver == '1.14c':
+            self.world_ptr       = self.base_address + 0x0047ACC0
+            self.players_x_ptr   = self.base_address + 0x47ACF8
+            self.player_unit_ptr = self.base_address + 0x39CEFC
         elif self.d2_ver == '1.14d':
             self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
