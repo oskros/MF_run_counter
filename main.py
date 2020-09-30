@@ -32,16 +32,14 @@ from tabs.grail import Grail
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
 
-# FIXME: Pause session and XP timer on pause call
+# FIXME: Pause XP timer on pause call
 # FIXME: Ability to select which run to archive drop on
-# FIXME: Advanced automode and 2 diablo instances...?
 # FIXME: Archive reset should always use last update time as stamp
 # FIXME: Save relative XP gained in the XP tracker
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual levels
-# FIXME: Check game version for d2se correctly
 
 # FIXME: Check if load times can be excluded
-# FIXME: Add  gameIP to advanced stats tracker
+# FIXME: Add gameIP to advanced stats tracker
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
