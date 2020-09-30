@@ -38,7 +38,10 @@ from tabs.grail import Grail
 # FIXME: Archive reset should always use last update time as stamp
 # FIXME: Save relative XP gained in the XP tracker
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual levels
-# FIXME: Add support for D2SE
+# FIXME: Check game version for d2se correctly
+
+# FIXME: Check if load times can be excluded
+# FIXME: Add  gameIP to advanced stats tracker
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
@@ -72,7 +75,8 @@ class MainFrame(Config):
 
         # Build/load config file
         self.cfg = self.load_config_file()
-        logging.getLogger().setLevel(getattr(logging, self.cfg['DEFAULT']['logging_level']))
+        if hasattr(logging, self.cfg['DEFAULT']['logging_level']):
+            logging.getLogger().setLevel(getattr(logging, self.cfg['DEFAULT']['logging_level']))
         self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
         self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
         self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
@@ -391,6 +395,7 @@ class MainFrame(Config):
         """
         err = traceback.format_exception(*args)
         tk.messagebox.showerror('Exception occured', 'Data before last autosave is lost...\n\n' + ''.join(err))
+        logging.exception(args)
         os._exit(0)
 
     def notebook_tab_change(self):

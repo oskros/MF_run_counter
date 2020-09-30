@@ -409,8 +409,8 @@ class Profile(tkd.Frame):
         txt_list.config(state=tk.DISABLED)
 
         button_frame = tkd.Frame(new_win)
-        tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, '\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt('\n'.join(txt_list.get(0, tk.END)))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
         tkd.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output)).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is very important:

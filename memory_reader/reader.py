@@ -168,7 +168,7 @@ class D2Reader:
             elif mod_str == 'd2net.dll':
                 self.d2net = mod.lpBaseOfDll
 
-        if self.d2_ver in ['1.13c', '1.13d']:
+        if self.is_d2se or self.d2_ver in ['1.13c', '1.13d']:
             if self.d2client is None or self.d2game is None or self.d2net is None:
                 self.dlls_loaded = False
 
@@ -181,15 +181,15 @@ class D2Reader:
         if self.d2_ver == '1.13c':
             self.world_ptr       = self.d2game   + 0x111C24
             self.players_x_ptr   = self.d2game   + 0x111C1C
-            self.player_unit_ptr = self.d2client + 0x0010A60C
+            self.player_unit_ptr = self.d2client + 0x10A60C
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
-            self.player_unit_ptr = self.d2client + 0x00101024
+            self.player_unit_ptr = self.d2client + 0x101024
         elif self.d2_ver == '1.14d':
-            self.world_ptr       = self.base_address + 0x00483D38
+            self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
-            self.player_unit_ptr = self.base_address + 0x003A5E74
+            self.player_unit_ptr = self.base_address + 0x3A5E74
         else:
             self.patch_supported = False
 
