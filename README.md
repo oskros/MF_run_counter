@@ -53,7 +53,7 @@ In order to view your grail progress there is both a "Grail controller" view, wh
 You can also sync your local grail with already found items. Unfortunately, it is not possible to sync with any items added in your profiles prior to MF Run Counter v.1.2.0, sorry!
 
 ### Session timer
-The session timer will start as soon as you open the program and run as long as the program is open.
+The session timer will run while Diablo is open. It will pause when Diablo is closed.
 
 ### Pausing
 In case you need to take a break from the computer, the counter can be paused by using the assigned hotkey (default *CTRL+Space*). This will pause both the run timer (if a run is active) and the session timer.

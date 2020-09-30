@@ -136,6 +136,15 @@ def process_exists(process_name):
     return pymem.process.process_from_name(process_name) is not None
 
 
+def one_of_processes_exists(process_names):
+    processes = pymem.process.list_processes()
+    names = [n.lower() for n in process_names]
+    for process in processes:
+        if process.szExeFile.decode('utf-8').lower() in names:
+            return True
+    return False
+
+
 def number_of_processes_with_names(process_names):
     return sum(1 for x in pymem.process.list_processes() if x.szExeFile.decode('utf-8').lower() in [x.lower() for x in process_names])
 
