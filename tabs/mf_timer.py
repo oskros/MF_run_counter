@@ -308,7 +308,12 @@ class MFRunTimer(tkd.Frame):
                     self.automode_active = True
                 else:
                     self.automode_active = False
-                    self.main_frame.am_lab.destroy()
+                    self.main_frame.am_lab.configure(state=tk.NORMAL)
+                    self.main_frame.am_lab.delete(1.0, tk.END)
+                    self.main_frame.am_lab.insert(tk.END, "Automode: ", "am")
+                    self.main_frame.am_lab.insert(tk.END, "OFF", "off")
+                    self.main_frame.am_lab.config(width=13)
+                    self.main_frame.am_lab.configure(state=tk.DISABLED)
             elif self.main_frame.automode == 2:
                 try:
                     self.cached_is_ingame = self.main_frame.d2_reader.in_game()

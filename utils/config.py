@@ -12,6 +12,7 @@ class Config:
     @staticmethod
     def find_SP_game_path():
         possible_paths = [
+            'C:/Program Files (x86)/Diablo II - 1.13c/Save/',
             'C:/Program Files (x86)/Diablo II Plugy/Save/',
             'C:/Program Files (x86)/Diablo II/Save/',
             'C:/Program Files (x86)/Diablo II 1/Save/',

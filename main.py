@@ -42,6 +42,7 @@ from tabs.grail import Grail
 # FIXME: Add gameIP to advanced stats tracker
 # FIXME: Only run session timer when d2 is open
 # FIXME; Pause timer when d2 is paused ingame (only for SP)
+# FIXME: Include a timestamp of found grailers (or for all items)
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
@@ -206,6 +207,11 @@ class MainFrame(Config):
         self.theme.update_colors()
 
         # Automode and advanced stats loop
+        self.am_lab = tk.Text(self.root, height=1, width=13, wrap=tk.NONE, bg="black", font='arial 9', cursor='arrow', borderwidth=0)
+        self.am_lab.tag_configure("am", foreground="white", background="black")
+        self.am_lab.tag_configure("on", foreground="lawn green", background="black")
+        self.am_lab.tag_configure("off", foreground="red", background="black")
+        self.am_lab.place(x=1, y=1)
         self.toggle_automode()
         self.toggle_advanced_stats_frame(show=tracker_is_active)
 
@@ -292,13 +298,22 @@ class MainFrame(Config):
         automode is activated. Takes an optional argument "char_name" which is used by the profile manager when changing
         between profiles, such that the automode loop listens to changes in the correct save file.
         """
-        if hasattr(self, 'am_lab'):
-            self.am_lab.destroy()
         if char_name is None:
             char_name = self.profile_tab.char_name.get()
         if self.automode:
-            self.am_lab = tk.Label(self.root, text="Automode", fg="white", bg="black")
-            self.am_lab.place(x=1, y=1)
+            self.am_lab.configure(state=tk.NORMAL)
+            self.am_lab.delete(1.0, tk.END)
+            self.am_lab.insert(tk.END, "Automode: ", "am")
+            self.am_lab.insert(tk.END, "ON", "on")
+            self.am_lab.config(width=12)
+            self.am_lab.configure(state=tk.DISABLED)
+        else:
+            self.am_lab.configure(state=tk.NORMAL)
+            self.am_lab.delete(1.0, tk.END)
+            self.am_lab.insert(tk.END, "Automode: ", "am")
+            self.am_lab.insert(tk.END, "OFF", "off")
+            self.am_lab.config(width=13)
+            self.am_lab.configure(state=tk.DISABLED)
         self.timer_tab.toggle_automode(char_name=char_name)
 
     def toggle_tab_keys_global(self):
