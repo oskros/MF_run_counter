@@ -206,7 +206,7 @@ class MainFrame(Config):
         self.theme.update_colors()
 
         # Automode and advanced stats loop
-        self.am_lab = tk.Text(self.root, height=1, width=13, wrap=tk.NONE, bg="black", font='arial 9', cursor='arrow', borderwidth=0)
+        self.am_lab = tk.Text(self.root, height=1, width=13, wrap=tk.NONE, bg="black", font='helvetica 9', cursor='arrow', borderwidth=0)
         self.am_lab.tag_configure("am", foreground="white", background="black")
         self.am_lab.tag_configure("on", foreground="lawn green", background="black")
         self.am_lab.tag_configure("off", foreground="red", background="black")
