@@ -40,6 +40,8 @@ from tabs.grail import Grail
 
 # FIXME: Check if load times can be excluded
 # FIXME: Add gameIP to advanced stats tracker
+# FIXME: Only run session timer when d2 is open
+# FIXME; Pause timer when d2 is paused ingame (only for SP)
 
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
