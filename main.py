@@ -11,7 +11,8 @@ import win32api
 import win32gui
 import win32con
 import platform
-from memory_reader import reader
+import pymem.exception
+from memory_reader import reader, reader_utils
 from utils.config import Config
 from tabs.options import Options
 from tabs.profiles import Profile
@@ -39,7 +40,7 @@ from tabs.grail import Grail
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual levels
 
 # FIXME: Check if load times can be excluded
-# FIXME: Add gameIP to advanced stats tracker
+# FIXME: Add game IP to advanced stats tracker
 # FIXME; Pause timer when d2 is paused ingame (only for SP)
 # FIXME: Include a timestamp of found grailers (or for all items)
 
@@ -94,8 +95,8 @@ class MainFrame(Config):
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
 
-        # Initiate d2loader for memory reading
-        self.is_user_admin = reader.is_user_admin()
+        # Initiate constants for memory reading
+        self.is_user_admin = reader_utils.is_user_admin()
         self.advanced_error_thrown = False
         self.d2_reader = None
 
@@ -221,7 +222,7 @@ class MainFrame(Config):
         # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
 
-        # Pressing ALT_L paused app updates when in focus, disable (probably hooked to opening menus)
+        # Pressing ALT_L paused UI updates when in focus, disable (probably hooked to opening menus)
         self.root.unbind_all('<Alt_L>')
 
         # Start the program
@@ -235,15 +236,15 @@ class MainFrame(Config):
 
     def load_memory_reader(self, show_err=True):
         err = None
-        d2_game_open = reader.process_exists(reader.D2_GAME_EXE)
-        d2_se_open = reader.process_exists(reader.D2_SE_EXE)
+        d2_game_open = reader_utils.process_exists(reader.D2_GAME_EXE)
+        d2_se_open = reader_utils.process_exists(reader.D2_SE_EXE)
         if not self.is_user_admin:
             err = ('Elevated access rights', 'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif self.automode != 2:
             err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
             self.d2_reader = None
-        elif reader.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE]) > 1:
+        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE]) > 1:
             err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif not d2_game_open and not d2_se_open:
@@ -259,6 +260,9 @@ class MainFrame(Config):
                 else:
                     self.d2_reader = None
 
+            except pymem.exception.CouldNotOpenProcess:
+                err = ('Open process error', 'Memory reader failed to get handle of Game process, try restarting your computer.\n\nDisabling advanced automode')
+                self.d2_reader = False
             except other_utils.pymem_err_list as e:
                 logging.debug('Load reader error: %s' % e)
                 self.d2_reader = None

@@ -3,7 +3,7 @@ import time
 import logging
 import tkinter as tk
 import utils.other_utils
-from memory_reader import reader
+from memory_reader import reader, reader_utils
 from utils import tk_dynamic as tkd, tk_utils, sound, other_utils
 from tkinter import ttk
 
@@ -78,7 +78,7 @@ class MFRunTimer(tkd.Frame):
             self._set_time(self._laptime, for_session=False)
 
     def _update_session_time(self):
-        if not self.is_running and not reader.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE]):
+        if not self.is_running and not reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE]):
             self._session_start = time.time() - self.session_time
         self.session_time = time.time() - self._session_start
         self._set_time(self.session_time, for_session=True)
