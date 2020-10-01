@@ -206,7 +206,7 @@ class MainFrame(Config):
         self.theme.update_colors()
 
         # Automode and advanced stats loop
-        self.am_lab = tk.Text(self.root, height=1, width=13, wrap=tk.NONE, bg="black", font='helvetica 9', cursor='arrow', borderwidth=0)
+        self.am_lab = tk.Text(self.root, height=1, width=13, wrap=tk.NONE, bg="black", font=('Segoe UI', 9), cursor='', borderwidth=0)
         self.am_lab.tag_configure("am", foreground="white", background="black")
         self.am_lab.tag_configure("on", foreground="lawn green", background="black")
         self.am_lab.tag_configure("off", foreground="red", background="black")
@@ -220,6 +220,9 @@ class MainFrame(Config):
 
         # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
+
+        # Pressing ALT_L paused app updates when in focus, disable (probably hooked to opening menus)
+        self.root.unbind_all('<Alt_L>')
 
         # Start the program
         self.root.mainloop()
@@ -304,14 +307,14 @@ class MainFrame(Config):
             self.am_lab.delete(1.0, tk.END)
             self.am_lab.insert(tk.END, "Automode: ", "am")
             self.am_lab.insert(tk.END, "ON", "on")
-            self.am_lab.config(width=12)
+            self.am_lab.config(width=14)
             self.am_lab.configure(state=tk.DISABLED)
         else:
             self.am_lab.configure(state=tk.NORMAL)
             self.am_lab.delete(1.0, tk.END)
             self.am_lab.insert(tk.END, "Automode: ", "am")
             self.am_lab.insert(tk.END, "OFF", "off")
-            self.am_lab.config(width=13)
+            self.am_lab.config(width=15)
             self.am_lab.configure(state=tk.DISABLED)
         self.timer_tab.toggle_automode(char_name=char_name)
 

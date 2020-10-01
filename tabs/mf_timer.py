@@ -30,7 +30,7 @@ class MFRunTimer(tkd.Frame):
         self._make_widgets()
         self.automode_active = self.main_frame.automode
 
-        self._update_session_time()
+        self._update_timers()
 
     def _make_widgets(self):
         flt = tkd.Frame(self)
@@ -67,17 +67,21 @@ class MFRunTimer(tkd.Frame):
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
+    def _update_timers(self):
+        self._update_lap_time()
+        self._update_session_time()
+        self._timer = self.after(50, self._update_timers)
+
     def _update_lap_time(self):
-        self._laptime = time.time() - self._start
-        self._set_time(self._laptime, for_session=False)
-        self._timer = self.after(50, self._update_lap_time)
+        if self.is_running:
+            self._laptime = time.time() - self._start
+            self._set_time(self._laptime, for_session=False)
 
     def _update_session_time(self):
-        if not reader.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE]):
+        if not self.is_running and not reader.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE]):
             self._session_start = time.time() - self.session_time
         self.session_time = time.time() - self._session_start
         self._set_time(self.session_time, for_session=True)
-        self._sess_timer = self.after(50, self._update_session_time)
 
     def _check_entered_game(self, advanced_mode=False):
         if advanced_mode:
@@ -162,7 +166,7 @@ class MFRunTimer(tkd.Frame):
                 self.pause()
             self.c1.itemconfigure(self.circ_id, fill='green3')
             self._start = time.time() - self._laptime
-            self._update_lap_time()
+            # self._update_lap_time()
             self.is_running = True
             self._set_laps(self.is_running)
             self._waiting_for_delay = False
@@ -186,7 +190,7 @@ class MFRunTimer(tkd.Frame):
             self._laptime = 0.0
             self.is_running = False
             self._set_time(0, for_session=False)
-            self.after_cancel(self._timer)
+            # self.after_cancel(self._timer)
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
 
@@ -247,9 +251,10 @@ class MFRunTimer(tkd.Frame):
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._set_time(self._laptime, for_session=False)
             self._set_time(self.session_time, for_session=True)
-            if self.is_running:
-                self.after_cancel(self._timer)
-            self.after_cancel(self._sess_timer)
+            # if self.is_running:
+            #     self.after_cancel(self._timer)
+            # self.after_cancel(self._sess_timer)
+            self.after_cancel(self._timer)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
@@ -257,8 +262,9 @@ class MFRunTimer(tkd.Frame):
             self._session_start = time.time() - self.session_time
             if self.is_running:
                 self.c1.itemconfigure(self.circ_id, fill='green3')
-                self._update_lap_time()
-            self._update_session_time()
+                # self._update_lap_time()
+            # self._update_session_time()
+            self._update_timers()
 
             if self.automode_active:
                 if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):
@@ -315,7 +321,7 @@ class MFRunTimer(tkd.Frame):
                     self.main_frame.am_lab.delete(1.0, tk.END)
                     self.main_frame.am_lab.insert(tk.END, "Automode: ", "am")
                     self.main_frame.am_lab.insert(tk.END, "OFF", "off")
-                    self.main_frame.am_lab.config(width=13)
+                    self.main_frame.am_lab.config(width=15)
                     self.main_frame.am_lab.configure(state=tk.DISABLED)
             elif self.main_frame.automode == 2:
                 try:

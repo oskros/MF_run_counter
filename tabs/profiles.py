@@ -259,9 +259,9 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum(laps)))
         self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
         self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min(laps, default=0)))
-        self.descr.insert(tk.END, 'Time spent in runs: ' + str(round(pct, 2)) + '%')
-        self.descr.insert(tk.END, 'Number of runs: ' + str(no_laps))
-        self.descr.insert(tk.END, 'Drops logged: ' + str(dropcount))
+        self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
+        self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
+        self.descr.insert(tk.END, 'Drops logged:         ' + str(dropcount))
 
     def open_archive_browser(self):
         chosen = self.archive_dropdown.get()

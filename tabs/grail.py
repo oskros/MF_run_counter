@@ -49,32 +49,36 @@ class Grail(tkd.Frame):
         tkd.Button(bfr3, text='Grail controller', borderwidth=3, command=self.open_grail_controller, width=1).pack(side=tk.LEFT, fill=tk.X, padx=1, pady=1, expand=tk.YES)
 
         descr = tkd.ListboxFrame(self)
-        descr.propagate(False)
+        # descr.propagate(False)
         tk.Grid.columnconfigure(descr, 0, weight=1)
-        descr.pack(side=tk.BOTTOM, fill=tk.X, expand=False)
-        for i, l in enumerate(['', 'Exist', 'Owned', 'Left', '%']):
-            tkd.ListboxLabel(descr, text=l).grid(row=0, column=i)
-        ttk.Separator(descr, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=5, sticky='ew')
+        tk.Grid.columnconfigure(descr, 1, weight=1)
+        tk.Grid.columnconfigure(descr, 2, weight=1)
+        tk.Grid.columnconfigure(descr, 3, weight=1)
+        descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
+        for i, l in enumerate(['', 'Exist', 'Left', '%    ']):
+            tkd.ListboxLabel(descr, text=l, font=('Segoe UI', 9, 'bold')).grid(row=0, column=i, sticky=tk.E)
+        ttk.Separator(descr, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=4, sticky='ew')
         self._make_row(descr, 2, 'Uniq Armor')
         self._make_row(descr, 3, 'Uniq Weapons')
         self._make_row(descr, 4, 'Uniq Other')
         self._make_row(descr, 5, 'Sets')
         self._make_row(descr, 6, 'Runes')
-        self._make_row(descr, 7, 'Total')
+        self._make_row(descr, 7, 'Total', font=('Segoe UI', 9, 'bold'))
 
-    def _make_row(self, master, row, text):
+    def _make_row(self, master, row, text, **kwargs):
+        font = kwargs.pop('font', ('Segoe UI', 9))
         title_str = text.lower().replace(' ', '_')
         self.vars_to_update.append(title_str)
         setattr(self, 'exist_' + title_str, tk.StringVar(value='0'))
-        setattr(self, 'owned_' + title_str, tk.StringVar(value='0'))
+        # setattr(self, 'owned_' + title_str, tk.StringVar(value='0'))
         setattr(self, 'remaining_' + title_str, tk.StringVar(value='0'))
         setattr(self, 'perc_' + title_str, tk.StringVar(value='0%'))
 
-        tkd.ListboxLabel(master, text=text, justify=tk.LEFT).grid(sticky=tk.W, row=row, column=0)
-        tkd.ListboxLabel(master, textvariable=getattr(self, 'exist_' + title_str)).grid(row=row, column=1)
-        tkd.ListboxLabel(master, textvariable=getattr(self, 'owned_' + title_str)).grid(row=row, column=2)
-        tkd.ListboxLabel(master, textvariable=getattr(self, 'remaining_' + title_str)).grid(row=row, column=3)
-        tkd.ListboxLabel(master, textvariable=getattr(self, 'perc_' + title_str)).grid(row=row, column=4)
+        tkd.ListboxLabel(master, text=text, justify=tk.LEFT, font=font).grid(sticky=tk.W, row=row, column=0)
+        tkd.ListboxLabel(master, textvariable=getattr(self, 'exist_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=1, sticky=tk.E)
+        # tkd.ListboxLabel(master, textvariable=getattr(self, 'owned_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=2, sticky=tk.E)
+        tkd.ListboxLabel(master, textvariable=getattr(self, 'remaining_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=2, sticky=tk.E)
+        tkd.ListboxLabel(master, textvariable=getattr(self, 'perc_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=3, sticky=tk.E)
 
     def update_statistics(self):
         for v in self.vars_to_update:
@@ -83,7 +87,7 @@ class Grail(tkd.Frame):
             count = self.count_grail(cond)
 
             getattr(self, 'exist_' + v).set(count[0])
-            getattr(self, 'owned_' + v).set(count[1])
+            # getattr(self, 'owned_' + v).set(count[1])
             getattr(self, 'remaining_' + v).set(count[0] - count[1])
             getattr(self, 'perc_' + v).set(str(round(count[1] / count[0] * 100, 1)) + '%' if count[0] != 0 else '0.0%')
 

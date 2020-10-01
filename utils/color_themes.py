@@ -36,6 +36,7 @@ class Theme:
 
             # Text
             self.text_color = 'black'
+            self.button_text_color = 'black'
             self.run_count_color = 'red'
             self.hyperlink_color = 'blue'
             self.listbox_text = 'black'
@@ -76,7 +77,7 @@ class Theme:
             self.hover_tab_background_color = 'grey30'
 
             # Widgets
-            self.button_color = 'grey40'
+            self.button_color = 'grey47'
             self.activebutton_color = 'grey78'
             self.active_checkbox_color = 'gray20'
             # self.listbox_color_stats = 'grey90'
@@ -88,6 +89,7 @@ class Theme:
 
             # Text
             self.text_color = '#ffffff'
+            self.button_text_color = 'white'
             self.run_count_color = 'dark orange'
             self.hyperlink_color = 'dodger blue'
             # self.listbox_text_stats = 'black'
@@ -140,6 +142,7 @@ class Theme:
 
             # Text
             self.text_color = 'black'
+            self.button_text_color = 'black'
             self.checkbox_text = 'black'
             self.run_count_color = 'red'
             self.hyperlink_color = 'blue'
@@ -208,7 +211,7 @@ class Theme:
         tkd.Label.set_config(bg=self.label_color, fg=self.text_color)
         tkd.Hyperlink.set_config(bg=self.label_color, fg=self.hyperlink_color)
         tkd.RunLabel.set_config(bg=self.label_color, fg=self.run_count_color)
-        tkd.Button.set_config(bg=self.button_color, fg=self.text_color)
+        tkd.Button.set_config(bg=self.button_color, fg=self.button_text_color)
         tkd.PauseButton.set_config(bg=self.pause_button_color, fg=self.pause_button_text)
         tkd.Listbox.set_config(bg=self.listbox_color, fg=self.listbox_text, highlightbackground=self.border_color)
         tkd.Listbox2.set_config(bg=self.listbox_color_stats, fg=self.listbox_text_stats, highlightbackground=self.border_color)
