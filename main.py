@@ -26,24 +26,25 @@ from tabs.drops import Drops
 from tabs.mf_timer import MFRunTimer
 from tabs.grail import Grail
 
-# FIXME: Show active profile on main tab somehow
-# FIXME: Add option to export/upload to google sheets
-
+# =============== ISSUES ================
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
 
+# =============== XP TRACKER FEATURES =============
 # FIXME: Pause XP timer on pause call
-# FIXME: Ability to select which run to archive drop on
-# FIXME: Archive reset should always use last update time as stamp
 # FIXME: Save relative XP gained in the XP tracker
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual levels
 
+# ============== OTHER FEATURES ===================
+# FIXME: Ability to select which run to archive drop on
+# FIXME: Archive reset should always use last update time as stamp
 # FIXME: Check if load times can be excluded
 # FIXME: Add game IP to advanced stats tracker
 # FIXME; Pause timer when d2 is paused ingame (only for SP)
 # FIXME: Include a timestamp of found grailers (or for all items)
-
+# FIXME: Show active profile on main tab somehow
+# FIXME: Add option to export/upload to google sheets
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
 
 
