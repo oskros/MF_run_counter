@@ -128,7 +128,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=442, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=436, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -139,7 +139,7 @@ class MainFrame(Config):
         # Build banner image and make window draggable on the banner
         d2banner = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'd2icon.png')
         img = tk.PhotoImage(file=d2banner)
-        self.img_panel = tkd.Label(self.root, image=img)
+        self.img_panel = tkd.Label(self.root, image=img, borderwidth=0)
         self.img_panel.pack()
         self.img_panel.bind("<ButtonPress-1>", self.root.start_move)
         self.img_panel.bind("<ButtonRelease-1>", self.root.stop_move)
@@ -210,7 +210,7 @@ class MainFrame(Config):
         self.am_lab.tag_configure("am", foreground="white", background="black")
         self.am_lab.tag_configure("on", foreground="lawn green", background="black")
         self.am_lab.tag_configure("off", foreground="red", background="black")
-        self.am_lab.place(x=1, y=1)
+        self.am_lab.place(x=1, y=0.4)
         self.toggle_automode()
         self.toggle_advanced_stats_frame(show=tracker_is_active)
 
@@ -353,7 +353,7 @@ class MainFrame(Config):
                 messagebox.showerror('Error', 'You need to active "Advanced auto mode" in Options->Automode to see advanced stats')
             show = False
             self.advanced_stats_caret.toggle_image(active=False)
-        tracker_height = 300
+        tracker_height = 299
         if show:
             self.root.update()
             self.root.config(height=self.root.winfo_height()+tracker_height)
