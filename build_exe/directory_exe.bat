@@ -6,7 +6,7 @@ rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\build"
 rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\dist"
 rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release"
 cd "C:\Users\oskro\PycharmProjects\MF_run_counter"
-path=C:\Users\oskro\Downloads\WPy32-3850\python-3.8.5;C:\Users\oskro\Downloads\WPy32-3850\python-3.8.5\Scripts
+path=%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Users\oskro\Downloads\WPy32-3850\python-3.8.5;C:\Users\oskro\Downloads\WPy32-3850\python-3.8.5\Scripts
 pyinstaller "C:\Users\oskro\PycharmProjects\MF_run_counter\build_exe\directory_exe.spec" --windowed --clean --icon="C:\Users\oskro\PycharmProjects\MF_run_counter\media\icon.ico"
 start C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer
 rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\build"
