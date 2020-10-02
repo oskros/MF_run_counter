@@ -21,7 +21,7 @@ NB: Working on Windows 7 and Windows 10 (I have not tested on any other OS, but 
 ### Automode
 You can active automode in **Options -> Automode**. There are two types of automode
 1) **Advanced:** Uses memory reading of the D2 "*Game.exe*" process to read from your client when you are in-game. When you enter a game, it will start a new run, and when you exit a game it will stop the run - Only recommended on single player, as it could be deemed cheating on multiplayer servers.    
-Advanced automode is patch specific, and is currently supported for 1.13c, 1.13d and 1.14d. I have not tested if it works in conjunction with D2SE.
+Advanced automode is patch specific, and is currently supported for 1.13c, 1.13d, 1.14b, 1.14c and 1.14d. It also works together with D2SE.
 
 2) **Simple:** Monitors the "*latest change time*" of your character save file. Your character is saved every time you exit a game, and thus a new run can be started - Unfortunately, there is no way to stop a run with this method and also it has two drawbacks:  
 *2.a)* The game autosaves every 5 minutes, thus you cannot have runs longer than 5 min.  
