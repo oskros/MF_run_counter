@@ -361,7 +361,7 @@ class MainFrame(Config):
             show = self.advanced_stats_caret.active
         if self.automode != 2:
             if show:
-                messagebox.showerror('Error', 'You need to active "Advanced auto mode" in Options->Automode to see advanced stats')
+                messagebox.showerror('Error', 'You need to active "Advanced automode" in Options->Automode to see advanced stats')
             show = False
             self.advanced_stats_caret.toggle_image(active=False)
         tracker_height = 299
