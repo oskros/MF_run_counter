@@ -44,12 +44,14 @@ class D2Reader:
         self.world_ptr = None
         self.players_x_ptr = None
         self.player_unit_ptr = None
+        self.in_pause_menu = None
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
             self.world_ptr       = self.d2game   + 0x111C24
             self.players_x_ptr   = self.d2game   + 0x111C1C
             self.player_unit_ptr = self.d2client + 0x10A60C
+            self.in_pause_menu   = self.d2client + 0xFADA4
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
