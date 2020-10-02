@@ -169,9 +169,9 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You need to have at least one profile, create a new profile before deleting this one.')
             return
 
-        resp1 = tk_utils.mbox(msg='Are you sure you want to delete this profile?\nThis will permanently delete all records stored for the profile.', title='WARNING')
+        resp1 = tk_utils.mbox(msg='Are you sure you want to delete the profile "%s"?\nThis will permanently delete all records stored for the profile.' % chosen, title='WARNING')
         if resp1 is True:
-            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile?\nFinal warning!', b1='Cancel', b2='OK', title='WARNING')
+            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile "%s"?\nFinal warning!' % chosen, b1='Cancel', b2='OK', title='WARNING')
             if resp2 is False:  # False here because we switch buttons around in second confirmation
                 file = 'Profiles/%s.json' % chosen
                 os.remove(file)
@@ -192,7 +192,7 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You cannot delete profile history from here. Please delete all sessions manually, or delete the profile instead')
             return
 
-        resp = tk_utils.mbox(msg='Do you really want to delete this session from archive? It will be permanently deleted', title='WARNING')
+        resp = tk_utils.mbox(msg='Do you really want to delete the session "%s" from archive? It will be permanently deleted' % chosen, title='WARNING')
         if resp:
             if chosen == 'Active session':
                 # Here we simply reset the timer module
