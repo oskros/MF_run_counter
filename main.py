@@ -30,6 +30,7 @@ from tabs.grail import Grail
 # FIXME: Solve an issue with tooltips showing outside of the screen
 # FIXME: Solve issue with bad synced sound effects (add sound effect when automode is active and starting new run)
 # FIXME: Retain order of item table when adding new drops
+# FIXME: Figure out why importing psutil is required for reading Game.exe
 
 # ============= XP TRACKER FEATURES =============
 # FIXME: Pause XP timer on pause call
