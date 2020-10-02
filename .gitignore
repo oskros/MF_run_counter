@@ -16,3 +16,4 @@
 *.msg
 *.json
 *.csv
+/dict_release/
