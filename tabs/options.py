@@ -188,11 +188,17 @@ class Automode(General):
             pack=False,
             config_section='AUTOMODE'
         )
+        self.advanced_pause_on_esc_menu = self.add_flag(
+            flag_name='Pause on ESC menu',
+            comment='When activated, the counter will be paused when ESC menu is open inside d2 (currently only works with patch 1.13c)',
+            pack=False,
+            config_section='AUTOMODE'
+        )
         self.advanced_automode_warning = tkd.Label(self, text=
         '"Advanced automode" is highly \n'
         'discouraged when playing\n'
         'multiplayer, as it might result\n'
-        'in a ban.\n\n'
+        'in a ban.\n'
         'Explanation: Advanced automode\n'
         'utilizes "memory reading" of the\n'
         'D2 process to discover information\n'
@@ -262,13 +268,16 @@ class Automode(General):
                     self.automode_var.set('0')
                     return self.toggle_automode_btn(first=first, show_error=show_error)
                 else:
-                    self.advanced_mode_stop.pack(expand=False, fill=tk.X, pady=4)
-                    self.advanced_automode_warning.pack(pady=10)
+                    self.advanced_mode_stop.pack(expand=False, fill=tk.X, pady=[4,0])
+                    self.advanced_pause_on_esc_menu.pack(expand=False, fill=tk.X)
+                    self.advanced_automode_warning.pack(pady=6)
         else:
             if not first and self.main_frame.advanced_stats_caret.active:
                 self.main_frame.advanced_stats_caret.invoke()
             self.advanced_automode_warning.forget()
             self.advanced_mode_stop.forget()
+            self.advanced_pause_on_esc_menu.forget()
+            self.main_frame.d2_reader = None
 
         if not first:
             self.main_frame.toggle_automode()

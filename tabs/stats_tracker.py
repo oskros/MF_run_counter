@@ -14,6 +14,7 @@ class StatsTracker(tkd.Frame):
         self.session_char_time_start = time.time()
         self.session_char_xp_missing = 0
         self.avg_run = 0
+        self.in_pause_menu = False
         self.session_xp_runs = set()
 
         # ==================================== WIDGETS ==================================== #

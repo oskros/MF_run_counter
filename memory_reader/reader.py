@@ -3,6 +3,7 @@ import pymem
 import win32api
 import logging
 from memory_reader import reader_utils
+from utils.other_utils import pymem_err_list
 
 D2_GAME_EXE = 'Game.exe'
 D2_SE_EXE = 'D2SE.exe'
@@ -70,6 +71,16 @@ class D2Reader:
             self.player_unit_ptr = self.base_address + 0x3A5E74
         else:
             self.patch_supported = False
+
+    def is_game_paused(self):
+        if self.in_pause_menu is not None:
+            try:
+                out = bool(self.pm.read_uint(self.in_pause_menu))
+            except pymem_err_list:
+                out = False
+        else:
+            out = False
+        return out
 
     def get_d2_version(self):
         if self.is_d2se:

@@ -90,6 +90,7 @@ class MainFrame(Config):
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
         self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
         self.stop_when_leaving = other_utils.safe_eval(self.cfg['AUTOMODE']['stop_when_leaving'])
+        self.pause_on_esc_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_on_esc_menu'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])

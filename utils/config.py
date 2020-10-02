@@ -73,6 +73,7 @@ class Config:
         config['AUTOMODE']['automode'] = '0'
         config['AUTOMODE']['advanced_tracker_open'] = '0'
         config['AUTOMODE']['stop_when_leaving'] = '1'
+        config['AUTOMODE']['pause_on_esc_menu'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -160,6 +161,7 @@ class Config:
         cfg['AUTOMODE']['automode'] = str(parent.automode)
         cfg['AUTOMODE']['advanced_tracker_open'] = str(int(parent.advanced_stats_caret.active)) if parent.automode == 2 else '0'
         cfg['AUTOMODE']['stop_when_leaving'] = str(parent.stop_when_leaving)
+        cfg['AUTOMODE']['pause_on_esc_menu'] = str(parent.pause_on_esc_menu)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

@@ -18,6 +18,7 @@ class MFRunTimer(tkd.Frame):
         self._laptime = 0.0
         self.is_running = False
         self.is_paused = False
+        self.is_user_paused = False
         self._waiting_for_delay = False
         self.cached_is_ingame = False
         self.sessionstr = tk.StringVar()
@@ -68,17 +69,21 @@ class MFRunTimer(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
     def _update_timers(self):
+        if self.main_frame.pause_on_esc_menu:
+            memory_pause = getattr(self.main_frame.d2_reader, 'is_game_paused', lambda: False)()
+            if not self.is_user_paused and self.is_paused != memory_pause:
+                self.pause(user_paused=False)
         self._update_lap_time()
         self._update_session_time()
         self._timer = self.after(50, self._update_timers)
 
     def _update_lap_time(self):
-        if self.is_running:
+        if self.is_running and not self.is_paused:
             self._laptime = time.time() - self._start
             self._set_time(self._laptime, for_session=False)
 
     def _update_session_time(self):
-        if not self.is_running and not reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE]):
+        if not (self.is_running or reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE])) or self.is_paused:
             self._session_start = time.time() - self.session_time
         self.session_time = time.time() - self._session_start
         self._set_time(self.session_time, for_session=True)
@@ -190,7 +195,6 @@ class MFRunTimer(tkd.Frame):
             self._laptime = 0.0
             self.is_running = False
             self._set_time(0, for_session=False)
-            # self.after_cancel(self._timer)
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
 
@@ -241,7 +245,7 @@ class MFRunTimer(tkd.Frame):
             self._set_fastest()
             self._set_average()
 
-    def pause(self):
+    def pause(self, user_paused=True):
         if not self.is_paused:
             self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.pause,
                                              bg=self.main_frame.theme.pause_button_color,
@@ -249,12 +253,6 @@ class MFRunTimer(tkd.Frame):
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
             self.c1.itemconfigure(self.circ_id, fill='red')
-            self._set_time(self._laptime, for_session=False)
-            self._set_time(self.session_time, for_session=True)
-            # if self.is_running:
-            #     self.after_cancel(self._timer)
-            # self.after_cancel(self._sess_timer)
-            self.after_cancel(self._timer)
             self.is_paused = True
         else:
             self.pause_lab.destroy()
@@ -262,9 +260,6 @@ class MFRunTimer(tkd.Frame):
             self._session_start = time.time() - self.session_time
             if self.is_running:
                 self.c1.itemconfigure(self.circ_id, fill='green3')
-                # self._update_lap_time()
-            # self._update_session_time()
-            self._update_timers()
 
             if self.automode_active:
                 if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):
@@ -275,6 +270,8 @@ class MFRunTimer(tkd.Frame):
                     except other_utils.pymem_err_list:
                         pass
             self.is_paused = False
+        if user_paused:
+            self.is_user_paused = self.is_paused
 
     def reset_lap(self):
         if self.is_running:
