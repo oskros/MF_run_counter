@@ -190,7 +190,7 @@ class Automode(General):
         )
         self.advanced_pause_on_esc_menu = self.add_flag(
             flag_name='Pause on ESC menu',
-            comment='When activated, the counter will be paused when ESC menu is open inside d2 (currently only works with patch 1.13c)',
+            comment='When activated, the counter will be paused when ESC menu\nis open inside d2 (currently only works with patch 1.13c)',
             pack=False,
             config_section='AUTOMODE'
         )
