@@ -12,7 +12,7 @@ class About(tkd.Frame):
         tkd.Label(self, text="\nVisit the page below for new releases").pack()
         tkd.Hyperlink(self, hyperlink=release_repo, text="Release Hyperlink").pack()
 
-        # tkd.Label(self, text='\nJoin D2 Discord channel').pack()
-        # tkd.Hyperlink(self, hyperlink='https://discord.gg/NTRFy8S', text='Discord invite link').pack()
+        tkd.Label(self, text="\nJoin Sightup's D2 Discord channel").pack()
+        tkd.Hyperlink(self, hyperlink='https://discord.gg/NTRFy8S', text='Discord invite link').pack()
 
         tkd.Label(self, text="\nCurrent version: %s" % version).pack(side=tk.BOTTOM)

@@ -250,7 +250,7 @@ class MainFrame(Config):
         elif self.automode != 2:
             err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
             self.d2_reader = None
-        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE]) > 1:
+        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE], logging_level=self.cfg['DEFAULT']['logging_level']) > 1:
             err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif not d2_game_open and not d2_se_open:
@@ -276,6 +276,7 @@ class MainFrame(Config):
         if err is not None and (not self.advanced_error_thrown or show_err):
             self.advanced_error_thrown = True
             messagebox.showerror(*err)
+            logging.debug(err[1])
         else:
             self.advanced_error_thrown = False
 

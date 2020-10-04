@@ -2,6 +2,7 @@ import ctypes
 import os
 import sys
 import pymem
+import logging
 
 EXP_TABLE = {1: {'Experience': 0, 'Next': 500},
              2: {'Experience': 500, 'Next': 1000},
@@ -140,5 +141,17 @@ def one_of_processes_exists(process_names):
     return False
 
 
-def number_of_processes_with_names(process_names):
-    return sum(1 for x in pymem.process.list_processes() if x.szExeFile.decode('utf-8').lower() in [x.lower() for x in process_names])
+def number_of_processes_with_names(process_names, logging_level=None):
+    processes = pymem.process.list_processes()
+    names = [x.lower() for x in process_names]
+    out = 0
+    for p in processes:
+        if p.szExeFile.decode('utf-8').lower() in names:
+            if logging_level == 'DEBUG':
+                handle = pymem.process.open(p.th32ProcessID, debug=False, verbose=False)
+                base_module = pymem.process.base_module(handle)
+                logging.debug('Path of process: %s' % base_module.filename.decode())
+                pymem.process.close_handle(handle)
+            out += 1
+    return out
+
