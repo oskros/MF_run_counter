@@ -102,7 +102,7 @@ class Config:
                 config.write(fo)
         except PermissionError as e:
             messagebox.showerror('Permission error', 'You have placed "mf_timer.exe" in a restricted folder - Move "mf_timer.exe" to a non-restricted folder, or open it as admin.\n\n%s' % e)
-            sys.exit(0)
+            raise e
 
     def load_config_file(self):
         if not os.path.isfile(mf_config_path):

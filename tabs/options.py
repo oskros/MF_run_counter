@@ -75,10 +75,11 @@ class General(tkd.Frame):
             tkd.create_tooltip(lab, comment)
 
         flag_attr = flag_name.lower().replace(' ', '_').replace('-', '_').replace('(', '').replace(')', '')
-        self.run_delay = tk.StringVar()
-        self.run_delay.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS'][flag_attr]))
-        tkd.RestrictedEntry(lf, textvariable=self.run_delay, num_only=True, width=13).pack(side=tk.RIGHT, padx=3)
-        self.run_delay.trace_add('write', lambda name, index, mode: setattr(self.main_frame, flag_attr, float('0' + self.run_delay.get())))
+        setattr(self, flag_attr + '_sv', tk.StringVar())
+        sv = getattr(self, flag_attr + '_sv')
+        sv.set(other_utils.safe_eval(self.main_frame.cfg['OPTIONS'][flag_attr]))
+        tkd.RestrictedEntry(lf, textvariable=sv, num_only=True, width=13).pack(side=tk.RIGHT, padx=3)
+        sv.trace_add('write', lambda name, index, mode: setattr(self.main_frame, flag_attr, float('0' + sv.get())))
 
     def add_flag(self, flag_name, comment=None, pack=True, config_section='OPTIONS'):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
