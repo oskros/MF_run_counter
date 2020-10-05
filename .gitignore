@@ -3,7 +3,6 @@
 *.toc
 *.ini
 *.iml
-*.txt
 *.zip
 *.manifest
 *.pkg
