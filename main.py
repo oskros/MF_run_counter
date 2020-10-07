@@ -112,6 +112,11 @@ class MainFrame(Config):
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
 
+        # UI config
+        self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])
+        self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
+        self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
+
         # Initiate constants for memory reading
         self.is_user_admin = reader_utils.is_user_admin()
         self.advanced_error_thrown = False
@@ -146,7 +151,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=436, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=364, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -168,9 +173,19 @@ class MainFrame(Config):
         self.root.bind("<Up>", self.root.moveup)
         self.root.bind("<Down>", self.root.movedown)
 
+        # Add buttons to main widget
+        self.btn_frame = tkd.Frame(self.root)
+        tkd.Button(self.btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[2, 1], pady=1)
+        tkd.Button(self.btn_frame, text='Archive session', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0, 1], pady=1)
+
         # Build tabs
-        self.drops_frame = tkd.Frame(self.root)
+        self.caret_frame = tkd.Frame(self.root)
+        # self.caret_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)
+        self.drops_frame = tkd.Frame(self.caret_frame)
+        self.adv_stats_frame = tkd.Frame(self.caret_frame)
+
         self.tabcontrol = tkd.Notebook(self.root)
+        self.tabcontrol.pack(expand=False, fill=tk.BOTH)
         self.profile_tab = Profile(self, parent=self.tabcontrol)
         self.timer_tab = MFRunTimer(self, parent=self.tabcontrol)
         self.drops_tab = Drops(self, parent=self.drops_frame)
@@ -184,25 +199,20 @@ class MainFrame(Config):
         self.tabcontrol.add(self.grail_tab, text='Grail')
         self.tabcontrol.add(self.about_tab, text='About')
 
-        self.tabcontrol.pack(expand=False, fill=tk.BOTH)
         self.root.bind("<<NotebookTabChanged>>", lambda e: self.notebook_tab_change())
         self.profile_tab.update_descriptive_statistics()
 
-        # Add buttons to main widget
-        btn_frame = tkd.Frame(self.root)
-        btn_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP)
-        tkd.Button(btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[2, 1], pady=1)
-        tkd.Button(btn_frame, text='Archive session', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0,1], pady=1)
+        # self.adv_stats_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)
+        # self.drops_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)
 
-        self.drops_frame.pack(fill=tk.BOTH, expand=True)
         self.toggle_drops_frame(show=self.show_drops_tab_below)
         self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_tab_below, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
         self.drops_caret.propagate(False)
         self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2,1], pady=[0, 1])
 
         tracker_is_active = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2 and self.is_user_admin
-        self.advanced_stats_tracker = StatsTracker(self)
-        self.advanced_stats_caret = tkd.CaretButton(self.root, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
+        self.advanced_stats_tracker = StatsTracker(self, self.adv_stats_frame)
+        self.advanced_stats_caret = tkd.CaretButton(self.adv_stats_frame, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
         self.advanced_stats_caret.propagate(False)
         self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
 

@@ -108,7 +108,7 @@ class Theme:
             # Scrollbars
             self.sb_btn_background = 'grey50'
             self.sb_btn_border_se = 'black'
-            self.sb_btn_border_nw = 'white'
+            self.sb_btn_border_nw = 'grey90'
             self.sb_bar_background = 'grey70'
             self.sb_bordercolor = 'grey50'
             self.sb_arrowcolor = 'white'
@@ -198,9 +198,30 @@ class Theme:
                         "troughcolor": self.sb_bar_background,
                         "bordercolor": self.sb_bordercolor,
                         "arrowcolor": self.sb_arrowcolor,
+                        # "gripcount": 0,
                     },
                     "map": {"background": [("active", self.sb_select_btn)]}
                 },
+                #
+                # "Vertical.TScrollbar": {"layout": [
+                #     ("Vertical.Scrollbar.uparrow", {"side": "top", "sticky": ''}),
+                #     ("Vertical.Scrollbar.downarrow", {"side": "bottom", "sticky": ''}),
+                #     ("Vertical.Scrollbar.trough", {"sticky": "ns", "children":
+                #         [("Vertical.Scrollbar.thumb", {"expand": 1, "unit": 1,
+                #                                        "children": [("Vertical.Scrollbar.grip", {"sticky": ''})]
+                #                                        })]})
+                # ]
+                # },
+                #
+                # "Horizontal.TScrollbar": {"layout": [
+                #     ("Horizontal.Scrollbar.leftarrow", {"side": "left", "sticky": ''}),
+                #     ("Horizontal.Scrollbar.rightarrow", {"side": "right", "sticky": ''}),
+                #     ("Horizontal.Scrollbar.trough", {"sticky": "ew", "children":
+                #         [("Horizontal.Scrollbar.thumb", {"expand": 1, "unit": 1,
+                #                                          "children": [("Horizontal.Scrollbar.grip", {"sticky": ''})]
+                #                                          })]
+                #                                      })]
+                # },
             }
             style.theme_create(style_name, parent=self.ttk_style, settings=settings)
         style.theme_use(style_name)

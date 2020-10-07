@@ -5,8 +5,8 @@ import logging
 
 
 class StatsTracker(tkd.Frame):
-    def __init__(self, main_frame, **kw):
-        tkd.Frame.__init__(self, main_frame.root, **kw)
+    def __init__(self, main_frame, parent, **kw):
+        tkd.Frame.__init__(self, parent, **kw)
         self.main_frame = main_frame
 
         self.session_char_xp_start = 0
