@@ -23,6 +23,7 @@ a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\med
 a.datas += [('item_library.csv', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\item_library.csv', 'Data')]
 a.datas += [('caret-down.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\caret-down.png', 'Data')]
 a.datas += [('caret-up.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\caret-up.png', 'Data')]
+a.datas += [('about_icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\about_icon.png', 'Data')]
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,

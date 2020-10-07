@@ -1,6 +1,8 @@
-# Diablo 2 MF run counter
+# MF Run Counter
+Run counter for Diablo 2, created by oskros#1889 with ongoing development since August 2019.
+
 You can find a video where I describe the application in detail here  
-**(NB: Not fully up to date - this video is missing explanation of new features such as "automode", "autocompletion of item names" and "grail tracking")**:   
+**(NB: Video is outdated and missing several new important features, such as "automode", "autocompletion of item names" and "grail tracking")**:   
 https://www.youtube.com/watch?v=e4vcg8MdvrY
 
 

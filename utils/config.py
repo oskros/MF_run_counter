@@ -82,7 +82,7 @@ class Config:
         config.set('KEYBINDS', '# Please only edit keybinds from within the app')
         config['KEYBINDS']['start_key'] = str(['Alt', 'Q'])
         config['KEYBINDS']['end_key'] = str(['Alt', 'W'])
-        config['KEYBINDS']['delete_prev_key'] = str(['Control', 'Delete'])
+        config['KEYBINDS']['delete_prev_key'] = str(['Control', 'NO_BIND'])
         config['KEYBINDS']['pause_key'] = str(['Control', 'Space'])
         config['KEYBINDS']['drop_key'] = str(['Alt', 'A'])
         config['KEYBINDS']['reset_key'] = str(['Alt', 'R'])

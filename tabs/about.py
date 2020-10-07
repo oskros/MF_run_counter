@@ -6,13 +6,24 @@ import tkinter as tk
 class About(tkd.Frame):
     def __init__(self, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
-        label0 = tkd.Label(self, text="""MF Run Counter for Diablo 2\n\nIn development since July 2019 by\noskros#1889 on Discord.\n\nPlease see the README.md file""")
-        label0.pack()
-        tkd.Hyperlink(self, hyperlink=release_repo.rstrip('releases') + 'blob/master/README.md', text="Open Readme").pack()
-        tkd.Label(self, text="\nVisit the page below for new releases").pack()
-        tkd.Hyperlink(self, hyperlink=release_repo, text="Release Hyperlink").pack()
+        top_fr = tkd.Frame(self)
+        top_fr.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        tkd.Label(top_fr, text="MF Run Counter", font=('Segoe UI', 11, 'bold')).pack(pady=[0,2])
 
-        tkd.Label(self, text="\nJoin Sightup's D2 Discord channel").pack()
-        tkd.Hyperlink(self, hyperlink='https://discord.gg/NTRFy8S', text='Discord invite link').pack()
+        icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'about_icon.png')
+        self.img = tk.PhotoImage(file=icon)
+        tkd.Label(top_fr, image=self.img, borderwidth=0).pack(pady=0)
 
-        tkd.Label(self, text="\nCurrent version: %s" % version).pack(side=tk.BOTTOM)
+        btm_fr = tkd.Frame(self)
+        btm_fr.pack(side=tk.BOTTOM, fill=tk.X, expand=True, anchor=tk.S)
+
+        tkd.Label(btm_fr, text='New releases & README info', borderwidth=0, highlightthickness=0, justify=tk.LEFT).pack(anchor=tk.W)
+        tkd.Hyperlink(btm_fr, hyperlink=release_repo.rstrip('releases'), text="           Github Repository", borderwidth=0, highlightthickness=0, justify=tk.LEFT).pack(anchor=tk.W, pady=[0, 7])
+
+        tkd.Label(btm_fr, text='Created by:', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W)
+        tkd.Label(btm_fr, text='           oskros#1889', font=('Segoe UI', 9, 'bold'), borderwidth=0, highlightthickness=0, justify=tk.LEFT).pack(anchor=tk.W)
+
+        tkd.Label(btm_fr, text='Find me here:', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W, pady=[7, 0])
+        tkd.Hyperlink(btm_fr, hyperlink='https://discord.gg/NTRFy8S', text='           https://discord.gg/NTRFy8S', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W)
+
+        tkd.Label(btm_fr, text="v.%s" % version, justify=tk.RIGHT).pack(side=tk.BOTTOM, anchor=tk.E)
