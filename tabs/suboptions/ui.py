@@ -29,11 +29,11 @@ class UI(General):
             self.main_frame.caret_frame.forget()
 
         if attr.lower() == 'show_buttons':
-            btn_height = 26
+            btn_height = 30
             if val:
                 self.main_frame.root.update()
                 self.main_frame.root.config(height=self.main_frame.root.winfo_height() + btn_height)
-                self.main_frame.btn_frame.pack(expand=False, fill=tk.BOTH, side=tk.TOP)
+                self.main_frame.btn_frame.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
             else:
                 if not first:
                     self.main_frame.root.update()

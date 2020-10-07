@@ -45,7 +45,6 @@ from tabs.grail import Grail
 # FIXME: Pause timer when d2 is paused ingame (only for SP)
 
 # ================== UI FEATURES ====================
-# FIXME: Hiding UI elements as another options tab (drops, advanced stats, delete/archive buttons)
 # FIXME: Hide scrollbars unless they are hovered over
 # FIXME: Consider changing banner image to a GIF
 # FIXME: Hide 'tab' bar when not hovered over: https://stackoverflow.com/questions/26923010/how-do-i-hide-the-entire-tab-bar-in-a-tkinter-ttk-notebook-widget
