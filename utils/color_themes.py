@@ -131,7 +131,7 @@ class Theme:
             self.tab_background_color = self.frame_color
 
             # Widgets
-            self.button_color = default_color
+            self.button_color = 'grey85'
             self.activebutton_color = 'white'
             self.active_checkbox_color = 'white'
             self.listbox_color = 'white'

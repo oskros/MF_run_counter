@@ -48,7 +48,6 @@ from tabs.grail import Grail
 # FIXME: Hide scrollbars unless they are hovered over
 # FIXME: Consider changing banner image to a GIF
 # FIXME: Hide 'tab' bar when not hovered over: https://stackoverflow.com/questions/26923010/how-do-i-hide-the-entire-tab-bar-in-a-tkinter-ttk-notebook-widget
-# FIXME: Grammar issues reported by SightUp
 
 # =============== OTHER FEATURES =================
 # FIXME: Ability to select which run to archive drop on
