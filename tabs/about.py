@@ -24,6 +24,6 @@ class About(tkd.Frame):
         tkd.Label(btm_fr, text='           oskros#1889', font=('Segoe UI', 9, 'bold'), borderwidth=0, highlightthickness=0, justify=tk.LEFT).pack(anchor=tk.W)
 
         tkd.Label(btm_fr, text='Find me here:', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W, pady=[7, 0])
-        tkd.Hyperlink(btm_fr, hyperlink='https://discord.gg/NTRFy8S', text='           https://discord.gg/NTRFy8S', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W)
+        tkd.Hyperlink(btm_fr, hyperlink='https://discord.gg/JhkTF2g', text='           https://discord.gg/JhkTF2g', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W)
 
         tkd.Label(btm_fr, text="v.%s" % version, justify=tk.RIGHT).pack(side=tk.BOTTOM, anchor=tk.E)
