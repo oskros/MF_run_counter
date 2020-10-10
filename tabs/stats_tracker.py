@@ -12,9 +12,9 @@ class StatsTracker(tkd.Frame):
         self.session_char_xp_start = 0
         self.session_char_xp = 0
         self.session_char_time_start = time.time()
+        self.session_char_time = 0.0
         self.session_char_xp_missing = 0
         self.avg_run = 0
-        self.in_pause_menu = False
         self.session_xp_runs = set()
 
         # ==================================== WIDGETS ==================================== #
@@ -60,19 +60,17 @@ class StatsTracker(tkd.Frame):
         self.after_updater = self.after(600, self.update_loop)
 
     def _update_vars(self):
-        if self.main_frame.d2_reader is None:
-            self.update_while_out_of_game()
-            return
-        if not self.main_frame.timer_tab.cached_is_ingame:
-            self.update_while_out_of_game()
-            return
+        if not self.main_frame.timer_tab.session_running:
+            self.session_char_time_start = time.time() - self.session_char_time
+        self.session_char_time = time.time() - self.session_char_time_start
+        if self.main_frame.d2_reader is None or not self.main_frame.timer_tab.cached_is_ingame:
+            return self.update_while_out_of_game()
 
         try:
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
         except other_utils.pymem_err_list as e:
             logging.debug(e)
-            self.update_while_out_of_game()
-            return
+            return self.update_while_out_of_game()
 
         # Game has not loaded PlayerUnitStats yet (new created characters don't have the XP stat, so need an exception)
         if player_unit_stats['Exp'] == -1 and player_unit_stats['Level'] != 1:
@@ -86,6 +84,7 @@ class StatsTracker(tkd.Frame):
         if self.name_sv.get() == '-----' and self.session_char_xp_start == 0:
             self.session_char_xp_start = player_unit_stats['Exp']
             self.session_char_time_start = time.time()
+            self.session_char_time = 0.0
             self.curr_run_xp = self.session_char_xp_start
         # Reset data when level up or when changing character to avoid bugs..
         self.reset_when_changes(player_unit_stats=player_unit_stats)
@@ -101,7 +100,7 @@ class StatsTracker(tkd.Frame):
         self.session_char_xp = player_unit_stats['Exp']
         self.exp_session_sv.set('{:,.0f}'.format(self.session_char_xp - self.session_char_xp_start))
 
-        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (time.time() + 0.0001 - self.session_char_time_start)
+        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (self.session_char_time + 0.0001)
         self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
         self.exp_run_sv.set('{:,.0f}'.format(self.session_char_xp - self.curr_run_xp))
 
@@ -112,7 +111,7 @@ class StatsTracker(tkd.Frame):
             self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
 
     def update_while_out_of_game(self):
-        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (time.time() + 0.0001 - self.session_char_time_start)
+        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (self.session_char_time + 0.0001)
         self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
         self.hours_level_sv.set(
             self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
@@ -129,6 +128,7 @@ class StatsTracker(tkd.Frame):
         if self.name_sv.get() != '-----' and (player_unit_stats['Name'] != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get()):
             self.session_char_xp_start = player_unit_stats['Exp']
             self.session_char_time_start = time.time()
+            self.session_char_time = 0.0
             self.curr_run_xp = self.session_char_xp_start
             self.session_xp_runs = set()
             self.runs_level_sv.set('0')
@@ -137,6 +137,7 @@ class StatsTracker(tkd.Frame):
         self.session_char_xp_start = 0
         self.session_char_xp = 0
         self.session_char_time_start = time.time()
+        self.session_char_time = 0.0
         self.session_char_xp_missing = 0
         self.session_xp_runs = set()
         if hasattr(self, 'curr_run_xp'):

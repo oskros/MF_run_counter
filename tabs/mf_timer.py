@@ -21,6 +21,7 @@ class MFRunTimer(tkd.Frame):
         self.is_user_paused = False
         self._waiting_for_delay = False
         self.cached_is_ingame = False
+        self.session_running = False
         self.sessionstr = tk.StringVar()
         self.timestr = tk.StringVar()
         self.no_of_laps = tk.StringVar()
@@ -85,6 +86,9 @@ class MFRunTimer(tkd.Frame):
     def _update_session_time(self):
         if not (self.is_running or reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE])) or self.is_paused:
             self._session_start = time.time() - self.session_time
+            self.session_running = False
+        else:
+            self.session_running = True
         self.session_time = time.time() - self._session_start
         self._set_time(self.session_time, for_session=True)
 

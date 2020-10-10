@@ -34,7 +34,6 @@ from tabs.grail import Grail
 # FIXME: Solve bug where multiple Game.exe processes are open (reported by SightUp)
 
 # ============= XP TRACKER FEATURES =============
-# FIXME: Pause XP timer on pause call
 # FIXME: Save relative XP gained in the XP tracker
 # FIXME: Save all XP stuff under a character name, so multiple characters wont break it. Also save under individual character levels
 
@@ -47,6 +46,7 @@ from tabs.grail import Grail
 # FIXME: Hide scrollbars unless they are hovered over
 # FIXME: Consider changing banner image to a GIF
 # FIXME: Hide 'tab' bar when not hovered over: https://stackoverflow.com/questions/26923010/how-do-i-hide-the-entire-tab-bar-in-a-tkinter-ttk-notebook-widget
+# FIXME: Redesign dropdown carets to lower the application height
 
 # =============== OTHER FEATURES =================
 # FIXME: Ability to select which run to archive drop on
