@@ -55,8 +55,7 @@ from tabs.grail import Grail
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
 # FIXME: Eth grail support
-# FIXME: Output LOG file
-
+# FIXME: Streamer support (overlay with text on top of Diablo2)
 
 class MainFrame(Config):
     def __init__(self):

@@ -1,16 +1,17 @@
 import tkinter as tk
 import time
 import win32gui, win32con
+from utils import tk_dynamic as tkd
 
 
 class TranspTest:
     def __init__(self):
         self.root = tk.Tk()
-        self.transp_color = "LightGray"
-        self.fg = "LightSlateGray"
+        self.transp_color = "black"
+        self.fg = "gray30"
         self.title = 'transparent test'
         self.root.title(self.title)
-        self.root.geometry('+1500+200')
+        self.root.geometry('+100+100')
         self.root.attributes('-topmost', True)
 
         self.start_time = time.time()
@@ -20,18 +21,23 @@ class TranspTest:
         self.make_widgets()
         self.update_time()
 
-        self.root.after(50, self.set_clickthrough)
+        # self.root.after(50, self.set_clickthrough)
         self.root.mainloop()
 
     def make_widgets(self):
-        fr = tk.Frame(self.root, bg=self.transp_color)
-        fr.pack(expand=tk.Y, fill=tk.BOTH)
-        l1 = tk.Label(fr, text="Hello world", font='courier 16', bg=self.transp_color, fg=self.fg)
-        l1.pack(expand=tk.Y, fill=tk.BOTH)
-
+        cv = tkd.Canvas(self.root, bg=self.transp_color, borderwidth=0, highlightthickness=0)
+        cv.pack(expand=tk.Y, fill=tk.BOTH)
+        cv.stroke_text(100, 50, text='Hello world', textcolor=self.fg, strokecolor='gray30')
+        #
+        # fr = tk.Frame(self.root, bg=self.transp_color)
+        # fr.pack(expand=tk.Y, fill=tk.BOTH)
+        # l1 = tk.Label(fr, text="Hello world", font='courier 16', bg=self.transp_color, fg=self.fg)
+        # l1.pack(expand=tk.Y, fill=tk.BOTH)
+        #
         self.tvar = tk.StringVar()
-        l2 = tk.Label(fr, textvariable=self.tvar, font='courier 16', bg=self.transp_color, fg=self.fg)
-        l2.pack(expand=tk.Y, fill=tk.BOTH)
+        # cv.stroke_text(100, 50, textvariable=self.tvar, textcolor=self.fg, strokecolor='gray30')
+        # l2 = tk.Label(fr, textvariable=self.tvar, font='courier 16', bg=self.transp_color, fg=self.fg)
+        # l2.pack(expand=tk.Y, fill=tk.BOTH)
 
     def update_time(self):
         self.tvar.set(self.build_time_str(time.time() - self.start_time))

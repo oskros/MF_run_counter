@@ -88,6 +88,12 @@ class Canvas(tk.Canvas):
             del kwargs["end"]
         return self.create_arc(x - r, y - r, x + r, y + r, **kwargs)
 
+    def stroke_text(self, x, y, textcolor, strokecolor, **kwargs):
+        # make stroke text
+        self.create_text(x, y, font=('courier', 16, 'bold'), fill=strokecolor, **kwargs)
+        # make regular text
+        self.create_text(x, y, font=('courier', 16), fill=textcolor, **kwargs)
+
 
 class Tk(tk.Tk):
     objects = []
