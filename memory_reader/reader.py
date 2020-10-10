@@ -57,6 +57,7 @@ class D2Reader:
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
             self.player_unit_ptr = self.d2client + 0x101024
+            self.in_pause_menu   = self.d2client + 0x11C8B4
         elif self.d2_ver == '1.14b':
             self.world_ptr       = self.base_address + 0x47BD78
             self.players_x_ptr   = self.base_address + 0x47BDB0
@@ -69,6 +70,7 @@ class D2Reader:
             self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
             self.player_unit_ptr = self.base_address + 0x3A5E74
+            self.in_pause_menu   = self.base_address + 0x3A27E4
         else:
             self.patch_supported = False
 
@@ -144,5 +146,7 @@ if __name__ == '__main__':
     from pprint import pprint
     # print(elevate_access(lambda: eval('D2Reader().in_game()')))
     r = D2Reader()
+    # print(r.d2_ver)
     r.map_ptrs()
-    pprint(r.player_unit_stats())
+    print(r.pm.read_uint(r.in_pause_menu))
+    # pprint(r.player_unit_stats())

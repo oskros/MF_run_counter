@@ -32,7 +32,6 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Figure out why importing psutil is required for reading Game.exe
 # FIXME: Solve bug where multiple Game.exe processes are open (reported by SightUp)
-# FIXME: Don't recreate config if it's not needed
 
 # ============= XP TRACKER FEATURES =============
 # FIXME: Pause XP timer on pause call
@@ -43,7 +42,6 @@ from tabs.grail import Grail
 # FIXME: Check if load times can be excluded
 # FIXME: Add game IP to advanced stats tracker
 # FIXME: Add item by hovering over it in D2 and pressing hotkey (both for items picked up and on ground)
-# FIXME: Pause timer when d2 is paused ingame (Add support for 1.13d, 1.14)
 
 # ================== UI FEATURES ====================
 # FIXME: Hide scrollbars unless they are hovered over
@@ -53,8 +51,6 @@ from tabs.grail import Grail
 # =============== OTHER FEATURES =================
 # FIXME: Ability to select which run to archive drop on
 # FIXME: Archive reset should always use last update time as stamp
-# FIXME: Auto archive should ask before
-# FIXME: Format auto archive message with hours properly (same rounding)
 # FIXME: Include a timestamp of found grailers (or for all items)
 # FIXME: Show active profile on main tab somehow
 # FIXME: Add option to export/upload to google sheets
@@ -494,7 +490,7 @@ class MainFrame(Config):
         self.drops_tab.reset_session()
         self.advanced_stats_tracker.reset_session()
 
-    def ArchiveReset(self, skip_confirm=False, notify_msg=None, stamp_from_epoch=None):
+    def ArchiveReset(self, confirm_msg='Would you like to archive and reset session?', stamp_from_epoch=None):
         """
         If any laps or drops have been recorded, this function saves the current session to the profile archive, and
         resets all info in the active session. In case no runs/drops are recorded, the session timer is simply reset
@@ -505,9 +501,7 @@ class MainFrame(Config):
 
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        if notify_msg is not None:
-            tk.messagebox.showinfo(title='Archive', message=notify_msg)
-        if skip_confirm or tk_utils.mbox('Would you like to save and reset session?', b1='Yes', b2='No', coords=[xc, yc], master_root=self.root):
+        if tk_utils.mbox(confirm_msg, b1='Yes', b2='No', coords=[xc, yc], master_root=self.root):
             # Stop any active run and load current session info from timer and drop module.
             self.timer_tab.stop()
             active = self.timer_tab.save_state()

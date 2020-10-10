@@ -154,9 +154,9 @@ class Profile(tkd.Frame):
             elap_since = (time.time() - last_upd) / 3600
             if elap_since > self.main_frame.auto_archive_hours:
                 self.main_frame.ArchiveReset(
-                    skip_confirm=True,
-                    notify_msg='-- ACTIVE SESSION WAS AUTOMATICALLY ARCHIVED! --\n\n'
-                               'You have set auto archive to %s hours and %s hours have elapsed since last change to the active session of this profile' % (self.main_frame.auto_archive_hours, round(elap_since, 4)),
+                    confirm_msg='You have set auto archive to %s hours and %s hours has\n'
+                                'passed since last change to the active session of this profile\n\n'
+                                'Would you like to archive the active session?' % (self.main_frame.auto_archive_hours, round(elap_since, len(str(self.main_frame.auto_archive_hours).split('.')[-1]))),
                     stamp_from_epoch=last_upd
                 )
 

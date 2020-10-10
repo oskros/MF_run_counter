@@ -121,7 +121,8 @@ class Config:
         # Check if any binds in config file is already used by the system, and remove them in case
         used = system_hotkey.check_used_hotkeys()
         for key, bind in parser['KEYBINDS'].items():
-            if bind is not None and len(bind) > 0 and bind[0] in ["[", "("] and tuple(str(x).lower() for x in other_utils.safe_eval(bind)) in used:
+            valid_entry = bind is not None and len(bind) > 0 and bind[0] in ["[", "("]
+            if valid_entry and tuple(str(x).lower() for x in other_utils.safe_eval(bind)) in used:
                 parser['KEYBINDS'][key] = str([other_utils.safe_eval(bind)[0], 'NO_BIND'])
                 messagebox.showerror('Used keybind', 'Configured keybind for %s (%s) is already in use by the system.\nUnbinding "%s" - please set a new bind in options.' % (key, bind, key))
 
