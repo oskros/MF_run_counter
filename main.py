@@ -32,6 +32,7 @@ from tabs.grail import Grail
 # FIXME: Retain order of item table when adding new drops
 # FIXME: Figure out why importing psutil is required for reading Game.exe
 # FIXME: Solve bug where multiple Game.exe processes are open (reported by SightUp)
+# FIXME: Don't recreate config if it's not needed
 
 # ============= XP TRACKER FEATURES =============
 # FIXME: Pause XP timer on pause call

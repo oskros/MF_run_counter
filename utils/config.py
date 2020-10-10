@@ -116,26 +116,32 @@ class Config:
         with open(mf_config_path) as fi:
             parser.read_file(fi)
 
-        if 'automode' in parser['DEFAULT'] and other_utils.safe_eval(parser['DEFAULT']['automode']) is True and 'game_path' not in parser['DEFAULT']:
-            parser['DEFAULT']['game_path'] = self.find_SP_game_path()
-
-        try:
-            ver = parser.get('VERSION', 'version')
-        except:
-            ver = 0
-        if ver != version:
-            self.delete_config_file()
-            parser = self.load_config_file()
-            messagebox.showinfo('Config file recreated', 'You downloaded a new version. To ensure compatibility, config file has been recreated with default options.')
+        self.merge_config_default(parser)
 
         # Check if any binds in config file is already used by the system, and remove them in case
         used = system_hotkey.check_used_hotkeys()
         for key, bind in parser['KEYBINDS'].items():
-            if len(bind) > 0 and bind[0] in ["[", "("] and tuple(str(x).lower() for x in other_utils.safe_eval(bind)) in used:
+            if bind is not None and len(bind) > 0 and bind[0] in ["[", "("] and tuple(str(x).lower() for x in other_utils.safe_eval(bind)) in used:
                 parser['KEYBINDS'][key] = str([other_utils.safe_eval(bind)[0], 'NO_BIND'])
                 messagebox.showerror('Used keybind', 'Configured keybind for %s (%s) is already in use by the system.\nUnbinding "%s" - please set a new bind in options.' % (key, bind, key))
 
         return parser
+
+    def merge_config_default(self, cfg):
+        def_cfg = self.default_config()
+
+        cfg_sections = cfg.sections()
+        for sec in def_cfg.sections():
+            if sec not in cfg_sections:
+                cfg.add_section(sec)
+
+        def_dict = {**def_cfg._sections, 'DEFAULT': dict(def_cfg['DEFAULT'])}
+        cfg_dict = {**cfg._sections, 'DEFAULT': dict(cfg['DEFAULT'])}
+
+        for sec in def_dict:
+            for param in def_dict[sec]:
+                if param not in cfg_dict[sec]:
+                    cfg[sec][param] = def_cfg[sec][param]
 
     def update_config(self, parent):
         cfg = parent.cfg
