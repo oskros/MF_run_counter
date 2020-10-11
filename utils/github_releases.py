@@ -2,6 +2,7 @@ import time
 from utils.tk_utils import mbox
 from init import *
 from requests import request
+import logging
 GITHUB_API = "https://api.github.com"
 _github_token_cli_arg = None
 
@@ -46,10 +47,11 @@ def get_releases(repo_name):
 def check_newest_version(release_repo):
     try:
         from packaging import version as pk_version
-        latest = get_releases('oskros/MF_run_counter')[0]
-        latest_ver = latest['tag_name']
+        releases = get_releases('oskros/MF_run_counter')
+        latest_ver = releases[0]['tag_name']
         if pk_version.parse(version) < pk_version.parse(latest_ver):
             mbox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=release_repo)
+        return str(sum(r['assets'][0]['download_count'] for r in releases))
     except Exception as e:
-        print(e)
-        pass
+        logging.debug(str(e))
+        return ''

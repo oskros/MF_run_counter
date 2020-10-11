@@ -4,7 +4,7 @@ import tkinter as tk
 
 
 class About(tkd.Frame):
-    def __init__(self, parent=None, **kw):
+    def __init__(self, main_fr, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         top_fr = tkd.Frame(self)
         top_fr.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -26,4 +26,7 @@ class About(tkd.Frame):
         tkd.Label(btm_fr, text='Find me here:', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W, pady=[7, 0])
         tkd.Hyperlink(btm_fr, hyperlink='https://discord.gg/JhkTF2g', text='           https://discord.gg/JhkTF2g', justify=tk.LEFT, borderwidth=0, highlightthickness=0).pack(anchor=tk.W)
 
-        tkd.Label(btm_fr, text="v.%s" % version, justify=tk.RIGHT).pack(side=tk.BOTTOM, anchor=tk.E)
+        v_fr = tkd.Frame(btm_fr)
+        v_fr.pack(side=tk.BOTTOM, fill=tk.X, expand=True, anchor=tk.S)
+        tkd.Label(v_fr, text="v.%s" % version, justify=tk.RIGHT).pack(side=tk.RIGHT, anchor=tk.E)
+        tkd.Label(v_fr, text='Download count: %s' % main_fr.dl_count, justify=tk.LEFT).pack(side=tk.LEFT, anchor=tk.W)

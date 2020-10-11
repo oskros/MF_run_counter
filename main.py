@@ -97,7 +97,9 @@ class MainFrame(Config):
 
         # Check for version update
         if self.check_for_new_version:
-            github_releases.check_newest_version(release_repo)
+            self.dl_count = github_releases.check_newest_version(release_repo)
+        else:
+            self.dl_count = ''
 
         # Load profile info
         self.make_profile_folder()
@@ -155,7 +157,7 @@ class MainFrame(Config):
         self.drops_tab = Drops(self, parent=self.drops_frame)
         self.options_tab = Options(self, self.timer_tab, self.drops_tab, parent=self.tabcontrol)
         self.grail_tab = Grail(self, parent=self.tabcontrol)
-        self.about_tab = About(parent=self.tabcontrol)
+        self.about_tab = About(self, parent=self.tabcontrol)
 
         self.tabcontrol.add(self.timer_tab, text='Timer')
         self.tabcontrol.add(self.options_tab, text='Options')
