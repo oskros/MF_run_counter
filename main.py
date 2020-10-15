@@ -29,6 +29,12 @@ from tabs.grail import Grail
 
 class MainFrame(Config):
     def __init__(self):
+        # Check if application is already open
+        self.title = 'MF run counter'
+        if win32gui.FindWindow(None, self.title):
+            tk.messagebox.showerror('Error', 'Application is already open. Cannot open another instance')
+            sys.exit(0)
+
         # Create error logger
         lh = logging.FileHandler(filename='mf_timer.log', mode='w', delay=True)
         logging.basicConfig(handlers=[lh],
@@ -44,12 +50,6 @@ class MainFrame(Config):
 
         # Create root
         self.root = tkd.Tk()
-
-        # Check if application is already open
-        self.title = 'MF run counter'
-        if win32gui.FindWindow(None, self.title):
-            tk.messagebox.showerror('Error', 'Application is already open. Cannot open another instance')
-            sys.exit(0)
 
         # Ensure errors are handled with an exception pop-up if encountered
         self.root.report_callback_exception = self.report_callback_exception
@@ -410,7 +410,7 @@ class MainFrame(Config):
         for bug fixing
         """
         err = traceback.format_exception(*args)
-        tk.messagebox.showerror('Exception occured', 'Data before last autosave is lost...\n\n' + ''.join(err))
+        tk.messagebox.showerror('Exception occured', 'Progress since last autosave is lost...\n\n' + ''.join(err))
         logging.exception(args)
         os._exit(0)
 

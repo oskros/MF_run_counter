@@ -4,6 +4,7 @@ import win32api
 import logging
 from memory_reader import reader_utils
 from utils.other_utils import pymem_err_list
+from collections import defaultdict
 
 D2_GAME_EXE = 'Game.exe'
 D2_SE_EXE = 'D2SE.exe'
@@ -13,6 +14,9 @@ class D2Reader:
     def __init__(self, process_name=D2_GAME_EXE):
         self.pm = pymem.Pymem(process_name, verbose=False, debug=False)
         self.is_d2se = (process_name == D2_SE_EXE)
+        self.dead_guids = []
+        self.observed_guids = set()
+        self.kill_counts = defaultdict(lambda: 0)
 
         self.base_address = self.pm.process_base.lpBaseOfDll
         logging.debug('D2 base address: %s' % self.base_address)
@@ -36,6 +40,8 @@ class D2Reader:
                 self.d2game = mod.lpBaseOfDll
             elif mod_str == 'd2net.dll':
                 self.d2net = mod.lpBaseOfDll
+            elif mod_str == 'd2common.dll':
+                self.d2common = mod.lpBaseOfDll
 
         if self.is_d2se or self.d2_ver in ['1.13c', '1.13d']:
             if self.d2client is None or self.d2game is None or self.d2net is None:
@@ -46,6 +52,7 @@ class D2Reader:
         self.players_x_ptr = None
         self.player_unit_ptr = None
         self.in_pause_menu = None
+        self.unit_list_addr = None
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
@@ -53,6 +60,7 @@ class D2Reader:
             self.players_x_ptr   = self.d2game   + 0x111C1C
             self.player_unit_ptr = self.d2client + 0x10A60C
             self.in_pause_menu   = self.d2client + 0xFADA4
+            self.unit_list_addr  = self.d2client + 0x0010A808  # units113
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
@@ -109,6 +117,9 @@ class D2Reader:
             self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
             return True
         except pymem.exception.MemoryReadError:
+            self.dead_guids = []
+            self.observed_guids = set()
+            self.kill_counts = defaultdict(lambda: 0)
             return False
 
     def player_unit_stats(self):
@@ -141,12 +152,66 @@ class D2Reader:
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
 
+    def get_unit_list(self):
+        out = []
+        for guid in range(128):
+            unit_addr = self.pm.read_uint(self.unit_list_addr + guid*4)
+            if unit_addr > 0:
+                out.append(unit_addr)
+        return out
+
+    def update_dead_guids(self):
+        unit_addrs = self.get_unit_list()
+        for uadr in unit_addrs:
+            # Check unit is monster
+            if self.pm.read_uint(uadr) != 1:
+                continue
+            unit_status = self.pm.read_uint(uadr + 0x10)
+            game_guid = self.pm.read_uint(uadr + 0x0C)
+
+            # unit is dead
+            if unit_status == 12 and game_guid != 1:
+                # unit death not already recorded, and unit also recorded as being alive at some point (no corpses)
+                if game_guid not in self.dead_guids and game_guid in self.observed_guids:
+                    self.dead_guids.append(game_guid)
+                    mon_type_hex = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)
+
+                    prev_unit = self.pm.read_uint(uadr + 0xE4)
+                    if prev_unit != 0:
+                        print('prev_unit: %s' % prev_unit)
+                    # if self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x17):
+                    #     print('prev_unit: %s' % self.pm.read_uint(uadr + 0xE4))
+                    self.kill_counts['Total'] += 1
+                    mon_type = reader_utils.mon_type.get(mon_type_hex, None)
+                    if mon_type_hex not in reader_utils.mon_type:
+                        logging.debug('Failed to map monster_type_hex: %s' % mon_type_hex)
+                    if mon_type in ['Unique', 'Champion']:
+                        self.kill_counts[mon_type] += 1
+            else:
+                self.observed_guids.add(game_guid)
+
 
 if __name__ == '__main__':
-    from pprint import pprint
     # print(elevate_access(lambda: eval('D2Reader().in_game()')))
     r = D2Reader()
     # print(r.d2_ver)
     r.map_ptrs()
-    print(r.pm.read_uint(r.in_pause_menu))
-    # pprint(r.player_unit_stats())
+
+    import tkinter as tk
+    root = tk.Tk()
+    root.wm_attributes("-topmost", 1)
+    sv = tk.StringVar()
+
+    def add_to_killed():
+        r.in_game()
+        r.update_dead_guids()
+        sv.set('\n'.join(['%s: %s' % (k, v) for k,v in  r.kill_counts.items()]))
+        root.after(50, add_to_killed)
+
+    add_to_killed()
+
+    tk.Label(root, text='killcount').pack()
+    tk.Label(root, textvariable=sv).pack()
+
+    root.mainloop()
+
