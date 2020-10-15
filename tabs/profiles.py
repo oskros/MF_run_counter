@@ -249,16 +249,17 @@ class Profile(tkd.Frame):
             dropcount = sum(len(val) for val in active[chosen].get('drops', dict()).values())
 
         # Ensure no division by zero errors by defaulting to displaying 0
-        avg_lap = sum(laps) / len(laps) if laps else 0
-        pct = sum(laps) * 100 / session_time if session_time > 0 else 0
+        sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
+        avg_lap = sum_laps / len(laps) if laps else 0
+        pct = sum_laps * 100 / session_time if session_time > 0 else 0
         no_laps = len(laps) + 1 if self.main_frame.timer_tab.is_running and chosen in ['Active session', 'Profile history'] else len(laps)
 
         # (re-)Populate the listbox with descriptive statistics
         self.descr.delete(0, tk.END)
         self.descr.insert(tk.END, 'Total session time:   ' + utils.other_utils.build_time_str(session_time))
-        self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum(laps)))
+        self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum_laps))
         self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
-        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min(laps, default=0)))
+        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
         self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
         self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
         self.descr.insert(tk.END, 'Drops logged:         ' + str(dropcount))
@@ -315,8 +316,9 @@ class Profile(tkd.Frame):
             drops = chosen_archive.get('drops', dict())
 
         # Ensure no division by zero errors by defaulting to displaying 0
-        avg_lap = sum(laps) / len(laps) if laps else 0
-        pct = sum(laps) * 100 / session_time if session_time > 0 else 0
+        sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
+        avg_lap = sum_laps / len(laps) if laps else 0
+        pct = sum_laps * 100 / session_time if session_time > 0 else 0
 
         # Configure the list frame with scrollbars which displays the archive of the chosen session
         list_win = tkd.Frame(new_win)
@@ -338,9 +340,9 @@ class Profile(tkd.Frame):
                   ['Game mode:      ', self.extra_data.get('Game mode', 'Single Player')],
                   [''],
                   ['Total session time:   ', utils.other_utils.build_time_str(session_time)],
-                  ['Total run time:       ', utils.other_utils.build_time_str(sum(laps))],
+                  ['Total run time:       ', utils.other_utils.build_time_str(sum_laps)],
                   ['Average run time:     ', utils.other_utils.build_time_str(avg_lap)],
-                  ['Fastest run time:     ', utils.other_utils.build_time_str(min(laps, default=0))],
+                  ['Fastest run time:     ', utils.other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0))],
                   ['Number of runs:       ', str(len(laps))],
                   ['Time spent in runs:   ', str(round(pct, 2)) + '%'],
                   ['']]
@@ -366,9 +368,10 @@ class Profile(tkd.Frame):
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
+            run_time = lap['Run time'] if isinstance(lap, dict) else lap
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             droplst = drops.get(str(n), [])
-            tmp = ['Run ' + str_n + ': ', utils.other_utils.build_time_str(lap)]
+            tmp = ['Run ' + str_n + ': ', utils.other_utils.build_time_str(run_time)]
             if droplst:
                 tmp += [d['input'] for d in droplst]
             output.append(tmp)

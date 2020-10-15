@@ -83,8 +83,14 @@ class MFRunTimer(tkd.Frame):
             self._laptime = time.time() - self._start
             self._set_time(self._laptime, for_session=False)
 
+    def is_game_open(self):
+        if self.main_frame.automode == 2:
+            return self.main_frame.d2_reader is not None
+        else:
+            return reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE])
+
     def _update_session_time(self):
-        if not (self.is_running or reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE])) or self.is_paused:
+        if not (self.is_running or self.is_game_open()) or self.is_paused:
             self._session_start = time.time() - self.session_time
             self.session_running = False
         else:
@@ -147,13 +153,13 @@ class MFRunTimer(tkd.Frame):
 
     def _set_fastest(self):
         if self.laps:
-            self.min_lap.set('Fastest time: %s' % utils.other_utils.build_time_str(min(self.laps)))
+            self.min_lap.set('Fastest time: %s' % utils.other_utils.build_time_str(min(l['Run time'] for l in self.laps)))
         else:
             self.min_lap.set('Fastest time: --:--:--.-')
 
     def _set_average(self):
         if self.laps:
-            self.avg_lap.set('Average time: %s' % utils.other_utils.build_time_str(sum(self.laps) / len(self.laps)))
+            self.avg_lap.set('Average time: %s' % utils.other_utils.build_time_str(sum(l['Run time'] for l in self.laps) / len(self.laps)))
         else:
             self.avg_lap.set('Average time: --:--:--.-')
 
@@ -162,12 +168,29 @@ class MFRunTimer(tkd.Frame):
         self.m.delete(0, tk.END)
         self.session_time = state.get('session_time', 0)
         self._session_start = time.time() - self.session_time
-        for lap in state.get('laps', []):
-            self.lap(lap, force=True)
+        for lap_info in state.get('laps', []):
+            # Backwards compatibility with old profiles
+            if not isinstance(lap_info, dict):
+                self.lap({'Run time': lap_info})
+            else:
+                self.lap(lap_info)
         self._set_laps(add_lap=False)
         self._set_fastest()
         self._set_average()
         self._set_time(self.session_time, for_session=True)
+
+    def build_lap(self):
+        out = dict()
+        out['Run time'] = self._laptime
+        out['Real time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        out['MF'] = self.main_frame.advanced_stats_tracker.mf_sv.get()
+        out['Players X'] = self.main_frame.advanced_stats_tracker.players_x_sv.get()
+        out['XP Gained'] = self.main_frame.advanced_stats_tracker.run_char_xp
+        out['Uniques kills'] = self.main_frame.advanced_stats_tracker.unique_kills_sv.get()
+        out['Champions kills'] = self.main_frame.advanced_stats_tracker.champ_kills_sv.get()
+        out['Total kills'] = self.main_frame.advanced_stats_tracker.tot_kills_sv.get()
+
+        return out
 
     def start(self, play_sound=True):
         def update_start():
@@ -194,7 +217,9 @@ class MFRunTimer(tkd.Frame):
 
     def stop(self, play_sound=True):
         if self.is_running:
-            self.lap(self._laptime)
+            self.lap(self.build_lap())
+            self.main_frame.advanced_stats_tracker.reset_at_new_run()
+
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._laptime = 0.0
             self.is_running = False
@@ -206,15 +231,14 @@ class MFRunTimer(tkd.Frame):
         self.stop(play_sound=False)
         self.start(play_sound=True)
 
-    def lap(self, laptime, force=False):
-        if self.is_running or force:
-            self.laps.append(laptime)
-            str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
-            self.m.insert(tk.END, 'Run ' + str_n + ': ' + utils.other_utils.build_time_str(self.laps[-1]))
-            self.m.yview_moveto(1)
-            self._set_laps(add_lap=False)
-            self._set_fastest()
-            self._set_average()
+    def lap(self, lap_info):
+        self.laps.append(lap_info)
+        str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
+        self.m.insert(tk.END, 'Run ' + str_n + ': ' + utils.other_utils.build_time_str(lap_info['Run time']))
+        self.m.yview_moveto(1)
+        self._set_laps(add_lap=False)
+        self._set_fastest()
+        self._set_average()
 
     def delete_prev(self):
         if self.laps:

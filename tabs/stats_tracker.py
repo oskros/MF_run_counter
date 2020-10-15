@@ -1,4 +1,5 @@
 from utils import tk_dynamic as tkd, color_themes, other_utils
+from collections import defaultdict
 import tkinter as tk
 import time
 import logging
@@ -10,135 +11,171 @@ class StatsTracker(tkd.Frame):
         self.main_frame = main_frame
 
         self.session_char_xp_start = 0
-        self.session_char_xp = 0
-        self.session_char_time_start = time.time()
-        self.session_char_time = 0.0
-        self.session_char_xp_missing = 0
-        self.avg_run = 0
+        self.char_xp = 0
+        self.char_xp_missing = 0
+        self.run_char_xp_start = 0
+        self.run_char_xp = 0
+
+        self.session_time_start = time.time()
+        self.session_time = 0.0
         self.session_xp_runs = set()
 
-        # ==================================== WIDGETS ==================================== #
+        # StringVars
+        self.tot_kills_sv = tk.StringVar(value='0')
+        self.unique_kills_sv = tk.StringVar(value='0')
+        self.champ_kills_sv = tk.StringVar(value='0')
+        self.name_sv = tk.StringVar(value='-----')
+
+        self.level_sv = tk.StringVar(value='-----')
+        self.mf_sv = tk.StringVar(value='-----')
+        self.players_x_sv = tk.StringVar(value='-----')
+        self.mon_kills_sv = tk.StringVar(value='0 / 0')
+
+        self.exp_perc_sv = tk.StringVar(value='0')
+        self.exp_session_sv = tk.StringVar(value='0')
+        self.exp_run_sv = tk.StringVar(value='0')
+        self.exp_hour_sv = tk.StringVar(value='0')
+
+        self.exp_level_sv = tk.StringVar(value='0')
+        self.hours_level_sv = tk.StringVar(value='0')
+        self.runs_level_sv = tk.StringVar(value='0')
+
+        self.make_widgets()
+        color_themes.Theme(main_frame.active_theme).update_colors()
+
+    def make_widgets(self):
         tkd.Label(self, text='Advanced stats tracker', font='Helvetica 15').pack()
 
         lf1 = tkd.LabelFrame(self)
         lf1.pack(expand=False, fill=tk.X, padx=1)
-        self.name_sv = self.create_row('Name', lf=lf1, default_val='-----')
-        self.level_sv = self.create_row('Level', lf=lf1, default_val='-----')
-        self.mf_sv = self.create_row('MF', lf=lf1, default_val='-----')
-        self.players_x_sv = self.create_row('Players X', lf=lf1, default_val='-----')
+        self.create_row(self.level_sv, label_name='Level', lf=lf1)
+        self.create_row(self.mf_sv, label_name='MF', lf=lf1)
+        self.create_row(self.players_x_sv, label_name='Players X', lf=lf1)
+        self.create_row(self.mon_kills_sv, label_name='Boss / champ kills', lf=lf1)
 
         lf2 = tkd.LabelFrame(self)
         lf2.pack(expand=False, fill=tk.X, padx=1, pady=8)
-        self.exp_sv = self.create_row('Exp %', lf=lf2)
-        self.exp_session_sv = self.create_row('Exp (session)', lf=lf2)
-        self.exp_run_sv = self.create_row('Exp (run)', lf=lf2)
-        self.exp_hour_sv = self.create_row('Exp / hour', lf=lf2)
+        self.create_row(self.exp_perc_sv, label_name='Exp %', lf=lf2)
+        self.create_row(self.exp_session_sv, label_name='Exp (session)', lf=lf2)
+        self.create_row(self.exp_run_sv, label_name='Exp (run)', lf=lf2)
+        self.create_row(self.exp_hour_sv, label_name='Exp / hour', lf=lf2)
 
         lf3 = tkd.LabelFrame(self)
         lf3.pack(expand=False, fill=tk.X, padx=1)
-        self.exp_level_sv = self.create_row('Exp to level', lf=lf3)
-        self.hours_level_sv = self.create_row('Time to level', lf=lf3)
-        self.runs_level_sv = self.create_row('Runs to level', lf=lf3)
-        # ==================================== WIDGETS ==================================== #
-
-        color_themes.Theme(main_frame.active_theme).update_colors()
+        self.create_row(self.exp_level_sv, label_name='Exp to level', lf=lf3)
+        self.create_row(self.hours_level_sv, label_name='Time to level', lf=lf3)
+        self.create_row(self.runs_level_sv, label_name='Runs to level', lf=lf3)
 
     @staticmethod
-    def create_row(var_name, lf, default_val='0'):
+    def create_row(svar, label_name, lf):
         fr = tkd.Frame(lf, height=22, width=236)
         fr.propagate(False)
         fr.pack(expand=False, fill=tk.X)
 
-        sv = tk.StringVar(fr, value=default_val)
-        tkd.Label(fr, text='%s:' % var_name, font='helvetica 10', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
-        tkd.Label(fr, textvariable=sv, font='helvetica 12 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
+        tkd.Label(fr, text='%s:' % label_name, font='helvetica 10', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tkd.Label(fr, textvariable=svar, font='helvetica 12 bold', anchor=tk.E, justify=tk.RIGHT).pack(side=tk.RIGHT)
 
-        return sv
+    def update_killcount(self):
+        try:
+            self.main_frame.d2_reader.update_dead_guids()
+            self.tot_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Total', 0))
+            self.unique_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Unique', 0))
+            self.champ_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Champion', 0))
+            self.mon_kills_sv.set('%s / %s' % (self.unique_kills_sv.get(), self.champ_kills_sv.get()))
+        except other_utils.pymem_err_list as e:
+            logging.debug(e)
 
     def update_loop(self):
         self._update_vars()
-        self.after_updater = self.after(600, self.update_loop)
+        self._update_svars()
+        self.after_updater = self.after(200, self.update_loop)
 
     def _update_vars(self):
+        # Pause session time when run is paused
         if not self.main_frame.timer_tab.session_running:
-            self.session_char_time_start = time.time() - self.session_char_time
-        self.session_char_time = time.time() - self.session_char_time_start
-        if self.main_frame.d2_reader is None or not self.main_frame.timer_tab.cached_is_ingame:
-            return self.update_while_out_of_game()
+            self.session_time_start = time.time() - self.session_time
+        self.session_time = time.time() - self.session_time_start
 
+        # Return when not ingame
+        if self.main_frame.d2_reader is None or not self.main_frame.timer_tab.cached_is_ingame:
+            return
+
+        self.update_killcount()
+
+        # Catch any erors with loading player stats
         try:
             player_unit_stats = self.main_frame.d2_reader.player_unit_stats()
         except other_utils.pymem_err_list as e:
             logging.debug(e)
-            return self.update_while_out_of_game()
+            return
 
         # Game has not loaded PlayerUnitStats yet (new created characters don't have the XP stat, so need an exception)
         if player_unit_stats['Exp'] == -1 and player_unit_stats['Level'] != 1:
             logging.debug('Failed to find XP and level, assuming stats are not loaded yet')
             return
 
-        if not hasattr(self, 'curr_run_xp'):
-            self.curr_run_xp = player_unit_stats['Exp']
-
         # Assign variables at first load of character
         if self.name_sv.get() == '-----' and self.session_char_xp_start == 0:
             self.session_char_xp_start = player_unit_stats['Exp']
-            self.session_char_time_start = time.time()
-            self.session_char_time = 0.0
-            self.curr_run_xp = self.session_char_xp_start
-        # Reset data when level up or when changing character to avoid bugs..
+            self.run_char_xp_start = self.session_char_xp_start
+
+        # Reset when changing character (used to reset at level up, but removed this)
         self.reset_when_changes(player_unit_stats=player_unit_stats)
 
         self.name_sv.set(player_unit_stats['Name'])
         self.level_sv.set(player_unit_stats['Level'])
         if player_unit_stats['MF'] >= 0:
-            self.mf_sv.set(str(player_unit_stats['MF']) + '%')
+            self.mf_sv.set('%s%%' % player_unit_stats['MF'])
         self.players_x_sv.set(player_unit_stats['Players X'])
+        self.exp_perc_sv.set('{0:.1f}%'.format(player_unit_stats['Exp %']*100))
 
-        self.exp_sv.set('{0:.1f}%'.format(player_unit_stats['Exp %']*100))
+        self.char_xp = player_unit_stats['Exp']
+        self.char_xp_missing = player_unit_stats['Exp missing']
+        self.run_char_xp = self.char_xp - self.run_char_xp_start
 
-        self.session_char_xp = player_unit_stats['Exp']
-        self.exp_session_sv.set('{:,.0f}'.format(self.session_char_xp - self.session_char_xp_start))
-
-        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (self.session_char_time + 0.0001)
+    def _update_svars(self):
+        self.exp_session_sv.set('{:,.0f}'.format(self.char_xp - self.session_char_xp_start))
+        xp_hour_session = 3600 * (self.char_xp - self.session_char_xp_start) / (self.session_time + 0.0001)
         self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
-        self.exp_run_sv.set('{:,.0f}'.format(self.session_char_xp - self.curr_run_xp))
+        self.exp_run_sv.set('{:,.0f}'.format(self.run_char_xp))
 
-        self.session_char_xp_missing = player_unit_stats['Exp missing']
-        self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
-        self.hours_level_sv.set(self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
+        self.exp_level_sv.set('{:,.0f}'.format(self.char_xp_missing))
+        self.hours_level_sv.set(self.format_time(self.char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
         if len(self.session_xp_runs) > 0:
-            self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
+            avg_run = sum(self.session_xp_runs) / len(self.session_xp_runs)
+            self.runs_level_sv.set('{:.0f}'.format(-(-self.char_xp_missing / avg_run // 1)))
 
-    def update_while_out_of_game(self):
-        xp_hour_session = 3600 * (self.session_char_xp - self.session_char_xp_start) / (self.session_char_time + 0.0001)
-        self.exp_hour_sv.set('{:,.0f}'.format(xp_hour_session))
-        self.hours_level_sv.set(
-            self.format_time(self.session_char_xp_missing / xp_hour_session) if xp_hour_session > 0 else '0')
+    def reset_at_new_run(self):
+        if self.run_char_xp > 0:
+            self.session_xp_runs.add(self.run_char_xp)
+        self.run_char_xp_start = self.char_xp
+        self.run_char_xp = 0
 
-        # My horrible way of determining whether a run has ended. Should be done in a better way for sure..
-        if hasattr(self, 'curr_run_xp') and self.session_char_xp > self.curr_run_xp:
-            self.session_xp_runs.add(self.session_char_xp - self.curr_run_xp)
-            self.avg_run = sum(self.session_xp_runs) / len(self.session_xp_runs)
-            self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
-        self.curr_run_xp = self.session_char_xp
-        self.exp_run_sv.set('0')
+        if self.main_frame.d2_reader is not None:
+            self.main_frame.d2_reader.dead_guids = []
+            self.main_frame.d2_reader.observed_guids = set()
+            self.main_frame.d2_reader.kill_counts = defaultdict(lambda: 0)
+
+        self.tot_kills_sv.set('0')
+        self.unique_kills_sv.set('0')
+        self.champ_kills_sv.set('0')
+        self.mon_kills_sv.set('0 / 0')
 
     def reset_when_changes(self, player_unit_stats):
-        if self.name_sv.get() != '-----' and (player_unit_stats['Name'] != self.name_sv.get() or str(player_unit_stats['Level']) != self.level_sv.get()):
+        if self.name_sv.get() != '-----' and player_unit_stats['Name'] != self.name_sv.get(): #  or str(player_unit_stats['Level']) != self.level_sv.get()):
             self.session_char_xp_start = player_unit_stats['Exp']
-            self.session_char_time_start = time.time()
-            self.session_char_time = 0.0
-            self.curr_run_xp = self.session_char_xp_start
+            self.session_time_start = time.time()
+            self.session_time = 0.0
+            self.run_char_xp_start = self.session_char_xp_start
             self.session_xp_runs = set()
             self.runs_level_sv.set('0')
 
     def reset_session(self):
         self.session_char_xp_start = 0
-        self.session_char_xp = 0
-        self.session_char_time_start = time.time()
-        self.session_char_time = 0.0
-        self.session_char_xp_missing = 0
+        self.char_xp = 0
+        self.session_time_start = time.time()
+        self.session_time = 0.0
+        self.char_xp_missing = 0
         self.session_xp_runs = set()
         if hasattr(self, 'curr_run_xp'):
             delattr(self, 'curr_run_xp')
@@ -148,7 +185,7 @@ class StatsTracker(tkd.Frame):
         self.mf_sv.set('-----')
         self.players_x_sv.set('-----')
 
-        self.exp_sv.set('0')
+        self.exp_perc_sv.set('0')
         self.exp_session_sv.set('0')
         self.exp_run_sv.set('0')
         self.exp_hour_sv.set('0')

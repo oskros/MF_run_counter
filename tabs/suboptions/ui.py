@@ -23,11 +23,6 @@ class UI(General):
         show_drops = other_utils.safe_eval(getattr(self, 'show_drops_section').get()) if hasattr(self, 'show_drops_section') else 0
         show_advanced = other_utils.safe_eval(getattr(self, 'show_advanced_tracker').get()) if hasattr(self, 'show_advanced_tracker') else 0
 
-        if show_drops or show_advanced:
-            self.main_frame.caret_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)
-        else:
-            self.main_frame.caret_frame.forget()
-
         if attr.lower() == 'show_buttons':
             btn_height = 30
             if val:
@@ -67,6 +62,11 @@ class UI(General):
                     self.main_frame.root.update()
                     self.main_frame.root.config(height=self.main_frame.root.winfo_height() - btn_height)
                 self.main_frame.adv_stats_frame.forget()
+
+        if show_drops or show_advanced:
+            self.main_frame.caret_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)
+        else:
+            self.main_frame.caret_frame.forget()
 
     def add_ui_flag(self, flag_name, comment):
         attr = flag_name.lower().replace(' ', '_').replace('-', '_')

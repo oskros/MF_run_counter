@@ -31,9 +31,6 @@ class MainFrame(Config):
     def __init__(self):
         # Check if application is already open
         self.title = 'MF run counter'
-        if win32gui.FindWindow(None, self.title):
-            tk.messagebox.showerror('Error', 'Application is already open. Cannot open another instance')
-            sys.exit(0)
 
         # Create error logger
         lh = logging.FileHandler(filename='mf_timer.log', mode='w', delay=True)
@@ -546,6 +543,12 @@ class MainFrame(Config):
 
 
 try:
+    if win32gui.FindWindow(None, 'MF run counter'):
+        resp = tk_utils.mbox(msg='It seems like you already have an instance of MF run counter open.\n'
+                                 'Opening another instance will make the app unstable (If this is a false positive, just ignore it)\n\n'
+                                 'Do you wish to continue anyway?', title='WARNING')
+        if not resp:
+            sys.exit(0)
     MainFrame()
 except Exception as e:
     logging.exception(e)

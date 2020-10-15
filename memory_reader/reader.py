@@ -95,7 +95,12 @@ class D2Reader:
     def get_d2_version(self):
         if self.is_d2se:
             return self.pm.read_string(self.base_address + 0x1A049).strip()
-        fixed_file_info = win32api.GetFileVersionInfo(self.pm.process_base.filename.decode(), '\\')
+        try:
+            decoded_filename = self.pm.process_base.filename.decode('utf-8')
+        except UnicodeDecodeError:
+            # Handle issues with decoding umlauts
+            decoded_filename = self.pm.process_base.filename.decode('windows-1252')
+        fixed_file_info = win32api.GetFileVersionInfo(decoded_filename, '\\')
         raw_version = '{:d}.{:d}.{:d}.{:d}'.format(
             fixed_file_info['FileVersionMS'] // 65536,
             fixed_file_info['FileVersionMS'] % 65536,
@@ -110,16 +115,13 @@ class D2Reader:
         return bool(self.pm.read_uint(self.world_ptr))
 
     def in_game(self):
-        # FIXME: Inappropriate way of testing whether character is in-game, and could create unexpected results
+        # FIXME: Indirect way of testing whether character is in-game, rather have a direct test
         player_unit = self.pm.read_uint(self.player_unit_ptr)
         try:
             # Gets character name - returns memory error out of game
             self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
             return True
         except pymem.exception.MemoryReadError:
-            self.dead_guids = []
-            self.observed_guids = set()
-            self.kill_counts = defaultdict(lambda: 0)
             return False
 
     def player_unit_stats(self):
@@ -152,43 +154,43 @@ class D2Reader:
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
 
-    def get_unit_list(self):
-        out = []
+    def update_dead_guids(self):
         for guid in range(128):
             unit_addr = self.pm.read_uint(self.unit_list_addr + guid*4)
             if unit_addr > 0:
-                out.append(unit_addr)
-        return out
+                self.process_unit(unit_addr)
 
-    def update_dead_guids(self):
-        unit_addrs = self.get_unit_list()
-        for uadr in unit_addrs:
-            # Check unit is monster
-            if self.pm.read_uint(uadr) != 1:
-                continue
-            unit_status = self.pm.read_uint(uadr + 0x10)
-            game_guid = self.pm.read_uint(uadr + 0x0C)
+    def process_unit(self, uadr):
+        # Check unit is monster
+        if self.pm.read_uint(uadr) != 1:
+            return
 
-            # unit is dead
-            if unit_status == 12 and game_guid != 1:
-                # unit death not already recorded, and unit also recorded as being alive at some point (no corpses)
-                if game_guid not in self.dead_guids and game_guid in self.observed_guids:
-                    self.dead_guids.append(game_guid)
-                    mon_type_hex = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)
+        # Sometimes a previous unit is attached to another unit, we handle that recursively here
+        prev_unit = self.pm.read_uint(uadr + 0xE4)
+        if prev_unit != 0:
+            # print('prev_unit: %s' % prev_unit)
+            self.process_unit(prev_unit)
 
-                    prev_unit = self.pm.read_uint(uadr + 0xE4)
-                    if prev_unit != 0:
-                        print('prev_unit: %s' % prev_unit)
-                    # if self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x17):
-                    #     print('prev_unit: %s' % self.pm.read_uint(uadr + 0xE4))
-                    self.kill_counts['Total'] += 1
-                    mon_type = reader_utils.mon_type.get(mon_type_hex, None)
-                    if mon_type_hex not in reader_utils.mon_type:
-                        logging.debug('Failed to map monster_type_hex: %s' % mon_type_hex)
-                    if mon_type in ['Unique', 'Champion']:
-                        self.kill_counts[mon_type] += 1
-            else:
-                self.observed_guids.add(game_guid)
+        unit_status = self.pm.read_uint(uadr + 0x10)
+        game_guid = self.pm.read_uint(uadr + 0x0C)
+
+        # unit is dead
+        if unit_status == 12 and game_guid != 1:
+            # unit death not already recorded, and unit also recorded as being alive at some point (no corpses)
+            if game_guid not in self.dead_guids and game_guid in self.observed_guids:
+                self.dead_guids.append(game_guid)
+                mon_typeflag = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)
+
+                # FIXME: seems like hydras (and potentially also other summons) will increment the counter
+                self.kill_counts['Total'] += 1
+                mon_type = reader_utils.mon_type.get(mon_typeflag, None)
+                if mon_typeflag not in reader_utils.mon_type:
+                    # print(mon_typeflag)
+                    logging.debug('Failed to map monster_type_hex: %s' % mon_typeflag)
+                if mon_type in ['Unique', 'Champion']:
+                    self.kill_counts[mon_type] += 1
+        else:
+            self.observed_guids.add(game_guid)
 
 
 if __name__ == '__main__':
@@ -205,7 +207,7 @@ if __name__ == '__main__':
     def add_to_killed():
         r.in_game()
         r.update_dead_guids()
-        sv.set('\n'.join(['%s: %s' % (k, v) for k,v in  r.kill_counts.items()]))
+        sv.set('\n'.join(['%s: %s' % (k, v) for k, v in r.kill_counts.items()]))
         root.after(50, add_to_killed)
 
     add_to_killed()
