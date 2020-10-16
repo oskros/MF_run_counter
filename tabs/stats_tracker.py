@@ -100,6 +100,7 @@ class StatsTracker(tkd.Frame):
         if self.main_frame.d2_reader is None or not self.main_frame.timer_tab.cached_is_ingame:
             return
 
+        # After the previous check we know the d2_reader has been instantiated, so we can update the kill count
         self.update_killcount()
 
         # Catch any erors with loading player stats

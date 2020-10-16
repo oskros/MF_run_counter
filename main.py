@@ -246,7 +246,7 @@ class MainFrame(Config):
                 if self.d2_reader.dlls_loaded:
                     self.d2_reader.map_ptrs()
                     if not self.d2_reader.patch_supported:
-                        err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
+                        err = ('D2 version error', 'Advanced automode currently only supports D2 patch versions 1.13c, 1.13d, 1.14b, 1.14c and 1.14d, your version is "%s".\n\nDisabling automode.' % self.d2_reader.d2_ver)
                 else:
                     self.d2_reader = None
 
@@ -403,7 +403,7 @@ class MainFrame(Config):
 
     def report_callback_exception(self, *args):
         """
-        Handles occuring errors in the application, showing a messagebox with the occured error that user can send back
+        Handles errors occuring in the application, showing a messagebox with the occured error that user can send back
         for bug fixing
         """
         err = traceback.format_exception(*args)

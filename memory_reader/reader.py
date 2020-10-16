@@ -118,7 +118,7 @@ class D2Reader:
             fixed_file_info['FileVersionLS'] % 65536)
         patch_map = {'1.14.3.71': '1.14d', '1.14.2.70': '1.14c', '1.14.1.68': '1.14b', '1.0.13.64': '1.13d',
                      '1.0.13.60': '1.13c'}
-        return patch_map.get(raw_version, None)
+        return patch_map.get(raw_version, raw_version)
 
     def in_game_sp(self):
         # This approach only works in single player
@@ -193,9 +193,9 @@ class D2Reader:
                 # FIXME: seems like hydras (and potentially also other summons) will increment the counter
                 self.kill_counts['Total'] += 1
                 mon_type = reader_utils.mon_type.get(mon_typeflag, None)
-                if mon_typeflag not in reader_utils.mon_type:
+                if mon_type is None:
                     # print(mon_typeflag)
-                    logging.debug('Failed to map monster_type_hex: %s' % mon_typeflag)
+                    logging.debug('Failed to map monster TypeFlag: %s' % mon_typeflag)
                 if mon_type in ['Unique', 'Champion']:
                     self.kill_counts[mon_type] += 1
         else:
