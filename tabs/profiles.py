@@ -275,12 +275,21 @@ class Profile(tkd.Frame):
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
 
-        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 400, 460)
+        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 400, 500)
         new_win.geometry(disp_coords)
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        new_win.minsize(400, 460)
-        title = tkd.Label(new_win, text='Archive browser', font='Helvetica 14')
+        new_win.minsize(400, 500)
+        tkd.Label(new_win, text='Archive browser', font='Helvetica 14').pack()
+
+        tabcontrol = ttk.Notebook(new_win)
+        tabcontrol.pack(expand=True, fill=tk.BOTH)
+
+        statistics_fr = tkd.Frame(tabcontrol)
+        tabcontrol.add(statistics_fr, text='Statistics')
+
+        run_table_fr = tkd.Frame(tabcontrol)
+        tabcontrol.add(run_table_fr, text='Run table')
 
         # Handle how loading of session data should be treated in the 3 different cases
         if chosen == 'Active session':
@@ -315,13 +324,41 @@ class Profile(tkd.Frame):
             laps = chosen_archive.get('laps', [])
             drops = chosen_archive.get('drops', dict())
 
+        cols = ["Run", "Run time", "Real time", "MF", "Players X", "XP Gained", "Uniques kills", "Champions kills", "Total kills"]
+        tree_frame = tkd.Frame(run_table_fr)
+        vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)
+        hscroll.config(command=tree.xview)
+        vscroll.config(command=tree.yview)
+
+        vscroll.pack(side=tk.RIGHT, fill=tk.Y)
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
+        tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        tree['columns'] = cols
+        for col in cols:
+            tree.column(col, stretch=tk.YES, minwidth=0, width=80)
+            if col in ['Run', 'XP Gained']:
+                sort_by = 'num'
+            else:
+                sort_by = 'name'
+            tree.heading(col, text=col, sort_by=sort_by)
+
+        for n, lap in enumerate(laps, 1):
+            compatible_lap = dict(lap) if isinstance(lap, dict) else {'Run time': lap}
+            compatible_lap['Run time'] = utils.other_utils.build_time_str(compatible_lap['Run time'])
+            compatible_lap['Run'] = n
+            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols])
+
         # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
         avg_lap = sum_laps / len(laps) if laps else 0
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
 
         # Configure the list frame with scrollbars which displays the archive of the chosen session
-        list_win = tkd.Frame(new_win)
+        list_win = tkd.Frame(statistics_fr)
         list_frame = tkd.Frame(list_win)
         vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(list_win, orient=tk.HORIZONTAL)
@@ -419,7 +456,6 @@ class Profile(tkd.Frame):
         # Packs all the buttons and UI in the archive browser. Packing order is very important:
         # TOP: Title first (furthest up), then list frame
         # BOTTOM: Buttons first (furthest down) and then horizontal scrollbar
-        title.pack(side=tk.TOP)
         list_win.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)

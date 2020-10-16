@@ -53,6 +53,7 @@ class D2Reader:
         self.player_unit_ptr = None
         self.in_pause_menu = None
         self.unit_list_addr = None
+        self.monster_add_adr = None
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
@@ -60,25 +61,34 @@ class D2Reader:
             self.players_x_ptr   = self.d2game   + 0x111C1C
             self.player_unit_ptr = self.d2client + 0x10A60C
             self.in_pause_menu   = self.d2client + 0xFADA4
-            self.unit_list_addr  = self.d2client + 0x0010A808  # units113
+            self.unit_list_addr  = self.d2client + 0x10A808  # units113
+            self.monster_add_adr = 0x0
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
             self.player_unit_ptr = self.d2client + 0x101024
             self.in_pause_menu   = self.d2client + 0x11C8B4
+            self.unit_list_addr  = self.d2client + 0x1049B8
+            self.monster_add_adr = 0x0
         elif self.d2_ver == '1.14b':
             self.world_ptr       = self.base_address + 0x47BD78
             self.players_x_ptr   = self.base_address + 0x47BDB0
             self.player_unit_ptr = self.base_address + 0x39DEFC
+            self.unit_list_addr  = self.base_address + 0x39DEF8
+            self.monster_add_adr = 0x80
         elif self.d2_ver == '1.14c':
             self.world_ptr       = self.base_address + 0x47ACC0
             self.players_x_ptr   = self.base_address + 0x47ACF8
             self.player_unit_ptr = self.base_address + 0x39CEFC
+            self.unit_list_addr  = self.base_address + 0x39CEF8
+            self.monster_add_adr = 0x80
         elif self.d2_ver == '1.14d':
             self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
             self.player_unit_ptr = self.base_address + 0x3A5E74
             self.in_pause_menu   = self.base_address + 0x3A27E4
+            self.unit_list_addr  = self.base_address + 0x3A5E70
+            self.monster_add_adr = 0x80
         else:
             self.patch_supported = False
 
@@ -156,7 +166,7 @@ class D2Reader:
 
     def update_dead_guids(self):
         for guid in range(128):
-            unit_addr = self.pm.read_uint(self.unit_list_addr + guid*4)
+            unit_addr = self.pm.read_uint(self.unit_list_addr + guid*4 + self.monster_add_adr)
             if unit_addr > 0:
                 self.process_unit(unit_addr)
 
