@@ -326,15 +326,19 @@ class Profile(tkd.Frame):
 
         cols = ["Run", "Run time", "Real time", "MF", "Players X", "XP Gained", "Uniques kills", "Champions kills", "Total kills"]
         tree_frame = tkd.Frame(run_table_fr)
-        vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
-        hscroll = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
-        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)
-        hscroll.config(command=tree.xview)
-        vscroll.config(command=tree.yview)
+        btn_frame2 = tkd.Frame(run_table_fr)
+        btn_frame2.pack(side=tk.BOTTOM)
 
-        vscroll.pack(side=tk.RIGHT, fill=tk.Y)
+        vscroll_tree = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll_tree = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set, xscrollcommand=hscroll_tree.set, show='headings', columns=cols)
+        hscroll_tree.config(command=tree.xview)
+        vscroll_tree.config(command=tree.yview)
+        tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
+
+        vscroll_tree.pack(side=tk.RIGHT, fill=tk.Y)
         tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
+        hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
@@ -448,10 +452,9 @@ class Profile(tkd.Frame):
 
         txt_list.config(state=tk.DISABLED)
 
-        button_frame = tkd.Frame(new_win)
-        tkd.Button(button_frame, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(button_frame, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(button_frame, text='Save as .csv', command=lambda: self.save_to_csv(output)).pack(side=tk.LEFT, fill=tk.X)
+        btn_frame1 = tkd.Frame(statistics_fr)
+        tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(new_win, txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(btn_frame1, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is very important:
         # TOP: Title first (furthest up), then list frame
@@ -459,7 +462,7 @@ class Profile(tkd.Frame):
         list_win.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
-        button_frame.pack(side=tk.BOTTOM)
+        btn_frame1.pack(side=tk.BOTTOM)
 
 
         theme = Theme(self.main_frame.active_theme)
@@ -486,20 +489,19 @@ class Profile(tkd.Frame):
         f.close()
 
     @staticmethod
-    def save_to_csv(string_lst):
+    def save_to_csv(tree):
         """
-        Writes a list of lists of strings to a .csv file
+        Writes the run table to a .csv file
 
         Here we use asksaveasfilename in order to just return a path instead of writable object, because then we can
         initiate our own csv writer object with the newline='' option, which ensures we don't have double line breaks
         """
-        string_lst_corr = list()
-        for s in string_lst:
-            add = [' '.join(s[0].replace(':', '').split())] + [w for w in s[1:] if w != '']
-            string_lst_corr.append(add)
         f = tk.filedialog.asksaveasfilename(defaultextension='.csv', filetypes=(('.csv', '*.csv'), ('All Files', '*.*')))
         if not f:
             return
         with open(f, newline='', mode='w') as fo:
             writer = csv.writer(fo, delimiter=',')
-            writer.writerows(string_lst_corr)
+            writer.writerow(tree['columns'])
+            for row_id in tree.get_children():
+                row = tree.item(row_id)['values']
+                writer.writerow(row)
