@@ -166,7 +166,7 @@ class D2Reader:
 
     def update_dead_guids(self):
         for guid in range(128):
-            unit_addr = self.pm.read_uint(self.unit_list_addr + guid*4 + self.monster_add_adr)
+            unit_addr = self.pm.read_uint(self.unit_list_addr + (guid + self.monster_add_adr)*4)
             if unit_addr > 0:
                 self.process_unit(unit_addr)
 
@@ -177,8 +177,7 @@ class D2Reader:
 
         # Sometimes a previous unit is attached to another unit, we handle that recursively here
         prev_unit = self.pm.read_uint(uadr + 0xE4)
-        if prev_unit != 0:
-            # print('prev_unit: %s' % prev_unit)
+        if prev_unit != 0:            # print('prev_unit: %s' % prev_unit)
             self.process_unit(prev_unit)
 
         unit_status = self.pm.read_uint(uadr + 0x10)
