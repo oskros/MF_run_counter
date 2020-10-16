@@ -29,4 +29,4 @@ class About(tkd.Frame):
         v_fr = tkd.Frame(btm_fr)
         v_fr.pack(side=tk.BOTTOM, fill=tk.X, expand=True, anchor=tk.S)
         tkd.Label(v_fr, text="v.%s" % version, justify=tk.RIGHT).pack(side=tk.RIGHT, anchor=tk.E)
-        tkd.Label(v_fr, text='Download count: %s' % main_fr.dl_count, justify=tk.LEFT).pack(side=tk.LEFT, anchor=tk.W)
+        tkd.Label(v_fr, text='Downloads: %s' % main_fr.dl_count, justify=tk.LEFT).pack(side=tk.LEFT, anchor=tk.W)
