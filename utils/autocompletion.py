@@ -124,6 +124,7 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'CoA': 'Crown of Ages',
                 'DF': "Death's Fathom",
                 'Dkey': 'Key of Destruction',
+                'Dweb': "Death's Web",
                 'G Angel': 'Guardian Angel',
                 'GAngel': 'Guardian Angel',
                 'GF': 'The Grandfather',
@@ -318,7 +319,7 @@ class AutocompleteEntry:
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
                 if eth:
-                    if 'Rune' not in i_name and 'Orb of Corruption' not in i_name:
+                    if not i_name.lower().endswith('rune'):
                         out.add('Eth ' + i_name)
                 else:
                     out.add(i_name)

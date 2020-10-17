@@ -275,11 +275,11 @@ class Profile(tkd.Frame):
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
 
-        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 400, 500)
+        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 615, 500)
         new_win.geometry(disp_coords)
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        new_win.minsize(400, 500)
+        new_win.minsize(615, 500)
         tkd.Label(new_win, text='Archive browser', font='Helvetica 14').pack()
 
         tabcontrol = ttk.Notebook(new_win)
@@ -331,7 +331,7 @@ class Profile(tkd.Frame):
 
         vscroll_tree = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
         hscroll_tree = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
-        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set, xscrollcommand=hscroll_tree.set, show='headings', columns=cols)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set, xscrollcommand=hscroll_tree.set, show='headings', columns=cols, alternate_colour=True)
         hscroll_tree.config(command=tree.xview)
         vscroll_tree.config(command=tree.yview)
         tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
@@ -341,9 +341,11 @@ class Profile(tkd.Frame):
         hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        tree['columns'] = cols
-        for col in cols:
-            tree.column(col, stretch=tk.YES, minwidth=0, width=80)
+        renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
+        tree['columns'] = renamed_cols
+        widths = [35, 60, 115, 42, 53, 75, 70, 85, 59]
+        for i, col in enumerate(renamed_cols):
+            tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained']:
                 sort_by = 'num'
             else:
@@ -351,10 +353,11 @@ class Profile(tkd.Frame):
             tree.heading(col, text=col, sort_by=sort_by)
 
         for n, lap in enumerate(laps, 1):
+            tag = 'Even' if n % 2 == 0 else 'Odd'
             compatible_lap = dict(lap) if isinstance(lap, dict) else {'Run time': lap}
             compatible_lap['Run time'] = utils.other_utils.build_time_str(compatible_lap['Run time'])
             compatible_lap['Run'] = n
-            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols])
+            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols], tag=tag)
 
         # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)

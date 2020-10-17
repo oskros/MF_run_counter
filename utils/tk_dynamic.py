@@ -580,6 +580,13 @@ def create_tooltip(widget, text):
 
 
 class Treeview(ttk.Treeview):
+    def __init__(self, *args, **kwargs):
+        self.alternate_colour = kwargs.pop('alternate_colour', False)
+        ttk.Treeview.__init__(self, *args, **kwargs)
+        if self.alternate_colour:
+            self.tag_configure('Odd', background='white')
+            self.tag_configure('Even', background='gray95')
+
     def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, 'command'):
             func = getattr(self, f"_sort_by_{sort_by}", None)
@@ -592,6 +599,8 @@ class Treeview(ttk.Treeview):
         l.sort(key=lambda t: data_type(t[0]), reverse=reverse)
         for index, (_, k) in enumerate(l):
             self.move(k, '', index)
+            if self.alternate_colour:
+                self.item(k, tag='Even' if index % 2 != 0 else 'Odd')
         self.heading(column, command=partial(callback, column, not reverse))
 
     def _sort_by_num(self, column, reverse):
