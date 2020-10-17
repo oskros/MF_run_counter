@@ -53,8 +53,8 @@ class StatsTracker(tkd.Frame):
 
         lf1 = tkd.LabelFrame(self)
         lf1.pack(expand=False, fill=tk.X, padx=1, pady=[8, 0])
-        self.create_row(self.unique_kills_sv, label_name='Unique kills', lf=lf1)
-        self.create_row(self.champ_kills_sv, label_name='Champion kills', lf=lf1)
+        self.create_row(self.unique_kills_sv, label_name='Uniques kills', lf=lf1)
+        self.create_row(self.champ_kills_sv, label_name='Champions kills', lf=lf1)
 
         lf2 = tkd.LabelFrame(self)
         lf2.pack(expand=False, fill=tk.X, padx=1, pady=8)
