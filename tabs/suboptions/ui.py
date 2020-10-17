@@ -36,7 +36,7 @@ class UI(General):
                 self.main_frame.btn_frame.forget()
 
         elif attr.lower() == 'show_drops_section':
-            btn_height = 22
+            btn_height = 23
             if val:
                 self.main_frame.root.update()
                 self.main_frame.root.config(height=self.main_frame.root.winfo_height() + btn_height)
@@ -50,7 +50,7 @@ class UI(General):
                 self.main_frame.drops_frame.forget()
 
         elif attr.lower() == 'show_advanced_tracker':
-            btn_height = 22
+            btn_height = 23
             if val:
                 self.main_frame.root.update()
                 self.main_frame.root.config(height=self.main_frame.root.winfo_height() + btn_height)

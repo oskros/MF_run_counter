@@ -114,7 +114,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=364, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=362, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
@@ -332,14 +332,15 @@ class MainFrame(Config):
     def toggle_drops_frame(self, show=None):
         if show is None:
             show = self.drops_caret.active
+        drops_height = 174
         if show:
             self.root.update()
-            self.root.config(height=self.root.winfo_height()+174)
+            self.root.config(height=self.root.winfo_height()+drops_height)
             self.drops_tab.pack(pady=[0, 2])
         else:
             if hasattr(self, 'drops_tab') and self.drops_tab.winfo_ismapped():
                 self.drops_tab.forget()
-                self.root.config(height=self.root.winfo_height()-174)
+                self.root.config(height=self.root.winfo_height()-drops_height)
         self.show_drops_tab_below = show
         self.img_panel.focus_force()
 
@@ -351,7 +352,7 @@ class MainFrame(Config):
                 messagebox.showerror('Error', 'You need to active "Advanced automode" in Options->Automode to see advanced stats')
             show = False
             self.advanced_stats_caret.toggle_image(active=False)
-        tracker_height = 299
+        tracker_height = 311
         if show:
             self.root.update()
             self.root.config(height=self.root.winfo_height()+tracker_height)

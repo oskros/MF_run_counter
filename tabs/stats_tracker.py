@@ -46,12 +46,15 @@ class StatsTracker(tkd.Frame):
     def make_widgets(self):
         tkd.Label(self, text='Advanced stats tracker', font='Helvetica 15').pack()
 
+        lf0 = tkd.LabelFrame(self)
+        lf0.pack(expand=False, fill=tk.X, padx=1)
+        self.create_row(self.mf_sv, label_name='MF', lf=lf0)
+        self.create_row(self.players_x_sv, label_name='Players X', lf=lf0)
+
         lf1 = tkd.LabelFrame(self)
-        lf1.pack(expand=False, fill=tk.X, padx=1)
-        self.create_row(self.level_sv, label_name='Level', lf=lf1)
-        self.create_row(self.mf_sv, label_name='MF', lf=lf1)
-        self.create_row(self.players_x_sv, label_name='Players X', lf=lf1)
-        self.create_row(self.mon_kills_sv, label_name='Boss / champ kills', lf=lf1)
+        lf1.pack(expand=False, fill=tk.X, padx=1, pady=[8, 0])
+        self.create_row(self.unique_kills_sv, label_name='Unique kills', lf=lf1)
+        self.create_row(self.champ_kills_sv, label_name='Champion kills', lf=lf1)
 
         lf2 = tkd.LabelFrame(self)
         lf2.pack(expand=False, fill=tk.X, padx=1, pady=8)
@@ -100,7 +103,7 @@ class StatsTracker(tkd.Frame):
         if self.main_frame.d2_reader is None or not self.main_frame.timer_tab.cached_is_ingame:
             return
 
-        # After the previous check we know the d2_reader has been instantiated, so we can update the kill count
+        # After the previous check we know the d2_reader has been instantiated, so we can update the kill count02,
         self.update_killcount()
 
         # Catch any erors with loading player stats
