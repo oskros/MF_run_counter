@@ -54,6 +54,8 @@ class D2Reader:
         self.in_pause_menu = None
         self.unit_list_addr = None
         self.monster_add_adr = None
+        self.hovered_item = None
+        self.item_descripts = None
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
@@ -61,8 +63,10 @@ class D2Reader:
             self.players_x_ptr   = self.d2game   + 0x111C1C
             self.player_unit_ptr = self.d2client + 0x10A60C
             self.in_pause_menu   = self.d2client + 0xFADA4
-            self.unit_list_addr  = self.d2client + 0x10A808  # units113
+            self.unit_list_addr  = self.d2client + 0x10A808
             self.monster_add_adr = 0x0
+            self.hovered_item    = self.d2client + 0x11BC38
+            self.item_descripts  = self.d2common + 0x9FB94
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
@@ -70,18 +74,26 @@ class D2Reader:
             self.in_pause_menu   = self.d2client + 0x11C8B4
             self.unit_list_addr  = self.d2client + 0x1049B8
             self.monster_add_adr = 0x0
+            self.hovered_item    = self.d2client + 0x11CB28
+            self.item_descripts  = self.d2common + 0xA4CB0
         elif self.d2_ver == '1.14b':
             self.world_ptr       = self.base_address + 0x47BD78
             self.players_x_ptr   = self.base_address + 0x47BDB0
             self.player_unit_ptr = self.base_address + 0x39DEFC
+            self.in_pause_menu   = None
             self.unit_list_addr  = self.base_address + 0x39DEF8
             self.monster_add_adr = 0x80
+            self.hovered_item    = None
+            self.item_descripts  = self.base_address + 0x564A98
         elif self.d2_ver == '1.14c':
             self.world_ptr       = self.base_address + 0x47ACC0
             self.players_x_ptr   = self.base_address + 0x47ACF8
             self.player_unit_ptr = self.base_address + 0x39CEFC
+            self.in_pause_menu   = None
             self.unit_list_addr  = self.base_address + 0x39CEF8
             self.monster_add_adr = 0x80
+            self.hovered_item    = None
+            self.item_descripts  = self.base_address + 0x5639E0
         elif self.d2_ver == '1.14d':
             self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
@@ -89,6 +101,8 @@ class D2Reader:
             self.in_pause_menu   = self.base_address + 0x3A27E4
             self.unit_list_addr  = self.base_address + 0x3A5E70
             self.monster_add_adr = 0x80
+            self.hovered_item    = None
+            self.item_descripts  = self.base_address + 0x56CA58
         else:
             self.patch_supported = False
 
@@ -136,21 +150,8 @@ class D2Reader:
 
     def player_unit_stats(self):
         player_unit = self.pm.read_uint(self.player_unit_ptr)
-
         char_name = self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
-        statlist = self.pm.read_uint(player_unit + 0x005C)
-        full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
-        stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
-        stat_array_len = self.pm.read_short(statlist + 0x004C)
-
-        vals = []
-        for i in range(0, stat_array_len):
-            cur_addr = stat_array_addr + i * 8
-            histatid = self.pm.read_short(cur_addr + 0x00)
-            lostatid = self.pm.read_short(cur_addr + 0x02)
-            value = self.pm.read_uint(cur_addr + 0x04)
-
-            vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
+        vals = self.get_stats(player_unit)
         # lostatid: 12=level, 13=experience, 80=mf, 105=fcr
 
         out = dict()
@@ -163,6 +164,22 @@ class D2Reader:
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
+
+    def get_stats(self, unit):
+        statlist = self.pm.read_uint(unit + 0x005C)
+        full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
+        stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
+        stat_array_len = self.pm.read_short(statlist + 0x004C)
+
+        vals = []
+        for i in range(0, stat_array_len):
+            cur_addr = stat_array_addr + i * 8
+            histatid = self.pm.read_short(cur_addr + 0x00)
+            lostatid = self.pm.read_short(cur_addr + 0x02)
+            value = self.pm.read_uint(cur_addr + 0x04)
+
+            vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
+        return vals
 
     def update_dead_guids(self):
         for guid in range(128):
@@ -213,16 +230,33 @@ if __name__ == '__main__':
     root.wm_attributes("-topmost", 1)
     sv = tk.StringVar()
 
-    def add_to_killed():
-        r.in_game()
-        r.update_dead_guids()
-        sv.set('\n'.join(['%s: %s' % (k, v) for k, v in r.kill_counts.items()]))
-        root.after(50, add_to_killed)
+    def update_hovered():
+        p_unit = r.pm.read_uint(r.hovered_item)
+        if p_unit > 0:
+            e_class = r.pm.read_uint(p_unit + 0x4)
+            item_descr_len = 0x1A8
 
-    add_to_killed()
+            # r.pm.read_string(r.item_descripts + item_descr_len * e_class + 0xF4)
 
-    tk.Label(root, text='killcount').pack()
+            vals = r.get_stats(p_unit)
+            sv.set(0)
+        root.after(50, update_hovered)
+
+    update_hovered()
+
+    tk.Label(root, text='hovered').pack()
     tk.Label(root, textvariable=sv).pack()
+
+    # def add_to_killed():
+    #     r.in_game()
+    #     r.update_dead_guids()
+    #     sv.set('\n'.join(['%s: %s' % (k, v) for k, v in r.kill_counts.items()]))
+    #     root.after(50, add_to_killed)
+    #
+    # add_to_killed()
+
+    # tk.Label(root, text='killcount').pack()
+    # tk.Label(root, textvariable=sv).pack()
 
     root.mainloop()
 
