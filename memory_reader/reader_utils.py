@@ -119,7 +119,7 @@ mon_type = {
     0x4C: 'Champion',  # 'Ghostly',
     0x80: 'Multishot',  # Unused
     0x108: 'Unique',  # 'Donno yet: Some unique mod, I think',
-    0x10A: 'Unique', # 'Donno yet: Some champion/unique mod, I think'
+    0x10A: 'Unique', # 'Donno yet: Some unique mod, I think'
 }
 
 

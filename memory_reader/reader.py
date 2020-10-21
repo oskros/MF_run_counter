@@ -2,7 +2,7 @@ import psutil  # REMOVING THIS LINE BREAKS MEMORY READING FOR GAME.EXE...
 import pymem
 import win32api
 import logging
-from memory_reader import reader_utils
+from memory_reader import reader_utils, stat_mappings
 from utils.other_utils import pymem_err_list
 from collections import defaultdict
 
@@ -239,7 +239,12 @@ if __name__ == '__main__':
             # r.pm.read_string(r.item_descripts + item_descr_len * e_class + 0xF4)
 
             vals = r.get_stats(p_unit)
-            sv.set(0)
+            s_str = ''
+            for v in vals:
+                s_str += '\n%s: %s' % (stat_mappings.STATMAP[v['lostatid']], v['value'])
+                if v['histatid'] > 0:
+                    s_str += ' histatid: %s' % v['histatid']
+            sv.set(s_str)
         root.after(50, update_hovered)
 
     update_hovered()
