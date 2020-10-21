@@ -107,19 +107,19 @@ EXP_TABLE = {1: {'Experience': 0, 'Next': 500},
 
 mon_type = {
     0x0: 'Regular',
-    0x1: 'Mon_Other',  # Unused
+    0x1: 'Mon_Other',    # Unused
     0x2: 'Superunique',  # Unused
-    0x4: 'Champion',  # Unused
+    0x4: 'Champion',     # Unused
     0x8: 'Unique',
-    0xA: 'Unique',  # 'Superunique'
-    0xC: 'Champion',  # Possessed, Berserker, Fanatic as well
+    0xA: 'Unique',       # 'Superunique'
+    0xC: 'Champion',     # Possessed, Berserker, Fanatic as well
     0x10: 'Minion',
-    0x20: 'Possessed',  # Unused
-    0x40: 'Ghostly',  # Unused
-    0x4C: 'Champion',  # 'Ghostly',
-    0x80: 'Multishot',  # Unused
-    0x108: 'Unique',  # 'Donno yet: Some unique mod, I think',
-    0x10A: 'Unique', # 'Donno yet: Some unique mod, I think'
+    0x20: 'Possessed',   # Unused
+    0x40: 'Ghostly',     # Unused
+    0x4C: 'Champion',    # 'Ghostly',
+    0x80: 'Multishot',   # Unused
+    0x108: 'Unique',     # 'Donno yet: Some unique mod, I think',
+    0x10A: 'Unique',     # 'Donno yet: Some unique mod, I think'
 }
 
 
