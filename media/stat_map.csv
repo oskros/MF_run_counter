@@ -84,7 +84,7 @@ ID,Name,Div,Mul,Abbr,Show,Perc,ShowValue,Negate
 82,TimeDuration,1,1,,1,0,1,0
 83,ClassSkills,1,1,,1,0,1,0
 84,UnsentParameter,1,1,,1,0,1,0
-85,AddExperience,1,1,Experience Gained,1,1,1,0
+85,AddExperience,1,1,Exp Gained,1,1,1,0
 86,LifeAfterEachKill,1,1,LAEK,1,0,1,0
 87,ReduceVendorPrices,1,1,Vendor Prices,1,1,1,1
 88,DoubleHerbDuration,1,1,,1,0,1,0

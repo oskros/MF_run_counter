@@ -29,6 +29,7 @@ class D2Reader:
         self.d2client = None
         self.d2game = None
         self.d2net = None
+        self.d2lang = None
         # print([x.name for x in self.pm.list_modules()])
         for mod in self.pm.list_modules():
             mod_str = mod.name.lower()
@@ -42,6 +43,8 @@ class D2Reader:
                 self.d2net = mod.lpBaseOfDll
             elif mod_str == 'd2common.dll':
                 self.d2common = mod.lpBaseOfDll
+            elif mod_str == 'd2lang.dll':
+                self.d2lang = mod.lpBaseOfDll
 
         if self.is_d2se or self.d2_ver in ['1.13c', '1.13d']:
             if self.d2client is None or self.d2game is None or self.d2net is None:
@@ -56,6 +59,12 @@ class D2Reader:
         self.monster_add_adr = None
         self.hovered_item = None
         self.item_descripts = None
+        self.str_indexer_table = None
+        self.str_address_table = None
+        self.patch_str_indexer_table = None
+        self.patch_str_address_table = None
+        self.exp_str_indexer_table = None
+        self.exp_str_address_table = None
 
     def map_ptrs(self):
         if self.d2_ver == '1.13c':
@@ -67,6 +76,12 @@ class D2Reader:
             self.monster_add_adr = 0x0
             self.hovered_item    = self.d2client + 0x11BC38
             self.item_descripts  = self.d2common + 0x9FB94
+            self.str_indexer_table       = self.d2lang + 0x10A64
+            self.str_address_table       = self.d2lang + 0x10a68
+            self.patch_str_indexer_table = self.d2lang + 0x10A80
+            self.patch_str_address_table = self.d2lang + 0x10A6C
+            self.exp_str_indexer_table   = self.d2lang + 0x10A84
+            self.exp_str_address_table   = self.d2lang + 0x10A70
         elif self.d2_ver == '1.13d':
             self.world_ptr       = self.d2game   + 0x111C10
             self.players_x_ptr   = self.d2game   + 0x111C44
@@ -176,7 +191,10 @@ class D2Reader:
             cur_addr = stat_array_addr + i * 8
             histatid = self.pm.read_short(cur_addr + 0x0)
             lostatid = self.pm.read_short(cur_addr + 0x2)
-            value = self.pm.read_int(cur_addr + 0x4)
+            if lostatid == 13:
+                value = self.pm.read_uint(cur_addr + 0x4)
+            else:
+                value = self.pm.read_int(cur_addr + 0x4)
 
             if translate_stat:
                 vals.append(reader_utils.translate_stat(histatid=histatid, lostatid=lostatid, value=value, stat_map=stat_mappings.STAT_MAP))
@@ -221,12 +239,76 @@ class D2Reader:
         else:
             self.observed_guids.add(game_guid)
 
+    def get_string_table_by_identifier(self, identifier):
+        if identifier >= 0x4E20:  # 20.000
+            return {'index': self.exp_str_indexer_table,
+                    'address': self.exp_str_address_table,
+                    'offset': 0x4E20}
+        elif identifier >= 0x2710:  # 10.000
+            return {'index': self.patch_str_indexer_table,
+                    'address': self.patch_str_address_table,
+                    'offset': 0x2710}
+        else:
+            return {'index': self.str_indexer_table,
+                    'address': self.str_address_table,
+                    'offset': 0x0}
+
+    def lookup_string_table(self, identifier):
+        str_table = self.get_string_table_by_identifier(identifier)
+        identifier -= str_table['offset']
+
+        indexer_table = self.pm.read_uint(str_table['index'])
+        address_table = self.pm.read_ushort(str_table['address'])
+
+        identifier_count = self.pm.read_ushort(indexer_table + 0x2)
+        if identifier >= identifier_count:
+            identifier = 0x1F4
+
+        str_data_region = indexer_table + 0x15
+        get_address_index_location = lambda index: str_data_region + index * 2  # sizeof(ushort) = 2
+        address_table_index = self.pm.read_ushort(get_address_index_location(identifier))
+
+        if address_table_index >= self.pm.read_uint(indexer_table + 0x4):
+            return None
+
+        string_info_block = get_address_index_location(identifier_count)
+        string_info_address = string_info_block + address_table_index * 0x11
+
+        end_test = indexer_table + self.pm.read_ushort(indexer_table + 0x11)
+        if string_info_address >= end_test:
+            return None
+
+        if not self.pm.read_ushort(string_info_address):
+            return None
+
+        string_address = self.pm.read_uint(address_table + address_table_index * 4)  # sizeof(uint) = 4
+        if not string_address:
+            return None
+
+        return self.get_null_terminated_string(string_address, 0x100, 0x4000)
+
+    def get_null_terminated_string(self, address, size, max_size):
+        buffer_size = size
+        value = None
+        while buffer_size <= max_size:
+            value = self.pm.read_string(address, buffer_size)
+            null_terminator_index = value.index('\0')
+            if null_terminator_index >= 0:
+                value = value.replace('\0', '')
+                return value
+            buffer_size *= 2
+        return value
+
+
+
 
 if __name__ == '__main__':
     # print(elevate_access(lambda: eval('D2Reader().in_game()')))
     r = D2Reader()
     # print(r.d2_ver)
     r.map_ptrs()
+
+
 
     import tkinter as tk
     root = tk.Tk()
@@ -239,9 +321,11 @@ if __name__ == '__main__':
         if p_unit > 0 and p_unit != cur_unit:
             cur_unit = p_unit
             e_class = r.pm.read_uint(p_unit + 0x4)
-            item_descr_len = 0x1A8
-
-            # r.pm.read_string(r.item_descripts + item_descr_len * e_class + 0xF4)
+            item_descr_len = r.pm.read_uint(r.item_descripts)
+            item_descr_adr = r.pm.read_uint(r.item_descripts + 0x4)
+            specific_item_adr = r.pm.read_uint(item_descr_adr + item_descr_len*e_class)
+            string_index = r.pm.read_ushort(specific_item_adr + 0xF4)
+            name = r.lookup_string_table(string_index)
 
             vals = r.get_stats(p_unit, translate_stat=True)
             vals = reader_utils.group_and_hide_stats(vals)

@@ -5,34 +5,34 @@ from init import media_path
 
 
 def load_stat_map():
-    lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'stat_map.csv')
+    lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'stat_map.csv')
     with open(lib_path, 'r') as fo:
         out = {int(row['ID']): row for row in csv.DictReader(fo)}
     return out
 
 
 SKILLTABS = {
-    0: 'Bow skills (Ama)',
-    1: 'PM skills (Ama)',
-    2: 'Java skills (Ama)',
-    8: 'Fire skills (Sorc)',
-    9: 'Light skills (Sorc)',
-    10: 'Cold skills (Sorc)',
-    16: 'Curse skills (Nec)',
-    17: 'PB skills (Nec)',
-    18: 'Summon skills (Nec)',
-    24: 'Combat skills (Pala)',
-    25: 'Offensive skills (Pala)',
-    26: 'Defensive skills (Pala)',
-    32: 'Combat skills (Barb)',
-    33: 'Mastery skills (Barb)',
-    34: 'Warcry skills (Barb)',
-    40: 'Summon skills (Druid)',
-    41: 'Shapeshifting skills (Druid)',
-    42: 'Ele skills (Druid)',
-    48: 'Trap skills (Assa)',
-    49: 'Shadow skills (Assa)',
-    50: 'Martial skills (Assa)'
+    0: 'Bow Skills (Ama)',
+    1: 'PM Skills (Ama)',
+    2: 'Java Skills (Ama)',
+    8: 'Fire Skills (Sorc)',
+    9: 'Light Skills (Sorc)',
+    10: 'Cold Skills (Sorc)',
+    16: 'Curse Skills (Nec)',
+    17: 'PB Skills (Nec)',
+    18: 'Summon Skills (Nec)',
+    24: 'Combat Skills (Pala)',
+    25: 'Offensive Skills (Pala)',
+    26: 'Defensive Skills (Pala)',
+    32: 'Combat Skills (Barb)',
+    33: 'Mastery Skills (Barb)',
+    34: 'Warcry Skills (Barb)',
+    40: 'Summon Skills (Druid)',
+    41: 'Shapeshifting Skills (Druid)',
+    42: 'Ele Skills (Druid)',
+    48: 'Trap Skills (Assa)',
+    49: 'Shadow Skills (Assa)',
+    50: 'Martial Skills (Assa)'
 }
 
 CLASSSKILLS = {
