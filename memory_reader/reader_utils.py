@@ -1,8 +1,8 @@
 import ctypes
-import os
-import sys
 import pymem
 import logging
+from memory_reader import stat_mappings
+from init import *
 
 EXP_TABLE = {1: {'Experience': 0, 'Next': 500},
              2: {'Experience': 500, 'Next': 1000},
@@ -178,3 +178,140 @@ def number_of_processes_with_names(process_names, logging_level=None):
             out += 1
     return out
 
+
+def translate_stat(histatid, lostatid, value, stat_map):
+    stat_row = dict(stat_map[lostatid])
+    if lostatid == 83:
+        stat_row['Display'] = stat_mappings.CLASSSKILLS[histatid]
+    elif lostatid in [97, 107]:
+        stat_row['Display'] = stat_mappings.SKILLS[histatid]
+    elif lostatid == 126:
+        stat_row['Display'] = stat_mappings.ELEMENTALSKILLS.get(histatid, histatid)
+    elif lostatid == 151:
+        stat_row['Display'] = '%s Aura lvl' % stat_mappings.SKILLS[histatid]
+    elif lostatid == 188:
+        stat_row['Display'] = stat_mappings.SKILLTABS[histatid]
+    elif lostatid == 195:
+        stat_row['Display'] = 'Attack: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 196:
+        stat_row['Display'] = 'Kill: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 197:
+        stat_row['Display'] = 'Death: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 198:
+        stat_row['Display'] = 'Striking: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 199:
+        stat_row['Display'] = 'Level-Up: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 201:
+        stat_row['Display'] = 'Struck: %s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+    elif lostatid == 204:
+        stat_row['Display'] = '%s (lvl %s)' % (stat_mappings.SKILLS[histatid // 64], histatid % 64)
+        stat_row['value'] = '%s/%s' % (value % 256, value // 256)
+    elif lostatid == 252:
+        stat_row['Display'] = 'Repairs 1 durability in seconds'
+        stat_row['value'] = str(100//value)
+    else:
+        stat_row['Display'] = stat_row['Abbr'] if stat_row['Abbr'] else stat_row['Name']
+
+    if int(stat_row['ShowValue']) == 0:
+        stat_row['value'] = ''
+    else:
+        if lostatid not in [204, 252]:
+            stat_row['value'] = str(value / int(stat_row['Div']) * int(stat_row['Mul']))
+            if stat_row['value'].endswith('.0'):
+                stat_row['value'] = stat_row['value'][:-2]
+
+        if int(stat_row['Perc']) == 1:
+            stat_row['value'] += '%'
+
+        if int(stat_row['Negate']) == 1:
+            stat_row['value'] = '-' + stat_row['value']
+    stat_row['histatid'] = histatid
+    stat_row['lostatid'] = lostatid
+
+    return stat_row
+
+
+def group_and_hide_stats(stat_list):
+    stat_list = group_one_stat('All Attributes', [0, 1, 2, 3], stat_list)
+    stat_list = group_one_stat('All Res', [39, 41, 43, 45], stat_list)
+    stat_list = group_one_stat('Min Dmg', [21, 23, 159], stat_list)
+    stat_list = group_one_stat('Max Dmg', [22, 24, 160], stat_list)
+    stat_list = group_one_stat('Min Dmg', [21, 159], stat_list)
+    stat_list = group_one_stat('Max Dmg', [22, 160], stat_list)
+    stat_list = group_one_stat('Enh Dmg', [17, 18], stat_list)
+
+    stat_list = group_one_dmg_stat('Fire Damage', 48, 49, stat_list)
+    stat_list = group_one_dmg_stat('Light Damage', 50, 51, stat_list)
+    stat_list = group_one_dmg_stat('Magic Damage', 52, 53, stat_list)
+    stat_list = group_one_dmg_stat('Cold Damage', 54, 55, stat_list)
+    stat_list = group_psn_dmg(stat_list)
+    stat_list = group_one_dmg_stat('Damage', 21, 22, stat_list)
+    stat_list = group_one_dmg_stat('Two-hand Damage', 23, 24, stat_list)
+    return [x for x in stat_list if int(x['Show']) == 1]
+
+
+def group_one_stat(name, id_list, stat_list):
+    attrs = False
+    attr_val = None
+    for stat_id in id_list:
+        stat_list_row = next((x for x in stat_list if x['lostatid'] == stat_id), None)
+        if stat_list_row is not None:
+            if attr_val is None:
+                attr_val = dict(stat_list_row)
+            elif stat_list_row['value'] == attr_val['value']:
+                attrs = True
+            else:
+                attrs = False
+                break
+        else:
+            attrs = False
+            break
+    if attrs:
+        out = [v for v in stat_list if v['lostatid'] not in id_list]
+        tmp = attr_val
+        tmp['Display'] = name
+        out.append(tmp)
+        return out
+    else:
+        return stat_list
+
+
+def group_one_dmg_stat(name, min_dmg_id, max_dmg_id, stat_list):
+    min_dmg_row = next((x for x in stat_list if x['lostatid'] == min_dmg_id), None)
+    max_dmg_row = next((x for x in stat_list if x['lostatid'] == max_dmg_id), None)
+
+    if min_dmg_row is not None and max_dmg_row is not None:
+        out = [v for v in stat_list if v['lostatid'] not in [min_dmg_id, max_dmg_id]]
+        tmp = dict(min_dmg_row)
+        tmp['Display'] = name
+        tmp['lostatid'] = 999
+        if min_dmg_row['value'] == max_dmg_row['value']:
+            tmp['value'] = min_dmg_row['value']
+        else:
+            tmp['value'] = min_dmg_row['value'] + '-' + max_dmg_row['value']
+        out.append(tmp)
+        return out
+    else:
+        return stat_list
+
+
+def group_psn_dmg(stat_list):
+    psn_dmg_min = next((x for x in stat_list if x['lostatid'] == 57), None)
+    psn_dmg_max = next((x for x in stat_list if x['lostatid'] == 58), None)
+    psn_len = next((x for x in stat_list if x['lostatid'] == 59), None)
+
+    if psn_dmg_min is not None and psn_dmg_max is not None and psn_len is not None:
+        out = [v for v in stat_list if v['lostatid'] not in [57, 58, 59]]
+        tmp = dict(psn_dmg_min)
+        tmp['Display'] = 'Psn Damage over %s secs' % (int(psn_len['value'])//25)
+        tmp['lostatid'] = 999
+        if psn_dmg_min['value'] == psn_dmg_max['value']:
+            tmp['value'] = round(int(psn_dmg_min['value']) * int(psn_len['value']) / 256) // 1
+        else:
+            min_val = round(int(psn_dmg_min['value']) * int(psn_len['value']) / 256) // 1
+            max_val = round(int(psn_dmg_max['value']) * int(psn_len['value']) / 256) // 1
+            tmp['value'] = '%s-%s' % (min_val, max_val)
+        out.append(tmp)
+        return out
+    else:
+        return stat_list

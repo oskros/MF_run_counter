@@ -1,3 +1,16 @@
+import csv
+import os
+import sys
+from init import media_path
+
+
+def load_stat_map():
+    lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('..')), media_path + 'stat_map.csv')
+    with open(lib_path, 'r') as fo:
+        out = {int(row['ID']): row for row in csv.DictReader(fo)}
+    return out
+
+
 SKILLTABS = {
     0: 'Bow skills (Ama)',
     1: 'PM skills (Ama)',
@@ -19,7 +32,21 @@ SKILLTABS = {
     42: 'Ele skills (Druid)',
     48: 'Trap skills (Assa)',
     49: 'Shadow skills (Assa)',
-    50: 'Martial skills (Assa'
+    50: 'Martial skills (Assa)'
+}
+
+CLASSSKILLS = {
+    0: 'Amazon Skills',
+    1: 'Sorceress Skills',
+    2: 'Necromancer Skills',
+    3: 'Paladin Skills',
+    4: 'Barbarian Skills',
+    5: 'Druid Skills',
+    6: 'Assassin Skills'
+}
+
+ELEMENTALSKILLS = {
+    1: 'Fire Skills'
 }
 
 SKILLS = {
@@ -108,16 +135,16 @@ SKILLS = {
     82: 'Life Tap',
     83: 'Poison Explosion',
     84: 'Bone Spear',
-    85: 'BloodGolem',
+    85: 'Blood Golem',
     86: 'Attract',
     87: 'Decrepify',
     88: 'Bone Prison',
     89: 'Summon Resist',
-    90: 'IronGolem',
+    90: 'Iron Golem',
     91: 'Lower Resist',
     92: 'Poison Nova',
     93: 'Bone Spirit',
-    94: 'FireGolem',
+    94: 'Fire Golem',
     95: 'Revive',
     96: 'Sacrifice',
     97: 'Smite',
@@ -382,364 +409,4 @@ SKILLS = {
     356: 'Imp Fire Missile Ex'
 }
 
-STATMAP = {
-    0: 'Strength',                  	  # str
-    1: 'Energy',                          # energy
-    2: 'Dexterity',                       # dexterity
-    3: 'Vitality',                        # vitality
-    4: 'StatPointsLeft',
-    5: 'NewSkills',
-    6: 'Life',                              # life
-    7: 'MaxLife',                           # max life
-    8: 'Mana',                            # mana
-    9: 'MaxMana',                         # max mana
-    10: 'Stamina',                        # stamina
-    11: 'MaxStamina',                     # max stamina
-    12: 'Level',                          # level
-    13: 'Exp',                            # experience
-    14: 'Gold',                           # gold
-    15: 'GoldBank',                       # stash gold
-    16: 'EnhancedDefense',
-    17: 'EnhancedMaximumDamage',
-    18: 'EnhancedMinimumDamage',
-    19: 'AttackRating',
-    20: 'ToBlock',                        # to block
-    21: 'MinimumDamage',
-    22: 'MaximumDamage',
-    23: 'SecondaryMinimumDamage',
-    24: 'SecondaryMaximumDamage',
-    25: 'EnhancedDamage',
-    26: 'ManaRecovery',
-    27: 'ManaRecoveryBonus',
-    28: 'StaminaRecoveryBonus',
-    29: 'LastExperience',
-    30: 'NextExperience',
-    31: 'Defense',
-    32: 'DefenseVsMissiles',
-    33: 'DefenseVsMelee',
-    34: 'DmgReduction',
-    35: 'MagicDmgReduction',              # magic damage reduction
-    36: 'DmgReductionPct',                # damage reduction
-    37: 'MagicDmgReductionPct',           # magic damage reduction percentage
-    38: 'MaxMagicDmgReductPct',           # max magic damage reduction percentage
-    39: 'FireResist',                     # fire resist
-    40: 'MaxRireResist',                  # max fire resist
-    41: 'LightningResist',                # lightning resist
-    42: 'MaxLightningResist',             # max lightning resist
-    43: 'ColdResist',                     # cold resist
-    44: 'MaxColdResist',                  # max cold resist
-    45: 'PoisonResist',                   # poison resist
-    46: 'MaxPoisonResist',                # max poison resist
-    47: 'DamagAaura',
-    48: 'MinimumFireDamage',
-    49: 'MaximumFireDamage',
-    50: 'MinimumLightningDamage',
-    51: 'MaximumLightningDamage',
-    52: 'MinimumMagicalDamage',
-    53: 'MaximumMagicalDamage',
-    54: 'MinimumColdDamage',
-    55: 'MaximumColdDamage',
-    56: 'ColdDamageLength',
-    57: 'MinimumPoisonDamage',
-    58: 'MaximumPoisonDamage',
-    59: 'PoisonDamageLength',
-    60: 'LifeLeech',                      # Life Leech (min life stolen per hit)
-    61: 'MaxLifeStolenPerHit',
-    62: 'ManaLeech',                      # Mana Leech (min mana stolen per hit)
-    63: 'MaxManaStolenPerHit',
-    64: 'MinimumStaminaDrain',
-    65: 'MaximumStaminaDrain',
-    66: 'StunLength',
-    67: 'VelocityPercent',                # effective run/walk
-    68: 'AttackRate',
-    69: 'OtherAnimationRate',
-    70: 'AmmoQuantity',                   # ammo quantity(arrow/bolt/throwing)
-    71: 'Value',
-    72: 'Durability',                     # item durability
-    73: 'MaxDurability',                  # max item durability
-    74: 'ReplenishLife',
-    75: 'EnhancedMaxDurability',
-    76: 'EnhancedLife',
-    77: 'EnhancedMana',
-    78: 'AttackerTakesDamage',
-    79: 'GoldFind',                       # Gold find (GF)
-    80: 'MagicFind',                      # magic find (MF)
-    81: 'Knockback',
-    82: 'TimeDuration',
-    83: 'ClassSkills',
-    84: 'UnsentParameter',
-    85: 'AddExperience',
-    86: 'LifeAfterEachKill',
-    87: 'ReduceVendorPrices',
-    88: 'DoubleHerbDuration',
-    89: 'LightRadius',
-    90: 'LightColour',
-    91: 'ReducedRequirements',
-    92: 'ReducedLevelReq',
-    93: 'IAS',                            # IAS
-    94: 'ReducedLevelReqPct',
-    95: 'LastBlockFrame',
-    96: 'FasterRunWalk',                  # faster run/walk
-    97: 'NonClassSkill',
-    98: 'State',
-    99: 'FasterHitRecovery',              # faster hit recovery
-    100: 'MonsterPlayerCount',
-    101: 'SkillPoisonOverrideLen',
-    102: 'FasterBlock',                   # faster block rate
-    103: 'SkillBypassUndead',
-    104: 'SkillBypassDemons',
-    105: 'FasterCast',                    # faster cast rate
-    106: 'SkillBypassBeasts',
-    107: 'SingleSkill',
-    108: 'SlainMonstersRip',
-    109: 'CurseResistance',
-    110: 'PoisonLengthReduction',         # Poison length reduction
-    111: 'AddsDamage',
-    112: 'HitCausesMonsterToFlee',
-    113: 'HitBlindsTarget',
-    114: 'DamageToMana',
-    115: 'IgnoreTargetsDefense',
-    116: 'ReduceTargetsDefense',
-    117: 'PreventMonsterHeal',
-    118: 'HalfFreezeDuration',
-    119: 'ToHitPercent',
-    120: 'MonsterDefDuctPerHit',
-    121: 'DamageToDemons',
-    122: 'DamageToUndead',
-    123: 'AttackRatingVsDemons',
-    124: 'AttackRatingVsUndead',
-    125: 'Throwable',
-    126: 'ElementalSkills',
-    127: 'AllSkills',
-    128: 'AttackerTakesLtngDmg',
-    129: 'IronMaidenLevel',
-    130: 'LifetapLevel',
-    131: 'ThornsPercent',
-    132: 'BoneArmor',
-    133: 'MaximumBoneArmor',
-    134: 'FreezesTarget',
-    135: 'OpenWounds',                    # Open Wounds
-    136: 'CrushingBlow',                  # crushing blow
-    137: 'KickDamage',
-    138: 'ManaAfterEachKill',
-    139: 'LifeAfterEachDemonKill',
-    140: 'ExtraBlood',
-    141: 'DeadlyStrike',                  # deadly strike
-    142: 'FireAbsorbPercent',             # fire absorb %
-    143: 'FireAbsorb',                    # fire absorb
-    144: 'LightningAbsorbPercent',        # lightning absorb %
-    145: 'LightningAbsorb',               # lightning absorb
-    146: 'MagicAbsorbPercent',            # magic absorb %
-    147: 'MagicAbsorb',
-    148: 'ColdAbsorbPercent',             # cold absorb %
-    149: 'ColdAbsorb',                    # cold absorb
-    150: 'Slow',                          # slow %
-    151: 'Aura',
-    152: 'Indestructible',
-    153: 'CannotBeFrozen',
-    154: 'StaminaDrainPercent',
-    155: 'Reanimate',
-    156: 'PiercingAttack',
-    157: 'FiresMagicArrows',
-    158: 'FireExplosiveArrows',
-    159: 'MinimumThrowingDamage',
-    160: 'MaximumThrowingDamage',
-    161: 'SkillHandOfAthena',
-    162: 'SkillStaminaPercent',
-    163: 'SkillPassiveStaminaPct',
-    164: 'Concentration',
-    165: 'Enchant',
-    166: 'Pierce',
-    167: 'Conviction',
-    168: 'Chillingarmor',
-    169: 'Frenzy',
-    170: 'Decrepify',
-    171: 'SkillArmorPercent',
-    172: 'Alignment',
-    173: 'Target0',
-    174: 'Target1',
-    175: 'GoldLost',
-    176: 'ConversionLevel',
-    177: 'ConversionMaximumLife',
-    178: 'UnitDoOverlay',
-    179: 'AttckRtngVsMonsterType',
-    180: 'DamageToMonsterType',
-    181: 'Fade',
-    182: 'ArmorOverridePercent',
-    183: 'Unused183',
-    184: 'Unused184',
-    185: 'Unused185',
-    186: 'Unused186',
-    187: 'Unused187',
-    188: 'SkillTab',
-    189: 'Unused189',
-    190: 'Unused190',
-    191: 'Unused191',
-    192: 'Unused192',
-    193: 'Unused193',
-    194: 'Sockets',
-    195: 'SkillOnStriking',
-    196: 'SkillOnKill',
-    197: 'SkillOnDeath',
-    198: 'SkillOnHit',
-    199: 'SkillOnLevelUp',
-    200: 'Unused200',
-    201: 'SkillWhenStruck',
-    202: 'Unused202',
-    203: 'Unused203',
-    204: 'Charged',
-    205: 'Unused204',
-    206: 'Unused205',
-    207: 'Unused206',
-    208: 'Unused207',
-    209: 'Unused208',
-    210: 'Unused209',
-    211: 'Unused210',
-    212: 'Unused211',
-    213: 'Unused212',
-    214: 'DefensePerLevel',
-    215: 'EnhancedDefensePerLvl',
-    216: 'LifePerLevel',
-    217: 'ManaPerLevel',
-    218: 'MaxDamagePerLevel',
-    219: 'MaxEnhancedDmgPerLevel',
-    220: 'StrengthPerLevel',
-    221: 'DexterityPerLevel',
-    222: 'EnergyPerLevel',
-    223: 'VitalityPerLevel',
-    224: 'AttackRatingPerLevel',
-    225: 'BonusAttckRtngPerLevel',
-    226: 'MaxColdDmgPerLvl',
-    227: 'MaxFireDmgPerLvl',
-    228: 'MaxLightningDmgPerLvl',
-    229: 'MaxPoisonDmgPerLvl',
-    230: 'ColdResPerLevel',
-    231: 'FireResPerLevel',
-    232: 'LightningResPerLevel',
-    233: 'PoisonResPerLevel',
-    234: 'ColdAbsorbPerLvl',
-    235: 'FireAbsorbPerLvl',
-    236: 'LightningAbsorbPerLvl',
-    237: 'PoisonAbsorbPerLvl',
-    238: 'ThornsPerLevel',
-    239: 'ExtraGoldPerLevel',
-    240: 'MagicFindPerLevel',
-    241: 'StaminaRegenPerLevel',
-    242: 'StaminaPerLevel',
-    243: 'DamageToDemonsPerLevel',
-    244: 'DamageToUndeadPerLevel',
-    245: 'AttkRtngVsDemonsPerLvl',
-    246: 'AttkRtngVsUndeadPerLvl',
-    247: 'CrushingBlowPerLevel',
-    248: 'OpenWoundsPerLevel',
-    249: 'KickDamagePerLevel',
-    250: 'DeadlyStrikePerLevel',
-    251: 'FindGemsPerLevel',
-    252: 'RepairsDurability',
-    253: 'ReplenishesQuantity',
-    254: 'IncreasedStackSize',
-    255: 'FindItem',
-    256: 'SlashDamage',
-    257: 'SlashDamagePercent',
-    258: 'CrushDamage',
-    259: 'CrushDamagePercent',
-    260: 'ThrustDamage',
-    261: 'ThrustDamagePercent',
-    262: 'SlashDamageAbsorption',
-    263: 'CrushDamageAbsorption',
-    264: 'ThrustDamageAbsorption',
-    265: 'SlashDamageAbsorbPct',
-    266: 'CrushDamageAbsorbPct',
-    267: 'ThrustDamageAbsorbPct',
-    268: 'DefensePerTime',
-    269: 'EnhancedDefensePerTime',
-    270: 'LifePerTime',
-    271: 'ManaPerTime',
-    272: 'MaxDamagePerTime',
-    273: 'MaxenhanceddmgPerTime',
-    274: 'StrengthPerTime',
-    275: 'DexterityPerTime',
-    276: 'EnergyPerTime',
-    277: 'VitalityPerTime',
-    278: 'AttackRatingPerTime',
-    279: 'ChanceToHitPerTime',
-    280: 'MaxColdDamagePerTime',
-    281: 'MaxFireDamagePerTime',
-    282: 'MaxLightningDmgPerTime',
-    283: 'MaxDamagePerPoison',
-    284: 'ColdResPerTime',
-    285: 'FireResPerTime',
-    286: 'LightningResPerTime',
-    287: 'PoisonResPerTime',
-    288: 'ColdAbsorptionPerTime',
-    289: 'FireAbsorptionPerTime',
-    290: 'LightningAbsorbPerTime',
-    291: 'PoisonAbsorbPerTime',
-    292: 'ExtraGoldPerTime',
-    293: 'MagicFindPerTime',
-    294: 'RegenStaminaPerTime',
-    295: 'StaminaPerTime',
-    296: 'DamageToDemonsPerTime',
-    297: 'DamageToUndeadPerTime',
-    298: 'AttrtngVsDemonsPerTime',
-    299: 'AttrtngVsUndeadPerTime',
-    300: 'CrushingBlowPerTime',
-    301: 'OpenWoundsPerTime',
-    302: 'KickDamagePerTime',
-    303: 'DeadlyStrikePerTime',
-    304: 'FindGemsPerTime',
-    305: 'EnemyColdresReduction',
-    306: 'EnemyFireresReduction',
-    307: 'EnemyLightresReduction',
-    308: 'EnemyPsnResReduction',
-    309: 'DamageVsMonsters',
-    310: 'EnhancedDmgVsMonsters',
-    311: 'AttackRatingVsMonsters',
-    312: 'BonusAttRtngVsMonsters',
-    313: 'DefenseVsMonsters',
-    314: 'EnhancedDefVsMonsters',
-    315: 'FireDamageLength',
-    316: 'MinFireDamageLength',
-    317: 'MaxFireDamageLength',
-    318: 'ProgressiveDamage',
-    319: 'ProgressiveSteal',
-    320: 'ProgressiveOther',
-    321: 'ProgressiveFire',
-    322: 'ProgressiveCold',
-    323: 'ProgressiveLightning',
-    324: 'ExtraCharges',
-    325: 'ProgressiveAttackRtng',
-    326: 'PoisonCount',
-    327: 'DamageFrameRate',
-    328: 'PierceIdx',
-    329: 'FireMastery',
-    330: 'LightningMastery',
-    331: 'ColdMastery',
-    332: 'PoisonMastery',
-    333: 'PsEnemyFireResReduc',           # passive enemy fire resist reduction
-    334: 'PsEnemyLightnResReduc',         # passive enemy lightning resist reduction
-    335: 'PsEnemyColdResReduc',           # passive enemy cold resist reduction
-    336: 'PsEnemyPsnResReduc',            # passive enemy poison resist reduction
-    337: 'CriticalStrike',
-    338: 'Dodge',
-    339: 'Avoid',
-    340: 'Evade',
-    341: 'Warmth',
-    342: 'MeleeArMastery',                # melee attack rating mastery
-    343: 'MeleeDamageMastery',
-    344: 'MeleeCritHitMastery',
-    345: 'ThrownWeaponArMastery',         # thrown weapon attack rating mastery
-    346: 'ThrownWeaponDmgMastery',
-    347: 'ThrownCritHitMastery',          # thrown weapon critical hit mastery
-    348: 'WeaponBlock',
-    349: 'SummonResist',
-    350: 'ModifierListSkill',
-    351: 'ModifierListLevel',
-    352: 'LastSentLifePercent',
-    353: 'SourceUnitType',
-    354: 'SourceUnitId',
-    355: 'ShortParameter1',
-    356: 'QuestItemDifficulty',
-    357: 'PassiveMagicDmgMastery',
-    358: 'PassiveMagicResReduc'
-}
+STAT_MAP = load_stat_map()

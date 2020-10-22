@@ -165,20 +165,23 @@ class D2Reader:
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
 
-    def get_stats(self, unit):
-        statlist = self.pm.read_uint(unit + 0x005C)
-        full_stats = hex(self.pm.read_uint(statlist + 0x0010)) == '0x80000000'
-        stat_array_addr = self.pm.read_uint(statlist + 0x0048) if full_stats else self.pm.read_uint(statlist + 0x0024)
-        stat_array_len = self.pm.read_short(statlist + 0x004C)
+    def get_stats(self, unit, translate_stat=False):
+        statlist = self.pm.read_uint(unit + 0x5C)
+        full_stats = self.pm.read_uint(statlist + 0x10) in [0x80000000, 0xA0000000]
+        stat_array_addr = self.pm.read_uint(statlist + 0x48) if full_stats else self.pm.read_uint(statlist + 0x24)
+        stat_array_len = self.pm.read_short(statlist + 0x4C)
 
         vals = []
         for i in range(0, stat_array_len):
             cur_addr = stat_array_addr + i * 8
-            histatid = self.pm.read_short(cur_addr + 0x00)
-            lostatid = self.pm.read_short(cur_addr + 0x02)
-            value = self.pm.read_uint(cur_addr + 0x04)
+            histatid = self.pm.read_short(cur_addr + 0x0)
+            lostatid = self.pm.read_short(cur_addr + 0x2)
+            value = self.pm.read_int(cur_addr + 0x4)
 
-            vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
+            if translate_stat:
+                vals.append(reader_utils.translate_stat(histatid=histatid, lostatid=lostatid, value=value, stat_map=stat_mappings.STAT_MAP))
+            else:
+                vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value, 'Display': 'histatid: %s, lostatid: %s' % (histatid, lostatid)})
         return vals
 
     def update_dead_guids(self):
@@ -229,39 +232,28 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.wm_attributes("-topmost", 1)
     sv = tk.StringVar()
+    cur_unit = None
 
-    def update_hovered():
+    def update_hovered(cur_unit):
         p_unit = r.pm.read_uint(r.hovered_item)
-        if p_unit > 0:
+        if p_unit > 0 and p_unit != cur_unit:
+            cur_unit = p_unit
             e_class = r.pm.read_uint(p_unit + 0x4)
             item_descr_len = 0x1A8
 
             # r.pm.read_string(r.item_descripts + item_descr_len * e_class + 0xF4)
 
-            vals = r.get_stats(p_unit)
-            s_str = ''
-            for v in vals:
-                s_str += '\n%s: %s' % (stat_mappings.STATMAP[v['lostatid']], v['value'])
-                if v['histatid'] > 0:
-                    s_str += ' histatid: %s' % v['histatid']
+            vals = r.get_stats(p_unit, translate_stat=True)
+            vals = reader_utils.group_and_hide_stats(vals)
+            s_str = '\n'.join(['%s: %s' % (v['Display'], v['value']) if v['value'] != '' else '%s' % v['Display'] for v in vals])
             sv.set(s_str)
-        root.after(50, update_hovered)
+        root.after(50, lambda: update_hovered(cur_unit))
+        return cur_unit
 
-    update_hovered()
+    cur_unit = update_hovered(cur_unit)
 
     tk.Label(root, text='hovered').pack()
     tk.Label(root, textvariable=sv).pack()
-
-    # def add_to_killed():
-    #     r.in_game()
-    #     r.update_dead_guids()
-    #     sv.set('\n'.join(['%s: %s' % (k, v) for k, v in r.kill_counts.items()]))
-    #     root.after(50, add_to_killed)
-    #
-    # add_to_killed()
-
-    # tk.Label(root, text='killcount').pack()
-    # tk.Label(root, textvariable=sv).pack()
 
     root.mainloop()
 
