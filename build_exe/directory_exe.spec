@@ -21,6 +21,7 @@ a.datas += [('d2icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\m
 a.datas += [('run_sound.wav', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\run_sound.wav', 'Data')]
 a.datas += [('icon.ico', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\icon.ico', 'Data')]
 a.datas += [('item_library.csv', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\item_library.csv', 'Data')]
+a.datas += [('stat_map.csv', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\stat_map.csv', 'Data')]
 a.datas += [('caret-down.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\caret-down.png', 'Data')]
 a.datas += [('caret-up.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\caret-up.png', 'Data')]
 a.datas += [('about_icon.png', 'C:\\Users\\oskro\\PycharmProjects\\MF_run_counter\\media\\about_icon.png', 'Data')]
