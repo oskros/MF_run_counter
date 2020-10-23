@@ -275,11 +275,11 @@ class Profile(tkd.Frame):
         new_win.title('Archive browser')
         new_win.wm_attributes('-topmost', 1)
 
-        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 615, 500)
+        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 790, 500)
         new_win.geometry(disp_coords)
         new_win.focus_get()
         new_win.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
-        new_win.minsize(615, 500)
+        new_win.minsize(790, 500)
         tkd.Label(new_win, text='Archive browser', font='Helvetica 14').pack()
 
         tabcontrol = ttk.Notebook(new_win)
@@ -324,7 +324,7 @@ class Profile(tkd.Frame):
             laps = chosen_archive.get('laps', [])
             drops = chosen_archive.get('drops', dict())
 
-        cols = ["Run", "Run time", "Real time", "MF", "Players X", "XP Gained", "Uniques kills", "Champions kills", "Total kills"]
+        cols = ["Run", "Run time", "Real time", "Name", "MF", "Players X", "Level", "XP Gained", "Uniques kills", "Champions kills", "Minion kills", "Total kills"]
         tree_frame = tkd.Frame(run_table_fr)
         btn_frame2 = tkd.Frame(run_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -343,7 +343,7 @@ class Profile(tkd.Frame):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 42, 53, 75, 70, 85, 59]
+        widths = [35, 60, 115, 60, 42, 53, 45, 75, 70, 85, 70, 59]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained']:

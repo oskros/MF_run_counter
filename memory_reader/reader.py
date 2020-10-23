@@ -199,7 +199,7 @@ class D2Reader:
             if translate_stat:
                 vals.append(reader_utils.translate_stat(histatid=histatid, lostatid=lostatid, value=value, stat_map=stat_mappings.STAT_MAP))
             else:
-                vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value, 'Display': 'histatid: %s, lostatid: %s' % (histatid, lostatid)})
+                vals.append({'histatid': histatid, 'lostatid': lostatid, 'value': value})
         return vals
 
     def update_dead_guids(self):
@@ -234,7 +234,7 @@ class D2Reader:
                 if mon_type is None:
                     # print(mon_typeflag)
                     logging.debug('Failed to map monster TypeFlag: %s' % mon_typeflag)
-                if mon_type in ['Unique', 'Champion']:
+                if mon_type in ['Unique', 'Champion', 'Minion']:
                     self.kill_counts[mon_type] += 1
         else:
             self.observed_guids.add(game_guid)

@@ -24,12 +24,12 @@ class StatsTracker(tkd.Frame):
         self.tot_kills_sv = tk.StringVar(value='0')
         self.unique_kills_sv = tk.StringVar(value='0')
         self.champ_kills_sv = tk.StringVar(value='0')
+        self.minion_kills_sv = tk.StringVar(value='0')
         self.name_sv = tk.StringVar(value='-----')
 
         self.level_sv = tk.StringVar(value='-----')
         self.mf_sv = tk.StringVar(value='-----')
         self.players_x_sv = tk.StringVar(value='-----')
-        self.mon_kills_sv = tk.StringVar(value='0 / 0')
 
         self.exp_perc_sv = tk.StringVar(value='0')
         self.exp_session_sv = tk.StringVar(value='0')
@@ -84,7 +84,7 @@ class StatsTracker(tkd.Frame):
             self.tot_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Total', 0))
             self.unique_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Unique', 0))
             self.champ_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Champion', 0))
-            self.mon_kills_sv.set('%s / %s' % (self.unique_kills_sv.get(), self.champ_kills_sv.get()))
+            self.minion_kills_sv.set(self.main_frame.d2_reader.kill_counts.get('Minion', 0))
         except other_utils.pymem_err_list as e:
             logging.debug(e)
 
@@ -163,7 +163,7 @@ class StatsTracker(tkd.Frame):
         self.tot_kills_sv.set('0')
         self.unique_kills_sv.set('0')
         self.champ_kills_sv.set('0')
-        self.mon_kills_sv.set('0 / 0')
+        self.minion_kills_sv.set('0')
 
     def reset_when_changes(self, player_unit_stats):
         if self.name_sv.get() != '-----' and player_unit_stats['Name'] != self.name_sv.get(): #  or str(player_unit_stats['Level']) != self.level_sv.get()):

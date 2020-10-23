@@ -188,6 +188,7 @@ class MFRunTimer(tkd.Frame):
         out['XP Gained'] = self.main_frame.advanced_stats_tracker.run_char_xp
         out['Uniques kills'] = self.main_frame.advanced_stats_tracker.unique_kills_sv.get()
         out['Champions kills'] = self.main_frame.advanced_stats_tracker.champ_kills_sv.get()
+        out['Minion kills'] = self.main_frame.advanced_stats_tracker.minion_kills_sv.get()
         out['Total kills'] = self.main_frame.advanced_stats_tracker.tot_kills_sv.get()
         out['Level'] = self.main_frame.advanced_stats_tracker.level_sv.get()
         out['Name'] = self.main_frame.advanced_stats_tracker.name_sv.get()
