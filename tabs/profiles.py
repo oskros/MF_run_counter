@@ -364,6 +364,14 @@ class Profile(tkd.Frame):
         avg_lap = sum_laps / len(laps) if laps else 0
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
 
+        # Kill averages
+        list_uniques = [int(x.get('Uniques kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
+        list_champs = [int(x.get('Champions kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
+        avg_uniques = sum(list_uniques) / len(list_uniques) if list_uniques else 0
+        avg_champs = sum(list_champs) / len(list_champs) if list_champs else 0
+        avg_packs = avg_uniques + avg_champs/3
+        seconds_per_pack = avg_lap / avg_packs if avg_packs > 0 else 0
+
         # Configure the list frame with scrollbars which displays the archive of the chosen session
         list_win = tkd.Frame(statistics_fr)
         list_frame = tkd.Frame(list_win)
@@ -389,6 +397,11 @@ class Profile(tkd.Frame):
                   ['Fastest run time:     ', utils.other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0))],
                   ['Number of runs:       ', str(len(laps))],
                   ['Time spent in runs:   ', str(round(pct, 2)) + '%'],
+                  [''],
+                  ['Avg unique kills:     ', str(round(avg_uniques, 2))],
+                  ['Avg champion kills:   ', str(round(avg_champs, 2))],
+                  ['Avg pack kills:       ', str(round(avg_packs, 2))],
+                  ['Avg seconds/pack:     ', str(round(seconds_per_pack, 2))],
                   ['']]
 
         # Backwards compatibility with old drop format
