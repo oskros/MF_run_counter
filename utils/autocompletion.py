@@ -2,13 +2,14 @@ import tkinter as tk
 import re
 from init import *
 import os, sys
-from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES
+from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, UNID_ITEM_LIST
 
 
 class AutocompleteEntry:
-    def __init__(self, master, width, textvariable, enable=True):
+    def __init__(self, master, width, textvariable, enable=True, unid_mode=False):
         self.chosen = None
         self.enable = enable
+        self.unid_mode = unid_mode
         self.master = master
         self.width = width
         self.var = textvariable
@@ -95,8 +96,7 @@ class AutocompleteEntry:
                 self.listbox.selection_set(first=hl_idx)
                 self.listbox.activate(hl_idx)
 
-    @staticmethod
-    def comparison(var, eth=False):
+    def comparison(self, var, eth=False):
         out = set()
         # regex to append a [']? after all letters, which is an optional argument for adding a hyphen
         # this means that for example typing in "mavinas" and "m'avina's" will yield the same results
@@ -105,7 +105,8 @@ class AutocompleteEntry:
         # ".*" allows anything to follow after the already typed letters
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
 
-        for w in FULL_ITEM_LIST + list(ITEM_ALIASES.keys()):
+        extras = list(ITEM_ALIASES.keys()) + UNID_ITEM_LIST if self.unid_mode else list(ITEM_ALIASES.keys())
+        for w in FULL_ITEM_LIST + extras:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
@@ -118,7 +119,7 @@ class AutocompleteEntry:
 
 
 class ACMbox(object):
-    def __init__(self, title, enable=True):
+    def __init__(self, title, enable=True, unid_mode=False):
         self.root = tk.Toplevel()
         self.root.geometry(
             '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
@@ -135,7 +136,7 @@ class ACMbox(object):
         tk.Label(frm_1, text='Input your drop...').pack()
 
         tw = tk.StringVar()
-        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable)
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, unid_mode=unid_mode)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
@@ -173,8 +174,8 @@ class ACMbox(object):
             self.root.quit()
 
 
-def acbox(title='Drop', enable=True):
-    msgbox = ACMbox(title, enable=enable)
+def acbox(title='Drop', enable=True, unid_mode=False):
+    msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit

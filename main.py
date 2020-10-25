@@ -72,6 +72,7 @@ class MainFrame(Config):
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
+        self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
 
         # UI config
         self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])

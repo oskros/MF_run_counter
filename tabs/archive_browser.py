@@ -59,13 +59,20 @@ class ArchiveBrowser(tkd.Toplevel):
             laps = chosen_archive.get('laps', [])
             drops = chosen_archive.get('drops', dict())
 
-        self.run_statistics(laps=laps, drops=drops, session_time=session_time)
+        # Backwards compatibility with old drop format
+        for k, v in drops.items():
+            for i in range(len(v)):
+                if not isinstance(v[i], dict):
+                    drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
+
+        self.statistics(laps=laps, drops=drops, session_time=session_time)
         self.run_table(laps=laps)
+        self.drop_table(drops=drops)
 
         theme = color_themes.Theme(self.main_frame.active_theme)
         theme.update_colors()
 
-    def run_statistics(self, laps, drops, session_time):
+    def statistics(self, laps, drops, session_time):
         statistics_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(statistics_fr, text='Statistics')
 
@@ -114,12 +121,6 @@ class ArchiveBrowser(tkd.Toplevel):
                   ['Avg pack kills:       ', str(round(avg_packs, 2))],
                   ['Avg seconds/pack:     ', str(round(seconds_per_pack, 2))],
                   ['']]
-
-        # Backwards compatibility with old drop format
-        for k, v in drops.items():
-            for i in range(len(v)):
-                if not isinstance(v[i], dict):
-                    drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
 
         # List all drops collected
         if drops:
@@ -231,6 +232,52 @@ class ArchiveBrowser(tkd.Toplevel):
             compatible_lap['Run time'] = other_utils.build_time_str(compatible_lap['Run time'])
             compatible_lap['Run'] = n
             tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols], tag=tag)
+
+    def drop_table(self, drops):
+        drop_table_fr = tkd.Frame(self.tabcontrol)
+        self.tabcontrol.add(drop_table_fr, text='Drop table')
+
+        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class"]
+        tree_frame = tkd.Frame(drop_table_fr)
+        btn_frame2 = tkd.Frame(drop_table_fr)
+        btn_frame2.pack(side=tk.BOTTOM)
+
+        vscroll_tree = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll_tree = ttk.Scrollbar(drop_table_fr, orient=tk.HORIZONTAL)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set,
+                            xscrollcommand=hscroll_tree.set, show='headings', columns=cols, alternate_colour=True)
+        hscroll_tree.config(command=tree.xview)
+        vscroll_tree.config(command=tree.yview)
+        tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
+
+        vscroll_tree.pack(side=tk.RIGHT, fill=tk.Y)
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
+        tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        tree['columns'] = cols
+        widths = [35, 190, 140, 120, 35, 35, 100]
+        for i, col in enumerate(cols):
+            tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
+            if col in ['Run', 'TC', 'QLVL']:
+                sort_by = 'num'
+            else:
+                sort_by = 'name'
+            tree.heading(col, text=col, sort_by=sort_by)
+
+        for n, drop_list in drops.items():
+            tag = 'Even' if int(n) % 2 == 0 else 'Odd'
+            for drop in drop_list:
+                tmp_drop = dict(drop)
+                tmp_drop['Run'] = n
+                if drop.get("item_name", ''):
+                    tmp_drop["Item name"] = drop["item_name"]
+                    tmp_drop["Extra input"] = drop["extra"]
+                else:
+                    tmp_drop["Item name"] = tmp_drop["input"]
+                    tmp_drop["Extra input"] = ""
+
+                tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag=tag)
 
     @staticmethod
     def copy_to_clipboard(obj, string):

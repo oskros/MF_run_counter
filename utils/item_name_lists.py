@@ -105,8 +105,9 @@ FULL_ITEM_LIST = [
     "Whitstan's Guard", "Widowmaker", "Wilhelm's Pride", "Windforce", "Windhammer",
     "Wisp Projector", "Witchwild String", "Witherstring", "Wizardspike", "Wizendraw", "Woestave",
     "Wolfhowl", "Wormskull", "Wraith Flight", "Zakarum's Hand", "Zod Rune",
-    "Key of Destruction", "Key of Hate", "Key of Terror"
+    "Key of Destruction", "Key of Hate", "Key of Terror"]
 
+UNID_ITEM_LIST = [
     "Aegis (Unique)", "Amulet (Set)", "Amulet (Unique)", "Ancient Armor (Set)", "Ancient Armor (Unique)",
     "Ancient Axe (Unique)", "Ancient Shield (Unique)", "Ancient Sword (Unique)", "Arbalest (Unique)",
     "Archon Staff (Unique)", "Armet (Unique)", "Ataghan (Unique)", "Avenger Guard (Set)", "Axe (Unique)",
@@ -207,10 +208,29 @@ FULL_ITEM_LIST = [
     "Winged Helm (Set)", "Winged Helm (Unique)", "Winged Knife (Unique)", "Wire Fleece (Unique)",
     "Wrist Sword (Unique)", "Yari (Unique)", "Yew Wand (Unique)", "Zakarum Shield (Unique)", "Zweihander (Unique)",
 
-    "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)",
+    "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)", "Jewel (Rare)"
+
+    "Archon Staff (Magic)", "Berserker Axe (Magic)", "Bloodlord Skull (Magic)", "Bone Visage (Magic)",
+    "Caduceus (Magic)", "Champion Axe (Magic)", "Colossus Blade (Magic)", "Corona (Magic)", "Cryptic Sword (Magic)",
+    "Demon Crossbow (Magic)", "Diadem (Magic)", "Dimensional Shard (Magic)", "Fanged Knife (Magic)",
+    "Giant Thresher (Magic)", "Glorious Axe (Magic)", "Hydra Bow (Magic)", "Lacquered Plate (Magic)",
+    "Legend Spike (Magic)", "Legendary Mallet (Magic)", "Myrmidon Greaves (Magic)", "Mythical Sword (Magic)",
+    "Ogre Gauntlets (Magic)", "Sacred Armor (Magic)", "Scissors Suwayyah (Magic)", "Shadow Plate (Magic)",
+    "Sky Spirit (Magic)", "Thunder Maul (Magic)", "Troll Belt (Magic)", "Unearthed Wand (Magic)",
+    "Vortex Shield (Magic)", "War Pike (Magic)", "Ward (Magic)", "Winged Harpoon (Magic)", "Zakarum Shield (Magic)",
+
+    "Archon Staff (Rare)", "Berserker Axe (Rare)", "Bloodlord Skull (Rare)", "Bone Visage (Rare)",
+    "Caduceus (Rare)", "Champion Axe (Rare)", "Colossus Blade (Rare)", "Corona (Rare)", "Cryptic Sword (Rare)",
+    "Demon Crossbow (Rare)", "Diadem (Rare)", "Dimensional Shard (Rare)", "Fanged Knife (Rare)",
+    "Giant Thresher (Rare)", "Glorious Axe (Rare)", "Hydra Bow (Rare)", "Lacquered Plate (Rare)",
+    "Legend Spike (Rare)", "Legendary Mallet (Rare)", "Myrmidon Greaves (Rare)", "Mythical Sword (Rare)",
+    "Ogre Gauntlets (Rare)", "Sacred Armor (Rare)", "Scissors Suwayyah (Rare)", "Shadow Plate (Rare)",
+    "Sky Spirit (Rare)", "Thunder Maul (Rare)", "Troll Belt (Rare)", "Unearthed Wand (Rare)",
+    "Vortex Shield (Rare)", "War Pike (Rare)", "Ward (Rare)", "Winged Harpoon (Rare)", "Zakarum Shield (Rare)",
+
+    "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
+    "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
 ]
-
-
 
 ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Aldur's Weapon": "Aldur's Rhythm",

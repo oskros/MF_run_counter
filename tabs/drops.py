@@ -1,6 +1,7 @@
 from utils import tk_dynamic as tkd, tk_utils, autocompletion
 import tkinter as tk
 from tkinter import ttk
+import time
 
 
 class Drops(tkd.Frame):
@@ -24,7 +25,7 @@ class Drops(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
     def add_drop(self):
-        drop = autocompletion.acbox(enable=True, title='Add drop')
+        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.autocompletion_unids)
         if not drop or drop['input'] == '':
             return
         if drop['item_name'] is not None:
@@ -42,11 +43,18 @@ class Drops(tkd.Frame):
                         if resp is not None:
                             self.main_frame.grail_tab.update_grail_from_index(i)
                             drop['input'] = '(*) ' + drop['input']
+
+                    drop['TC'] = item.get('TC', '')
+                    drop['QLVL'] = item.get('QLVL', '')
+                    drop['Item Class'] = item.get('Item Class', '')
                     break
 
         run_no = len(self.main_frame.timer_tab.laps)
         if self.main_frame.timer_tab.is_running:
             run_no += 1
+
+        drop['Real time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        drop['Profile'] = self.main_frame.active_profile
 
         self.drops.setdefault(str(run_no), []).append(drop)
         self.display_drop(drop=drop, run_no=run_no)

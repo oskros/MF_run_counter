@@ -68,6 +68,7 @@ class Config:
         config['OPTIONS']['start_run_delay_seconds'] = '0.0'
         config['OPTIONS']['auto_upload_herokuapp'] = '0'
         config['OPTIONS']['auto_archive_hours'] = '0.0'
+        config['OPTIONS']['autocompletion_unids'] = '0'
 
         config.add_section('AUTOMODE')
         config['AUTOMODE']['automode'] = '0'
@@ -168,6 +169,7 @@ class Config:
         cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
         cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)
         cfg['OPTIONS']['auto_archive_hours'] = str(parent.auto_archive_hours)
+        cfg['OPTIONS']['autocompletion_unids'] = str(parent.autocompletion_unids)
 
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)
