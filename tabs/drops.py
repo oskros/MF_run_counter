@@ -31,6 +31,7 @@ class Drops(tkd.Frame):
         if drop['item_name'] is not None:
             for i, item in enumerate(self.main_frame.grail_tab.grail):
                 if item['Item'] == drop['item_name']:
+                    drop['Grailer'] = 'False'
                     if item.get('Found', False) is False:
                         if self.main_frame.auto_upload_herokuapp:
                             resp = self.main_frame.grail_tab.upload_to_herokuapp(
@@ -43,6 +44,7 @@ class Drops(tkd.Frame):
                         if resp is not None:
                             self.main_frame.grail_tab.update_grail_from_index(i)
                             drop['input'] = '(*) ' + drop['input']
+                            drop['Grailer'] = 'True'
 
                     drop['TC'] = item.get('TC', '')
                     drop['QLVL'] = item.get('QLVL', '')
