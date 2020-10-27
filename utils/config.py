@@ -157,7 +157,6 @@ class Config:
         cfg['DEFAULT']['active_profile'] = str(parent.active_profile)
         cfg['DEFAULT']['herokuapp_username'] = str(parent.herokuapp_username)
         cfg['DEFAULT']['herokuapp_password'] = str(base64.b64encode(parent.herokuapp_password.encode('utf-8')).decode('utf-8'))
-        cfg['DEFAULT']['webproxies'] = str(parent.webproxies)
 
         # Update flags
         cfg['OPTIONS']['always_on_top'] = str(parent.always_on_top)

@@ -79,7 +79,7 @@ class MainFrame(Config):
         self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
         self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
 
-        # Initiate constants for memory reading
+        # Initiate variables for memory reading
         self.is_user_admin = reader_utils.is_user_admin()
         self.advanced_error_thrown = False
         self.d2_reader = None
@@ -168,7 +168,7 @@ class MainFrame(Config):
         self.toggle_drops_frame(show=self.show_drops_tab_below)
         self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_tab_below, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
         self.drops_caret.propagate(False)
-        self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2,1], pady=[0, 1])
+        self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
 
         tracker_is_active = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2 and self.is_user_admin
         self.advanced_stats_tracker = StatsTracker(self, self.adv_stats_frame)

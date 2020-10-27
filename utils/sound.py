@@ -1,7 +1,5 @@
 from init import *
-import os
 import queue
-import sys
 import threading
 import winsound
 

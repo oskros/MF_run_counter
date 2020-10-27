@@ -1,8 +1,8 @@
 from tkinter import ttk
 from utils import tk_dynamic as tkd
 
-available_themes = ['blue', 'dark', 'light']  # , 'default', 'winnative', 'clam', 'alt']
-used_base_style = 'clam'
+available_themes = ['blue', 'dark', 'light']
+used_base_style = 'clam'  # , 'default', 'winnative', 'clam', 'alt']
 
 
 class Theme:

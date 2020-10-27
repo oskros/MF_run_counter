@@ -228,6 +228,15 @@ UNID_ITEM_LIST = [
     "Sky Spirit (Rare)", "Thunder Maul (Rare)", "Troll Belt (Rare)", "Unearthed Wand (Rare)",
     "Vortex Shield (Rare)", "War Pike (Rare)", "Ward (Rare)", "Winged Harpoon (Rare)", "Zakarum Shield (Rare)",
 
+    # TC84 with no set/unique
+    "Archon Plate (Magic)", "Archon Plate (Rare)", "Ghost Spear (Magic)", "Ghost Spear (Rare)", "Shillelagh (Magic)",
+    "Shillelagh (Rare)", "Vortex Orb (Magic)", "Vortex Orb (Rare)", "Great Poleaxe (Magic)", "Great Poleaxe (Rare)",
+
+    # TC87 with no set/unique
+    "Colossus Girdle (Magic)", "Colossus Girdle (Rare)", "Dream Spirit (Magic)", "Dream Spirit (Rare)",
+    "Guardian Crown (Magic)", "Guardian Crown (Rare)",
+
+    # Circlet types
     "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
     "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
 ]

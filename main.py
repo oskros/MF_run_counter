@@ -9,10 +9,10 @@ try:
         resp = tk_utils.mbox(msg='It seems like you already have an instance of MF run counter open.\n'
                                  'Opening another instance will make the app unstable (If this is a false positive, just ignore it)\n\n'
                                  'Do you wish to continue anyway?', title='WARNING')
-        if resp:
-            MainFrame()
-    else:
-        MainFrame()
+        if not resp:
+            sys.exit(0)
+
+    MainFrame()
 except Exception as e:
     logging.exception(e)
     raise e
