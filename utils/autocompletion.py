@@ -1,8 +1,7 @@
 import tkinter as tk
 import re
 from init import *
-import os, sys
-from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, UNID_ITEM_LIST
+from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, UNID_ITEM_LIST, ETH_ITEM_LIST
 
 
 class AutocompleteEntry:
@@ -111,7 +110,7 @@ class AutocompleteEntry:
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
                 if eth:
-                    if not i_name.lower().endswith('rune'):
+                    if i_name in ETH_ITEM_LIST:
                         out.add('Eth ' + i_name)
                 else:
                     out.add(i_name)

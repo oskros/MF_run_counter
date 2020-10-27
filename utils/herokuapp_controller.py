@@ -227,10 +227,10 @@ def build_update_lst(dct):
     return lst
 
 
-if __name__ == '__main__':
-    p_addresses = None
-    username = input('username')
-    password = input('password')
-    grail = get_grail(uid=username, proxies=p_addresses)
-    grail['data'] = update_grail_dict(dct=grail['data'], item_upg_dict={'Rainbow Facet (Cold Level Up)': True, 'Rainbow Facet (Light Die)': True})
-    put_grail(uid=username, pwd=password, data=grail, proxies=p_addresses)
+# if __name__ == '__main__':
+#     p_addresses = None
+#     username = input('username')
+#     password = input('password')
+#     grail = get_grail(uid=username, proxies=p_addresses)
+#     grail['data'] = update_grail_dict(dct=grail['data'], item_upg_dict={'Rainbow Facet (Cold Level Up)': True, 'Rainbow Facet (Light Die)': True})
+#     put_grail(uid=username, pwd=password, data=grail, proxies=p_addresses)
