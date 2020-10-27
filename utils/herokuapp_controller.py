@@ -129,7 +129,7 @@ def get_grail(uid, proxies=None):
     if out.get('data', None) is None:
         dd = deepcopy(default_data)
         del dd['runes']
-        out['data'] = default_data
+        out['data'] = dd
     return out
 
 

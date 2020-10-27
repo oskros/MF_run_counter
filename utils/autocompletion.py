@@ -157,11 +157,13 @@ class ACMbox(object):
             self.entry.selection(event)
         else:
             item_name = self.entry.chosen
+            eth_item = False
             if item_name is not None and item_name.startswith('Eth ') and item_name != 'Eth Rune':
                 item_name = item_name[4:]
+                eth_item = True
             user_input = self.entry.var.get().strip()
             extra_input = user_input.replace(item_name, '').strip().replace('  ', ' ') if item_name is not None else ''
-            self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input}
+            self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input, 'eth': eth_item}
             self.root.quit()
 
     def close_mod(self, event=None):
