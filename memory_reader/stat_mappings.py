@@ -5,7 +5,7 @@ from init import media_path
 
 
 def load_stat_map():
-    lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'stat_map.csv')
+    lib_path = os.path.join(media_path + 'stat_map.csv')
     with open(lib_path, 'r') as fo:
         out = {int(row['ID']): row for row in csv.DictReader(fo)}
     return out

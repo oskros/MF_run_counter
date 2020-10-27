@@ -16,3 +16,4 @@
 *.json
 *.csv
 /dict_release/
+*.log

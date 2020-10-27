@@ -1,7 +1,7 @@
-from tabs.suboptions.automode import Automode
-from tabs.suboptions.general import General
-from tabs.suboptions.hotkeys import Hotkeys
-from tabs.suboptions.ui import UI
+from modules.suboptions.automode import Automode
+from modules.suboptions.general import General
+from modules.suboptions.hotkeys import Hotkeys
+from modules.suboptions.ui import UI
 from utils import tk_dynamic as tkd
 from tkinter import ttk
 

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from . import LAB_HEIGHT, LAB_WIDTH
-from tabs.suboptions.general import General
+from modules.suboptions.general import General
 from utils import tk_dynamic as tkd, other_utils, tk_utils, config
 
 

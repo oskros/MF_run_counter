@@ -4,7 +4,7 @@ import os
 import sys
 import time
 import tkinter as tk
-from tabs import archive_browser
+from modules import archive_browser
 from utils import tk_dynamic as tkd, tk_utils
 from tkinter import ttk, messagebox
 

@@ -139,8 +139,7 @@ class Grail(tkd.Frame):
                     getattr(self, var).set(0)
 
     def create_empty_grail(self):
-        lib_path = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'item_library.csv')
-        with open(lib_path, 'r') as fo:
+        with open(media_path + 'item_library.csv', 'r') as fo:
             grail_dict = [{**row, **{'Found': False}} for row in csv.DictReader(fo)]
 
         with open(self.file_name, 'w') as fo:
@@ -312,7 +311,7 @@ class Grail(tkd.Frame):
         window = tkd.Toplevel()
         window.title('Grail controller')
         window.resizable(True, True)
-        window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        window.iconbitmap(media_path + 'icon.ico')
 
         # Build nested dict with information from the current grail
         upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
@@ -351,7 +350,7 @@ class Grail(tkd.Frame):
         window.title('Item table')
         window.state('zoomed')
         window.resizable(True, True)
-        window.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        window.iconbitmap(media_path + 'icon.ico')
         window.protocol("WM_DELETE_WINDOW", lambda: self.close_grail_table(window))
 
         tree_frame = tkd.Frame(window)

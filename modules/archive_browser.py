@@ -1,5 +1,5 @@
 from init import *
-from utils import tk_utils, other_utils, color_themes, tk_dynamic as tkd
+from utils import tk_utils, other_utils, tk_dynamic as tkd
 from tkinter import ttk, filedialog, font
 import tkinter as tk
 import csv
@@ -17,7 +17,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.geometry(disp_coords)
         self.focus_get()
 
-        self.iconbitmap(os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'icon.ico'))
+        self.iconbitmap(media_path + 'icon.ico')
         self.minsize(790, 500)
 
         tkd.Label(self, text='Archive browser', font='Helvetica 14').pack()
@@ -25,6 +25,15 @@ class ArchiveBrowser(tkd.Toplevel):
         self.tabcontrol = ttk.Notebook(self)
         self.tabcontrol.pack(expand=True, fill=tk.BOTH)
 
+        collected_data = self.collect_data()
+
+        self.statistics(**collected_data)
+        self.run_table(laps=collected_data['laps'])
+        self.drop_table(drops=collected_data['drops'])
+
+        self.main_frame.theme.update_colors()
+
+    def collect_data(self):
         chosen = self.main_frame.profile_tab.archive_dropdown.get()
         # Handle how loading of session data should be treated in the 3 different cases
         if chosen == 'Active session':
@@ -65,12 +74,7 @@ class ArchiveBrowser(tkd.Toplevel):
                 if not isinstance(v[i], dict):
                     drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
 
-        self.statistics(laps=laps, drops=drops, session_time=session_time)
-        self.run_table(laps=laps)
-        self.drop_table(drops=drops)
-
-        theme = color_themes.Theme(self.main_frame.active_theme)
-        theme.update_colors()
+        return {'session_time': session_time, 'laps': laps, 'drops': drops}
 
     def statistics(self, laps, drops, session_time):
         statistics_fr = tkd.Frame(self.tabcontrol)

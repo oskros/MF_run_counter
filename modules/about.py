@@ -10,8 +10,7 @@ class About(tkd.Frame):
         top_fr.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         tkd.Label(top_fr, text="MF Run Counter", font=('Segoe UI', 11, 'bold')).pack(pady=[0,2])
 
-        icon = os.path.join(getattr(sys, '_MEIPASS', os.path.abspath('.')), media_path + 'about_icon.png')
-        self.img = tk.PhotoImage(file=icon)
+        self.img = tk.PhotoImage(file=media_path + 'about_icon.png')
         tkd.Label(top_fr, image=self.img, borderwidth=0).pack(pady=0)
 
         btm_fr = tkd.Frame(self)
