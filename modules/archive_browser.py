@@ -153,7 +153,7 @@ class ArchiveBrowser(tkd.Toplevel):
         for i, op in enumerate(output, 1):
             tmpstr = ''.join(op[:2])
             if len(op) > 2:
-                tmpstr += ' --- ' + ', '.join(op[2:])
+                tmpstr += ' -' + ', '.join(op[2:])
             if txt_list.get('1.0', tk.END) != '\n':
                 tmpstr = '\n' + tmpstr
             txt_list.insert(tk.END, tmpstr)
@@ -181,7 +181,6 @@ class ArchiveBrowser(tkd.Toplevel):
         # txt_list.tag_add("BOLD", "10.20", "10.0 lineend")
 
         txt_list.tag_add("HEADER", "12.0", "12.0 lineend")
-
         txt_list.config(state=tk.DISABLED)
 
         btn_frame1 = tkd.Frame(statistics_fr)

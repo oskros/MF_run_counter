@@ -198,7 +198,6 @@ class Profile(tkd.Frame):
             else:
                 # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
                 cache = self.main_frame.load_state_file()
-                # cache.setdefault('extra_data', dict())['Last update'] = time.time()
                 removed = cache.pop(chosen, None)
                 file = 'Profiles/%s.json' % self.active_profile.get()
                 with open(file, 'w') as fo:
@@ -246,6 +245,7 @@ class Profile(tkd.Frame):
         # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
         avg_lap = sum_laps / len(laps) if laps else 0
+        min_lap = min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
         no_laps = len(laps) + 1 if self.main_frame.timer_tab.is_running and chosen in ['Active session', 'Profile history'] else len(laps)
 
@@ -254,7 +254,7 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Total session time:   ' + utils.other_utils.build_time_str(session_time))
         self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum_laps))
         self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
-        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
+        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min_lap))
         self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
         self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
         self.descr.insert(tk.END, 'Drops logged:         ' + str(dropcount))
