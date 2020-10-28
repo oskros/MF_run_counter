@@ -209,14 +209,19 @@ def mebox(entries, coords=False, title='Message', defaults=None, masks=None, msg
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master_root=None):
-        self.root = tk.Tk()
+    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master_root=None, disabled_btn_input=None):
+        self.root = tk.Toplevel()
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
         self.root.title(title)
         # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
         self.msg = str(msg)
+        self.disabled_btn_input = disabled_btn_input
+        if self.disabled_btn_input:
+            self.entry_var = tk.StringVar(master_root)
+            self.entry_var.trace_add('write', lambda name, index, mode: self.check_input())
+            entry = True
 
         # ctrl+c to copy self.msg
         self.root.bind('<Control-c>', func=self.to_clip)
@@ -245,7 +250,10 @@ class MessageBox(object):
             self.button.pack()
             self.button.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
         if entry:
-            self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
+            if disabled_btn_input is not None:
+                self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center', textvariable=self.entry_var)
+            else:
+                self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
             self.entry.focus_set()
 
@@ -254,11 +262,13 @@ class MessageBox(object):
         frm_2.pack(padx=4, pady=4)
 
         # buttons
-        btn_1 = tk.Button(frm_2, width=8, text=b1)
-        btn_1['command'] = self.b1_action
-        btn_1.pack(side='left')
+        self.btn_1 = tk.Button(frm_2, width=8, text=b1)
+        self.btn_1['command'] = self.b1_action
+        self.btn_1.pack(side='left')
+        if disabled_btn_input is not None:
+            self.btn_1.config(state=tk.DISABLED)
         if not entry:
-            btn_1.focus_set()
+            self.btn_1.focus_set()
         if b2 != '':
             btn_2 = tk.Button(frm_2, width=8, text=b2)
             btn_2['command'] = self.b2_action
@@ -288,6 +298,9 @@ class MessageBox(object):
         self.root.deiconify()
 
     def b1_action(self, event=None):
+        if self.btn_1['state'] == 'disabled':
+            return
+
         try:
             x = self.entry.get()
         except AttributeError:
@@ -310,9 +323,15 @@ class MessageBox(object):
         self.root.clipboard_clear()
         self.root.clipboard_append(self.msg)
 
+    def check_input(self):
+        if self.entry_var.get() == self.disabled_btn_input:
+            self.btn_1.config(state=tk.ACTIVE)
+        else:
+            self.btn_1.config(state=tk.DISABLED)
 
-def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master_root=None):
-    msgbox = MessageBox(msg, b1, b2, entry, coords, title, hyperlink, master_root)
+
+def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master_root=None, disabled_btn_input=None):
+    msgbox = MessageBox(msg=msg, b1=b1, b2=b2, entry=entry, coords=coords, title=title, hyperlink=hyperlink, master_root=master_root, disabled_btn_input=disabled_btn_input)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit
@@ -331,5 +350,6 @@ def add_circle(parent, pixels, color):
 
 
 if __name__ == '__main__':
-    r = tk.Tk()
-    print(registration_form(r))
+    # r = tk.Tk()
+
+    print(mbox('hi', disabled_btn_input='DELETE'))

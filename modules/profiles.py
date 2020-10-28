@@ -166,19 +166,17 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You need to have at least one profile, create a new profile before deleting this one.')
             return
 
-        resp1 = tk_utils.mbox(msg='Are you sure you want to delete the profile "%s"?\nThis will permanently delete all records stored for the profile.' % chosen, title='WARNING')
-        if resp1 is True:
-            resp2 = tk_utils.mbox(msg='Are you really really sure you want to delete the profile "%s"?\nFinal warning!' % chosen, b1='Cancel', b2='OK', title='WARNING')
-            if resp2 is False:  # False here because we switch buttons around in second confirmation
-                file = 'Profiles/%s.json' % chosen
-                os.remove(file)
-                self.main_frame.profiles.remove(chosen)
+        resp = tk_utils.mbox(msg='Type "DELETE" to confirm you wish to delete the profile "%s"\n\nThis will permanently delete all records stored for the profile.' % chosen, title='WARNING', disabled_btn_input='DELETE')
+        if resp == 'DELETE':
+            file = 'Profiles/%s.json' % chosen
+            os.remove(file)
+            self.main_frame.profiles.remove(chosen)
 
-                # We change active profile to an existing profile
-                self.main_frame.active_profile = self.main_frame.profiles[0]
-                self.active_profile.set(self.main_frame.profiles[0])
-                self.profile_dropdown['values'] = self.main_frame.profiles
-                self._change_active_profile()
+            # We change active profile to an existing profile
+            self.main_frame.active_profile = self.main_frame.profiles[0]
+            self.active_profile.set(self.main_frame.profiles[0])
+            self.profile_dropdown['values'] = self.main_frame.profiles
+            self._change_active_profile()
 
     def delete_archived_session(self):
         chosen = self.archive_dropdown.get()
@@ -189,8 +187,8 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You cannot delete profile history from here. Please delete all sessions manually, or delete the profile instead')
             return
 
-        resp = tk_utils.mbox(msg='Do you really want to delete the session "%s" from archive? It will be permanently deleted' % chosen, title='WARNING')
-        if resp:
+        resp = tk_utils.mbox(msg='Type "DELETE" to confirm you wish to delete the session "%s" from archive\n\nIt will be permanently deleted' % chosen, title='WARNING', disabled_btn_input='DELETE')
+        if resp == 'DELETE':
             if chosen == 'Active session':
                 # Here we simply reset the timer module
                 self.main_frame.ResetSession()
