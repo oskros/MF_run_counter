@@ -140,7 +140,7 @@ class Grail(tkd.Frame):
 
     def create_empty_grail(self):
         with open(media_path + 'item_library.csv', 'r') as fo:
-            grail_dict = [{**row, **{'Found': False}} for row in csv.DictReader(fo)]
+            grail_dict = [{**row, **{'Found': False, 'FoundEth': False}} for row in csv.DictReader(fo)]
 
         with open(self.file_name, 'w') as fo:
             json.dump(grail_dict, fo, indent=2)
@@ -225,7 +225,7 @@ class Grail(tkd.Frame):
         upd_lst = herokuapp_controller.build_update_lst(data)
         return upd_lst
 
-    def upload_to_herokuapp(self, upd_dict=None, show_confirm=True, pop_up_msg=None, pop_up_title='d2-holy-grail.herokuapp'):
+    def upload_to_herokuapp(self, upd_dict=None, show_confirm=True, pop_up_msg=None, pop_up_title='d2-holy-grail.herokuapp', eth_dict=None):
         resp = tk_utils.mebox(entries=['Username', 'Password'], title=pop_up_title, defaults=[self.username.get(), self.password.get()], masks=[None, "*"], msg=pop_up_msg)
         if resp is None:
             return None
@@ -237,9 +237,13 @@ class Grail(tkd.Frame):
             messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com. Try again" % uid)
             return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
 
-        if upd_dict is None:
+        if upd_dict is None and eth_dict is None:
             upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
-        herokuapp_grail['data'] = herokuapp_controller.update_grail_dict(dct=herokuapp_grail['data'], item_upg_dict=upd_dict)
+            eth_dict = {x['Item']: True for x in self.grail if x.get('FoundEth', None) is True}
+        if upd_dict is not None:
+            herokuapp_grail['data'] = herokuapp_controller.update_grail_dict(dct=herokuapp_grail['data'], item_upg_dict=upd_dict)
+        if eth_dict is not None:
+            herokuapp_grail['ethData'] = herokuapp_controller.update_grail_dict(dct=herokuapp_grail['ethData'], item_upg_dict=eth_dict)
 
         try:
             herokuapp_controller.put_grail(uid=uid, pwd=pwd, data=herokuapp_grail, proxies=prox)

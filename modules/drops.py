@@ -46,6 +46,20 @@ class Drops(tkd.Frame):
                             drop['input'] = '(*) ' + drop['input']
                             drop['Grailer'] = 'True'
 
+                    if drop.get('eth', False) is True and item.get('FoundEth', False) is False:
+                        if self.main_frame.auto_upload_herokuapp:
+                            resp = self.main_frame.grail_tab.upload_to_herokuapp(
+                                eth_dict={item['Item']: True},
+                                show_confirm=False,
+                                pop_up_msg="Congrats, a new eth drop! Add it to eth grail?\n\nHerokuapp login info:",
+                                pop_up_title="Eth grail item")
+                        else:
+                            resp = tk_utils.mbox(msg="Congrats, a new eth drop! Add it to local eth grail?", title="Eth grail item")
+                        if resp is not None:
+                            self.main_frame.grail_tab.grail[i].update({'FoundEth': True})
+                            drop['input'] = '(#) ' + drop['input']
+                            drop['Grailer'] = 'EthGrail'
+
                     drop['TC'] = item.get('TC', '')
                     drop['QLVL'] = item.get('QLVL', '')
                     drop['Item Class'] = item.get('Item Class', '')

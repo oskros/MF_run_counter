@@ -250,7 +250,9 @@ def update_grail_dict(dct, item_upg_dict):
 def put_grail(uid, pwd, data, proxies=None):
     data['password'] = pwd
     data['grail'] = data['data']
+    data['ethGrail'] = data['ethData']
     del data['data']
+    del data['ethData']
 
     try:
         req = requests.put(url=api_page + uid, data=json.dumps(data), headers={"Content-Type": "application/json"}, proxies=proxies)
