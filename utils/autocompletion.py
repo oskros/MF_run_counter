@@ -118,10 +118,10 @@ class AutocompleteEntry:
 
 
 class ACMbox(object):
-    def __init__(self, title, enable=True, unid_mode=False):
+    def __init__(self, title, enable=True, unid_mode=False, add_to_last_run=False):
         self.root = tk.Toplevel()
         self.root.geometry(
-            '200x145+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
+            '200x146+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
         self.root.update_idletasks()
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
@@ -132,7 +132,8 @@ class ACMbox(object):
         frm_1 = tk.Frame(self.root)
         frm_1.pack(ipadx=4, ipady=2, fill=tk.BOTH, expand=tk.Y)
 
-        tk.Label(frm_1, text='Input your drop...').pack()
+        self.last_run_var = tk.IntVar(value=add_to_last_run)
+        tk.Checkbutton(frm_1, variable=self.last_run_var, text='Add to last run').pack()
 
         tw = tk.StringVar()
         self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, unid_mode=unid_mode)
@@ -163,7 +164,7 @@ class ACMbox(object):
                 eth_item = True
             user_input = self.entry.var.get().strip()
             extra_input = user_input.replace(item_name, '').strip().replace('  ', ' ') if item_name is not None else ''
-            self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input, 'eth': eth_item}
+            self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input, 'eth': eth_item, 'last_run': self.last_run_var.get()}
             self.root.quit()
 
     def close_mod(self, event=None):
@@ -175,8 +176,8 @@ class ACMbox(object):
             self.root.quit()
 
 
-def acbox(title='Drop', enable=True, unid_mode=False):
-    msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode)
+def acbox(title='Drop', enable=True, unid_mode=False, add_to_last_run=False):
+    msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode, add_to_last_run=add_to_last_run)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit

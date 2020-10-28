@@ -352,4 +352,4 @@ def add_circle(parent, pixels, color):
 if __name__ == '__main__':
     # r = tk.Tk()
 
-    print(mbox('hi', disabled_btn_input='DELETE'))
+    print(mbox('hi', entry=True, disabled_btn_input='DELETE'))

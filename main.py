@@ -6,7 +6,7 @@ try:
     from main_frame import MainFrame
 
     if win32gui.FindWindow(None, 'MF run counter'):
-        resp = tk_utils.mbox(msg='It seems like you already have an instance of MF run counter open.\n'
+        resp = tk_utils.mbox(msg='It seems like you already have an instance of MF Run Counter open.\n'
                                  'Opening another instance will make the app unstable (If this is a false positive, just ignore it)\n\n'
                                  'Do you wish to continue anyway?', title='WARNING')
         if not resp:

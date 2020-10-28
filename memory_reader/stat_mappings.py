@@ -1,12 +1,9 @@
 import csv
-import os
-import sys
 from init import media_path
 
 
 def load_stat_map():
-    lib_path = os.path.join(media_path + 'stat_map.csv')
-    with open(lib_path, 'r') as fo:
+    with open(media_path + 'stat_map.csv', 'r') as fo:
         out = {int(row['ID']): row for row in csv.DictReader(fo)}
     return out
 
@@ -32,7 +29,7 @@ SKILLTABS = {
     42: 'Ele Skills (Druid)',
     48: 'Trap Skills (Assa)',
     49: 'Shadow Skills (Assa)',
-    50: 'Martial Skills (Assa)'
+    50: 'Martial Skills (Assa)',
 }
 
 CLASSSKILLS = {
@@ -42,11 +39,14 @@ CLASSSKILLS = {
     3: 'Paladin Skills',
     4: 'Barbarian Skills',
     5: 'Druid Skills',
-    6: 'Assassin Skills'
+    6: 'Assassin Skills',
 }
 
 ELEMENTALSKILLS = {
-    1: 'Fire Skills'
+    0: 'ELEMENTAL_SKILLS_0',
+    1: 'Fire Skills',
+    2: 'ELEMENTAL_SKILLS_2',
+    3: 'ELEMENTAL_SKILLS_3',
 }
 
 SKILLS = {

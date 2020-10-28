@@ -25,9 +25,10 @@ class Drops(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
     def add_drop(self):
-        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.autocompletion_unids)
+        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.autocompletion_unids, add_to_last_run=self.main_frame.add_to_last_run)
         if not drop or drop['input'] == '':
             return
+
         if drop['item_name'] is not None:
             for i, item in enumerate(self.main_frame.grail_tab.grail):
                 if item['Item'] == drop['item_name']:
@@ -71,9 +72,13 @@ class Drops(tkd.Frame):
                     drop['Item Class'] = item.get('Item Class', '')
                     break
 
+        last_run = drop.pop('last_run', False)
         run_no = len(self.main_frame.timer_tab.laps)
         if self.main_frame.timer_tab.is_running:
             run_no += 1
+        if last_run and run_no > 0:
+            run_no -= 1
+        self.main_frame.add_to_last_run = last_run
 
         drop['Real time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         drop['Profile'] = self.main_frame.active_profile
