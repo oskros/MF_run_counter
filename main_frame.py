@@ -480,7 +480,7 @@ class MainFrame(Config):
                 stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             else:
                 stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stamp_from_epoch))
-            self.profile_tab.available_archive.append(stamp)
+            self.profile_tab.available_archive.insert(2, stamp)
             self.profile_tab.archive_dropdown['values'] = self.profile_tab.available_archive
             # self.profile_tab.update_descriptive_statistics()
 

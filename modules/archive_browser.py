@@ -11,7 +11,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.main_frame = main_frame
 
         self.title('Archive Browser')
-        self.wm_attributes('-topmost', 1)
+        self.wm_attributes('-topmost', self.main_frame.always_on_top)
 
         disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 790, 500)
         self.geometry(disp_coords)

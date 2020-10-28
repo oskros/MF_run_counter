@@ -21,7 +21,7 @@ class Profile(tkd.Frame):
             self._add_new_profile(first_profile=True)
             self.main_frame.active_profile = self.active_profile.get()
         state = self.main_frame.load_state_file()
-        self.available_archive = ['Profile history', 'Active session'] + [x for x in state.keys() if x not in ['active_state', 'extra_data']]
+        self.available_archive = ['Profile history', 'Active session'] + sorted([x for x in state.keys() if x not in ['active_state', 'extra_data']], reverse=True)
         self.selected_archive = tk.StringVar()
         self.selected_archive.set('Profile history')
         self.extra_data = state.get('extra_data', dict())
@@ -129,7 +129,7 @@ class Profile(tkd.Frame):
         self.char_name.set(self.extra_data.get('Character name', ''))
 
         # Update archive dropdown, and set selected archive to 'Active session'
-        self.available_archive = ['Profile history', 'Active session'] + [x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']]
+        self.available_archive = ['Profile history', 'Active session'] + sorted([x for x in profile_cache.keys() if x not in ['active_state', 'extra_data']], reverse=True)
         self.archive_dropdown['values'] = self.available_archive
         self.selected_archive.set('Profile history')
 

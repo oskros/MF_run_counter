@@ -3,7 +3,7 @@ try:
     import logging
     import sys
     from utils import tk_utils
-    from master_frame import MainFrame
+    from main_frame import MainFrame
 
     if win32gui.FindWindow(None, 'MF run counter'):
         resp = tk_utils.mbox(msg='It seems like you already have an instance of MF run counter open.\n'
