@@ -241,7 +241,7 @@ class ArchiveBrowser(tkd.Toplevel):
         drop_table_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(drop_table_fr, text='Drop table')
 
-        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer"]
+        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer", "Eth Grailer"]
         tree_frame = tkd.Frame(drop_table_fr)
         btn_frame2 = tkd.Frame(drop_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -260,7 +260,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 190, 140, 120, 35, 35, 100, 47]
+        widths = [35, 190, 140, 120, 35, 35, 100, 47, 58]
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'TC', 'QLVL']:

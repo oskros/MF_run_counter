@@ -31,7 +31,9 @@ class Drops(tkd.Frame):
         if drop['item_name'] is not None:
             for i, item in enumerate(self.main_frame.grail_tab.grail):
                 if item['Item'] == drop['item_name']:
+                    prefix = ''
                     drop['Grailer'] = 'False'
+                    drop['Eth Grailer'] = ''
                     if item.get('Found', False) is False:
                         if self.main_frame.auto_upload_herokuapp:
                             resp = self.main_frame.grail_tab.upload_to_herokuapp(
@@ -43,8 +45,11 @@ class Drops(tkd.Frame):
                             resp = tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item")
                         if resp is not None:
                             self.main_frame.grail_tab.update_grail_from_index(i)
-                            drop['input'] = '(*) ' + drop['input']
+                            prefix += '(*)'
                             drop['Grailer'] = 'True'
+
+                    if drop.get('eth', False) is True:
+                        drop['Eth Grailer'] = 'False'
 
                     if drop.get('eth', False) is True and item.get('FoundEth', False) is False:
                         if self.main_frame.auto_upload_herokuapp:
@@ -57,9 +62,10 @@ class Drops(tkd.Frame):
                             resp = tk_utils.mbox(msg="Congrats, a new eth drop! Add it to local eth grail?", title="Eth grail item")
                         if resp is not None:
                             self.main_frame.grail_tab.grail[i].update({'FoundEth': True})
-                            drop['input'] = '(#) ' + drop['input']
-                            drop['Grailer'] = 'EthGrail'
+                            prefix += '(E)'
+                            drop['Eth Grailer'] = 'True'
 
+                    drop['input'] = prefix + ' ' + drop['input']
                     drop['TC'] = item.get('TC', '')
                     drop['QLVL'] = item.get('QLVL', '')
                     drop['Item Class'] = item.get('Item Class', '')
