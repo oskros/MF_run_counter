@@ -153,7 +153,7 @@ class ArchiveBrowser(tkd.Toplevel):
         for i, op in enumerate(output, 1):
             tmpstr = ''.join(op[:2])
             if len(op) > 2:
-                tmpstr += ' -' + ', '.join(op[2:])
+                tmpstr += ' - ' + ', '.join(op[2:])
             if txt_list.get('1.0', tk.END) != '\n':
                 tmpstr = '\n' + tmpstr
             txt_list.insert(tk.END, tmpstr)
