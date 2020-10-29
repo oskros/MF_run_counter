@@ -175,7 +175,10 @@ class D2Reader:
         out['Exp'] = next((v['value'] for v in vals if v['lostatid'] == 13 and v['histatid'] == 0), -1)
         out['Exp next'] = reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Next', -1) + reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)
         out['Exp missing'] = out['Exp next'] - out['Exp']
-        out['Exp %'] = (out['Exp'] - reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)) / reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Next', 1)
+        try:
+            out['Exp %'] = (out['Exp'] - reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Experience', 0)) / reader_utils.EXP_TABLE.get(out['Level'], dict()).get('Next', 1)
+        except ZeroDivisionError:
+            out['Exp %'] = 1
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
         out['Players X'] = self.pm.read_uint(self.players_x_ptr)
         return out
