@@ -85,8 +85,9 @@ def comparison(var, eth=False):
 
 
 if __name__ == '__main__':
-    pp = input('profile path ')
-    gp = input('grail path: ')
+    import os
+    pp = os.path.join(os.path.abspath('..'), 'Profiles/PlugY LK.json')
+    gp = os.path.join(os.path.abspath('..'), 'Profiles/grail.json')
 
     with open(pp, 'r') as fo:
         prof = json.load(fo)

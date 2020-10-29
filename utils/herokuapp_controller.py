@@ -276,7 +276,7 @@ def put_grail(uid, pwd, data, proxies=None):
 #     return tot, owned
 
 
-def build_update_lst(dct):
+def build_update_lst(dct, eth=False):
     def recursive_update_list(dct):
         out = []
         for k, v in dct.items():
@@ -291,10 +291,11 @@ def build_update_lst(dct):
         return out
 
     lst = recursive_update_list(dct)
-    for activate_type in ['die', 'level up']:
-        for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
-            if dct['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
-                lst.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
+    if not eth:
+        for activate_type in ['die', 'level up']:
+            for dmg_type in ['Cold', 'Fire', 'Light', 'Poison']:
+                if dct['uniques']['other']['rainbow facet (jewel)'][activate_type][dmg_type].get('wasFound', False):
+                    lst.append('Rainbow Facet (%s %s)' % (dmg_type, activate_type.title()))
 
     return lst
 

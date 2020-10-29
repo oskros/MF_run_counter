@@ -112,7 +112,9 @@ class Grail(tkd.Frame):
             resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
             if resp:
                 uid = resp[0]
-                item_lst.extend(self.get_grail_from_herokuapp(uid))
+                heroku_grail, heroku_ethgrail = self.get_grail_from_herokuapp(uid)
+                self.update_grail_from_list(heroku_ethgrail, eth=True)
+                item_lst.extend(heroku_grail)
                 msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
         if self.sync_drops.get():
             item_lst.extend(self.get_grail_from_drops())
@@ -186,12 +188,14 @@ class Grail(tkd.Frame):
         # Update grail items
         return grail_items
 
-    def update_grail_from_list(self, lst):
+    def update_grail_from_list(self, lst, eth=False):
+        update_key = 'FoundEth' if eth else 'Found'
         for i, item in enumerate(self.grail):
             if item.get('Item', None) in lst:
-                self.grail[i].update({'Found': True})
-                if hasattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')):
-                    getattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')).set(1)
+                self.grail[i].update({update_key: True})
+                if not eth:
+                    if hasattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')):
+                        getattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')).set(1)
 
     def update_grail_from_name(self, name):
         for i, item in enumerate(self.grail):
@@ -222,8 +226,10 @@ class Grail(tkd.Frame):
         self.username.set(uid)
 
         data = herokuapp_grail.get('data', dict())
+        eth_data = herokuapp_grail.get('ethData', dict())
         upd_lst = herokuapp_controller.build_update_lst(data)
-        return upd_lst
+        eth_lst = herokuapp_controller.build_update_lst(eth_data, eth=True)
+        return upd_lst, eth_lst
 
     def upload_to_herokuapp(self, upd_dict=None, show_confirm=True, pop_up_msg=None, pop_up_title='d2-holy-grail.herokuapp', eth_dict=None):
         resp = tk_utils.mebox(entries=['Username', 'Password'], title=pop_up_title, defaults=[self.username.get(), self.password.get()], masks=[None, "*"], msg=pop_up_msg)
