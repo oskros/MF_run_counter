@@ -604,7 +604,11 @@ class Treeview(ttk.Treeview):
         self.heading(column, command=partial(callback, column, not reverse))
 
     def _sort_by_num(self, column, reverse):
-        self._sort(column, reverse, lambda x: float('inf') if x == '' else float(x.replace('%', '')), self._sort_by_num)
+        if reverse:
+            foo = lambda x: float('-inf') if x == '' else float(x.replace('%', ''))
+        else:
+            foo = lambda x: float('inf') if x == '' else float(x.replace('%', ''))
+        self._sort(column, reverse, foo, self._sort_by_num)
 
     def _sort_by_name(self, column, reverse):
         self._sort(column, reverse, str, self._sort_by_name)
