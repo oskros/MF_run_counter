@@ -133,7 +133,7 @@ class ACMbox(object):
         frm_1.pack(ipadx=4, ipady=2, fill=tk.BOTH, expand=tk.Y)
 
         self.last_run_var = tk.IntVar(value=add_to_last_run)
-        tk.Checkbutton(frm_1, variable=self.last_run_var, text='Add to last run').pack()
+        tk.Checkbutton(frm_1, variable=self.last_run_var, text='Add to prev run').pack()
 
         tw = tk.StringVar()
         self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, unid_mode=unid_mode)
