@@ -66,7 +66,7 @@ class Drops(tkd.Frame):
                             prefix += '(E)'
                             drop['Eth Grailer'] = 'True'
 
-                    drop['input'] = prefix + ' ' + drop['input']
+                    drop['input'] = (prefix + ' ' + drop['input']).strip()
                     drop['TC'] = item.get('TC', '')
                     drop['QLVL'] = item.get('QLVL', '')
                     drop['Item Class'] = item.get('Item Class', '')
@@ -87,7 +87,7 @@ class Drops(tkd.Frame):
         self.display_drop(drop=drop, run_no=run_no)
 
     def display_drop(self, drop, run_no):
-        line = 'Run %s: %s' % (run_no, drop['input'])
+        line = 'Run %s: %s' % (run_no, drop['input'].strip())
         if self.m.get('1.0', tk.END) != '\n':
             line = '\n' + line
         self.m.config(state=tk.NORMAL)

@@ -133,7 +133,7 @@ class ArchiveBrowser(tkd.Toplevel):
             for run_no, drop in drops.items():
                 if drop:
                     str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
-                    output.append(['Run ' + str_n, '', *[x['input'] for x in drop]])
+                    output.append(['Run ' + str_n, '', *[x['input'].strip() for x in drop]])
             output.append([''])
 
         if laps:
@@ -146,7 +146,7 @@ class ArchiveBrowser(tkd.Toplevel):
             droplst = drops.get(str(n), [])
             tmp = ['Run ' + str_n + ': ', other_utils.build_time_str(run_time)]
             if droplst:
-                tmp += [d['input'] for d in droplst]
+                tmp += [d['input'].strip() for d in droplst]
             output.append(tmp)
 
         # Format string list to be shown in the archive browser
