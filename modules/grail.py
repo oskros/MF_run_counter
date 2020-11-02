@@ -140,8 +140,8 @@ class Grail(tkd.Frame):
             messagebox.showerror('Grail update', 'No update choices selected')
 
     def reset_grail(self):
-        resp = tk_utils.mbox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING')
-        if resp:
+        resp = tk_utils.mbox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING', disabled_btn_input='DELETE')
+        if resp == 'DELETE':
             self.grail = self.create_empty_grail()
             self.update_statistics()
             if self.grail_table_open:
