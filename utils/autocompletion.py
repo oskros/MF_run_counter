@@ -104,8 +104,11 @@ class AutocompleteEntry:
         # ".*" allows anything to follow after the already typed letters
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
 
-        extras = list(ITEM_ALIASES.keys()) + UNID_ITEM_LIST if self.unid_mode else list(ITEM_ALIASES.keys())
-        for w in FULL_ITEM_LIST + extras:
+        if self.unid_mode:
+            item_lst = UNID_ITEM_LIST
+        else:
+            item_lst = FULL_ITEM_LIST + list(ITEM_ALIASES.keys())
+        for w in item_lst:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)

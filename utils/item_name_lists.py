@@ -208,8 +208,7 @@ UNID_ITEM_LIST = [
     "Winged Helm (Set)", "Winged Helm (Unique)", "Winged Knife (Unique)", "Wire Fleece (Unique)",
     "Wrist Sword (Unique)", "Yari (Unique)", "Yew Wand (Unique)", "Zakarum Shield (Unique)", "Zweihander (Unique)",
 
-    "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)", "Jewel (Rare)"
-
+    # Magic version of tc84/87 with unique/set counterparts
     "Archon Staff (Magic)", "Berserker Axe (Magic)", "Bloodlord Skull (Magic)", "Bone Visage (Magic)",
     "Caduceus (Magic)", "Champion Axe (Magic)", "Colossus Blade (Magic)", "Corona (Magic)", "Cryptic Sword (Magic)",
     "Demon Crossbow (Magic)", "Diadem (Magic)", "Dimensional Shard (Magic)", "Fanged Knife (Magic)",
@@ -219,6 +218,7 @@ UNID_ITEM_LIST = [
     "Sky Spirit (Magic)", "Thunder Maul (Magic)", "Troll Belt (Magic)", "Unearthed Wand (Magic)",
     "Vortex Shield (Magic)", "War Pike (Magic)", "Ward (Magic)", "Winged Harpoon (Magic)", "Zakarum Shield (Magic)",
 
+    # Rare version of tc84/87 with unique/set counterparts
     "Archon Staff (Rare)", "Berserker Axe (Rare)", "Bloodlord Skull (Rare)", "Bone Visage (Rare)",
     "Caduceus (Rare)", "Champion Axe (Rare)", "Colossus Blade (Rare)", "Corona (Rare)", "Cryptic Sword (Rare)",
     "Demon Crossbow (Rare)", "Diadem (Rare)", "Dimensional Shard (Rare)", "Fanged Knife (Rare)",
@@ -227,6 +227,9 @@ UNID_ITEM_LIST = [
     "Ogre Gauntlets (Rare)", "Sacred Armor (Rare)", "Scissors Suwayyah (Rare)", "Shadow Plate (Rare)",
     "Sky Spirit (Rare)", "Thunder Maul (Rare)", "Troll Belt (Rare)", "Unearthed Wand (Rare)",
     "Vortex Shield (Rare)", "War Pike (Rare)", "Ward (Rare)", "Winged Harpoon (Rare)", "Zakarum Shield (Rare)",
+
+    # Charms and jewels
+    "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)", "Jewel (Rare)",
 
     # TC84 with no set/unique
     "Archon Plate (Magic)", "Archon Plate (Rare)", "Ghost Spear (Magic)", "Ghost Spear (Rare)", "Shillelagh (Magic)",
@@ -240,6 +243,27 @@ UNID_ITEM_LIST = [
     "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
     "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
 ]
+
+
+NO_UNIQUE_MAP = {
+    'Jewel': {'TC': 1, 'Item Class': 'Jewel'},
+    'Small Charm': {'TC': 1, 'Item Class': 'Charm'},
+    'Large Charm': {'TC': 1, 'Item Class': 'Charm'},
+    'Grand Charm': {'TC': 1, 'Item Class': 'Charm'},
+
+    'Coronet': {'TC': 54, 'Item Class': 'Circlet'},
+
+    'Archon Plate': {'TC': 84, 'Item Class': 'Armor'},
+    'Ghost Spear': {'TC': 84, 'Item Class': 'Spear'},
+    'Shillelagh': {'TC': 84, 'Item Class': 'Staff'},
+    'Vortex Orb': {'TC': 84, 'Item Class': 'Orb'},
+    'Great Poleaxe': {'TC': 84, 'Item Class': 'Polearm'},
+
+    'Colossus Girdle': {'TC': 87, 'Item Class': 'Belt'},
+    'Dream Spirit': {'TC': 87, 'Item Class': 'Helm'},
+    'Guardian Crown': {'TC': 87, 'Item Class': 'Helm'},
+}
+
 
 ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Aldur's Weapon": "Aldur's Rhythm",
