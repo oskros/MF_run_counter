@@ -31,7 +31,7 @@ To set-up automode, enter the game path to your character save folder and click 
 
 ### System wide hotkeys
 You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so you do not need to place focus on the application to use them. However, this means that while the application is open, it overrides any other program using this specific hotkey.
-It is possible to disable a command from having a hotkey by choosing "NO_BIND"
+It is possible to disable a command from having a hotkey by choosing "NO_BIND"  
 There are 2 hidden hotkeys: *CTRL+SHIFT+PgDn* and *CTRL+SHIFT+PgUp* for switching between tabs in the app (eg. if you wanna confirm the drop you just added is in fact saved)
 
 ### Manual run counting (Optional)
@@ -49,8 +49,9 @@ In case a drop was added by mistake, it can be deleted by highlighting it and cl
 In the profile tab it is possible to create a separate run profile for each character and run type (eg. Chaos, Cows, Meph, etc.). In the profile tab you can view each saved session in the archive browser, where it is also possible to save the results to a .txt file or copy to clipboard. Profile data is saved as a .json under the "Profiles" folder that is created the first time you run the program.
 
 ### Grail logging
-There is a tab called "Grail" - Here you can track all your progress in completing the d2 holy grail of collecting all items (and runes). Every time you add a new item that hasn't been found before, it can be added to the grail! Then it will appear in your found items with a "(\*)" in front of the name, to indicate it was a grailer. Furthermore, there is support with d2-holy-grail.herokuapp.com - You can both sync your local grail with the already logged progress there, and also upload any progress back to the webpage again! 
-In order to view your grail progress there is both a "Grail controller" view, which is similar to the one found on herokuapp, but also a "Item table" view, where you see all items in a table with tons of information about each item.
+In the grail tab you can track your progress in completing the d2 holy grail of collecting all items (and runes). Every time you add a new item that hasn't been found before, you will get a pop-up asking if you wish to add it to your grail! Then it will appear in your found items with a "(\*)" in front of the name, to indicate it was a grailer.  
+You can sync the grail progress made in the run counter with d2-holy-grail.herokuapp.com - Both in terms of syncing the run counter with the webpage, and also upload any progress back to the webpage again!  
+In order to view your grail progress there is both a "Grail controller" view, which is similar to the one found on herokuapp, but also an "Item table" view, where you see all items in a table with tons of information about each item.  
 You can also sync your local grail with already found items. Unfortunately, it is not possible to sync with any items added in your profiles prior to MF Run Counter v.1.2.0, sorry!
 
 ### Session timer
@@ -59,7 +60,7 @@ The session timer will run while Diablo is open. It will pause when Diablo is cl
 ### Pausing
 In case you need to take a break from the computer, the counter can be paused by using the assigned hotkey (default *CTRL+Space*). This will pause both the run timer (if a run is active) and the session timer.
 
-### Saving results
+### Saving and exporting results
 The current session is saved automatically every 30 seconds (to prevent data loss in case of crashes) and also saved automatically when you close the app. You can click the "Archive session" button to reset the session and archive the session results to the profile. In the archive browser, it is possible to save a session or the full profile history to a .txt or .csv file, or copy to clipboard - Example of the .txt file is included below.
                   
         *Statistics*
