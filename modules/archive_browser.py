@@ -230,11 +230,10 @@ class ArchiveBrowser(tkd.Toplevel):
             tree.heading(col, text=col, sort_by=sort_by)
 
         for n, lap in enumerate(laps, 1):
-            tag = 'Even' if n % 2 == 0 else 'Odd'
             compatible_lap = dict(lap) if isinstance(lap, dict) else {'Run time': lap}
             compatible_lap['Run time'] = other_utils.build_time_str(compatible_lap['Run time'])
             compatible_lap['Run'] = n
-            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols], tag=tag)
+            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols])
 
     def drop_table(self, drops):
         drop_table_fr = tkd.Frame(self.tabcontrol)
@@ -269,7 +268,6 @@ class ArchiveBrowser(tkd.Toplevel):
             tree.heading(col, text=col, sort_by=sort_by)
 
         for n, drop_list in drops.items():
-            tag = 'Even' if int(n) % 2 == 0 else 'Odd'
             for drop in drop_list:
                 tmp_drop = dict(drop)
                 tmp_drop['Run'] = n
@@ -280,7 +278,7 @@ class ArchiveBrowser(tkd.Toplevel):
                     tmp_drop["Item name"] = tmp_drop["input"]
                     tmp_drop["Extra input"] = ""
 
-                tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag=tag)
+                tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
 
     @staticmethod
     def copy_to_clipboard(obj, string):

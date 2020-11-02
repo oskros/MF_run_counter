@@ -605,8 +605,8 @@ class Treeview(ttk.Treeview):
         self.alternate_colour = kwargs.pop('alternate_colour', False)
         ttk.Treeview.__init__(self, *args, **kwargs)
         if self.alternate_colour:
-            self.tag_configure('Odd', background='white')
-            self.tag_configure('Even', background='gray95')
+            self.tag_configure('Odd', background='gray95')
+            self.tag_configure('Even', background='white')
 
     def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, 'command'):
@@ -621,7 +621,7 @@ class Treeview(ttk.Treeview):
         for index, (_, k) in enumerate(l):
             self.move(k, '', index)
             if self.alternate_colour:
-                self.item(k, tag='Even' if index % 2 != 0 else 'Odd')
+                self.item(k, tag='Even' if index % 2 == 0 else 'Odd')
         self.heading(column, command=partial(callback, column, not reverse))
 
     def _sort_by_num(self, column, reverse):
@@ -633,6 +633,16 @@ class Treeview(ttk.Treeview):
 
     def _sort_by_name(self, column, reverse):
         self._sort(column, reverse, str, self._sort_by_name)
+
+    def insert(self, *args, **kwargs):
+        if self.alternate_colour:
+            tag = kwargs.pop('tag', None)
+            tags = kwargs.pop('tags', [])
+            if tag is not None:
+                tags.append(tag)
+            tags.append('Even' if len(self.get_children('')) % 2 == 0 else 'Odd')
+            kwargs['tags'] = tags
+        ttk.Treeview.insert(self, *args, **kwargs)
 
 
 class CaretButton(Button):
