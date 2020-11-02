@@ -31,7 +31,7 @@ To set-up automode, enter the game path to your character save folder and click 
 
 ### System wide hotkeys
 You are able to customize hotkeys for each of the commands in the application. The hotkeys are system wide, so you do not need to place focus on the application to use them. However, this means that while the application is open, it overrides any other program using this specific hotkey.
-It is possible to disable a command from having a hotkey by choosing "NO_BIND"
+It is possible to disable a command from having a hotkey by choosing "NO_BIND"  
 There are 2 hidden hotkeys: *CTRL+SHIFT+PgDn* and *CTRL+SHIFT+PgUp* for switching between tabs in the app (eg. if you wanna confirm the drop you just added is in fact saved)
 
 ### Manual run counting (Optional)
