@@ -644,6 +644,7 @@ class Treeview(ttk.Treeview):
             tags = kwargs.pop('tags', [])
             if tag is not None:
                 tags.append(tag)
+            tags = [x for x in tags if x not in ['Odd', 'Even']]
             tags.append('Even' if len(self.get_children('')) % 2 == 0 else 'Odd')
             kwargs['tags'] = tags
         ttk.Treeview.insert(self, *args, **kwargs)
