@@ -216,6 +216,27 @@ class Checkbutton(tk.Checkbutton):
         tk.Checkbutton.destroy(self)
 
 
+class EthGrailCheckbutton(tk.Checkbutton):
+    objects = []
+
+    def __init__(self, *args, **kwargs):
+        tooltip = kwargs.pop('tooltip', None)
+        tk.Checkbutton.__init__(self, *args, **kwargs)
+        self.__class__.objects.append(self)
+        if tooltip is not None:
+            create_tooltip(self, tooltip)
+
+    @classmethod
+    def set_config(cls, **val):
+        for obj in cls.objects:
+            obj.config(val)
+
+    def destroy(self):
+        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
+        del self.__class__.objects[cur_obj]
+        tk.Checkbutton.destroy(self)
+
+
 class ListboxLabel(tk.Label):
     objects = []
 

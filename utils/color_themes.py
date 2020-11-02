@@ -246,3 +246,4 @@ class Theme:
         tkd.ListboxLabel.set_config(bg=self.listbox_color, fg=self.listbox_text)
         tkd.ListboxFrame.set_config(bg=self.listbox_color)
         tkd.Checkbutton.set_config(activebackground=self.label_color, activeforeground=self.text_color, background=self.label_color, foreground=self.text_color, selectcolor=self.active_checkbox_color)
+        tkd.EthGrailCheckbutton.set_config(activebackground=self.listbox_color, activeforeground=self.text_color, background=self.listbox_color, foreground=self.text_color, selectcolor=self.listbox_color)

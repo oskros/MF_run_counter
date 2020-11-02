@@ -1,6 +1,7 @@
 from init import *
 from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller
 from utils.color_themes import Theme
+from utils.item_name_lists import ETH_ITEM_LIST
 import tkinter as tk
 from tkinter import ttk
 import json
@@ -15,6 +16,7 @@ class Grail(tkd.Frame):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
         self.file_name = 'Profiles/grail.json'
+        self.show_eth_grail = tk.IntVar(value=0)
         self.grail = self.load_grail()
         self.username = tk.StringVar(value=self.main_frame.herokuapp_username)
         self.password = tk.StringVar(value=self.main_frame.herokuapp_password)
@@ -24,7 +26,7 @@ class Grail(tkd.Frame):
         self.vars_to_update = []
         self.cols = ["Item", "Base Item", "Item Class", "Quality", "Rarity", "Class restriction", "TC", "QLVL",
                      "Roll rarity", "Roll chance", "Drop Andariel", "Drop Mephisto", "Drop Diablo", "Drop Pindleskin",
-                     "Found"]
+                     "Found", "FoundEth"]
         self.grail_table_open = False
 
         self._make_widgets()
@@ -55,7 +57,8 @@ class Grail(tkd.Frame):
         tk.Grid.columnconfigure(descr, 2, weight=1)
         tk.Grid.columnconfigure(descr, 3, weight=1)
         descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
-        for i, l in enumerate(['', 'Exist', 'Left', '%    ']):
+        tkd.EthGrailCheckbutton(descr, text='Eth grail', font=('Segoe UI', 9), variable=self.show_eth_grail, command=self.toggle_eth_grail).grid(row=0, column=0, sticky=tk.W)
+        for i, l in enumerate(['Exist', 'Left', '%    '], 1):
             tkd.ListboxLabel(descr, text=l, font=('Segoe UI', 9, 'bold')).grid(row=0, column=i, sticky=tk.E)
         ttk.Separator(descr, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=4, sticky='ew')
         self._make_row(descr, 2, 'Uniq Armor')
@@ -70,28 +73,32 @@ class Grail(tkd.Frame):
         title_str = text.lower().replace(' ', '_')
         self.vars_to_update.append(title_str)
         setattr(self, 'exist_' + title_str, tk.StringVar(value='0'))
-        # setattr(self, 'owned_' + title_str, tk.StringVar(value='0'))
         setattr(self, 'remaining_' + title_str, tk.StringVar(value='0'))
         setattr(self, 'perc_' + title_str, tk.StringVar(value='0%'))
 
         tkd.ListboxLabel(master, text=text, justify=tk.LEFT, font=font).grid(sticky=tk.W, row=row, column=0)
         tkd.ListboxLabel(master, textvariable=getattr(self, 'exist_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=1, sticky=tk.E)
-        # tkd.ListboxLabel(master, textvariable=getattr(self, 'owned_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=2, sticky=tk.E)
         tkd.ListboxLabel(master, textvariable=getattr(self, 'remaining_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=2, sticky=tk.E)
         tkd.ListboxLabel(master, textvariable=getattr(self, 'perc_' + title_str), font=font, justify=tk.RIGHT).grid(row=row, column=3, sticky=tk.E)
 
-    def update_statistics(self):
+    def update_statistics(self, eth=None):
+        if eth is None:
+            eth = self.show_eth_grail.get()
+        else:
+            self.show_eth_grail.set(int(eth))
         for v in self.vars_to_update:
             keys = [] if v == 'total' else [v.replace('_', ' ').replace('uniq', 'Unique').title()]
             cond = {'Item Group ' + str(i): k for i, k in enumerate(keys)}
-            count = self.count_grail(cond)
+            count = self.count_grail(cond, eth)
 
             getattr(self, 'exist_' + v).set(count[0])
-            # getattr(self, 'owned_' + v).set(count[1])
             getattr(self, 'remaining_' + v).set(count[0] - count[1])
             getattr(self, 'perc_' + v).set(str(round(count[1] / count[0] * 100, 1)) + '%' if count[0] != 0 else '0.0%')
 
-    def count_grail(self, conditions=None):
+    def toggle_eth_grail(self):
+        self.update_statistics()
+
+    def count_grail(self, conditions=None, eth=False):
         if conditions is None:
             conditions = dict()
 
@@ -99,9 +106,15 @@ class Grail(tkd.Frame):
         owned = 0
         for item in self.grail:
             if all(item.get(k, None) == v for k, v in conditions.items()):
-                tot += 1
-                if item.get('Found', False):
-                    owned += 1
+                if eth:
+                    if item.get('Item', '') in ETH_ITEM_LIST:
+                        tot += 1
+                        if item.get('FoundEth', False):
+                            owned += 1
+                else:
+                    tot += 1
+                    if item.get('Found', False):
+                        owned += 1
 
         return tot, owned
 
@@ -315,6 +328,10 @@ class Grail(tkd.Frame):
         # We dont allow more than one open window of the grail controller
         if win32gui.FindWindow(None, 'Grail controller'):
             return
+
+        if self.show_eth_grail.get():
+            messagebox.showinfo('Eth grail', 'Grail controller cannot be used to modify your eth grail as of right now.\nInstead you can do this on herokuapp, and then sync to the application afterwards')
+            self.update_statistics(eth=False)
 
         # Initialise the TopLevel window (important we use TopLevel instead of Tk, to pass over information between
         # the defined widgets and the main app)
