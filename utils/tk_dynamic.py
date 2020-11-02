@@ -632,7 +632,11 @@ class Treeview(ttk.Treeview):
         self._sort(column, reverse, foo, self._sort_by_num)
 
     def _sort_by_name(self, column, reverse):
-        self._sort(column, reverse, str, self._sort_by_name)
+        if reverse:
+            foo = lambda x: str(x)
+        else:
+            foo = lambda x: '€'*100 if x == '' else str(x)
+        self._sort(column, reverse, foo, self._sort_by_name)
 
     def insert(self, *args, **kwargs):
         if self.alternate_colour:
