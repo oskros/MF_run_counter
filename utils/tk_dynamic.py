@@ -670,7 +670,6 @@ class CaretButton(Button):
 
     def run_command(self, command):
         self.active = not self.active
-        # print(self.active)
         self.config(image=self.up_arrow if self.active else self.dn_arrow)
         command()
 
@@ -680,10 +679,3 @@ class CaretButton(Button):
         else:
             self.active = active
         self.config(image=self.up_arrow if self.active else self.dn_arrow)
-
-
-if __name__ == '__main__':
-    root = tk.Tk()
-    CaretButton(root, active=False).pack()
-
-    root.mainloop()

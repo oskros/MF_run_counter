@@ -57,7 +57,7 @@ class Grail(tkd.Frame):
         tk.Grid.columnconfigure(descr, 2, weight=1)
         tk.Grid.columnconfigure(descr, 3, weight=1)
         descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
-        tkd.EthGrailCheckbutton(descr, text='Eth grail', font=('Segoe UI', 9), variable=self.show_eth_grail, command=self.toggle_eth_grail).grid(row=0, column=0, sticky=tk.W)
+        tkd.EthGrailCheckbutton(descr, text='Eth grail', font=('Segoe UI', 9), variable=self.show_eth_grail, command=self.update_statistics).grid(row=0, column=0, sticky=tk.W)
         for i, l in enumerate(['Exist', 'Left', '%    '], 1):
             tkd.ListboxLabel(descr, text=l, font=('Segoe UI', 9, 'bold')).grid(row=0, column=i, sticky=tk.E)
         ttk.Separator(descr, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=4, sticky='ew')
@@ -94,9 +94,6 @@ class Grail(tkd.Frame):
             getattr(self, 'exist_' + v).set(count[0])
             getattr(self, 'remaining_' + v).set(count[0] - count[1])
             getattr(self, 'perc_' + v).set(str(round(count[1] / count[0] * 100, 1)) + '%' if count[0] != 0 else '0.0%')
-
-    def toggle_eth_grail(self):
-        self.update_statistics()
 
     def count_grail(self, conditions=None, eth=False):
         if conditions is None:
