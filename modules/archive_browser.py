@@ -168,7 +168,7 @@ class ArchiveBrowser(tkd.Toplevel):
         txt_list.config(state=tk.DISABLED)
 
         btn_frame1 = tkd.Frame(statistics_fr)
-        tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(self, txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
         tkd.Button(btn_frame1, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is very important:
@@ -264,13 +264,12 @@ class ArchiveBrowser(tkd.Toplevel):
 
                 tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
 
-    @staticmethod
-    def copy_to_clipboard(obj, string):
+    def copy_to_clipboard(self, string):
         """
         Clears current clipboard and adds the string instead
         """
-        obj.clipboard_clear()
-        obj.clipboard_append(string)
+        self.clipboard_clear()
+        self.clipboard_append(string)
 
     @staticmethod
     def save_to_txt(string):

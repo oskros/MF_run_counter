@@ -615,6 +615,61 @@ class Treeview(ttk.Treeview):
             self.tag_configure('Odd', background='gray95')
             self.tag_configure('Even', background='white')
 
+        self.highlighted_item = None
+        self.highlighted_prev_tags = ''
+
+        self.tag_configure('highlighted_line', background='#1874CD', foreground='white')
+        self.bind('<Button-1>', self.highlight_line)
+        self.bind('<Control-c>', lambda _: self.copy_highlighted_to_clipboard())
+        self.bind("<Down>", lambda _: self.highlight_next())
+        self.bind("<Up>", lambda _: self.highlight_prev())
+        # self.bind('<<TreeviewClose>>', lambda _: self.clear_highlight)
+
+    def highlight_line(self, event):
+        if self.highlighted_item is not None:
+            self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
+
+        item = self.identify('item', event.x, event.y)
+
+        cur_tags = self.item(item)['tags']
+        self.highlighted_item = item
+        self.highlighted_prev_tags = cur_tags
+
+        self.item(item, tags=['highlighted_line'])
+
+    def clear_highlight(self):
+        if self.highlighted_item is not None:
+            self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
+        self.highlighted_item = None
+        self.highlighted_prev_tags = ''
+
+    def highlight_next(self):
+        if self.highlighted_item is not None:
+            nxt = self.next(self.highlighted_item)
+            if nxt:
+                self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
+                cur_tags = self.item(nxt)['tags']
+                self.highlighted_item = nxt
+                self.highlighted_prev_tags = cur_tags
+
+                self.item(nxt, tags=['highlighted_line'])
+
+    def highlight_prev(self):
+        if self.highlighted_item is not None:
+            prv = self.prev(self.highlighted_item)
+            if prv:
+                self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
+                cur_tags = self.item(prv)['tags']
+                self.highlighted_item = prv
+                self.highlighted_prev_tags = cur_tags
+
+                self.item(prv, tags=['highlighted_line'])
+
+    def copy_highlighted_to_clipboard(self):
+        out = {k: v for k, v in zip(self['columns'], self.item(self.highlighted_item)['values'])}
+        self.clipboard_clear()
+        self.clipboard_append(str(out))
+
     def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, 'command'):
             func = getattr(self, f"_sort_by_{sort_by}", None)
