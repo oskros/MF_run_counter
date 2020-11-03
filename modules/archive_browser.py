@@ -106,8 +106,7 @@ class ArchiveBrowser(tkd.Toplevel):
         vscroll.config(command=txt_list.yview)
 
         # Build header for output file with information and descriptive statistics
-        txt_list.insert(tk.END, 'Statistics')
-        txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
+        txt_list.insert(tk.END, 'Statistics', tag='HEADER')
         txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
         txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
         txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
@@ -127,16 +126,14 @@ class ArchiveBrowser(tkd.Toplevel):
         # List all drops collected
         if drops:
             if any(drop for drop in drops.values()):
-                txt_list.insert(tk.END, '\n\nCollected drops')
-                txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
+                txt_list.insert(tk.END, '\n\nCollected drops', tag='HEADER')
             for run_no, drop in drops.items():
                 if drop:
                     str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
                     txt_list.insert(tk.END, '\nRun ' + str_n + ' - ' + ', '.join(x['input'].strip() for x in drop))
 
         if laps:
-            txt_list.insert(tk.END, '\n\nRun times')
-            txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
+            txt_list.insert(tk.END, '\n\nRun times', tag='HEADER')
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):

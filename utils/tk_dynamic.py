@@ -529,6 +529,12 @@ class Text(tk.Text):
 
         self.after(delay, delayed_highlight)
 
+    def insert(self, *args, **kwargs):
+        tag = kwargs.pop('tag', None)
+        tk.Text.insert(self, *args, **kwargs)
+        if tag is not None:
+            self.tag_add(tag, "end-1c linestart", "end-1c lineend")
+
 
 class Tooltip(object):
     def __init__(self, widget):
