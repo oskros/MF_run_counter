@@ -605,6 +605,7 @@ class Treeview(ttk.Treeview):
         self.alternate_colour = kwargs.pop('alternate_colour', False)
         ttk.Treeview.__init__(self, *args, **kwargs)
         if self.alternate_colour:
+            self.even_row = True
             self.tag_configure('Odd', background='gray95')
             self.tag_configure('Even', background='white')
 
@@ -640,13 +641,9 @@ class Treeview(ttk.Treeview):
 
     def insert(self, *args, **kwargs):
         if self.alternate_colour:
-            tag = kwargs.pop('tag', None)
-            tags = kwargs.pop('tags', [])
-            if tag is not None:
-                tags.append(tag)
-            tags = [x for x in tags if x not in ['Odd', 'Even']]
-            tags.append('Even' if len(self.get_children('')) % 2 == 0 else 'Odd')
-            kwargs['tags'] = tags
+            kwargs.pop('tags', None)
+            kwargs['tag'] = 'Even' if self.even_row else 'Odd'
+            self.even_row = not self.even_row
         ttk.Treeview.insert(self, *args, **kwargs)
 
 

@@ -80,7 +80,6 @@ class ArchiveBrowser(tkd.Toplevel):
         statistics_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(statistics_fr, text='Statistics')
 
-        # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
         avg_lap = sum_laps / len(laps) if laps else 0
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
@@ -100,7 +99,6 @@ class ArchiveBrowser(tkd.Toplevel):
         hscroll = ttk.Scrollbar(list_win, orient=tk.HORIZONTAL)
         txt_list = tkd.Text(list_frame, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, font='courier 10',
                             wrap=tk.WORD, state=tk.NORMAL, cursor='', exportselection=1, name='archivebrowser')
-        # txt_list.bind('<FocusOut>', lambda e: txt_list.tag_remove(tk.SEL, "1.0", tk.END))  # Lose selection when shifting focus
         vscroll.pack(side=tk.RIGHT, fill=tk.Y)
         txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         txt_list.tag_configure("HEADER", font=font.Font(family='courier', size=12, weight='bold', underline=True))
@@ -108,57 +106,47 @@ class ArchiveBrowser(tkd.Toplevel):
         vscroll.config(command=txt_list.yview)
 
         # Build header for output file with information and descriptive statistics
-        output = [['Statistics'],
-                  ['Character name: ', self.main_frame.profile_tab.extra_data.get('Character name', '')],
-                  ['Run type:       ', self.main_frame.profile_tab.extra_data.get('Run type', '')],
-                  ['Game mode:      ', self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player')],
-                  [''],
-                  ['Total session time:   ', other_utils.build_time_str(session_time)],
-                  ['Total run time:       ', other_utils.build_time_str(sum_laps)],
-                  ['Average run time:     ', other_utils.build_time_str(avg_lap)],
-                  ['Fastest run time:     ', other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0))],
-                  ['Number of runs:       ', str(len(laps))],
-                  ['Time spent in runs:   ', str(round(pct, 2)) + '%'],
-                  [''],
-                  ['Avg unique kills:     ', str(round(avg_uniques, 2))],
-                  ['Avg champion kills:   ', str(round(avg_champs, 2))],
-                  ['Avg pack kills:       ', str(round(avg_packs, 2))],
-                  ['Avg seconds/pack:     ', str(round(seconds_per_pack, 2))],
-                  ['']]
+        txt_list.insert(tk.END, 'Statistics')
+        txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
+        txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
+        txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
+        txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
+
+        txt_list.insert(tk.END, '\n\nTotal session time:   %s' % other_utils.build_time_str(session_time))
+        txt_list.insert(tk.END, '\nTotal run time:       %s' % other_utils.build_time_str(sum_laps))
+        txt_list.insert(tk.END, '\nAverage run time:     %s' % other_utils.build_time_str(avg_lap))
+        txt_list.insert(tk.END, '\nFastest run time:     %s' % other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
+        txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
+        txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
+
+        txt_list.insert(tk.END, '\n\nAvg unique kills:     %s' % str(round(avg_uniques, 2)))
+        txt_list.insert(tk.END, '\nAvg champion kills:   %s' % str(round(avg_champs, 2)))
+        txt_list.insert(tk.END, '\nAvg pack kills:       %s' % str(round(avg_packs, 2)))
+        txt_list.insert(tk.END, '\nAvg seconds/pack:     %s' % str(round(seconds_per_pack, 2)))
 
         # List all drops collected
         if drops:
             if any(drop for drop in drops.values()):
-                output.append(['Collected drops'])
+                txt_list.insert(tk.END, '\n\nCollected drops')
+                txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
             for run_no, drop in drops.items():
                 if drop:
                     str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
-                    output.append(['Run ' + str_n, '', *[x['input'].strip() for x in drop]])
-            output.append([''])
+                    txt_list.insert(tk.END, '\nRun ' + str_n + ' - ' + ', '.join(x['input'].strip() for x in drop))
 
         if laps:
-            output.append(['Run times'])
+            txt_list.insert(tk.END, '\n\nRun times')
+            txt_list.tag_add("HEADER", "end-1c linestart", "end-1c lineend")
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
             run_time = lap['Run time'] if isinstance(lap, dict) else lap
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             droplst = drops.get(str(n), [])
-            tmp = ['Run ' + str_n + ': ', other_utils.build_time_str(run_time)]
+            tmp = '\nRun ' + str_n + ': ' + other_utils.build_time_str(run_time)
             if droplst:
-                tmp += [d['input'].strip() for d in droplst]
-            output.append(tmp)
-
-        # Format string list to be shown in the archive browser
-        for i, op in enumerate(output, 1):
-            tmpstr = ''.join(op[:2])
-            if len(op) > 2:
-                tmpstr += ' - ' + ', '.join(op[2:])
-            if txt_list.get('1.0', tk.END) != '\n':
-                tmpstr = '\n' + tmpstr
-            txt_list.insert(tk.END, tmpstr)
-            if op[0] in ['Statistics', 'Collected drops', 'Run times']:
-                txt_list.tag_add("HEADER", str(i) + ".0", str(i) + ".0 lineend")
+                tmp += ' - ' + ', '.join([d['input'].strip() for d in droplst])
+            txt_list.insert(tk.END, tmp)
 
         # Add bold tags
         # txt_list.tag_add("BOLD", "1.0", "1.15")
@@ -179,8 +167,7 @@ class ArchiveBrowser(tkd.Toplevel):
         # txt_list.tag_add("BOLD", "8.20", "8.0 lineend")
         # txt_list.tag_add("BOLD", "9.20", "9.0 lineend")
         # txt_list.tag_add("BOLD", "10.20", "10.0 lineend")
-
-        txt_list.tag_add("HEADER", "12.0", "12.0 lineend")
+        # txt_list.tag_add("HEADER", "12.0", "12.0 lineend")
         txt_list.config(state=tk.DISABLED)
 
         btn_frame1 = tkd.Frame(statistics_fr)

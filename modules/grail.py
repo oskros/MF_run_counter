@@ -152,7 +152,7 @@ class Grail(tkd.Frame):
 
     def create_empty_grail(self):
         with open(media_path + 'item_library.csv', 'r') as fo:
-            grail_dict = [{**row, **{'Found': False, 'FoundEth': False}} for row in csv.DictReader(fo)]
+            grail_dict = [{**row, 'Found': False, 'FoundEth': False} for row in csv.DictReader(fo)]
 
         with open(self.file_name, 'w') as fo:
             json.dump(grail_dict, fo, indent=2)
