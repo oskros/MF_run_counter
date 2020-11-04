@@ -152,7 +152,7 @@ class Grail(tkd.Frame):
 
     def create_empty_grail(self):
         with open(media_path + 'item_library.csv', 'r') as fo:
-            grail_dict = [{**row, 'Found': False, 'FoundEth': False} for row in csv.DictReader(fo)]
+            grail_dict = [{**row, 'Found': False} for row in csv.DictReader(fo)]
 
         with open(self.file_name, 'w') as fo:
             json.dump(grail_dict, fo, indent=2)
@@ -405,7 +405,7 @@ class Grail(tkd.Frame):
 
             name = 'combofilter_' + col
             self.filters.append(name)
-            setattr(self, name, ttk.Combobox(combofr, values=sorted(set(str(x[col]) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
+            setattr(self, name, ttk.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
 
@@ -422,7 +422,7 @@ class Grail(tkd.Frame):
         self.tree.delete(*self.tree.get_children())
 
         # The filtering function breaks if column name has underscore in it - potential issue that could be fixed..
-        all_filter = lambda x: all(str(x[f.split('_')[-1]]) == getattr(self, f).get() or getattr(self, f).get() == '' for f in self.filters)
+        all_filter = lambda x: all(str(x.get(f.split('_')[-1], '')) == getattr(self, f).get() or getattr(self, f).get() == '' for f in self.filters)
         for item in self.grail:
             if all_filter(item):
                 tag = 'Owned' if item.get('Found', False) else 'Missing'
