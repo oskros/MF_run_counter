@@ -180,7 +180,7 @@ class D2Reader:
         except ZeroDivisionError:
             out['Exp %'] = 1
         out['MF'] = next((v['value'] for v in vals if v['lostatid'] == 80 and v['histatid'] == 0), -1)
-        out['Players X'] = min(self.pm.read_uint(self.players_x_ptr), 1)
+        out['Players X'] = max(self.pm.read_uint(self.players_x_ptr), 1)
         return out
 
     def get_stats(self, unit, translate_stat=False):
