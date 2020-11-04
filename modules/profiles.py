@@ -219,28 +219,20 @@ class Profile(tkd.Frame):
         if chosen == 'Profile history':
             laps = []
             session_time = 0
-            dropcount = 0
             # Concatenate information from each available session
             for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
                 laps.extend(active[key].get('laps', []))
                 session_time += active[key].get('session_time', 0)
-                drops = active[key].get('drops', dict())
-                for drop, val in drops.items():
-                    dropcount += len(val)
 
             # Append data for active session from timer module
             laps.extend(self.main_frame.timer_tab.laps)
             session_time += self.main_frame.timer_tab.session_time
-            for drop, val in self.main_frame.drops_tab.drops.items():
-                dropcount += len(val)
         elif chosen == 'Active session':
             laps = self.main_frame.timer_tab.laps.copy()
             session_time = self.main_frame.timer_tab.session_time
-            dropcount = sum(len(val) for val in self.main_frame.drops_tab.drops.values())
         else:
             laps = active[chosen].get('laps', [])
             session_time = active[chosen].get('session_time', 0)
-            dropcount = sum(len(val) for val in active[chosen].get('drops', dict()).values())
 
         # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
@@ -248,6 +240,12 @@ class Profile(tkd.Frame):
         min_lap = min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
         no_laps = len(laps) + 1 if self.main_frame.timer_tab.is_running and chosen in ['Active session', 'Profile history'] else len(laps)
+
+        list_uniques = [int(x.get('Uniques kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
+        list_champs = [int(x.get('Champions kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
+        avg_uniques = sum(list_uniques) / len(list_uniques) if list_uniques else 0
+        avg_champs = sum(list_champs) / len(list_champs) if list_champs else 0
+        avg_packs = avg_uniques + avg_champs / 2.534567
 
         # (re-)Populate the listbox with descriptive statistics
         self.descr.delete(0, tk.END)
@@ -257,4 +255,4 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min_lap))
         self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
         self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
-        self.descr.insert(tk.END, 'Drops logged:         ' + str(dropcount))
+        self.descr.insert(tk.END, 'Average packs:        ' + str(round(avg_packs, 2)))
