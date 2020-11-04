@@ -113,7 +113,7 @@ class AutocompleteEntry:
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
                 if eth:
-                    if i_name in ETH_ITEM_LIST:
+                    if self.unid_mode or i_name in ETH_ITEM_LIST:
                         out.add('Eth ' + i_name)
                 else:
                     out.add(i_name)
@@ -161,11 +161,13 @@ class ACMbox(object):
             self.entry.selection(event)
         else:
             item_name = self.entry.chosen
+            user_input = self.entry.var.get().strip()
+            if item_name not in user_input:
+                item_name = None
             eth_item = False
             if item_name is not None and item_name.startswith('Eth ') and item_name != 'Eth Rune':
                 item_name = item_name[4:]
                 eth_item = True
-            user_input = self.entry.var.get().strip()
             extra_input = user_input.replace(item_name, '').strip().replace('  ', ' ') if item_name is not None else ''
             self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input, 'eth': eth_item, 'last_run': self.last_run_var.get()}
             self.root.quit()

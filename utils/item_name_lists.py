@@ -208,6 +208,9 @@ UNID_ITEM_LIST = [
     "Winged Helm (Set)", "Winged Helm (Unique)", "Winged Knife (Unique)", "Wire Fleece (Unique)",
     "Wrist Sword (Unique)", "Yari (Unique)", "Yew Wand (Unique)", "Zakarum Shield (Unique)", "Zweihander (Unique)",
 
+    # Selected tc81
+    "Spired Helm (Magic)", "Spired Helm (Rare)", "Cryptic Axe (Magic)", "Cryptic Axe (Rare)",
+
     # Magic version of tc84/87 with unique/set counterparts
     "Archon Staff (Magic)", "Berserker Axe (Magic)", "Bloodlord Skull (Magic)", "Bone Visage (Magic)",
     "Caduceus (Magic)", "Champion Axe (Magic)", "Colossus Blade (Magic)", "Corona (Magic)", "Cryptic Sword (Magic)",
