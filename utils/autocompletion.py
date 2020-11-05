@@ -162,7 +162,7 @@ class ACMbox(object):
         else:
             item_name = self.entry.chosen
             user_input = self.entry.var.get().strip()
-            if item_name not in user_input:
+            if item_name is not None and item_name not in user_input:
                 item_name = None
             eth_item = False
             if item_name is not None and item_name.startswith('Eth ') and item_name != 'Eth Rune':
