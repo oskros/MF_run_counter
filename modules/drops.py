@@ -75,7 +75,7 @@ class Drops(tkd.Frame):
                             resp = tk_utils.mbox(msg="Congrats, a new eth drop! Add it to local eth grail?", title="Eth grail item")
                         if resp is not None:
                             self.main_frame.grail_tab.grail[i].update({'FoundEth': True})
-                            prefix += '(E)'
+                            prefix += '(*)'
                             drop['Eth Grailer'] = 'True'
 
                     drop['input'] = (prefix + ' ' + drop['input']).strip()

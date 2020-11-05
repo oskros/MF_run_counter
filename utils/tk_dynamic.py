@@ -683,7 +683,8 @@ class Treeview(ttk.Treeview):
         for index, (_, k) in enumerate(l):
             self.move(k, '', index)
             if self.alternate_colour:
-                self.item(k, tag='Even' if index % 2 == 0 else 'Odd')
+                if self.item(k)['tags'] in [['Even'], ['Odd']]:
+                    self.item(k, tag='Even' if index % 2 == 0 else 'Odd')
         self.heading(column, command=partial(callback, column, not reverse))
 
     def _sort_by_num(self, column, reverse):
@@ -703,7 +704,8 @@ class Treeview(ttk.Treeview):
     def insert(self, *args, **kwargs):
         if self.alternate_colour:
             kwargs.pop('tags', None)
-            kwargs['tag'] = 'Even' if self.even_row else 'Odd'
+            if kwargs.get('tag', None) is None:
+                kwargs['tag'] = 'Even' if self.even_row else 'Odd'
             self.even_row = not self.even_row
         ttk.Treeview.insert(self, *args, **kwargs)
 

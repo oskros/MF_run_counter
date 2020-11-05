@@ -243,6 +243,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         tree['columns'] = cols
         widths = [35, 190, 140, 120, 35, 35, 100, 47, 58]
+        tree.tag_configure('Grail', background='#e6ffe6')
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'TC', 'QLVL']:
@@ -262,7 +263,10 @@ class ArchiveBrowser(tkd.Toplevel):
                     tmp_drop["Item name"] = tmp_drop["input"]
                     tmp_drop["Extra input"] = ""
 
-                tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
+                if drop.get('Grailer', False) == 'True' or drop.get('Eth Grailer', False) == 'True':
+                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='Grail')
+                else:
+                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
 
     def copy_to_clipboard(self, string):
         """
