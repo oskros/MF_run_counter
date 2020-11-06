@@ -7,11 +7,13 @@ used_base_style = 'clam'  # , 'default', 'winnative', 'clam', 'alt']
 
 class Theme:
     def __init__(self, used_theme):
+        self.style = ttk.Style()
+        self.style.theme_use(used_base_style)
+
         self.used_theme = used_theme
         if self.used_theme == 'blue':
             # General
             default_color = 'LightSkyBlue1'
-            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -63,7 +65,6 @@ class Theme:
         elif self.used_theme == 'dark':
             # General
             default_color = 'black'
-            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -117,7 +118,6 @@ class Theme:
         else:
             # General
             default_color = '#f0f0ed'
-            self.ttk_style = used_base_style
 
             # Backgrounds
             self.frame_color = default_color
@@ -168,63 +168,59 @@ class Theme:
             self.sb_select_btn = 'grey50'
 
     def apply_theme_style(self):
-        style = ttk.Style()
-        style_name = 'my_' + self.used_theme
-        if style_name not in style.theme_names():
-            settings = {'TCombobox': {
-                'configure': {'selectbackground': self.combohighlight_color,
-                              # 'selectforeground': 'grey90',
-                              'fieldbackground': self.combofield_color,
-                              'background': self.dropdown_button_color,
-                              }
+        settings = {'TCombobox': {
+            'configure': {'selectbackground': self.combohighlight_color,
+                          # 'selectforeground': 'grey90',
+                          'fieldbackground': self.combofield_color,
+                          'background': self.dropdown_button_color,
+                          }
+        },
+            "TNotebook": {
+                "configure": {"background": self.notebook_background_color,
+                              "tabmargins": [2, 4, 2, 0]}
             },
-                "TNotebook": {
-                    "configure": {"background": self.notebook_background_color,
-                                  "tabmargins": [2, 4, 2, 0]}
+            "TNotebook.Tab": {
+                "configure": {"padding": [2, 1],
+                              "background": self.tab_background_color,
+                              "foreground": self.text_color,
+                              "lightcolor": self.border_color},
+                "map": {"background": [("selected", self.selected_tab_color),
+                                       ("active", self.hover_tab_background_color)],
+                        "expand": [("selected", [0, -2, 0, 0])]}},
+            "TScrollbar": {
+                "configure": {
+                    "background": self.sb_btn_background,
+                    "darkcolor": self.sb_btn_border_se,
+                    "lightcolor": self.sb_btn_border_nw,
+                    "troughcolor": self.sb_bar_background,
+                    "bordercolor": self.sb_bordercolor,
+                    "arrowcolor": self.sb_arrowcolor,
+                    # "gripcount": 0,
                 },
-                "TNotebook.Tab": {
-                    "configure": {"padding": [2, 1],
-                                  "background": self.tab_background_color,
-                                  "foreground": self.text_color,
-                                  "lightcolor": self.border_color},
-                    "map": {"background": [("selected", self.selected_tab_color),
-                                           ("active", self.hover_tab_background_color)],
-                            "expand": [("selected", [2, 1, 2, 0])]}},
-                "TScrollbar": {
-                    "configure": {
-                        "background": self.sb_btn_background,
-                        "darkcolor": self.sb_btn_border_se,
-                        "lightcolor": self.sb_btn_border_nw,
-                        "troughcolor": self.sb_bar_background,
-                        "bordercolor": self.sb_bordercolor,
-                        "arrowcolor": self.sb_arrowcolor,
-                        # "gripcount": 0,
-                    },
-                    "map": {"background": [("active", self.sb_select_btn)]}
-                },
-                #
-                # "Vertical.TScrollbar": {"layout": [
-                #     ("Vertical.Scrollbar.uparrow", {"side": "top", "sticky": ''}),
-                #     ("Vertical.Scrollbar.downarrow", {"side": "bottom", "sticky": ''}),
-                #     ("Vertical.Scrollbar.trough", {"sticky": "ns", "children":
-                #         [("Vertical.Scrollbar.thumb", {"expand": 1, "unit": 1,
-                #                                        "children": [("Vertical.Scrollbar.grip", {"sticky": ''})]
-                #                                        })]})
-                # ]
-                # },
-                #
-                # "Horizontal.TScrollbar": {"layout": [
-                #     ("Horizontal.Scrollbar.leftarrow", {"side": "left", "sticky": ''}),
-                #     ("Horizontal.Scrollbar.rightarrow", {"side": "right", "sticky": ''}),
-                #     ("Horizontal.Scrollbar.trough", {"sticky": "ew", "children":
-                #         [("Horizontal.Scrollbar.thumb", {"expand": 1, "unit": 1,
-                #                                          "children": [("Horizontal.Scrollbar.grip", {"sticky": ''})]
-                #                                          })]
-                #                                      })]
-                # },
-            }
-            style.theme_create(style_name, parent=self.ttk_style, settings=settings)
-        style.theme_use(style_name)
+                "map": {"background": [("active", self.sb_select_btn)]}
+            },
+            #
+            # "Vertical.TScrollbar": {"layout": [
+            #     ("Vertical.Scrollbar.uparrow", {"side": "top", "sticky": ''}),
+            #     ("Vertical.Scrollbar.downarrow", {"side": "bottom", "sticky": ''}),
+            #     ("Vertical.Scrollbar.trough", {"sticky": "ns", "children":
+            #         [("Vertical.Scrollbar.thumb", {"expand": 1, "unit": 1,
+            #                                        "children": [("Vertical.Scrollbar.grip", {"sticky": ''})]
+            #                                        })]})
+            # ]
+            # },
+            #
+            # "Horizontal.TScrollbar": {"layout": [
+            #     ("Horizontal.Scrollbar.leftarrow", {"side": "left", "sticky": ''}),
+            #     ("Horizontal.Scrollbar.rightarrow", {"side": "right", "sticky": ''}),
+            #     ("Horizontal.Scrollbar.trough", {"sticky": "ew", "children":
+            #         [("Horizontal.Scrollbar.thumb", {"expand": 1, "unit": 1,
+            #                                          "children": [("Horizontal.Scrollbar.grip", {"sticky": ''})]
+            #                                          })]
+            #                                      })]
+            # },
+        }
+        self.style.theme_settings(used_base_style, settings=settings)
 
     def update_colors(self):
         tkd.Tk.set_config(bg=self.frame_color, highlightbackground=self.border_color)

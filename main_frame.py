@@ -116,7 +116,7 @@ class MainFrame(Config):
         self.clickable = True
         self.root.resizable(False, False)
         self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
-        self.root.config(borderwidth=2, height=364, width=240, relief='raised')
+        self.root.config(borderwidth=2, height=368, width=240, relief='raised')
         # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.focus_get()
