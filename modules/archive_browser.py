@@ -243,7 +243,11 @@ class ArchiveBrowser(tkd.Toplevel):
 
         tree['columns'] = cols
         widths = [35, 190, 140, 120, 35, 35, 100, 47, 58]
+        # tree.tag_configure('Grail', background='#cff3ff')
         tree.tag_configure('Grail', background='#e6ffe6')
+        tree.tag_configure('EthGrail', background='light goldenrod yellow')
+        # tree.tag_configure('BothGrail', background='#e6ffe6')
+
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'TC', 'QLVL']:
@@ -263,8 +267,12 @@ class ArchiveBrowser(tkd.Toplevel):
                     tmp_drop["Item name"] = tmp_drop["input"]
                     tmp_drop["Extra input"] = ""
 
-                if drop.get('Grailer', False) == 'True' or drop.get('Eth Grailer', False) == 'True':
+                # if drop.get('Grailer', False) == 'True' and drop.get('Eth Grailer', False) == 'True':
+                #     tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='BothGrail')
+                if drop.get('Grailer', False) == 'True':
                     tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='Grail')
+                elif drop.get('Eth Grailer', False) == 'True':
+                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='EthGrail')
                 else:
                     tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
 
