@@ -21,7 +21,7 @@ class Toplevel(tk.Toplevel):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Toplevel.destroy(self)
+        super().destroy()
 
     def start_move(self, event):
         self.x = event.x
@@ -77,7 +77,7 @@ class Canvas(tk.Canvas):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Canvas.destroy(self)
+        super().destroy()
 
     def create_circle(self, x, y, r, **kwargs):
         return self.create_oval(x - r, y - r, x + r, y + r, **kwargs)
@@ -110,7 +110,7 @@ class Tk(tk.Tk):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Tk.destroy(self)
+        super().destroy()
 
     def start_move(self, event):
         self.x = event.x
@@ -192,7 +192,7 @@ class Label(tk.Label):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Label.destroy(self)
+        super().destroy()
 
 
 class Checkbutton(tk.Checkbutton):
@@ -213,7 +213,7 @@ class Checkbutton(tk.Checkbutton):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Checkbutton.destroy(self)
+        super().destroy()
 
 
 class EthGrailCheckbutton(tk.Checkbutton):
@@ -234,7 +234,7 @@ class EthGrailCheckbutton(tk.Checkbutton):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Checkbutton.destroy(self)
+        super().destroy()
 
 
 class ListboxLabel(tk.Label):
@@ -252,7 +252,7 @@ class ListboxLabel(tk.Label):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Label.destroy(self)
+        super().destroy()
 
 
 class Hyperlink(tk.Label):
@@ -273,7 +273,7 @@ class Hyperlink(tk.Label):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Label.destroy(self)
+        super().destroy()
 
 
 class RunLabel(tk.Label):
@@ -291,7 +291,7 @@ class RunLabel(tk.Label):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Label.destroy(self)
+        super().destroy()
 
 
 class Frame(tk.Frame):
@@ -309,7 +309,7 @@ class Frame(tk.Frame):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Frame.destroy(self)
+        super().destroy()
 
 
 class ListboxFrame(tk.LabelFrame):
@@ -327,7 +327,7 @@ class ListboxFrame(tk.LabelFrame):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.LabelFrame.destroy(self)
+        super().destroy()
 
 
 class Button(tk.Button):
@@ -348,7 +348,7 @@ class Button(tk.Button):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Button.destroy(self)
+        super().destroy()
 
 
 class PauseButton(tk.Button):
@@ -366,7 +366,7 @@ class PauseButton(tk.Button):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Button.destroy(self)
+        super().destroy()
 
 
 class LabelFrame(tk.LabelFrame):
@@ -384,7 +384,7 @@ class LabelFrame(tk.LabelFrame):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.LabelFrame.destroy(self)
+        super().destroy()
 
 
 class Listbox(tk.Listbox):
@@ -402,7 +402,7 @@ class Listbox(tk.Listbox):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Listbox.destroy(self)
+        super().destroy()
 
 
 class Listbox2(tk.Listbox):
@@ -420,7 +420,7 @@ class Listbox2(tk.Listbox):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Listbox.destroy(self)
+        super().destroy()
 
 
 class Entry(tk.Entry):
@@ -438,7 +438,7 @@ class Entry(tk.Entry):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Entry.destroy(self)
+        super().destroy()
 
 
 class RestrictedEntry(tk.Entry):
@@ -465,7 +465,7 @@ class RestrictedEntry(tk.Entry):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Entry.destroy(self)
+        super().destroy()
 
     def validate_input(self, *args):
         if args[0] == '1':
@@ -494,7 +494,7 @@ class Radiobutton(tk.Radiobutton):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Radiobutton.destroy(self)
+        super().destroy()
 
 
 class Text(tk.Text):
@@ -518,7 +518,7 @@ class Text(tk.Text):
     def destroy(self):
         cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
         del self.__class__.objects[cur_obj]
-        tk.Text.destroy(self)
+        super().destroy()
 
     def highlight_line(self, delay=10):
         def delayed_highlight():
@@ -592,7 +592,6 @@ class Tooltip(object):
         geom = "+%d+%d" % (x, y)
         tw.wm_geometry(geom)
 
-
     def hidetip(self):
         tw = self.tipwindow
         self.tipwindow = None
@@ -621,8 +620,8 @@ class Treeview(ttk.Treeview):
         self.tag_configure('highlighted_line', background='#1874CD', foreground='white')
         self.bind('<Button-1>', self.highlight_line)
         self.bind('<Control-c>', lambda _: self.copy_highlighted_to_clipboard())
-        self.bind("<Down>", lambda _: self.highlight_next())
-        self.bind("<Up>", lambda _: self.highlight_prev())
+        self.bind("<Down>", lambda _: self.highlight_shift('next'))
+        self.bind("<Up>", lambda _: self.highlight_shift('prev'))
         # self.bind('<<TreeviewClose>>', lambda _: self.clear_highlight)
 
     def highlight_line(self, event):
@@ -643,27 +642,16 @@ class Treeview(ttk.Treeview):
         self.highlighted_item = None
         self.highlighted_prev_tags = ''
 
-    def highlight_next(self):
+    def highlight_shift(self, direction):
         if self.highlighted_item is not None:
-            nxt = self.next(self.highlighted_item)
-            if nxt:
+            shft = getattr(self, direction)(self.highlighted_item)
+            if shft:
                 self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
-                cur_tags = self.item(nxt)['tags']
-                self.highlighted_item = nxt
+                cur_tags = self.item(shft)['tags']
+                self.highlighted_item = shft
                 self.highlighted_prev_tags = cur_tags
 
-                self.item(nxt, tags=['highlighted_line'])
-
-    def highlight_prev(self):
-        if self.highlighted_item is not None:
-            prv = self.prev(self.highlighted_item)
-            if prv:
-                self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
-                cur_tags = self.item(prv)['tags']
-                self.highlighted_item = prv
-                self.highlighted_prev_tags = cur_tags
-
-                self.item(prv, tags=['highlighted_line'])
+                self.item(shft, tags=['highlighted_line'])
 
     def copy_highlighted_to_clipboard(self):
         out = {k: v for k, v in zip(self['columns'], self.item(self.highlighted_item)['values'])}
@@ -707,7 +695,7 @@ class Treeview(ttk.Treeview):
             if kwargs.get('tag', None) is None:
                 kwargs['tag'] = 'Even' if self.even_row else 'Odd'
             self.even_row = not self.even_row
-        ttk.Treeview.insert(self, *args, **kwargs)
+        super().insert(*args, **kwargs)
 
 
 class CaretButton(Button):
