@@ -13,12 +13,12 @@ class ArchiveBrowser(tkd.Toplevel):
         self.title('Archive Browser')
         self.wm_attributes('-topmost', self.main_frame.always_on_top)
 
-        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 790, 500)
+        disp_coords = tk_utils.get_displaced_geom(self.main_frame.root, 800, 500)
         self.geometry(disp_coords)
         self.focus_get()
 
         self.iconbitmap(media_path + 'icon.ico')
-        self.minsize(790, 500)
+        self.minsize(800, 500)
 
         tkd.Label(self, text='Archive browser', font='Helvetica 14').pack()
 
@@ -204,7 +204,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 53, 45, 75, 70, 85, 70, 59]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 70, 88, 71, 59]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained']:
@@ -242,7 +242,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 190, 140, 120, 35, 35, 100, 47, 58]
+        widths = [35, 198, 140, 120, 35, 38, 100, 47, 65]
         # tree.tag_configure('Grail', background='#cff3ff')
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')
