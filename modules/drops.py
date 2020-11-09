@@ -20,10 +20,15 @@ class Drops(tkd.Frame):
         scrollbar = ttk.Scrollbar(lf, orient=tk.VERTICAL)
 
         self.m = tkd.Text(lf, height=8, width=23, yscrollcommand=scrollbar.set, font='courier 11', wrap=tk.WORD, state=tk.DISABLED, cursor='', exportselection=1, name='droplist', borderwidth=2)
+        self.m.bind('<Double-Button-1>', lambda _: self.add_drop_by_click())
 
         self.m.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=(1, 2), padx=1)
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
+
+    def add_drop_by_click(self):
+        self.main_frame.img_panel.focus_force()
+        self.add_drop()
 
     def add_drop(self):
         drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.autocompletion_unids, add_to_last_run=self.main_frame.add_to_last_run)

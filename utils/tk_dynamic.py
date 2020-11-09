@@ -618,45 +618,13 @@ class Treeview(ttk.Treeview):
         # self.highlighted_prev_tags = ''
 
         self.tag_configure('highlighted_line', background='#1874CD', foreground='white')
-        # self.bind('<Button-1>', self.highlight_line)
-        # self.bind('<Control-c>', lambda _: self.copy_highlighted_to_clipboard())
-        # self.bind("<Down>", lambda _: self.highlight_shift('next'))
-        # self.bind("<Up>", lambda _: self.highlight_shift('prev'))
-        # self.bind('<<TreeviewClose>>', lambda _: self.clear_highlight)
+        self.bind('<Control-c>', lambda _: self.copy_highlighted_to_clipboard())
 
-    # def highlight_line(self, event):
-    #     if self.highlighted_item is not None:
-    #         self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
-    #
-    #     item = self.identify('item', event.x, event.y)
-    #
-    #     cur_tags = self.item(item)['tags']
-    #     self.highlighted_item = item
-    #     self.highlighted_prev_tags = cur_tags
-    #
-    #     self.item(item, tags=['highlighted_line'])
-
-    # def clear_highlight(self):
-    #     if self.highlighted_item is not None:
-    #         self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
-    #     self.highlighted_item = None
-    #     self.highlighted_prev_tags = ''
-
-    # def highlight_shift(self, direction):
-    #     if self.highlighted_item is not None:
-    #         shft = getattr(self, direction)(self.highlighted_item)
-    #         if shft:
-    #             self.item(self.highlighted_item, tags=self.highlighted_prev_tags)
-    #             cur_tags = self.item(shft)['tags']
-    #             self.highlighted_item = shft
-    #             self.highlighted_prev_tags = cur_tags
-    #
-    #             self.item(shft, tags=['highlighted_line'])
-
-    # def copy_highlighted_to_clipboard(self):
-    #     out = {k: v for k, v in zip(self['columns'], self.item(self.highlighted_item)['values'])}
-    #     self.clipboard_clear()
-    #     self.clipboard_append(str(out))
+    def copy_highlighted_to_clipboard(self):
+        item = self.item(self.focus())
+        out = {k: v for k, v in zip(self['columns'], item['values'])}
+        self.clipboard_clear()
+        self.clipboard_append(str(out))
 
     def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, 'command'):
