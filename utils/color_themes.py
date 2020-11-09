@@ -173,20 +173,23 @@ class Theme:
                           # 'selectforeground': 'grey90',
                           'fieldbackground': self.combofield_color,
                           'background': self.dropdown_button_color,
-                          }
+                          },
+            'map': {'fieldbackground': [('readonly', self.combofield_color)]}
         },
             "TNotebook": {
                 "configure": {"background": self.notebook_background_color,
-                              "tabmargins": [2, 4, 2, 0]}
+                              "tabmargins": [1, 2, 1, 0]}
             },
             "TNotebook.Tab": {
-                "configure": {"padding": [2, 1],
+                "configure": {"padding": [4, 2],
                               "background": self.tab_background_color,
                               "foreground": self.text_color,
-                              "lightcolor": self.border_color},
-                "map": {"background": [("selected", self.selected_tab_color),
-                                       ("active", self.hover_tab_background_color)],
-                        "expand": [("selected", [0, -2, 0, 0])]}},
+                              "lightcolor": self.border_color
+                              },
+                "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
+                        "expand": [("selected", [1, 1, 1, 0])]
+                        }
+            },
             "TScrollbar": {
                 "configure": {
                     "background": self.sb_btn_background,
@@ -199,27 +202,10 @@ class Theme:
                 },
                 "map": {"background": [("active", self.sb_select_btn)]}
             },
-            #
-            # "Vertical.TScrollbar": {"layout": [
-            #     ("Vertical.Scrollbar.uparrow", {"side": "top", "sticky": ''}),
-            #     ("Vertical.Scrollbar.downarrow", {"side": "bottom", "sticky": ''}),
-            #     ("Vertical.Scrollbar.trough", {"sticky": "ns", "children":
-            #         [("Vertical.Scrollbar.thumb", {"expand": 1, "unit": 1,
-            #                                        "children": [("Vertical.Scrollbar.grip", {"sticky": ''})]
-            #                                        })]})
-            # ]
-            # },
-            #
-            # "Horizontal.TScrollbar": {"layout": [
-            #     ("Horizontal.Scrollbar.leftarrow", {"side": "left", "sticky": ''}),
-            #     ("Horizontal.Scrollbar.rightarrow", {"side": "right", "sticky": ''}),
-            #     ("Horizontal.Scrollbar.trough", {"sticky": "ew", "children":
-            #         [("Horizontal.Scrollbar.thumb", {"expand": 1, "unit": 1,
-            #                                          "children": [("Horizontal.Scrollbar.grip", {"sticky": ''})]
-            #                                          })]
-            #                                      })]
-            # },
         }
+
+        # self.style.theme_create('my_clam', parent='clam', settings=settings)
+        # self.style.theme_use('my_clam')
         self.style.theme_settings(used_base_style, settings=settings)
 
     def update_colors(self):
