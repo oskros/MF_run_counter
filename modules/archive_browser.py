@@ -18,7 +18,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.focus_get()
 
         self.iconbitmap(media_path + 'icon.ico')
-        self.minsize(800, 500)
+        self.minsize(802, 500)
 
         tkd.Label(self, text='Archive browser', font='Helvetica 14').pack()
 
@@ -204,10 +204,10 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 70, 88, 71, 59]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
-            if col in ['Run', 'XP Gained']:
+            if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
                 sort_by = 'num'
             else:
                 sort_by = 'name'
@@ -242,7 +242,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 198, 140, 120, 35, 38, 100, 47, 65]
+        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65]
         # tree.tag_configure('Grail', background='#cff3ff')
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')

@@ -174,11 +174,12 @@ class Theme:
                           'fieldbackground': self.combofield_color,
                           'background': self.dropdown_button_color,
                           },
-            'map': {'fieldbackground': [('readonly', self.combofield_color)]}
+            'map': {'fieldbackground': [('readonly', self.combofield_color)],
+                    'foreground': [('readonly', 'black')]}
         },
             "TNotebook": {
                 "configure": {"background": self.notebook_background_color,
-                              "tabmargins": [1, 2, 1, 0]}
+                              "tabmargins": [0, 2, 1, 0]}
             },
             "TNotebook.Tab": {
                 "configure": {"padding": [4, 2],
@@ -187,7 +188,7 @@ class Theme:
                               "lightcolor": self.border_color
                               },
                 "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
-                        "expand": [("selected", [1, 1, 1, 0])]
+                        "expand": [("selected", [0, 0, 0, 0])]
                         }
             },
             "TScrollbar": {

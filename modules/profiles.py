@@ -36,7 +36,7 @@ class Profile(tkd.Frame):
         profile_dropdown_frame.pack()
 
         self.active_profile.set(self.main_frame.active_profile)
-        self.profile_dropdown = ttk.Combobox(profile_dropdown_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
+        self.profile_dropdown = tkd.Combobox(profile_dropdown_frame, textvariable=self.active_profile, state='readonly', values=self.main_frame.profiles)
         self.profile_dropdown.bind("<<ComboboxSelected>>", lambda e: self._change_active_profile())
         self.profile_dropdown.bind("<FocusOut>", lambda e: self.profile_dropdown.selection_clear())
         self.profile_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)
@@ -55,7 +55,7 @@ class Profile(tkd.Frame):
         sel_frame = tkd.Frame(self, height=28, width=238, pady=2, padx=2)
         sel_frame.propagate(False)
         sel_frame.pack()
-        self.archive_dropdown = ttk.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
+        self.archive_dropdown = tkd.Combobox(sel_frame, textvariable=self.selected_archive, state='readonly', values=self.available_archive)
         self.archive_dropdown.bind("<<ComboboxSelected>>", lambda e: self.update_descriptive_statistics())
         self.archive_dropdown.bind("<FocusOut>", lambda e: self.archive_dropdown.selection_clear())
         self.archive_dropdown.pack(side=tk.LEFT, expand=True, fill=tk.X)

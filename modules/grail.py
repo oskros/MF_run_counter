@@ -405,7 +405,7 @@ class Grail(tkd.Frame):
 
             name = 'combofilter_' + col
             self.filters.append(name)
-            setattr(self, name, ttk.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
+            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
 

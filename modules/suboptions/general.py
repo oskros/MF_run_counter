@@ -31,7 +31,7 @@ class General(tkd.Frame):
 
         self.active_theme = tk.StringVar()
         self.active_theme.set(self.main_frame.active_theme)
-        theme_choices = ttk.Combobox(lf, textvariable=self.active_theme, state='readonly', values=available_themes)
+        theme_choices = tkd.Combobox(lf, textvariable=self.active_theme, state='readonly', values=available_themes)
         theme_choices.bind("<FocusOut>", lambda e: theme_choices.selection_clear())
         theme_choices.bind("<<ComboboxSelected>>", lambda e: self._change_theme())
         theme_choices.config(width=11)

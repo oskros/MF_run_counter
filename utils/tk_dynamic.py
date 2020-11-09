@@ -695,3 +695,16 @@ class CaretButton(Button):
         else:
             self.active = active
         self.config(image=self.up_arrow if self.active else self.dn_arrow)
+
+
+class Combobox(ttk.Combobox):
+    def __init__(self, *args, **kwargs):
+        self.root = args[0]
+        super().__init__(*args, **kwargs)
+
+    def bind(self, sequence=None, func=None, add=None):
+        if sequence == '<<ComboboxSelected>>' and func is not None:
+            func2 = lambda _: (self.root.focus(), func(_))
+            super().bind(sequence=sequence, func=func2, add=add)
+        else:
+            super().bind(sequence=sequence, func=func, add=add)
