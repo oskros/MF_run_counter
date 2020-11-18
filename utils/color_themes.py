@@ -188,7 +188,7 @@ class Theme:
                               "lightcolor": self.border_color
                               },
                 "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
-                        "expand": [("selected", [0, 0, 0, 0])]
+                        "expand": [("selected", [0, -1, 0, 0])]
                         }
             },
             "TScrollbar": {
