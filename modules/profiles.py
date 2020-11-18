@@ -249,10 +249,16 @@ class Profile(tkd.Frame):
 
         # (re-)Populate the listbox with descriptive statistics
         self.descr.delete(0, tk.END)
-        self.descr.insert(tk.END, 'Total session time:   ' + utils.other_utils.build_time_str(session_time))
-        self.descr.insert(tk.END, 'Total run time:       ' + utils.other_utils.build_time_str(sum_laps))
-        self.descr.insert(tk.END, 'Average run time:     ' + utils.other_utils.build_time_str(avg_lap))
-        self.descr.insert(tk.END, 'Fastest run time:     ' + utils.other_utils.build_time_str(min_lap))
-        self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
+        self.descr.insert(tk.END, 'Total session time: ' + self.build_padded_str(session_time))
+        self.descr.insert(tk.END, 'Total run time:     ' + self.build_padded_str(sum_laps))
+        self.descr.insert(tk.END, 'Average run time:   ' + self.build_padded_str(avg_lap))
+        self.descr.insert(tk.END, 'Fastest run time:   ' + self.build_padded_str(min_lap))
         self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
+        self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
         self.descr.insert(tk.END, 'Average packs:        ' + str(round(avg_packs, 2)))
+
+    @staticmethod
+    def build_padded_str(inp, is_time=True):
+        if is_time:
+            inp = utils.other_utils.build_time_str(inp)
+        return ' '*(12-len(inp)) + inp

@@ -10,7 +10,7 @@ class Toplevel(tk.Toplevel):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Toplevel.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -66,7 +66,7 @@ class Canvas(tk.Canvas):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Canvas.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -99,7 +99,7 @@ class Tk(tk.Tk):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -153,7 +153,7 @@ class Tk(tk.Tk):
 
 class Notebook(ttk.Notebook):
     def __init__(self, master=None, **kwargs):
-        ttk.Notebook.__init__(self, master=master, **kwargs)
+        super().__init__(master, **kwargs)
 
     def next_tab(self):
         tabs = self.tabs()
@@ -179,7 +179,7 @@ class Label(tk.Label):
 
     def __init__(self, *args, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
-        tk.Label.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
         if tooltip is not None:
             create_tooltip(self, tooltip)
@@ -200,7 +200,7 @@ class Checkbutton(tk.Checkbutton):
 
     def __init__(self, *args, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
-        tk.Checkbutton.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
         if tooltip is not None:
             create_tooltip(self, tooltip)
@@ -221,7 +221,7 @@ class EthGrailCheckbutton(tk.Checkbutton):
 
     def __init__(self, *args, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
-        tk.Checkbutton.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
         if tooltip is not None:
             create_tooltip(self, tooltip)
@@ -241,7 +241,7 @@ class ListboxLabel(tk.Label):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Label.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -261,7 +261,7 @@ class Hyperlink(tk.Label):
     def __init__(self, *args, **kwargs):
         hyperlink = kwargs.pop('hyperlink')
         cs = kwargs.pop('cursor', 'hand2')
-        tk.Label.__init__(self, *args, **kwargs, cursor=cs)
+        super().__init__(*args, **kwargs, cursor=cs)
         self.__class__.objects.append(self)
         self.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
 
@@ -280,7 +280,7 @@ class RunLabel(tk.Label):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Label.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -298,7 +298,7 @@ class Frame(tk.Frame):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Frame.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -316,7 +316,7 @@ class ListboxFrame(tk.LabelFrame):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.LabelFrame.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -335,7 +335,7 @@ class Button(tk.Button):
 
     def __init__(self, *args, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
-        tk.Button.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
         if tooltip is not None:
             create_tooltip(self, tooltip)
@@ -355,7 +355,7 @@ class PauseButton(tk.Button):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Button.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -373,7 +373,7 @@ class LabelFrame(tk.LabelFrame):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.LabelFrame.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -391,7 +391,7 @@ class Listbox(tk.Listbox):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Listbox.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -409,7 +409,7 @@ class Listbox2(tk.Listbox):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Listbox.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -427,7 +427,7 @@ class Entry(tk.Entry):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Entry.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
     @classmethod
@@ -446,7 +446,7 @@ class RestrictedEntry(tk.Entry):
 
     def __init__(self, *args, **kwargs):
         self.num_only = kwargs.pop('num_only', False)
-        tk.Entry.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.num_only:
             self.allowed_chars = '.0123456789'
         else:
@@ -481,7 +481,7 @@ class Radiobutton(tk.Radiobutton):
 
     def __init__(self, *args, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
-        tk.Radiobutton.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
         if tooltip is not None:
             create_tooltip(self, tooltip)
@@ -501,7 +501,7 @@ class Text(tk.Text):
     objects = []
 
     def __init__(self, *args, **kwargs):
-        tk.Text.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__class__.objects.append(self)
 
         self.tag_configure('currentLine', background='#1874CD', foreground='white')
@@ -608,7 +608,7 @@ def create_tooltip(widget, text):
 class Treeview(ttk.Treeview):
     def __init__(self, *args, **kwargs):
         self.alternate_colour = kwargs.pop('alternate_colour', False)
-        ttk.Treeview.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.alternate_colour:
             self.even_row = True
             self.tag_configure('Odd', background='gray95')
@@ -680,7 +680,7 @@ class CaretButton(Button):
         self.dn_arrow = tk.PhotoImage(file=dn_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
 
         self.active = bool(active)
-        Button.__init__(self, root, image=self.up_arrow if self.active else self.dn_arrow, command=self.command, **kwargs)
+        super().__init__(root, image=self.up_arrow if self.active else self.dn_arrow, command=self.command, **kwargs)
         if tooltip is not None:
             create_tooltip(self, tooltip)
 
