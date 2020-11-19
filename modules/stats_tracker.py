@@ -234,7 +234,7 @@ class StatsTracker(tkd.Frame):
     @staticmethod
     def format_time(hours):
         h = hours // 1
-        m = int(round((hours % 1)*60))
+        m = int((hours % 1)*60)
         return '%02dh:%02dm' % (h, m)
 
     def destroy(self):
