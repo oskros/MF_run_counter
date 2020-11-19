@@ -111,10 +111,10 @@ class ArchiveBrowser(tkd.Toplevel):
         txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
         txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
 
-        txt_list.insert(tk.END, '\n\nTotal session time:   %s' % other_utils.build_time_str(session_time))
-        txt_list.insert(tk.END, '\nTotal run time:       %s' % other_utils.build_time_str(sum_laps))
-        txt_list.insert(tk.END, '\nAverage run time:     %s' % other_utils.build_time_str(avg_lap))
-        txt_list.insert(tk.END, '\nFastest run time:     %s' % other_utils.build_time_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
+        txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
+        txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))
+        txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(avg_lap))
+        txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
         txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
         txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
 
@@ -314,3 +314,8 @@ class ArchiveBrowser(tkd.Toplevel):
             for row_id in tree.get_children():
                 row = tree.item(row_id)['values']
                 writer.writerow(row)
+
+    @staticmethod
+    def build_padded_str(inp):
+        inp = other_utils.build_time_str(inp)
+        return ' '*(12-len(inp)) + inp

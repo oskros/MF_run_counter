@@ -258,7 +258,6 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Average packs:        ' + str(round(avg_packs, 2)))
 
     @staticmethod
-    def build_padded_str(inp, is_time=True):
-        if is_time:
-            inp = utils.other_utils.build_time_str(inp)
+    def build_padded_str(inp):
+        inp = utils.other_utils.build_time_str(inp)
         return ' '*(12-len(inp)) + inp
