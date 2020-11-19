@@ -208,6 +208,7 @@ class Theme:
         # self.style.theme_create('my_clam', parent='clam', settings=settings)
         # self.style.theme_use('my_clam')
         self.style.theme_settings(used_base_style, settings=settings)
+        self.style.map('Treeview', foreground=self.fixed_map('foreground'), background=self.fixed_map('background'))
 
     def update_colors(self):
         tkd.Tk.set_config(bg=self.frame_color, highlightbackground=self.border_color)
@@ -230,3 +231,14 @@ class Theme:
         tkd.ListboxFrame.set_config(bg=self.listbox_color)
         tkd.Checkbutton.set_config(activebackground=self.label_color, activeforeground=self.text_color, background=self.label_color, foreground=self.text_color, selectcolor=self.active_checkbox_color)
         tkd.EthGrailCheckbutton.set_config(activebackground=self.listbox_color, activeforeground=self.text_color, background=self.listbox_color, foreground=self.text_color, selectcolor=self.listbox_color)
+
+    def fixed_map(self, option):
+        # Fix for setting text colour for Tkinter 8.6.9
+        # From: https://core.tcl.tk/tk/info/509cafafae
+        #
+        # Returns the style map for 'option' with any styles starting with
+        # ('!disabled', '!selected', ...) filtered out.
+
+        # style.map() returns an empty list for missing options, so this
+        # should be future-safe.
+        return [elm for elm in self.style.map('Treeview', query_opt=option) if elm[:2] != ('!disabled', '!selected') and elm[0] != ('!disabled !selected')]
