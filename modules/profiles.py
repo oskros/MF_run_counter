@@ -48,7 +48,7 @@ class Profile(tkd.Frame):
         self.game_mode = tk.StringVar(self, value=self.extra_data.get('Game mode', 'Single Player'))
         self.char_name = tk.StringVar(self, value=self.extra_data.get('Character name', ''))
         self._extra_info_label('Run type', self.run_type)
-        self._extra_info_label('Game mode', self.game_mode)
+        # self._extra_info_label('Game mode', self.game_mode)
         self._extra_info_label('Character name', self.char_name)
 
         tkd.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6, 0))
@@ -63,9 +63,9 @@ class Profile(tkd.Frame):
         tkd.Button(sel_frame, text='Open', command=lambda: archive_browser.ArchiveBrowser(self.main_frame)).pack(side=tk.LEFT)
         tkd.Button(sel_frame, text='Delete', command=self.delete_archived_session).pack(side=tk.LEFT)
 
-        self.descr = tkd.Listbox2(self, selectmode=tk.EXTENDED, height=7, activestyle='none', font=('courier', 8))
+        self.descr = tkd.Listbox2(self, selectmode=tk.EXTENDED, height=8, activestyle='none', font=('courier', 8))
         self.descr.bind('<FocusOut>', lambda e: self.descr.selection_clear(0, tk.END))
-        self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
+        self.descr.pack(side=tk.BOTTOM, fill=tk.X, expand=1, anchor=tk.S)
 
     def _extra_info_label(self, text, var):
         frame = tkd.Frame(self, height=12, width=238)
@@ -217,20 +217,28 @@ class Profile(tkd.Frame):
         if chosen == 'Profile history':
             laps = []
             session_time = 0
+            dropcount = 0
             # Concatenate information from each available session
             for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
                 laps.extend(active[key].get('laps', []))
                 session_time += active[key].get('session_time', 0)
+                drops = active[key].get('drops', dict())
+                for drops in drops.values():
+                    dropcount += len(drops)
 
             # Append data for active session from timer module
             laps.extend(self.main_frame.timer_tab.laps)
             session_time += self.main_frame.timer_tab.session_time
+            for drops in self.main_frame.drops_tab.drops.values():
+                dropcount += len(drops)
         elif chosen == 'Active session':
             laps = self.main_frame.timer_tab.laps.copy()
             session_time = self.main_frame.timer_tab.session_time
+            dropcount = sum(len(drops) for drops in self.main_frame.drops_tab.drops.values())
         else:
             laps = active[chosen].get('laps', [])
             session_time = active[chosen].get('session_time', 0)
+            dropcount = sum(len(drops) for drops in active[chosen].get('drops', dict()).values())
 
         # Ensure no division by zero errors by defaulting to displaying 0
         sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
@@ -254,6 +262,7 @@ class Profile(tkd.Frame):
         self.descr.insert(tk.END, 'Time spent in runs:   ' + str(round(pct, 2)) + '%')
         self.descr.insert(tk.END, 'Number of runs:       ' + str(no_laps))
         self.descr.insert(tk.END, 'Average packs:        ' + str(round(avg_packs, 2)))
+        self.descr.insert(tk.END, 'Drops logged:         ' + str(dropcount))
 
     @staticmethod
     def build_padded_str(inp):
