@@ -47,7 +47,7 @@ def test_mapfile_path(game_path, char_name):
     return True
 
 
-def atomic_json_dump(dest_file: str, data: dict) -> None:
+def atomic_json_dump(dest_file: str, data: [dict, list]) -> None:
     """
     Some users experienced data loss in case of sudden power outages, this wrapper should ensure that file saves are
     atomic such that it doesn't happen going forward

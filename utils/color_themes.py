@@ -168,15 +168,16 @@ class Theme:
             self.sb_select_btn = 'grey50'
 
     def apply_theme_style(self):
-        settings = {'TCombobox': {
-            'configure': {'selectbackground': self.combohighlight_color,
-                          # 'selectforeground': 'grey90',
-                          'fieldbackground': self.combofield_color,
-                          'background': self.dropdown_button_color,
-                          },
-            'map': {'fieldbackground': [('readonly', self.combofield_color)],
-                    'foreground': [('readonly', 'black')]}
-        },
+        settings = {
+            'TCombobox': {
+                'configure': {'selectbackground': self.combohighlight_color,
+                              # 'selectforeground': 'grey90',
+                              'fieldbackground': self.combofield_color,
+                              'background': self.dropdown_button_color,
+                              },
+                'map': {'fieldbackground': [('readonly', self.combofield_color)],
+                        'foreground': [('readonly', 'black')]}
+            },
             "TNotebook": {
                 "configure": {"background": self.notebook_background_color,
                               "tabmargins": [2, 4, 2, 0]}
@@ -187,11 +188,12 @@ class Theme:
                               "foreground": self.text_color,
                               "lightcolor": self.border_color
                               },
-                "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
-                        "expand": [("selected", [2, 1, 2, 0])],
-                        "padding": [],
-                        "lightcolor": []
-                        }
+                "map": {
+                    "background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
+                    "expand": [("selected", [2, 1, 2, 0])],
+                    "padding": [],
+                    "lightcolor": []
+                    }
             },
             "TScrollbar": {
                 "configure": {
@@ -201,7 +203,7 @@ class Theme:
                     "troughcolor": self.sb_bar_background,
                     "bordercolor": self.sb_bordercolor,
                     "arrowcolor": self.sb_arrowcolor,
-                    # "gripcount": 0,
+                    "gripcount": 0,
                 },
                 "map": {"background": [("active", self.sb_select_btn)]}
             },
@@ -219,7 +221,8 @@ class Theme:
         tkd.Button.set_config(bg=self.button_color, fg=self.button_text_color)
         tkd.PauseButton.set_config(bg=self.pause_button_color, fg=self.pause_button_text)
         tkd.Listbox.set_config(bg=self.listbox_color, fg=self.listbox_text, highlightbackground=self.border_color)
-        tkd.Listbox2.set_config(bg=self.listbox_color_stats, fg=self.listbox_text_stats, highlightbackground=self.border_color)
+        tkd.Listbox2.set_config(bg=self.listbox_color_stats, fg=self.listbox_text_stats,
+                                highlightbackground=self.border_color)
         tkd.Frame.set_config(bg=self.frame_color)
         tkd.LabelFrame.set_config(bg=self.frame_color)
         tkd.Entry.set_config(bg=self.entry_color)
@@ -229,8 +232,12 @@ class Theme:
         tkd.Text.set_config(bg=self.listbox_color, fg=self.listbox_text)
         tkd.ListboxLabel.set_config(bg=self.listbox_color, fg=self.listbox_text)
         tkd.ListboxFrame.set_config(bg=self.listbox_color)
-        tkd.Checkbutton.set_config(activebackground=self.label_color, activeforeground=self.text_color, background=self.label_color, foreground=self.text_color, selectcolor=self.active_checkbox_color)
-        tkd.EthGrailCheckbutton.set_config(activebackground=self.listbox_color, activeforeground=self.text_color, background=self.listbox_color, foreground=self.text_color, selectcolor=self.listbox_color)
+        tkd.Checkbutton.set_config(activebackground=self.label_color, activeforeground=self.text_color,
+                                   background=self.label_color, foreground=self.text_color,
+                                   selectcolor=self.active_checkbox_color)
+        tkd.EthGrailCheckbutton.set_config(activebackground=self.listbox_color, activeforeground=self.text_color,
+                                           background=self.listbox_color, foreground=self.text_color,
+                                           selectcolor=self.listbox_color)
 
     def fixed_map(self, option):
         # Fix for setting text colour for Tkinter 8.6.9
@@ -241,4 +248,5 @@ class Theme:
 
         # style.map() returns an empty list for missing options, so this
         # should be future-safe.
-        return [elm for elm in self.style.map('Treeview', query_opt=option) if elm[:2] != ('!disabled', '!selected') and elm[0] != ('!disabled !selected')]
+        return [elm for elm in self.style.map('Treeview', query_opt=option) if
+                elm[:2] != ('!disabled', '!selected') and elm[0] != '!disabled !selected']
