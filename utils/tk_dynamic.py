@@ -405,24 +405,6 @@ class Listbox(tk.Listbox):
         super().destroy()
 
 
-class Listbox2(tk.Listbox):
-    objects = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__class__.objects.append(self)
-
-    @classmethod
-    def set_config(cls, **val):
-        for obj in cls.objects:
-            obj.config(val)
-
-    def destroy(self):
-        cur_obj = next(idx for idx, x in enumerate(self.objects) if x.bindtags() == self.bindtags())
-        del self.__class__.objects[cur_obj]
-        super().destroy()
-
-
 class Entry(tk.Entry):
     objects = []
 
