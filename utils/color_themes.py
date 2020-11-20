@@ -179,16 +179,18 @@ class Theme:
         },
             "TNotebook": {
                 "configure": {"background": self.notebook_background_color,
-                              "tabmargins": [0, 2, 1, 0]}
+                              "tabmargins": [2, 4, 2, 0]}
             },
             "TNotebook.Tab": {
-                "configure": {"padding": [4, 2],
+                "configure": {"padding": [2, 1],
                               "background": self.tab_background_color,
                               "foreground": self.text_color,
                               "lightcolor": self.border_color
                               },
                 "map": {"background": [("selected", self.selected_tab_color), ("active", self.hover_tab_background_color)],
-                        "expand": [("selected", [0, -1, 0, 0])]
+                        "expand": [("selected", [2, 1, 2, 0])],
+                        "padding": [],
+                        "lightcolor": []
                         }
             },
             "TScrollbar": {
@@ -205,8 +207,6 @@ class Theme:
             },
         }
 
-        # self.style.theme_create('my_clam', parent='clam', settings=settings)
-        # self.style.theme_use('my_clam')
         self.style.theme_settings(used_base_style, settings=settings)
         self.style.map('Treeview', foreground=self.fixed_map('foreground'), background=self.fixed_map('background'))
 

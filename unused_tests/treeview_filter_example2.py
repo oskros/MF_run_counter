@@ -47,11 +47,11 @@ def fixed_map(option):
 root = Application()
 style = ttk.Style()
 # style.theme_use('clam')
-style.map('Treeview', foreground=fixed_map('foreground'),
-  background=fixed_map('background'))
+# style.map('Treeview', foreground=fixed_map('foreground'),
+#   background=fixed_map('background'))
 style.theme_use('clam')
 # style.theme_settings()
 
-# style.theme_create('my_style', parent='clam')
-# style.theme_use('my_style')
+style.theme_create('my_style', parent='clam')
+style.theme_use('my_style')
 root.mainloop()
