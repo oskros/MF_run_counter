@@ -1,5 +1,5 @@
 from init import *
-from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller
+from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller, other_utils
 from utils.color_themes import Theme
 from utils.item_name_lists import ETH_ITEM_LIST
 import tkinter as tk
@@ -154,8 +154,7 @@ class Grail(tkd.Frame):
         with open(media_path + 'item_library.csv', 'r') as fo:
             grail_dict = [{**row, 'Found': False} for row in csv.DictReader(fo)]
 
-        with open(self.file_name, 'w') as fo:
-            json.dump(grail_dict, fo, indent=2)
+        other_utils.atomic_json_dump(self.file_name, grail_dict)
         return grail_dict
 
     def load_grail(self):
@@ -168,8 +167,7 @@ class Grail(tkd.Frame):
         return state
 
     def save_grail(self):
-        with open(self.file_name, 'w') as fo:
-            json.dump(self.grail, fo, indent=2)
+        other_utils.atomic_json_dump(self.file_name, self.grail)
 
         self.main_frame.herokuapp_username = self.username.get()
         self.main_frame.herokuapp_password = self.password.get()

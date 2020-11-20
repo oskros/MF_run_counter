@@ -1,6 +1,7 @@
 import json
 import re
 from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, ETH_ITEM_LIST
+from utils import other_utils
 
 
 def detect_iname(inp):
@@ -138,5 +139,4 @@ if __name__ == '__main__':
                         grailer = "False"
                     prof[sess]['drops'][run_no][i]['Grailer'] = grailer
 
-    with open(pp, 'w') as fo:
-        json.dump(prof, fo, indent=2)
+    other_utils.atomic_json_dump(pp, prof)

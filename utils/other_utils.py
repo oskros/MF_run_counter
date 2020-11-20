@@ -1,4 +1,5 @@
 import os
+import json
 from tkinter import messagebox
 import screeninfo
 import pymem.exception
@@ -44,6 +45,19 @@ def test_mapfile_path(game_path, char_name):
                                                          'This session will continue in manual mode')
         return False
     return True
+
+
+def atomic_json_dump(dest_file: str, data: dict) -> None:
+    """
+    Some users experienced data loss in case of sudden power outages, this wrapper should ensure that file saves are
+    atomic such that it doesn't happen going forward
+    """
+    tmp_file = dest_file[:-5] + '_tmp.json'
+    with open(tmp_file, 'w') as fo:
+        json.dump(data, fo, indent=2)
+        fo.flush()
+        os.fsync(fo.fileno())
+    os.replace(tmp_file, dest_file)
 
 
 pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,

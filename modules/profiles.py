@@ -5,7 +5,7 @@ import sys
 import time
 import tkinter as tk
 from modules import archive_browser
-from utils import tk_dynamic as tkd, tk_utils
+from utils import tk_dynamic as tkd, tk_utils, other_utils
 from tkinter import ttk, messagebox
 
 
@@ -104,8 +104,7 @@ class Profile(tkd.Frame):
 
             # Create a save file for the new profile
             file = 'Profiles/%s.json' % self.active_profile.get()
-            with open(file, 'w') as fo:
-                json.dump({'extra_data': {**profile, 'Last update': time.time()}}, fo, indent=2)
+            other_utils.atomic_json_dump(file, {'extra_data': {**profile, 'Last update': time.time()}})
 
             # Update active profile
             if not first_profile:
@@ -200,8 +199,7 @@ class Profile(tkd.Frame):
                 cache = self.main_frame.load_state_file()
                 removed = cache.pop(chosen, None)
                 file = 'Profiles/%s.json' % self.active_profile.get()
-                with open(file, 'w') as fo:
-                    json.dump(cache, fo, indent=2)
+                other_utils.atomic_json_dump(file, cache)
 
                 # Update archive dropdown and descriptive statistics
                 self.available_archive.remove(chosen)

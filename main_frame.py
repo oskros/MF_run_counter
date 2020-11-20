@@ -492,8 +492,7 @@ class MainFrame(Config):
             state.setdefault('extra_data', dict())['Last update'] = time.time()
 
             file = 'Profiles/%s.json' % self.active_profile
-            with open(file, 'w') as fo:
-                json.dump(state, fo, indent=2)
+            other_utils.atomic_json_dump(file, state)
 
             # When session has been successfully saved, the session is reset
             self.ResetSession()
@@ -526,8 +525,7 @@ class MainFrame(Config):
         if is_updated or 'Last update' not in cache['extra_data']:
             cache['extra_data']['Last update'] = time.time()
         file = 'Profiles/%s.json' % self.active_profile
-        with open(file, 'w') as fo:
-            json.dump(cache, fo, indent=2)
+        other_utils.atomic_json_dump(file, cache)
         self.grail_tab.save_grail()
 
     def Quit(self):
