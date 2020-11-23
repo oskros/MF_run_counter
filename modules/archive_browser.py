@@ -34,45 +34,48 @@ class ArchiveBrowser(tkd.Toplevel):
         self.main_frame.theme.update_colors()
 
     def collect_data(self):
+        laps = []
+        drops = dict()
         chosen = self.main_frame.profile_tab.archive_dropdown.get()
         # Handle how loading of session data should be treated in the 3 different cases
         if chosen == 'Active session':
             # Load directly from timer module
             session_time = self.main_frame.timer_tab.session_time
-            laps = self.main_frame.timer_tab.laps
-            drops = self.main_frame.drops_tab.drops
+            for lap in self.main_frame.timer_tab.laps:
+                laps.append({**lap, 'Session': chosen} if isinstance(lap, dict) else {'Run time': lap, 'Session': chosen})
+            for run_no, run_drops in self.main_frame.drops_tab.drops.items():
+                for run_drop in run_drops:
+                    drops.setdefault(run_no, []).append({**run_drop, 'Session': chosen} if isinstance(run_drop, dict) else {'item_name': None, 'input': run_drop, 'extra': '', 'Session': chosen})
         elif chosen == 'Profile history':
             # Load everything from profile .json, and append data from timer module
             active = self.main_frame.load_state_file()
-            laps = []
             session_time = 0
-            drops = dict()
             # Concatenate information from each available session
-            for key in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
-                session_drops = active[key].get('drops', dict())
-                for run_no, run_drop in session_drops.items():
-                    drops[str(int(run_no) + len(laps))] = run_drop
-                laps.extend(active[key].get('laps', []))
-                session_time += active[key].get('session_time', 0)
+            for sess in [x for x in active.keys() if x not in ['active_state', 'extra_data']]:
+                session_time += active[sess].get('session_time', 0)
+                for run_no, run_drops in active[sess].get('drops', dict()).items():
+                    for run_drop in run_drops:
+                        drops.setdefault(str(int(run_no) + len(laps)), []).append({**run_drop, 'Session': sess} if isinstance(run_drop, dict) else {'item_name': None, 'input': run_drop, 'extra': '', 'Session': sess})
+                for lap in active[sess].get('laps', []):
+                    laps.append({**lap, 'Session': sess} if isinstance(lap, dict) else {'Run time': lap, 'Session': sess})
 
             # Append data for active session from timer module
-            for run_no, run_drop in self.main_frame.drops_tab.drops.items():
-                drops[str(int(run_no) + len(laps))] = run_drop
-            laps.extend(self.main_frame.timer_tab.laps)
+            for run_no, run_drops in self.main_frame.drops_tab.drops.items():
+                for run_drop in run_drops:
+                    drops.setdefault(str(int(run_no) + len(laps)), []).append({**run_drop, 'Session': 'Active session'} if isinstance(run_drop, dict) else {'item_name': None, 'input': run_drop, 'extra': '', 'Session': 'Active session'})
+            for lap in self.main_frame.timer_tab.laps:
+                laps.append({**lap, 'Session': 'Active session'} if isinstance(lap, dict) else {'Run time': lap, 'Session': 'Active session'})
             session_time += self.main_frame.timer_tab.session_time
         else:
             # Load selected session data from profile .json
             active = self.main_frame.load_state_file()
             chosen_archive = active.get(chosen, dict())
             session_time = chosen_archive.get('session_time', 0)
-            laps = chosen_archive.get('laps', [])
-            drops = chosen_archive.get('drops', dict())
-
-        # Backwards compatibility with old drop format
-        for k, v in drops.items():
-            for i in range(len(v)):
-                if not isinstance(v[i], dict):
-                    drops[k][i] = {'item_name': None, 'input': v[i], 'extra': ''}
+            for lap in chosen_archive.get('laps', []):
+                laps.append({**lap, 'Session': chosen} if isinstance(lap, dict) else {'Run time': lap, 'Session': chosen})
+            for run_no, run_drops in chosen_archive.get('drops', dict()).items():
+                for run_drop in run_drops:
+                    drops.setdefault(run_no, []).append({**run_drop, 'Session': chosen} if isinstance(run_drop, dict) else {'item_name': None, 'input': run_drop, 'extra': '', 'Session': chosen})
 
         return {'session_time': session_time, 'laps': laps, 'drops': drops}
 
@@ -80,13 +83,13 @@ class ArchiveBrowser(tkd.Toplevel):
         statistics_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(statistics_fr, text='Statistics')
 
-        sum_laps = sum(x['Run time'] if isinstance(x, dict) else x for x in laps)
+        sum_laps = sum(x['Run time'] for x in laps)
         avg_lap = sum_laps / len(laps) if laps else 0
         pct = sum_laps * 100 / session_time if session_time > 0 else 0
 
         # Kill averages
-        list_uniques = [int(x.get('Uniques kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
-        list_champs = [int(x.get('Champions kills', '')) for x in laps if isinstance(x, dict) and x.get('Uniques kills', '')]
+        list_uniques = [int(x['Uniques kills']) for x in laps if x.get('Uniques kills')]
+        list_champs = [int(x['Champions kills']) for x in laps if x.get('Uniques kills')]
         avg_uniques = sum(list_uniques) / len(list_uniques) if list_uniques else 0
         avg_champs = sum(list_champs) / len(list_champs) if list_champs else 0
         avg_packs = avg_uniques + avg_champs / 2.534567
@@ -114,7 +117,7 @@ class ArchiveBrowser(tkd.Toplevel):
         txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
         txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))
         txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(avg_lap))
-        txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] if isinstance(x, dict) else x for x in laps], default=0)))
+        txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] for x in laps], default=0)))
         txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
         txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
 
@@ -137,7 +140,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
-            run_time = lap['Run time'] if isinstance(lap, dict) else lap
+            run_time = lap['Run time']
             str_n = ' ' * max(len(str(len(laps))) - len(str(n)), 0) + str(n)
             droplst = drops.get(str(n), [])
             tmp = '\nRun ' + str_n + ': ' + other_utils.build_time_str(run_time)
@@ -145,35 +148,14 @@ class ArchiveBrowser(tkd.Toplevel):
                 tmp += ' - ' + ', '.join([d['input'].strip() for d in droplst])
             txt_list.insert(tk.END, tmp)
 
-        # Add bold tags
-        # txt_list.tag_add("BOLD", "1.0", "1.15")
-        # txt_list.tag_add("BOLD", "2.0", "2.9")
-        # txt_list.tag_add("BOLD", "3.0", "3.10")
-        # txt_list.tag_add("BOLD", "5.0", "5.19")
-        # txt_list.tag_add("BOLD", "6.0", "6.15")
-        # txt_list.tag_add("BOLD", "7.0", "7.17")
-        # txt_list.tag_add("BOLD", "8.0", "8.17")
-        # txt_list.tag_add("BOLD", "9.0", "9.15")
-        # txt_list.tag_add("BOLD", "10.0", "10.19")
-        # txt_list.tag_add("BOLD", "1.16", "1.0 lineend")
-        # txt_list.tag_add("BOLD", "2.16", "2.0 lineend")
-        # txt_list.tag_add("BOLD", "3.16", "3.0 lineend")
-        # txt_list.tag_add("BOLD", "5.20", "5.0 lineend")
-        # txt_list.tag_add("BOLD", "6.20", "6.0 lineend")
-        # txt_list.tag_add("BOLD", "7.20", "7.0 lineend")
-        # txt_list.tag_add("BOLD", "8.20", "8.0 lineend")
-        # txt_list.tag_add("BOLD", "9.20", "9.0 lineend")
-        # txt_list.tag_add("BOLD", "10.20", "10.0 lineend")
-        # txt_list.tag_add("HEADER", "12.0", "12.0 lineend")
+        # Disable modifications to the Text widget after all lines have been inserted
         txt_list.config(state=tk.DISABLED)
 
         btn_frame1 = tkd.Frame(statistics_fr)
         tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
         tkd.Button(btn_frame1, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
 
-        # Packs all the buttons and UI in the archive browser. Packing order is very important:
-        # TOP: Title first (furthest up), then list frame
-        # BOTTOM: Buttons first (furthest down) and then horizontal scrollbar
+        # Packs all the buttons and UI in the archive browser. Packing order is important
         list_win.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
@@ -184,7 +166,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.tabcontrol.add(run_table_fr, text='Run table')
 
         cols = ["Run", "Run time", "Real time", "Name", "MF", "Players X", "Level", "XP Gained", "Uniques kills",
-                "Champions kills", "Minion kills", "Total kills"]
+                "Champions kills", "Minion kills", "Total kills", "Session"]
         tree_frame = tkd.Frame(run_table_fr)
         btn_frame2 = tkd.Frame(run_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -204,7 +186,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 0]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
@@ -214,16 +196,16 @@ class ArchiveBrowser(tkd.Toplevel):
             tree.heading(col, text=col, sort_by=sort_by)
 
         for n, lap in enumerate(laps, 1):
-            compatible_lap = dict(lap) if isinstance(lap, dict) else {'Run time': lap}
-            compatible_lap['Run time'] = other_utils.build_time_str(compatible_lap['Run time'])
-            compatible_lap['Run'] = n
-            tree.insert('', tk.END, values=[compatible_lap.get(col, '') for col in cols])
+            tmp_lap = dict(lap)
+            tmp_lap['Run time'] = other_utils.build_time_str(tmp_lap['Run time'])
+            tmp_lap['Run'] = n
+            tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
 
     def drop_table(self, drops):
         drop_table_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(drop_table_fr, text='Drop table')
 
-        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer", "Eth Grailer"]
+        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer", "Eth Grailer", "Session"]
         tree_frame = tkd.Frame(drop_table_fr)
         btn_frame2 = tkd.Frame(drop_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -242,11 +224,9 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65]
-        # tree.tag_configure('Grail', background='#cff3ff')
+        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 0]
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')
-        # tree.tag_configure('BothGrail', background='#e6ffe6')
 
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
@@ -267,8 +247,6 @@ class ArchiveBrowser(tkd.Toplevel):
                     tmp_drop["Item name"] = tmp_drop["input"]
                     tmp_drop["Extra input"] = ""
 
-                # if drop.get('Grailer', False) == 'True' and drop.get('Eth Grailer', False) == 'True':
-                #     tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='BothGrail')
                 if drop.get('Grailer', False) == 'True':
                     tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='Grail')
                 elif drop.get('Eth Grailer', False) == 'True':
@@ -299,7 +277,7 @@ class ArchiveBrowser(tkd.Toplevel):
     @staticmethod
     def save_to_csv(tree):
         """
-        Writes the run table to a .csv file
+        Writes the treeview rows to a .csv file
 
         Here we use asksaveasfilename in order to just return a path instead of writable object, because then we can
         initiate our own csv writer object with the newline='' option, which ensures we don't have double line breaks
