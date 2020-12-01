@@ -133,7 +133,10 @@ class D2Reader:
 
     def get_d2_version(self):
         if self.is_d2se:
-            return self.pm.read_string(self.base_address + 0x1A049).strip()
+            d2se_patch = self.pm.read_string(self.base_address + 0x1A049).strip()
+            if d2se_patch not in ['1.07', '1.08', '1.09b', '1.09d', '1.10f', '1.11b', '1.12a', '1.13c']:
+                d2se_patch = '1.13c'
+            return d2se_patch
         try:
             decoded_filename = self.pm.process_base.filename.decode('utf-8')
         except UnicodeDecodeError:
