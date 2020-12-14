@@ -245,6 +245,16 @@ UNID_ITEM_LIST = [
     # Circlet types
     "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
     "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
+    
+    # Other items requested by the CHOSEN Juan
+    "Sacred Rondache (Magic)", "Sacred Targe (Magic)", "Kurast Shield (Magic)", "Colossus Sword (Magic)", "Monarch (Magic)",
+    "Sacred Rondache (Rare)", "Sacred Targe (Rare)", "Kurast Shield (Rare)", "Colossus Sword (Rare)", "Monarch (Rare)",
+
+    # Runes
+    'El Rune', 'Eld Rune', 'Tir Rune', 'Nef Rune', 'Eth Rune', 'Ith Rune', 'Tal Rune', 'Ral Rune', 'Ort Rune', 'Thul Rune',
+    'Amn Rune', 'Sol Rune', 'Shael Rune', 'Dol Rune', 'Hel Rune', 'Io Rune', 'Lum Rune', 'Ko Rune', 'Fal Rune', 'Lem Rune',
+    'Pul Rune', 'Um Rune', 'Mal Rune', 'Ist Rune', 'Gul Rune', 'Vex Rune', 'Ohm Rune', 'Lo Rune', 'Sur Rune', 'Ber Rune',
+    'Jah Rune', 'Cham Rune', 'Zod Rune'
 ]
 
 
@@ -255,6 +265,10 @@ NO_UNIQUE_MAP = {
     'Grand Charm': {'TC': 1, 'Item Class': 'Charm'},
 
     'Coronet': {'TC': 54, 'Item Class': 'Circlet'},
+
+    'Sacred Targe': {'TC': 63, 'Item Class': 'Shield'},
+    'Kurast Shield': {'TC': 75, 'Item Class': 'Shield'},
+    'Colossus Sword': {'TC': 81, 'Item Class': 'Sword 2H'},
 
     'Archon Plate': {'TC': 84, 'Item Class': 'Armor'},
     'Ghost Spear': {'TC': 84, 'Item Class': 'Spear'},
