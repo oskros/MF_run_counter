@@ -170,11 +170,10 @@ class Profile(tkd.Frame):
             file = 'Profiles/%s.json' % chosen
             os.remove(file)
             self.main_frame.profiles.remove(chosen)
+            self.profile_dropdown['values'] = self.main_frame.profiles
 
             # We change active profile to an existing profile
-            self.main_frame.active_profile = self.main_frame.profiles[0]
             self.active_profile.set(self.main_frame.profiles[0])
-            self.profile_dropdown['values'] = self.main_frame.profiles
             self._change_active_profile()
 
     def delete_archived_session(self):
