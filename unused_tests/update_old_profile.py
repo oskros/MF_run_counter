@@ -133,6 +133,7 @@ if __name__ == '__main__':
                     prof[sess]['drops'][run_no][i]['TC'] = g_item['TC']
                     prof[sess]['drops'][run_no][i]['QLVL'] = g_item['QLVL']
                     prof[sess]['drops'][run_no][i]['Item Class'] = g_item['Item Class']
+                    prof[sess]['drops'][run_no][i]['Rarity'] = g_item['Rarity']
                     if run.get('input', '').startswith('(*)'):
                         grailer = "True"
                     else:
