@@ -83,6 +83,7 @@ class Drops(tkd.Frame):
                     drop['TC'] = item.get('TC', '')
                     drop['QLVL'] = item.get('QLVL', '')
                     drop['Item Class'] = item.get('Item Class', '')
+                    drop['Rarity'] = item.get('Rarity', '')
                     break
 
         last_run = drop.pop('last_run', False)

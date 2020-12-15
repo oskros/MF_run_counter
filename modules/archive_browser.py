@@ -205,7 +205,7 @@ class ArchiveBrowser(tkd.Toplevel):
         drop_table_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(drop_table_fr, text='Drop table')
 
-        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer", "Eth Grailer", "Session"]
+        cols = ["Run", "Item name", "Extra input", "Real time", "TC", "QLVL", "Item Class", "Grailer", "Eth Grailer", "Session", "Rarity"]
         tree_frame = tkd.Frame(drop_table_fr)
         btn_frame2 = tkd.Frame(drop_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -224,7 +224,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 0]
+        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 0, 0]
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')
 
