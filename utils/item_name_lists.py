@@ -184,7 +184,7 @@ UNID_ITEM_LIST = [
     "Sacred Rondache (Unique)", "Sallet (Unique)", "Sash (Set)", "Sash (Unique)", "Scale Mail (Unique)",
     "Scarabshell Boots (Unique)", "Scepter (Unique)", "Scimitar (Unique)", "Scissors Suwayyah (Set)",
     "Scourge (Unique)", "Scutum (Unique)", "Scythe (Unique)", "Serpentskin Armor (Unique)", "Shadow Plate (Set)",
-    "Shadow Plate (Unique)", "Shako (Unique)", "Shamshir (Unique)", "Sharkskin Armor (Unique)", "Sharkskin Belt (Set)",
+    "Shadow Plate (Unique)", "Shako (Unique)", "Shamshir (Unique)", "Sharktooth Armor (Unique)", "Sharkskin Belt (Set)",
     "Sharkskin Belt (Unique)", "Sharkskin Boots (Unique)", "Sharkskin Gloves (Set)", "Sharkskin Gloves (Unique)",
     "Short Battle Bow (Unique)", "Short Bow (Unique)", "Short Siege Bow (Unique)", "Short Staff (Unique)",
     "Short Sword (Unique)", "Short War Bow (Set)", "Short War Bow (Unique)", "Siege Crossbow (Unique)",
