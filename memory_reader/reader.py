@@ -221,7 +221,7 @@ class D2Reader:
 
         # Sometimes a previous unit is attached to another unit, we handle that recursively here
         prev_unit = self.pm.read_uint(uadr + 0xE4)
-        if prev_unit != 0:            # print('prev_unit: %s' % prev_unit)
+        if prev_unit != 0:
             self.process_unit(prev_unit)
 
         unit_status = self.pm.read_uint(uadr + 0x10)
@@ -234,16 +234,18 @@ class D2Reader:
                 self.dead_guids.append(game_guid)
                 mon_typeflag = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)
 
-                # FIXME: seems like hydras (and potentially also other summons) will increment the counter
                 self.kill_counts['Total'] += 1
                 mon_type = reader_utils.mon_type.get(mon_typeflag, None)
                 if mon_type is None:
-                    # print(mon_typeflag)
                     logging.debug('Failed to map monster TypeFlag: %s' % mon_typeflag)
                 if mon_type in ['Unique', 'Champion', 'Minion']:
                     self.kill_counts[mon_type] += 1
         else:
-            self.observed_guids.add(game_guid)
+            # Dont add non-selectable units to the observed list (npcs, hydras, etc)
+            monstats_addr = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x00)
+            selectable = self.pm.read_short(monstats_addr + 0x4)
+            if selectable > 0:
+                self.observed_guids.add(game_guid)
 
     def get_string_table_by_identifier(self, identifier):
         if identifier >= 0x4E20:  # 20.000
