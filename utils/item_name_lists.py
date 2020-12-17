@@ -255,6 +255,9 @@ UNID_ITEM_LIST = [
     'Amn Rune', 'Sol Rune', 'Shael Rune', 'Dol Rune', 'Hel Rune', 'Io Rune', 'Lum Rune', 'Ko Rune', 'Fal Rune', 'Lem Rune',
     'Pul Rune', 'Um Rune', 'Mal Rune', 'Ist Rune', 'Gul Rune', 'Vex Rune', 'Ohm Rune', 'Lo Rune', 'Sur Rune', 'Ber Rune',
     'Jah Rune', 'Cham Rune', 'Zod Rune'
+    
+    # Keys
+    'Key of Hate', 'Key of Destruction', 'Key of Terror'
 ]
 
 
