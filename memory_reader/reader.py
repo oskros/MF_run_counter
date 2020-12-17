@@ -232,20 +232,25 @@ class D2Reader:
             # unit death not already recorded, and unit also recorded as being alive at some point (no corpses)
             if game_guid not in self.dead_guids and game_guid in self.observed_guids:
                 self.dead_guids.append(game_guid)
+
+                # Dont add non-selectable units to the observed list (npcs, hydras, etc)
+                monstats_addr = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x0)
+                # self.pm.read_short(monstats_addr + 0x0)  # Monster ID. Hydra heads are 351, 352, 353
+                selectable_flag = self.pm.read_uint(monstats_addr + 0xA)  # Hex: 0x80000000
+                if selectable_flag == 0x80000000:
+                    return
+
                 mon_typeflag = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)
 
                 self.kill_counts['Total'] += 1
+
                 mon_type = reader_utils.mon_type.get(mon_typeflag, None)
                 if mon_type is None:
                     logging.debug('Failed to map monster TypeFlag: %s' % mon_typeflag)
                 if mon_type in ['Unique', 'Champion', 'Minion']:
                     self.kill_counts[mon_type] += 1
         else:
-            # Dont add non-selectable units to the observed list (npcs, hydras, etc)
-            monstats_addr = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x00)
-            selectable = self.pm.read_short(monstats_addr + 0x4)
-            if selectable > 0:
-                self.observed_guids.add(game_guid)
+            self.observed_guids.add(game_guid)
 
     def get_string_table_by_identifier(self, identifier):
         if identifier >= 0x4E20:  # 20.000
