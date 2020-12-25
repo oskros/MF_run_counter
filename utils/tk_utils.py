@@ -6,12 +6,12 @@ import webbrowser
 from utils.other_utils import get_monitor_from_coord
 
 
-def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
+def get_displaced_coords(master, app_x, app_y, pos_x=None, pos_y=None):
     if pos_x is None:
-        pos_x = root.winfo_rootx()
+        pos_x = master.root.winfo_rootx()
     if pos_y is None:
-        pos_y = root.winfo_rooty()
-    mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+        pos_y = master.root.winfo_rooty()
+    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_scaling)
     min_x = mon.x
     min_y = mon.y
     max_x = mon.width + min_x
@@ -20,12 +20,12 @@ def get_displaced_coords(root, app_x, app_y, pos_x=None, pos_y=None):
     return max(min(pos_x, max_x - app_x - 10), min_x - 5), max(min(pos_y, max_y - app_y), min_y)
 
 
-def get_displaced_geom(root, app_x, app_y, pos_x=None, pos_y=None):
+def get_displaced_geom(master, app_x, app_y, pos_x=None, pos_y=None):
     if pos_x is None:
-        pos_x = root.winfo_rootx()
+        pos_x = master.root.winfo_rootx()
     if pos_y is None:
-        pos_y = root.winfo_rooty()
-    mon = get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
+        pos_y = master.root.winfo_rooty()
+    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_scaling)
     min_x = mon.x
     min_y = mon.y
     max_x = mon.width + min_x
@@ -38,13 +38,13 @@ def get_displaced_geom(root, app_x, app_y, pos_x=None, pos_y=None):
 
 
 class RegistrationForm:
-    def __init__(self, root, coords, first_profile):
+    def __init__(self, master, coords, first_profile):
         self.new_win = tk.Tk()
         self.new_win.title('Profile registration')
         self.new_win.wm_attributes('-topmost', 1)
         self.new_win.resizable(False, False)
 
-        geom = get_displaced_geom(root, 290, 185, coords[0], coords[1])
+        geom = get_displaced_geom(master, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(media_path + 'icon.ico')
@@ -116,8 +116,8 @@ class RegistrationForm:
         self.new_win.quit()
 
 
-def registration_form(root, coords=None, first_profile=False):
-    reg_form = RegistrationForm(root, coords, first_profile)
+def registration_form(master, coords=None, first_profile=False):
+    reg_form = RegistrationForm(master, coords, first_profile)
     reg_form.new_win.focus_force()
     reg_form.new_win.mainloop()
 
@@ -209,7 +209,7 @@ def mebox(entries, coords=False, title='Message', defaults=None, masks=None, msg
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master_root=None, disabled_btn_input=None):
+    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master=None, disabled_btn_input=None):
         self.root = tk.Toplevel()
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
@@ -219,7 +219,7 @@ class MessageBox(object):
         self.msg = str(msg)
         self.disabled_btn_input = disabled_btn_input
         if self.disabled_btn_input:
-            self.entry_var = tk.StringVar(master_root)
+            self.entry_var = tk.StringVar()
             self.entry_var.trace_add('write', lambda name, index, mode: self.check_input())
             entry = True
 
@@ -280,8 +280,8 @@ class MessageBox(object):
 
         # Roughly center the box on screen. For accuracy see: https://stackoverflow.com/a/10018670/1217270
         self.root.update_idletasks()
-        if coords and master_root:
-            xp, yp = get_displaced_coords(master_root, self.root.winfo_width(), self.root.winfo_height(), coords[0], coords[1])
+        if coords and master:
+            xp, yp = get_displaced_coords(master, self.root.winfo_width(), self.root.winfo_height(), coords[0], coords[1])
         elif coords:
             xp = coords[0]
             yp = coords[1]
@@ -330,8 +330,8 @@ class MessageBox(object):
             self.btn_1.config(state=tk.DISABLED)
 
 
-def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master_root=None, disabled_btn_input=None):
-    msgbox = MessageBox(msg=msg, b1=b1, b2=b2, entry=entry, coords=coords, title=title, hyperlink=hyperlink, master_root=master_root, disabled_btn_input=disabled_btn_input)
+def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master=None, disabled_btn_input=None):
+    msgbox = MessageBox(msg=msg, b1=b1, b2=b2, entry=entry, coords=coords, title=title, hyperlink=hyperlink, master=master, disabled_btn_input=disabled_btn_input)
     msgbox.root.mainloop()
 
     # the function pauses here until the mainloop is quit

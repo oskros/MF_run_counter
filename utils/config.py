@@ -70,6 +70,7 @@ class Config:
         config['OPTIONS']['auto_archive_hours'] = '0.0'
         config['OPTIONS']['autocompletion_unids'] = '0'
         config['OPTIONS']['add_to_last_run'] = '0'
+        config['OPTIONS']['disable_dpi_scaling'] = '1'
 
         config.add_section('AUTOMODE')
         config['AUTOMODE']['automode'] = '0'

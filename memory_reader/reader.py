@@ -227,6 +227,8 @@ class D2Reader:
         unit_status = self.pm.read_uint(uadr + 0x10)
         game_guid = self.pm.read_uint(uadr + 0x0C)
 
+        # self.unit_map[game_guid] = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x0)
+
         # unit is dead
         if unit_status == 12 and game_guid != 1:
             # unit death not already recorded, and unit also recorded as being alive at some point (no corpses)
@@ -236,8 +238,8 @@ class D2Reader:
                 # Dont add non-selectable units to the observed list (npcs, hydras, etc)
                 monstats_addr = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x0)
                 # self.pm.read_short(monstats_addr + 0x0)  # Monster ID. Hydra heads are 351, 352, 353
-                selectable_flag = self.pm.read_uint(monstats_addr + 0xA)  # Hex: 0x80000000
-                if selectable_flag == 0x80000000:
+                selectable_type = self.pm.read_uint(monstats_addr + 0xA)  # Hex: 0x80000000
+                if selectable_type == 0x80000000:
                     return
 
                 mon_typeflag = self.pm.read_uint(self.pm.read_uint(uadr + 0x14) + 0x16)

@@ -79,7 +79,7 @@ class Profile(tkd.Frame):
         # Ensure the pop-up is centered over the main program window
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.registration_form(root=self.root, coords=(xc, yc), first_profile=first_profile)
+        profile = tk_utils.registration_form(master=self.main_frame, coords=(xc, yc), first_profile=first_profile)
         if profile:
             profile_name = profile.pop('Profile name')
             profile['Game mode'] = 'Single Player' if profile['Game mode'] == '' else profile['Game mode']

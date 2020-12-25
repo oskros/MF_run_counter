@@ -74,6 +74,7 @@ class MainFrame(Config):
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
         self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
         self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
+        self.disable_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
 
         # UI config
         self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])
@@ -204,7 +205,7 @@ class MainFrame(Config):
         self.toggle_advanced_stats_frame(show=tracker_is_active)
 
         # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
-        if self.os_release == '10':
+        if self.os_release == '10' and self.disable_scaling:
             ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Used if "auto archive session" is activated
@@ -468,7 +469,7 @@ class MainFrame(Config):
 
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        if tk_utils.mbox(confirm_msg, b1='Yes', b2='No', coords=[xc, yc], master_root=self.root):
+        if tk_utils.mbox(confirm_msg, b1='Yes', b2='No', coords=[xc, yc], master=self):
             # Stop any active run and load current session info from timer and drop module.
             self.timer_tab.stop()
             active = self.timer_tab.save_state()

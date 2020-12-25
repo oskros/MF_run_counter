@@ -22,8 +22,8 @@ def build_time_str(elap):
     return '%02d:%02d:%02d:%1d' % (hours, minutes, seconds, hseconds)
 
 
-def get_monitor_from_coord(x, y):
-    monitors = screeninfo.get_monitors()
+def get_monitor_from_coord(x, y, disable_scaling=True):
+    monitors = screeninfo.get_monitors(disable_scaling=disable_scaling)
 
     for m in reversed(monitors):
         if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
