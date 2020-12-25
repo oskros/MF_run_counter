@@ -203,7 +203,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 0]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
@@ -241,7 +241,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 0, 0]
+        widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 80, 80]
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')
 
