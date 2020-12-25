@@ -33,6 +33,8 @@ class ArchiveBrowser(tkd.Toplevel):
 
         self.main_frame.theme.update_colors()
 
+        self.last_src = None
+        self.last_pos = None
         self.bind('<Control-f>', lambda _: self.search_statistics())
 
     def collect_data(self):
@@ -87,13 +89,16 @@ class ArchiveBrowser(tkd.Toplevel):
         search_inp = tk_utils.mbox(msg="Search", entry=True)
         if search_inp is not None:
             cvar = tk.StringVar()
-            pos = self.txt_list.search(search_inp, self.txt_list.index(tk.INSERT), stopindex=tk.END, count=cvar)
+            start_pos = self.last_pos if self.last_src == search_inp else 1.0
+            pos = self.txt_list.search(search_inp, start_pos, stopindex=tk.END, count=cvar)
             if pos:
                 line = int(pos.split('.')[0])
                 self.txt_list.see(pos)
 
                 self.txt_list.tag_remove("search", 1.0, tk.END)
                 self.txt_list.tag_add("search", f'{line}.0', f'{line+1}.0')
+                self.last_src = search_inp
+                self.last_pos = str(float(pos) + 0.1)
 
     def statistics(self, laps, drops, session_time):
         statistics_fr = tkd.Frame(self.tabcontrol)
@@ -219,6 +224,22 @@ class ArchiveBrowser(tkd.Toplevel):
             tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
 
     def drop_table(self, drops):
+        flat_drops = [{**drop, 'Run': n, 'Item name': drop.get('item_name', drop.get('input', '')), 'Extra input': drop.get('extra', '')} for n, drop_list in drops.items() for drop in drop_list]
+
+        def select_drops_from_filters(event=None):
+            tree.delete(*tree.get_children())
+
+            # The filtering function breaks if column name has underscore in it - potential issue that could be fixed..
+            all_filter = lambda x: all(str(x.get(f.split('_')[-1], '')) == getattr(self, f).get() or getattr(self, f).get() == '' for f in filters)
+            for drop in flat_drops:
+                if all_filter(drop):
+                    if drop.get('Grailer', False) == 'True':
+                        tree.insert('', tk.END, values=[drop.get(col, '') for col in cols], tag='Grail')
+                    elif drop.get('Eth Grailer', False) == 'True':
+                        tree.insert('', tk.END, values=[drop.get(col, '') for col in cols], tag='EthGrail')
+                    else:
+                        tree.insert('', tk.END, values=[drop.get(col, '') for col in cols])
+
         drop_table_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(drop_table_fr, text='Drop table')
 
@@ -234,42 +255,38 @@ class ArchiveBrowser(tkd.Toplevel):
         hscroll_tree.config(command=tree.xview)
         vscroll_tree.config(command=tree.yview)
         tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
+        combofr = tkd.Frame(tree_frame)
 
         vscroll_tree.pack(side=tk.RIGHT, fill=tk.Y)
+        combofr.pack(fill=tk.X)
         tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
         widths = [35, 200, 140, 120, 35, 38, 100, 47, 65, 80, 80]
+        cb_width = [3, 30, 20, 16, 3, 3, 13, 5, 7, 10, 10]
         tree.tag_configure('Grail', background='#e6ffe6')
         tree.tag_configure('EthGrail', background='light goldenrod yellow')
 
+        filters = []
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'TC', 'QLVL']:
                 sort_by = 'num'
+                sort_key = lambda x: float('-inf') if x == '' else float(x.replace('%', ''))
             else:
                 sort_by = 'name'
+                sort_key = lambda x: x
             tree.heading(col, text=col, sort_by=sort_by)
 
-        for n, drop_list in drops.items():
-            for drop in drop_list:
-                tmp_drop = dict(drop)
-                tmp_drop['Run'] = n
-                if drop.get("item_name", ''):
-                    tmp_drop["Item name"] = drop["item_name"]
-                    tmp_drop["Extra input"] = drop["extra"]
-                else:
-                    tmp_drop["Item name"] = tmp_drop["input"]
-                    tmp_drop["Extra input"] = ""
+            name = 'combofilter_' + col
+            filters.append(name)
+            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in flat_drops).union({''}), key=sort_key), state="readonly", width=cb_width[i]))
+            getattr(self, name).pack(side=tk.LEFT)
+            getattr(self, name).bind('<<ComboboxSelected>>', select_drops_from_filters)
 
-                if drop.get('Grailer', False) == 'True':
-                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='Grail')
-                elif drop.get('Eth Grailer', False) == 'True':
-                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols], tag='EthGrail')
-                else:
-                    tree.insert('', tk.END, values=[tmp_drop.get(col, '') for col in cols])
+        select_drops_from_filters()
 
     def copy_to_clipboard(self, string):
         """
