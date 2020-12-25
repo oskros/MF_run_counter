@@ -15,7 +15,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         disp_coords = tk_utils.get_displaced_geom(self.main_frame, 800, 500)
         self.geometry(disp_coords)
-        self.focus_get()
+        self.focus_force()
 
         self.iconbitmap(media_path + 'icon.ico')
         self.minsize(802, 500)
@@ -32,6 +32,8 @@ class ArchiveBrowser(tkd.Toplevel):
         self.drop_table(drops=collected_data['drops'])
 
         self.main_frame.theme.update_colors()
+
+        self.bind('<Control-f>', lambda _: self.search_statistics())
 
     def collect_data(self):
         laps = []
@@ -79,6 +81,20 @@ class ArchiveBrowser(tkd.Toplevel):
 
         return {'session_time': session_time, 'laps': laps, 'drops': drops}
 
+    def search_statistics(self):
+        if not self.tabcontrol.select().endswith('frame'):
+            return
+        search_inp = tk_utils.mbox(msg="Search", entry=True)
+        if search_inp is not None:
+            cvar = tk.StringVar()
+            pos = self.txt_list.search(search_inp, self.txt_list.index(tk.INSERT), stopindex=tk.END, count=cvar)
+            if pos:
+                line = int(pos.split('.')[0])
+                self.txt_list.see(pos)
+
+                self.txt_list.tag_remove("search", 1.0, tk.END)
+                self.txt_list.tag_add("search", f'{line}.0', f'{line+1}.0')
+
     def statistics(self, laps, drops, session_time):
         statistics_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(statistics_fr, text='Statistics')
@@ -100,43 +116,44 @@ class ArchiveBrowser(tkd.Toplevel):
         list_frame = tkd.Frame(list_win)
         vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(list_win, orient=tk.HORIZONTAL)
-        txt_list = tkd.Text(list_frame, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, font='courier 10',
+        self.txt_list = tkd.Text(list_frame, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, font='courier 10',
                             wrap=tk.WORD, state=tk.NORMAL, cursor='', exportselection=1, name='archivebrowser')
+        self.txt_list.tag_configure("search", background='green', foreground='white')
         vscroll.pack(side=tk.RIGHT, fill=tk.Y)
-        txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-        txt_list.tag_configure("HEADER", font=font.Font(family='courier', size=12, weight='bold', underline=True))
-        hscroll.config(command=txt_list.xview)
-        vscroll.config(command=txt_list.yview)
+        self.txt_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        self.txt_list.tag_configure("HEADER", font=font.Font(family='courier', size=12, weight='bold', underline=True))
+        hscroll.config(command=self.txt_list.xview)
+        vscroll.config(command=self.txt_list.yview)
 
         # Build header for output file with information and descriptive statistics
-        txt_list.insert(tk.END, 'Statistics', tag='HEADER')
-        txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
-        txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
-        txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
+        self.txt_list.insert(tk.END, 'Statistics', tag='HEADER')
+        self.txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
+        self.txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
+        self.txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
 
-        txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
-        txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))
-        txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(avg_lap))
-        txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] for x in laps], default=0)))
-        txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
-        txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
+        self.txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
+        self.txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))
+        self.txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(avg_lap))
+        self.txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] for x in laps], default=0)))
+        self.txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
+        self.txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
 
-        txt_list.insert(tk.END, '\n\nAvg unique kills:     %s' % str(round(avg_uniques, 2)))
-        txt_list.insert(tk.END, '\nAvg champion kills:   %s' % str(round(avg_champs, 2)))
-        txt_list.insert(tk.END, '\nAvg pack kills:       %s' % str(round(avg_packs, 2)))
-        txt_list.insert(tk.END, '\nAvg seconds/pack:     %s' % str(round(seconds_per_pack, 2)))
+        self.txt_list.insert(tk.END, '\n\nAvg unique kills:     %s' % str(round(avg_uniques, 2)))
+        self.txt_list.insert(tk.END, '\nAvg champion kills:   %s' % str(round(avg_champs, 2)))
+        self.txt_list.insert(tk.END, '\nAvg pack kills:       %s' % str(round(avg_packs, 2)))
+        self.txt_list.insert(tk.END, '\nAvg seconds/pack:     %s' % str(round(seconds_per_pack, 2)))
 
         # List all drops collected
         if drops:
             if any(drop for drop in drops.values()):
-                txt_list.insert(tk.END, '\n\nCollected drops', tag='HEADER')
+                self.txt_list.insert(tk.END, '\n\nCollected drops', tag='HEADER')
             for run_no, drop in drops.items():
                 if drop:
                     str_n = ' ' * max(len(str(len(laps))) - len(str(run_no)), 0) + str(run_no)
-                    txt_list.insert(tk.END, '\nRun ' + str_n + ' - ' + ', '.join(x['input'].strip() for x in drop))
+                    self.txt_list.insert(tk.END, '\nRun ' + str_n + ' - ' + ', '.join(x['input'].strip() for x in drop))
 
         if laps:
-            txt_list.insert(tk.END, '\n\nRun times', tag='HEADER')
+            self.txt_list.insert(tk.END, '\n\nRun times', tag='HEADER')
 
         # Loop through all runs and add run times and drops for each run
         for n, lap in enumerate(laps, 1):
@@ -146,14 +163,14 @@ class ArchiveBrowser(tkd.Toplevel):
             tmp = '\nRun ' + str_n + ': ' + other_utils.build_time_str(run_time)
             if droplst:
                 tmp += ' - ' + ', '.join([d['input'].strip() for d in droplst])
-            txt_list.insert(tk.END, tmp)
+            self.txt_list.insert(tk.END, tmp)
 
         # Disable modifications to the Text widget after all lines have been inserted
-        txt_list.config(state=tk.DISABLED)
+        self.txt_list.config(state=tk.DISABLED)
 
         btn_frame1 = tkd.Frame(statistics_fr)
-        tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
-        tkd.Button(btn_frame1, text='Save as .txt', command=lambda: self.save_to_txt(txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(btn_frame1, text='Copy to clipboard', command=lambda: self.copy_to_clipboard(self.txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
+        tkd.Button(btn_frame1, text='Save as .txt', command=lambda: self.save_to_txt(self.txt_list.get(1.0, tk.END))).pack(side=tk.LEFT, fill=tk.X)
 
         # Packs all the buttons and UI in the archive browser. Packing order is important
         list_win.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
