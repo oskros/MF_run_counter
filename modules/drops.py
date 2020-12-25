@@ -35,6 +35,7 @@ class Drops(tkd.Frame):
             for i, item in enumerate(self.main_frame.grail_tab.grail):
                 if self.main_frame.autocompletion_unids:
                     base = ' '.join(drop['item_name'].split(' ')[:-1])
+                    drop['Rarity'] = drop['item_name'].split(' ')[-1].replace('(', '').replace(')', '')
                     if base in NO_UNIQUE_MAP:
                         drop['TC'] = NO_UNIQUE_MAP[base].get('TC', '')
                         drop['Item Class'] = NO_UNIQUE_MAP[base].get('Item Class', '')
