@@ -87,7 +87,7 @@ def comparison(var, eth=False):
 
 if __name__ == '__main__':
     import os
-    pp = os.path.join(os.path.abspath('..'), 'Profiles/PlugY LK.json')
+    pp = os.path.join(os.path.abspath('..'), 'Profiles/15k_CS.json')
     gp = os.path.join(os.path.abspath('..'), 'Profiles/grail.json')
 
     with open(pp, 'r') as fo:
@@ -116,28 +116,45 @@ if __name__ == '__main__':
                     if detected['item_name'] is not None:
                         print("Successfully detected i_name in item library\n\told: %s\n\tnew: %s" % (run, detected))
                     else:
-                        print("Failed to detect i_name in item library\n\told: %s\n\tnew: %s" % (run, detected))
+                        print("Failed to detect i_name in item library\n\told: %s\n\tnew: %s" % (run, {**run, **detected}))
                     run = detected
-                    prof[sess]['drops'][run_no][i] = detected
+                    prof[sess]['drops'][run_no][i] = {**run, **detected}
 
-                g_item = next((x for x in grail if x['Item'] == run.get('item_name', None)), None)
+                item_name = run.get('item_name', None)
+                g_item = next((x for x in grail if x['Item'] == item_name), None)
                 if g_item is None:
-                    if run.get('item_name', None) is not None:
-                        print("%s: Couldn't find [%s] in item library" % (run, run.get('item_name', None)))
+                    if item_name is not None:
+                        psb_rarity = item_name.split(' ')[-1].replace('(', '').replace(')', '')
+                        if psb_rarity in ['Magic', 'Unique', 'Rare', 'Set']:
+                            prof[sess]['drops'][run_no][i]['Rarity'] = psb_rarity
+                            base = ' '.join(item_name.split(' ')[:-1])
+                            b_item = next((x for x in grail if x['Base Item'] == base), None)
+                            if b_item is not None and 'TC' not in run:
+                                prof[sess]['drops'][run_no][i]['Item Class'] = b_item['Item Class']
+                                prof[sess]['drops'][run_no][i]['TC'] = b_item['TC']
+                                print('Updating item info (TC, Item Class) for %s' % item_name)
+                            elif b_item is None:
+                                print("Couldn't find base item [%s] in item library, but updating rarity" % base)
+                            else:
+                                print("Updating rarity for %s" % base)
+                    else:
+                        print("%s: Couldn't find [%s] in item library" % (run, item_name))
                     if detected is not None:
                         print('')
                 elif 'TC' not in run:
-                    print('Updating item info (TC, QLVL, Item Class, Grailer) for %s' % run.get('item_name', None))
+                    print('Updating item info (TC, QLVL, Item Class, Grailer) for %s' % item_name)
                     if detected is not None:
                         print('')
                     prof[sess]['drops'][run_no][i]['TC'] = g_item['TC']
                     prof[sess]['drops'][run_no][i]['QLVL'] = g_item['QLVL']
                     prof[sess]['drops'][run_no][i]['Item Class'] = g_item['Item Class']
-                    prof[sess]['drops'][run_no][i]['Rarity'] = g_item['Rarity']
                     if run.get('input', '').startswith('(*)'):
                         grailer = "True"
                     else:
                         grailer = "False"
                     prof[sess]['drops'][run_no][i]['Grailer'] = grailer
+                if g_item is not None and 'Rarity' not in run:
+                    prof[sess]['drops'][run_no][i]['Rarity'] = g_item['Rarity']
+
 
     other_utils.atomic_json_dump(pp, prof)
