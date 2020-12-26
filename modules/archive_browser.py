@@ -30,6 +30,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.statistics(**collected_data)
         self.run_table(laps=collected_data['laps'])
         self.drop_table(drops=collected_data['drops'])
+        self.map_evaluation(laps=collected_data['laps'])
 
         self.main_frame.theme.update_colors()
 
@@ -287,6 +288,78 @@ class ArchiveBrowser(tkd.Toplevel):
             getattr(self, name).bind('<<ComboboxSelected>>', select_drops_from_filters)
 
         select_drops_from_filters()
+
+    @staticmethod
+    def group_laps(laps):
+        seed_dict = dict()
+        for lap in laps:
+            seed = lap.get('Map seed', 0)
+            seed_dict.setdefault(seed, []).append(lap)
+
+        out = []
+        for k, v in seed_dict.items():
+            run_count = len(v)
+
+            run_times = [x['Run time'] for x in v if 'Run time' in x]
+            avg_run_time = round(sum(run_times) / len(run_times), 2) if run_times else ''
+
+            mfs = [int(x['MF'].replace('%', '')) for x in v if 'MF' in x and '--' not in x['MF']]
+            avg_mf = round(sum(mfs) / len(mfs), 2) if mfs else ''
+
+            players = [int(x['Players X']) for x in v if 'Players X' in x and '--' not in x['Players X']]
+            avg_players = round(sum(players) / len(players), 2) if players else ''
+
+            levels = [int(x['Level']) for x in v if 'Level' in x and '--' not in x['Level']]
+            avg_level = round(sum(levels) / len(levels), 2) if levels else ''
+
+            pack_kills = [int(x['Uniques kills'])+int(x['Champions kills'])/2.534567 for x in v if 'Uniques kills' in x and '--' not in x['Uniques kills']]
+            tot_packs = sum(pack_kills)
+            avg_packs = round(tot_packs / len(pack_kills), 2) if pack_kills else ''
+
+            secs_pack = round(avg_run_time/avg_packs, 2) if avg_packs else ''
+
+            out.append({'Map seed': k, 'Run count': run_count, 'Avg run time': avg_run_time, 'Avg MF': avg_mf,
+                        'Avg players X': avg_players, 'Avg level': avg_level, 'Avg pack kills': avg_packs,
+                        'Avg secs/pack': secs_pack, 'Total pack kills': round(tot_packs, 2)})
+        return out
+
+
+
+
+    def map_evaluation(self, laps):
+        map_eval_fr = tkd.Frame(self.tabcontrol)
+        self.tabcontrol.add(map_eval_fr, text='Map evaluation')
+
+        cols = ["Map", "Map seed", "Run count", "Avg run time", "Avg MF", "Avg players X", "Avg level", "Avg pack kills", "Avg secs/pack", "Total pack kills"]
+        tree_frame = tkd.Frame(map_eval_fr)
+        btn_frame2 = tkd.Frame(map_eval_fr)
+        btn_frame2.pack(side=tk.BOTTOM)
+
+        vscroll_tree = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll_tree = ttk.Scrollbar(map_eval_fr, orient=tk.HORIZONTAL)
+        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set,
+                            xscrollcommand=hscroll_tree.set, show='headings', columns=cols, alternate_colour=True)
+        hscroll_tree.config(command=tree.xview)
+        vscroll_tree.config(command=tree.yview)
+        tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
+
+        vscroll_tree.pack(side=tk.RIGHT, fill=tk.Y)
+        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
+        tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        tree['columns'] = cols
+        widths = [35, 80, 80, 80, 80, 85, 60, 85, 90, 90]
+        for i, col in enumerate(cols):
+            tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
+            tree.heading(col, text=col, sort_by='num')
+
+        grouped = self.group_laps(laps=laps)
+
+        for n, smap in enumerate(grouped, 1):
+            tmp_lap = dict(smap)
+            tmp_lap['Map'] = n
+            tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
 
     def copy_to_clipboard(self, string):
         """

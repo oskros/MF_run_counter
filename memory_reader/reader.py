@@ -59,6 +59,7 @@ class D2Reader:
         self.monster_add_adr = None
         self.hovered_item = None
         self.item_descripts = None
+        self.game_id = None
         self.str_indexer_table = None
         self.str_address_table = None
         self.patch_str_indexer_table = None
@@ -74,6 +75,7 @@ class D2Reader:
             self.in_pause_menu   = self.d2client + 0xFADA4
             self.unit_list_addr  = self.d2client + 0x10A808
             self.monster_add_adr = 0x0
+            self.game_id = self.d2net + 0x00B428
             self.hovered_item    = self.d2client + 0x11BC38
             self.item_descripts  = self.d2common + 0x9FB94
             self.str_indexer_table       = self.d2lang + 0x10A64
@@ -89,6 +91,7 @@ class D2Reader:
             self.in_pause_menu   = self.d2client + 0x11C8B4
             self.unit_list_addr  = self.d2client + 0x1049B8
             self.monster_add_adr = 0x0
+            self.game_id         = self.d2net + 0x00B420
             self.hovered_item    = self.d2client + 0x11CB28
             self.item_descripts  = self.d2common + 0xA4CB0
         elif self.d2_ver == '1.14b':
@@ -98,6 +101,7 @@ class D2Reader:
             self.in_pause_menu   = None
             self.unit_list_addr  = self.base_address + 0x39DEF8
             self.monster_add_adr = 0x80
+            self.game_id         = self.base_address + 0x47AD4C
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x564A98
         elif self.d2_ver == '1.14c':
@@ -107,6 +111,7 @@ class D2Reader:
             self.in_pause_menu   = None
             self.unit_list_addr  = self.base_address + 0x39CEF8
             self.monster_add_adr = 0x80
+            self.game_id         = self.base_address + 0x479C94
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x5639E0
         elif self.d2_ver == '1.14d':
@@ -116,6 +121,7 @@ class D2Reader:
             self.in_pause_menu   = self.base_address + 0x3A27E4
             self.unit_list_addr  = self.base_address + 0x3A5E70
             self.monster_add_adr = 0x80
+            self.game_id         = self.base_address + 0x482D0C
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x56CA58
         else:
@@ -254,6 +260,19 @@ class D2Reader:
         else:
             self.observed_guids.add(game_guid)
 
+    def get_map_seed(self):
+        world = self.pm.read_uint(self.world_ptr)
+        game_buffer = self.pm.read_uint(world + 0x1C)
+        game_mask = self.pm.read_uint(world + 0x24)
+        game_id = self.pm.read_uint(self.game_id)
+
+        game_index = game_id & game_mask
+        game_offset = (game_index * 0x0C) + 0x08
+
+        game_pointer = self.pm.read_uint(game_buffer + game_offset)
+        map_seed = self.pm.read_uint(game_pointer + 0x7C)
+        return map_seed
+
     def get_string_table_by_identifier(self, identifier):
         if identifier >= 0x4E20:  # 20.000
             return {'index': self.exp_str_indexer_table,
@@ -319,10 +338,9 @@ class D2Reader:
 
 if __name__ == '__main__':
     # print(elevate_access(lambda: eval('D2Reader().in_game()')))
-    r = D2Reader()
+    r = D2Reader(D2_SE_EXE)
     # print(r.d2_ver)
     r.map_ptrs()
-
 
 
     import tkinter as tk

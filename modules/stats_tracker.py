@@ -10,6 +10,7 @@ class StatsTracker(tkd.Frame):
         tkd.Frame.__init__(self, parent, **kw)
         self.main_frame = main_frame
 
+        self.map_seed = 0
         self.session_char_xp_start = 0
         self.char_xp = 0
         self.char_xp_missing = 0
@@ -105,6 +106,12 @@ class StatsTracker(tkd.Frame):
 
         # After the previous check we know the d2_reader has been instantiated, so we can update the kill count02,
         self.update_killcount()
+
+        # Get the current map seed
+        try:
+            self.map_seed = self.main_frame.d2_reader.get_map_seed()
+        except other_utils.pymem_err_list:
+            pass
 
         # Catch any erors with loading player stats
         try:
