@@ -189,7 +189,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.tabcontrol.add(run_table_fr, text='Run table')
 
         cols = ["Run", "Run time", "Real time", "Name", "MF", "Players X", "Level", "XP Gained", "Uniques kills",
-                "Champions kills", "Minion kills", "Total kills", "Session"]
+                "Champions kills", "Minion kills", "Total kills", "Session", "Map seed"]
         tree_frame = tkd.Frame(run_table_fr)
         btn_frame2 = tkd.Frame(run_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -209,7 +209,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80, 70]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
@@ -309,28 +309,32 @@ class ArchiveBrowser(tkd.Toplevel):
             players = [int(x['Players X']) for x in v if 'Players X' in x and '--' not in x['Players X']]
             avg_players = round(sum(players) / len(players), 2) if players else ''
 
-            levels = [int(x['Level']) for x in v if 'Level' in x and '--' not in x['Level']]
-            avg_level = round(sum(levels) / len(levels), 2) if levels else ''
-
             pack_kills = [int(x['Uniques kills'])+int(x['Champions kills'])/2.534567 for x in v if 'Uniques kills' in x and '--' not in x['Uniques kills']]
             tot_packs = sum(pack_kills)
             avg_packs = round(tot_packs / len(pack_kills), 2) if pack_kills else ''
+            avg_packs_hork = round(tot_packs*1.55 / len(pack_kills), 2) if pack_kills else ''
+            avg_packs_joined = f'{avg_packs}   ({avg_packs_hork})' if avg_packs else ''
 
-            secs_pack = round(avg_run_time/avg_packs, 2) if avg_packs else ''
+            secs_pack = round(avg_run_time / avg_packs, 2) if avg_packs else ''
+            secs_pack_hork = round(avg_run_time / (avg_packs*1.55), 2) if avg_packs else ''
+            secs_packs_joined = f'{secs_pack}   ({secs_pack_hork})' if avg_packs else ''
+
+            u_mfs = [1 + x*250 // (x + 250) / 100 for x in mfs]
+            avg_u_mfs = sum(u_mfs) / len(u_mfs)
+            adjeff = round(secs_pack / avg_u_mfs, 2) if avg_u_mfs and secs_pack else ''
+            adjeff_hork = round(secs_pack_hork / avg_u_mfs, 2) if avg_u_mfs and secs_pack_hork else ''
+            adjeff_joined = f'{adjeff}   ({adjeff_hork})' if adjeff else ''
 
             out.append({'Map seed': k, 'Run count': run_count, 'Avg run time': avg_run_time, 'Avg MF': avg_mf,
-                        'Avg players X': avg_players, 'Avg level': avg_level, 'Avg pack kills': avg_packs,
-                        'Avg secs/pack': secs_pack, 'Total pack kills': round(tot_packs, 2)})
+                        'Avg players X': avg_players, 'Avg packs (55% hork)': avg_packs_joined,
+                        'Avg secs/pack (55% hork)': secs_packs_joined, 'Adjeff (55% hork)': adjeff_joined})
         return out
-
-
-
 
     def map_evaluation(self, laps):
         map_eval_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(map_eval_fr, text='Map evaluation')
 
-        cols = ["Map", "Map seed", "Run count", "Avg run time", "Avg MF", "Avg players X", "Avg level", "Avg pack kills", "Avg secs/pack", "Total pack kills"]
+        cols = ["Map", "Map seed", "Run count", "Avg run time", "Avg MF", "Avg players X", "Avg packs (55% hork)", "Avg secs/pack (55% hork)", "Adjeff (55% hork)"]
         tree_frame = tkd.Frame(map_eval_fr)
         btn_frame2 = tkd.Frame(map_eval_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -349,7 +353,7 @@ class ArchiveBrowser(tkd.Toplevel):
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         tree['columns'] = cols
-        widths = [35, 80, 80, 80, 80, 85, 60, 85, 90, 90]
+        widths = [35, 70, 70, 80, 55, 85, 130, 150, 105]
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             tree.heading(col, text=col, sort_by='num')

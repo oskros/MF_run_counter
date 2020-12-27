@@ -338,9 +338,10 @@ class D2Reader:
 
 if __name__ == '__main__':
     # print(elevate_access(lambda: eval('D2Reader().in_game()')))
-    r = D2Reader(D2_SE_EXE)
+    r = D2Reader()
     # print(r.d2_ver)
     r.map_ptrs()
+    print(r.get_map_seed())
 
 
     import tkinter as tk
