@@ -121,10 +121,12 @@ class MFRunTimer(tkd.Frame):
 
             # Stop when exiting game, and start when entering game (NB: not calling stop/start)
             if self.cached_is_ingame and not is_ingame and not self.is_paused:
+                logging.debug('Left game: Stopping run')
                 if self.main_frame.stop_when_leaving:
                     self.stop()
                 self.cached_is_ingame = is_ingame
             elif not self.cached_is_ingame and is_ingame and not self.is_paused:
+                logging.debug('Joined game: Starting run')
                 self.stop_start()
                 self.cached_is_ingame = is_ingame
         else:
