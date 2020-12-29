@@ -304,7 +304,13 @@ class ArchiveBrowser(tkd.Toplevel):
             avg_run_time = round(sum(run_times) / len(run_times), 2) if run_times else ''
 
             mfs = [int(x['MF'].replace('%', '')) for x in v if 'MF' in x and '--' not in x['MF']]
-            avg_mf = round(sum(mfs) / len(mfs), 2) if mfs else ''
+            u_mfs = [1 + x*250 // (x + 250) / 100 for x in mfs]
+            avg_u_mfs = sum(u_mfs) / len(u_mfs) if u_mfs else ''
+
+            weighted_mf = [int(x.get('Max MF', x['MF'].replace('%', '')))*0.645+int(x.get('Min MF', x['MF'].replace('%', '')))*0.355 for x in v if 'MF' in x and '--' not in x['MF']]
+            avg_wgt_mf = round(sum(weighted_mf) / len(weighted_mf), 2) if weighted_mf else ''
+            weighted_u_mf = [1 + x*250 // (x + 250) / 100 for x in weighted_mf]
+            avg_weighted_u_mf = round(sum(weighted_u_mf) / len(weighted_u_mf), 2) if mfs else ''
 
             players = [int(x['Players X']) for x in v if 'Players X' in x and '--' not in x['Players X']]
             avg_players = round(sum(players) / len(players), 2) if players else ''
@@ -319,13 +325,11 @@ class ArchiveBrowser(tkd.Toplevel):
             secs_pack_hork = round(avg_run_time / (avg_packs*1.55), 2) if avg_packs else ''
             secs_packs_joined = f'{secs_pack}   ({secs_pack_hork})' if avg_packs else ''
 
-            u_mfs = [1 + x*250 // (x + 250) / 100 for x in mfs]
-            avg_u_mfs = sum(u_mfs) / len(u_mfs)
             adjeff = round(secs_pack / avg_u_mfs, 2) if avg_u_mfs and secs_pack else ''
-            adjeff_hork = round(secs_pack_hork / avg_u_mfs, 2) if avg_u_mfs and secs_pack_hork else ''
+            adjeff_hork = round(secs_pack_hork / avg_weighted_u_mf, 2) if avg_weighted_u_mf and secs_pack_hork else ''
             adjeff_joined = f'{adjeff}   ({adjeff_hork})' if adjeff else ''
 
-            out.append({'Map seed': k, 'Run count': run_count, 'Avg run time': avg_run_time, 'Avg MF': avg_mf,
+            out.append({'Map seed': k, 'Run count': run_count, 'Avg run time': avg_run_time, 'Avg MF': avg_wgt_mf,
                         'Avg players X': avg_players, 'Avg packs (55% hork)': avg_packs_joined,
                         'Avg secs/pack (55% hork)': secs_packs_joined, 'Adjeff (55% hork)': adjeff_joined})
         return out
