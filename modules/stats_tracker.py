@@ -20,6 +20,8 @@ class StatsTracker(tkd.Frame):
         self.session_time_start = time.time()
         self.session_time = 0.0
         self.session_xp_runs = set()
+        self.min_mf = float('inf')
+        self.max_mf = 0
 
         # StringVars
         self.tot_kills_sv = tk.StringVar(value='0')
@@ -136,6 +138,8 @@ class StatsTracker(tkd.Frame):
         self.name_sv.set(player_unit_stats['Name'])
         self.level_sv.set(player_unit_stats['Level'])
         if player_unit_stats['MF'] >= 0:
+            self.min_mf = min(self.min_mf, player_unit_stats['MF'])
+            self.max_mf = max(self.max_mf, player_unit_stats['MF'])
             self.mf_sv.set('%s%%' % player_unit_stats['MF'])
         self.players_x_sv.set(player_unit_stats['Players X'])
         self.exp_perc_sv.set('{0:.1f}%'.format(player_unit_stats['Exp %']*100))

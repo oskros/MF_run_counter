@@ -184,6 +184,8 @@ class MFRunTimer(tkd.Frame):
         out['Run time'] = self._laptime
         out['Real time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         out['MF'] = self.main_frame.advanced_stats_tracker.mf_sv.get()
+        out['Min MF'] = self.main_frame.advanced_stats_tracker.min_mf
+        out['Max MF'] = self.main_frame.advanced_stats_tracker.max_mf
         out['Players X'] = self.main_frame.advanced_stats_tracker.players_x_sv.get()
         out['XP Gained'] = self.main_frame.advanced_stats_tracker.run_char_xp
         out['Uniques kills'] = self.main_frame.advanced_stats_tracker.unique_kills_sv.get()
