@@ -302,7 +302,7 @@ class MFRunTimer(tkd.Frame):
             if self.automode_active:
                 if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):
                     self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
-                elif self.main_frame.automode == 2:
+                elif self.main_frame.automode == 2 and user_paused:
                     try:
                         self.cached_is_ingame = self.main_frame.d2_reader.in_game()
                     except other_utils.pymem_err_list:
