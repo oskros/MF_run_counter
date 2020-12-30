@@ -20,7 +20,7 @@ class StatsTracker(tkd.Frame):
         self.session_time_start = time.time()
         self.session_time = 0.0
         self.session_xp_runs = set()
-        self.min_mf = float('inf')
+        self.min_mf = 1999
         self.max_mf = 0
 
         # StringVars
@@ -165,6 +165,8 @@ class StatsTracker(tkd.Frame):
             self.session_xp_runs.add(self.run_char_xp)
         self.run_char_xp_start = self.char_xp
         self.run_char_xp = 0
+        self.min_mf = 1999
+        self.max_mf = 0
 
         if self.main_frame.d2_reader is not None:
             self.main_frame.d2_reader.dead_guids = []
