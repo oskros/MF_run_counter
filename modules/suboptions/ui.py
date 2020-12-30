@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from modules.suboptions.general import General
 from utils import tk_dynamic as tkd
 from utils import other_utils
@@ -12,6 +13,7 @@ class UI(General):
         self.add_ui_flag(flag_name='Show buttons', comment='Show or hide delete and archive buttons on the UI')
         self.add_ui_flag(flag_name='Show drops section', comment='Show or hide the item drops section on the UI')
         self.add_ui_flag(flag_name='Show advanced tracker', comment='Show or hide the advanced stats tracker')
+        self.add_ui_flag(flag_name='Show XP tracker', comment='Show or hide the XP tracker part of the advanced stats tracker')
 
     def toggle_button(self, attr, first=False):
         val = other_utils.safe_eval(getattr(self, attr).get())
@@ -23,7 +25,7 @@ class UI(General):
         show_drops = other_utils.safe_eval(getattr(self, 'show_drops_section').get()) if hasattr(self, 'show_drops_section') else 0
         show_advanced = other_utils.safe_eval(getattr(self, 'show_advanced_tracker').get()) if hasattr(self, 'show_advanced_tracker') else 0
 
-        if attr.lower() == 'show_buttons':
+        if attr == 'show_buttons':
             btn_height = 30
             if val:
                 self.main_frame.root.update()
@@ -35,7 +37,7 @@ class UI(General):
                     self.main_frame.root.config(height=self.main_frame.root.winfo_height() - btn_height)
                 self.main_frame.btn_frame.forget()
 
-        elif attr.lower() == 'show_drops_section':
+        elif attr == 'show_drops_section':
             btn_height = 22
             if val:
                 self.main_frame.root.update()
@@ -49,7 +51,7 @@ class UI(General):
                     self.main_frame.root.config(height=self.main_frame.root.winfo_height() - btn_height)
                 self.main_frame.drops_frame.forget()
 
-        elif attr.lower() == 'show_advanced_tracker':
+        elif attr == 'show_advanced_tracker':
             btn_height = 22
             if val:
                 self.main_frame.root.update()
@@ -62,6 +64,13 @@ class UI(General):
                     self.main_frame.root.update()
                     self.main_frame.root.config(height=self.main_frame.root.winfo_height() - btn_height)
                 self.main_frame.adv_stats_frame.forget()
+
+        elif attr == 'show_xp_tracker':
+            if not first and hasattr(self.main_frame.advanced_stats_tracker, 'after_updater'):
+                # self.main_frame.toggle_advanced_stats_frame(show=False)
+                self.main_frame.advanced_stats_caret.invoke()
+                self.main_frame.root.update()
+                self.main_frame.advanced_stats_caret.invoke()
 
         if show_drops or show_advanced:
             self.main_frame.caret_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)

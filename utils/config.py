@@ -75,13 +75,14 @@ class Config:
         config.add_section('AUTOMODE')
         config['AUTOMODE']['automode'] = '0'
         config['AUTOMODE']['advanced_tracker_open'] = '0'
-        config['AUTOMODE']['stop_when_leaving'] = '1'
+        config['AUTOMODE']['end_run_in_menu'] = '1'
         config['AUTOMODE']['pause_on_esc_menu'] = '0'
 
         config.add_section('UI')
         config['UI']['show_buttons'] = '1'
         config['UI']['show_drops_section'] = '1'
         config['UI']['show_advanced_tracker'] = '1'
+        config['UI']['show_xp_tracker'] = '1'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -176,12 +177,13 @@ class Config:
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)
         cfg['AUTOMODE']['advanced_tracker_open'] = str(int(parent.advanced_stats_caret.active)) if parent.automode == 2 else '0'
-        cfg['AUTOMODE']['stop_when_leaving'] = str(parent.stop_when_leaving)
+        cfg['AUTOMODE']['end_run_in_menu'] = str(parent.end_run_in_menu)
         cfg['AUTOMODE']['pause_on_esc_menu'] = str(parent.pause_on_esc_menu)
 
         cfg['UI']['show_buttons'] = str(parent.show_buttons)
         cfg['UI']['show_drops_section'] = str(parent.show_drops_section)
         cfg['UI']['show_advanced_tracker'] = str(parent.show_advanced_tracker)
+        cfg['UI']['show_xp_tracker'] = str(parent.show_xp_tracker)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')

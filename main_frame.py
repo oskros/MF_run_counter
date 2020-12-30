@@ -61,7 +61,7 @@ class MainFrame(Config):
         self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
         self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
-        self.stop_when_leaving = other_utils.safe_eval(self.cfg['AUTOMODE']['stop_when_leaving'])
+        self.end_run_in_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['end_run_in_menu'])
         self.pause_on_esc_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_on_esc_menu'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
@@ -80,6 +80,7 @@ class MainFrame(Config):
         self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])
         self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
         self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
+        self.show_xp_tracker = other_utils.safe_eval(self.cfg['UI']['show_xp_tracker'])
 
         # Initiate variables for memory reading
         self.is_user_admin = reader_utils.is_user_admin()
@@ -351,7 +352,18 @@ class MainFrame(Config):
                 messagebox.showerror('Error', 'You need to activate "Advanced automode" in Options->Automode to see advanced stats')
             show = False
             self.advanced_stats_caret.toggle_image(active=False)
-        tracker_height = 311
+        if (self.show_xp_tracker and not hasattr(self.advanced_stats_tracker, 'after_updater')) or self.advanced_stats_tracker.xp_lf1.winfo_ismapped():
+            tracker_height = 311
+        else:
+            tracker_height = 132
+
+        if self.show_xp_tracker and not self.advanced_stats_tracker.xp_lf1.winfo_ismapped():
+            self.advanced_stats_tracker.xp_lf1.pack(expand=False, fill=tk.X, padx=1, pady=8)
+            self.advanced_stats_tracker.xp_lf2.pack(expand=False, fill=tk.X, padx=1)
+        if not self.show_xp_tracker and self.advanced_stats_tracker.xp_lf1.winfo_ismapped():
+            self.advanced_stats_tracker.xp_lf1.forget()
+            self.advanced_stats_tracker.xp_lf2.forget()
+
         if show:
             self.root.update()
             self.root.config(height=self.root.winfo_height()+tracker_height)

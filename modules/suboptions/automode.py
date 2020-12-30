@@ -66,7 +66,7 @@ class Automode(General):
 
         # Stuff for advanced mode
         self.advanced_mode_stop = self.add_flag(
-            flag_name='Stop when leaving',
+            flag_name='End run in menu',
             comment='On: Stops the current run when you exit to menu.\nOff: The run counter will continue ticking until you enter a new game',
             pack=False,
             config_section='AUTOMODE'

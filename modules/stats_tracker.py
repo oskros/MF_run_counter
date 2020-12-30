@@ -59,18 +59,18 @@ class StatsTracker(tkd.Frame):
         self.create_row(self.unique_kills_sv, label_name='Unique kills', lf=lf1)
         self.create_row(self.champ_kills_sv, label_name='Champion kills', lf=lf1)
 
-        lf2 = tkd.LabelFrame(self)
-        lf2.pack(expand=False, fill=tk.X, padx=1, pady=8)
-        self.create_row(self.exp_perc_sv, label_name='Exp %', lf=lf2)
-        self.create_row(self.exp_session_sv, label_name='Exp (session)', lf=lf2)
-        self.create_row(self.exp_run_sv, label_name='Exp (run)', lf=lf2)
-        self.create_row(self.exp_hour_sv, label_name='Exp / hour', lf=lf2)
+        self.xp_lf1 = tkd.LabelFrame(self)
+        self.xp_lf1.pack(expand=False, fill=tk.X, padx=1, pady=8)
+        self.create_row(self.exp_perc_sv, label_name='Exp %', lf=self.xp_lf1)
+        self.create_row(self.exp_session_sv, label_name='Exp (session)', lf=self.xp_lf1)
+        self.create_row(self.exp_run_sv, label_name='Exp (run)', lf=self.xp_lf1)
+        self.create_row(self.exp_hour_sv, label_name='Exp / hour', lf=self.xp_lf1)
 
-        lf3 = tkd.LabelFrame(self)
-        lf3.pack(expand=False, fill=tk.X, padx=1)
-        self.create_row(self.exp_level_sv, label_name='Exp to level', lf=lf3)
-        self.create_row(self.hours_level_sv, label_name='Time to level', lf=lf3)
-        self.create_row(self.runs_level_sv, label_name='Runs to level', lf=lf3)
+        self.xp_lf2 = tkd.LabelFrame(self)
+        self.xp_lf2.pack(expand=False, fill=tk.X, padx=1)
+        self.create_row(self.exp_level_sv, label_name='Exp to level', lf=self.xp_lf2)
+        self.create_row(self.hours_level_sv, label_name='Time to level', lf=self.xp_lf2)
+        self.create_row(self.runs_level_sv, label_name='Runs to level', lf=self.xp_lf2)
 
     @staticmethod
     def create_row(svar, label_name, lf):
