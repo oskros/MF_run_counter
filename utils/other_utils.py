@@ -3,6 +3,7 @@ import json
 from tkinter import messagebox
 import screeninfo
 import pymem.exception
+import atomicwrites
 
 
 def safe_eval(inp_str):
@@ -52,12 +53,15 @@ def atomic_json_dump(dest_file: str, data: [dict, list]) -> None:
     Some users experienced data loss in case of sudden power outages, this wrapper should ensure that file saves are
     atomic such that it doesn't happen going forward
     """
-    tmp_file = dest_file[:-5] + '_tmp.json'
-    with open(tmp_file, 'w') as fo:
+    with atomicwrites.atomic_write(dest_file, overwrite=True) as fo:
         json.dump(data, fo, indent=2)
-        fo.flush()
-        os.fsync(fo.fileno())
-    os.replace(tmp_file, dest_file)
+    #
+    # tmp_file = dest_file[:-5] + '_tmp.json'
+    # with open(tmp_file, 'w') as fo:
+    #     json.dump(data, fo, indent=2)
+    #     fo.flush()
+    #     os.fsync(fo.fileno())
+    # os.replace(tmp_file, dest_file)
 
 
 pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,

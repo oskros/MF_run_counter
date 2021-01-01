@@ -429,8 +429,8 @@ class MainFrame(Config):
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            self.SaveActiveState()
-            self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
+            # self.SaveActiveState()
+            # self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
             self.profile_tab.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
         # banner image instead :)
@@ -525,6 +525,7 @@ class MainFrame(Config):
         Loads the .json for the profile, and replaces the 'active_state' key with the current active state, whereafter
         it is saved to file.
         """
+        logging.debug('Saved active state')
         cache = self.load_state_file()
         timer_state = self.timer_tab.save_state()
         drops_state = self.drops_tab.save_state()
