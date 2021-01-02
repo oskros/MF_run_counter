@@ -1,3 +1,4 @@
+import datetime as dt
 import math
 from scipy.integrate import quad
 
@@ -64,12 +65,19 @@ mf = 706
 hork_mf = mf - 120
 hork = 0.55
 
+avg_runtime = 58.5
+hours_playtime_a_day = 1
+
 
 reduced = expected_runs_to_complete(item_odds=reduced_list, bosses_run=bosses_run, mf=mf, hork_chance=hork, hork_mf=hork_mf)
 full = expected_runs_to_complete(item_odds=full_list, bosses_run=bosses_run, mf=mf, hork_chance=hork, hork_mf=hork_mf)
 
-print(f'Bosses/run: {bosses_run}\nMF: {mf}\nHork MF: {hork_mf}\nHork: {int(hork*100)}%\n')
+print(f'Bosses/run: {bosses_run}\nMF: {mf}\nHork MF: {hork_mf}\nHork: {int(hork*100)}%\nAvg runtime: {avg_runtime}\nHours playtime/day: {hours_playtime_a_day}\n')
 
-print('Expected number of runs to complete grail in lvl 85 areas only (tc87 and other rare items)\n{:,.0f}'.format(reduced))
-print('')
-print('Expected number of runs to complete grail in lvl 85 areas only (all uniques and sets)\n{:,.0f}'.format(full))
+print('Expected runs to complete grail: {:,.0f}'.format(reduced))
+print(f'Expected playtime to complete: {round(reduced*avg_runtime/3600,2)} hours')
+print(f'Expected date of completion: {dt.date.today() + dt.timedelta(reduced*avg_runtime/3600)/hours_playtime_a_day}')
+
+
+# print('')
+# print('Expected number of runs to complete grail in lvl 85 areas only (all uniques and sets)\n{:,.0f}'.format(full))
