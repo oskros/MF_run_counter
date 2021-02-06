@@ -27,7 +27,7 @@ from modules.mf_timer import MFRunTimer
 from modules.grail import Grail
 
 
-class MainFrame(Config):
+class MasterFrame(Config):
     def __init__(self):
         # Check if application is already open
         self.title = 'MF run counter'
@@ -270,8 +270,7 @@ class MainFrame(Config):
             if not os.path.isfile(file):
                 return float('inf')
             else:
-                with open(file, 'r') as fo:
-                    state = json.load(fo)
+                state = other_utils.json_load_err(file)
                 return state.get('extra_data', dict()).get('Last update', os.stat(file).st_mtime)
         return sorted(self.profiles, key=sort_key, reverse=True)
 
@@ -451,8 +450,7 @@ class MainFrame(Config):
         if not os.path.isfile(file):
             state = dict()
         else:
-            with open(file, 'r') as fo:
-                state = json.load(fo)
+            state = other_utils.json_load_err(file)
         return state
 
     def _autosave_state(self):

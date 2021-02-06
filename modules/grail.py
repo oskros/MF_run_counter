@@ -161,8 +161,7 @@ class Grail(tkd.Frame):
         if not os.path.isfile(self.file_name):
             self.create_empty_grail()
 
-        with open(self.file_name, 'r') as fo:
-            state = json.load(fo)
+        state = other_utils.json_load_err(self.file_name)
 
         return state
 
@@ -178,8 +177,7 @@ class Grail(tkd.Frame):
         # Iterate through all saved profiles
         for p in self.main_frame.profiles:
             file = 'Profiles/%s.json' % p
-            with open(file, 'r') as fo:
-                state = json.load(fo)
+            state = other_utils.json_load_err(file)
 
             # Iterate through saved keys in each profile
             for key in state:

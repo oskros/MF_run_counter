@@ -55,13 +55,17 @@ def atomic_json_dump(dest_file: str, data: [dict, list]) -> None:
     """
     with atomicwrites.atomic_write(dest_file, overwrite=True) as fo:
         json.dump(data, fo, indent=2)
-    #
-    # tmp_file = dest_file[:-5] + '_tmp.json'
-    # with open(tmp_file, 'w') as fo:
-    #     json.dump(data, fo, indent=2)
-    #     fo.flush()
-    #     os.fsync(fo.fileno())
-    # os.replace(tmp_file, dest_file)
+
+
+def json_load_err(file_path):
+    with open(file_path, 'r') as fo:
+        try:
+            state = json.load(fo)
+        except json.JSONDecodeError as e:
+            e.args = (e.args[0] + f' - file: {file_path}', *e.args[1:])
+            raise e
+    return state
+
 
 
 pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,

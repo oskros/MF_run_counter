@@ -90,11 +90,8 @@ if __name__ == '__main__':
     pp = os.path.join(os.path.abspath('..'), 'Profiles/15k_CS.json')
     gp = os.path.join(os.path.abspath('..'), 'Profiles/grail.json')
 
-    with open(pp, 'r') as fo:
-        prof = json.load(fo)
-
-    with open(gp, 'r') as fo:
-        grail = json.load(fo)
+    prof = other_utils.json_load_err(pp)
+    grail = other_utils.json_load_err(gp)
 
     for sess in prof:
         if sess in ['extra_data']:

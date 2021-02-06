@@ -360,7 +360,12 @@ class ArchiveBrowser(tkd.Toplevel):
         widths = [35, 70, 70, 80, 55, 85, 130, 150, 105]
         for i, col in enumerate(cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
-            tree.heading(col, text=col, sort_by='num')
+            if col in ["Avg packs (55% hork)", "Avg secs/pack (55% hork)", "Adjeff (55% hork)"]:
+                sort_by = 'name'
+            else:
+                sort_by = 'num'
+
+            tree.heading(col, text=col, sort_by=sort_by)
 
         grouped = self.group_laps(laps=laps)
 
