@@ -353,13 +353,13 @@ if __name__ == '__main__':
     def update_hovered(cur_unit):
         p_unit = r.pm.read_uint(r.hovered_item)
         if p_unit > 0 and p_unit != cur_unit:
-            cur_unit = p_unit
-            e_class = r.pm.read_uint(p_unit + 0x4)
-            item_descr_len = r.pm.read_uint(r.item_descripts)
-            item_descr_adr = r.pm.read_uint(r.item_descripts + 0x4)
-            specific_item_adr = r.pm.read_uint(item_descr_adr + item_descr_len*e_class)
-            string_index = r.pm.read_ushort(specific_item_adr + 0xF4)
-            name = r.lookup_string_table(string_index)
+            # cur_unit = p_unit
+            # e_class = r.pm.read_uint(p_unit + 0x4)
+            # item_descr_len = r.pm.read_uint(r.item_descripts)
+            # item_descr_adr = r.pm.read_uint(r.item_descripts + 0x4)
+            # specific_item_adr = r.pm.read_uint(item_descr_adr + item_descr_len*e_class)
+            # string_index = r.pm.read_ushort(specific_item_adr + 0xF4)
+            # name = r.lookup_string_table(string_index)
 
             vals = r.get_stats(p_unit, translate_stat=True)
             vals = reader_utils.group_and_hide_stats(vals)
