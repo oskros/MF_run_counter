@@ -173,7 +173,7 @@ def number_of_processes_with_names(process_names, logging_level=None):
             if logging_level == 'DEBUG':
                 handle = pymem.process.open(p.th32ProcessID, debug=False, verbose=False)
                 base_module = pymem.process.base_module(handle)
-                logging.debug('Path of process: %s' % base_module.filename.decode())
+                logging.debug('Path of process: %s' % getattr(base_module, 'filename', b'NOT_FOUND').decode())
                 pymem.process.close_handle(handle)
             out += 1
     return out
