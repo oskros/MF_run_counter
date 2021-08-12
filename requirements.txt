@@ -25,7 +25,7 @@ psutil == 5.7.0
 # C:\Users\oskro\PycharmProjects\MF_run_counter\modules\suboptions\hotkeys.py: 3
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\memory_reader_old.py: 3
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\transparent_test.py: 3
-pywin32 == 227
+pywin32 == 301
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\modules\grail.py: 8
 # C:\Users\oskro\PycharmProjects\MF_run_counter\utils\github_releases.py: 4
