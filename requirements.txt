@@ -5,7 +5,7 @@
 # C:\Users\oskro\PycharmProjects\MF_run_counter\memory_reader\reader_utils.py: 2
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\memory_reader_old.py: 2
 # C:\Users\oskro\PycharmProjects\MF_run_counter\utils\other_utils.py: 5
-Pymem == 1.2
+#Pymem == 1.2 #program uses custom version of this library - copy from /libs/ folder
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\threadsafe_file_saver.py: 4
 # C:\Users\oskro\PycharmProjects\MF_run_counter\utils\other_utils.py: 6
@@ -36,4 +36,4 @@ requests == 2.23.0
 scipy == 1.4.1
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\utils\other_utils.py: 4
-screeninfo == 0.6.5
+#screeninfo == 0.6.5 #program uses custom version of this library - copy from /libs/ folder

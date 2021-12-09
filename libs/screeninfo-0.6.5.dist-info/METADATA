@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: screeninfo
+Version: 0.6.5
+Summary: Fetch location and size of physical screens.
+Home-page: https://github.com/rr-/screeninfo
+Author: rr-
+Author-email: rr-@sakuya.pl
+License: UNKNOWN
+Keywords: screen,monitor,desktop
+Platform: UNKNOWN
+Requires-Dist: dataclasses
+Requires-Dist: Cython ; sys_platform == "darwin"
+Requires-Dist: pyobjus ; sys_platform == "darwin"
+
+UNKNOWN
+
+

@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: Pymem
+Version: 1.2
+Summary: pymem: python memory access made easy
+Home-page: http://pymem.readthedocs.org/en/latest/
+Author: Fabien Reboia
+Author-email: srounet@gmail.com
+Maintainer: Fabien Reboia
+Maintainer-email: srounet@gmail.com
+License: mit
+Keywords: memory win32 windows process
+Platform: windows
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Provides-Extra: doc
+Requires-Dist: recommonmark ; extra == 'doc'
+Requires-Dist: sphinx ; extra == 'doc'
+Requires-Dist: sphinx-rtd-theme ; extra == 'doc'
+Requires-Dist: sphinxcontrib-napoleon ; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: codecov ; extra == 'test'
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+
+A python library for windows, providing the needed functions to start working on your own with memory editing
+
+
