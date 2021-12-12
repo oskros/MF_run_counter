@@ -1,7 +1,7 @@
 import ctypes.util
 import typing as T
 
-from screeninfo.common import ScreenInfoError
+from libs.screeninfo.common import ScreenInfoError
 
 
 def load_library(name: str) -> T.Any:

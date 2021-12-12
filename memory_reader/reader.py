@@ -1,5 +1,6 @@
 import psutil  # REMOVING THIS LINE BREAKS MEMORY READING FOR GAME.EXE...
 from libs import pymem
+from libs.pymem import exception as pymem_exception
 import win32api
 import logging
 from memory_reader import reader_utils, stat_mappings
@@ -169,7 +170,7 @@ class D2Reader:
             # Gets character name - returns memory error out of game
             self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
             return True
-        except pymem.exception.MemoryReadError:
+        except pymem_exception.MemoryReadError:
             return False
 
     def player_unit_stats(self):

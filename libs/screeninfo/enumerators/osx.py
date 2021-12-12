@@ -1,6 +1,6 @@
 import typing as T
 
-from screeninfo.common import Monitor
+from libs.screeninfo.common import Monitor
 
 
 def enumerate_monitors() -> T.Iterable[Monitor]:

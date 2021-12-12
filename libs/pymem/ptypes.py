@@ -2,8 +2,8 @@ import ctypes
 import functools
 import struct
 
-from libs import pymem.memory
-from libs import pymem.exception
+import libs.pymem.memory
+import libs.pymem.exception
 
 
 class RemotePointer(object):
@@ -32,7 +32,7 @@ class RemotePointer(object):
         if not endianess:
             endianess = 'little-endian'
         if not endianess in RemotePointer.ALIGNMENTS:
-            raise pymem.exception.PymemAlignmentError(
+            raise libs.pymem.exception.PymemAlignmentError(
                 "{endianess} is not a valid alignment, it should be one from: {alignments}".format(**{
                     'endianess': endianess,
                     'alignments': ', '.join(RemotePointer.keys())
@@ -68,7 +68,7 @@ class RemotePointer(object):
         elif isinstance(v, ctypes._SimpleCData):
             self.v = v
         else:
-            raise pymem.exception.PymemTypeError(
+            raise libs.pymem.exception.PymemTypeError(
                 "{type} is not an allowed type, it should be one from: {allowed_types}".format(**{
                     'type': 'None' if not v else str(type(v)),
                     'allowed_types': ', '.join([
@@ -96,7 +96,7 @@ class RemotePointer(object):
         """
         if self._memory_value:
             return self._memory_value
-        content = pymem.memory.read_bytes(
+        content = libs.pymem.memory.read_bytes(
             self.handle, self.v.value, struct.calcsize(self.v._type_)
         )
         fmt = '{alignment}{type}'.format(**{

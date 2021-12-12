@@ -1,9 +1,9 @@
 import ctypes
 
-from libs import pymem.memory
-from libs import pymem.ressources.kernel32
-from libs import pymem.ressources.ntdll
-from libs import pymem.ressources.structure
+import libs.pymem.memory
+import libs.pymem.ressources.kernel32
+import libs.pymem.ressources.ntdll
+import libs.pymem.ressources.structure
 
 
 class Thread(object):
@@ -14,7 +14,7 @@ class Thread(object):
             :param process_handle: A handle to an opened process
             :param th_entry_32: A ThreadEntry32 structure
             :type process_handle: ctypes.wintypes.HANDLE
-            :type th_entry_32: pymem.ressources.structure.ThreadEntry32
+            :type th_entry_32: libs.pymem.ressources.structure.ThreadEntry32
         """
         self.process_handle = process_handle
         self.thread_id = th_entry_32.th32ThreadID
@@ -27,17 +27,17 @@ class Thread(object):
         """Query current thread informations to extract the TEB structure.
 
             :return: TEB informations
-            :rtype: pymem.ressources.structure.SMALL_TEB
+            :rtype: libs.pymem.ressources.structure.SMALL_TEB
         """
         THREAD_QUERY_INFORMATION = 0x0040
 
-        thread_handle = pymem.ressources.kernel32.OpenThread(
+        thread_handle = libs.pymem.ressources.kernel32.OpenThread(
             THREAD_QUERY_INFORMATION, False, self.th_entry_32.th32ThreadID
         )
-        res = pymem.ressources.structure.THREAD_BASIC_INFORMATION()
+        res = libs.pymem.ressources.structure.THREAD_BASIC_INFORMATION()
         ThreadBasicInformation = 0x0
 
-        pymem.ressources.ntdll.NtQueryInformationThread(
+        libs.pymem.ressources.ntdll.NtQueryInformationThread(
             thread_handle,
             ThreadBasicInformation,
             ctypes.byref(res),
@@ -45,11 +45,11 @@ class Thread(object):
             None
         )
         self.teb_address = res.TebBaseAddress
-        bytes = pymem.memory.read_bytes(
+        bytes = libs.pymem.memory.read_bytes(
             self.process_handle,
             res.TebBaseAddress,
             ctypes.sizeof(pymem.ressources.structure.SMALL_TEB)
         )
-        teb = pymem.ressources.structure.SMALL_TEB.from_buffer_copy(bytes)
-        pymem.ressources.kernel32.CloseHandle(thread_handle)
+        teb = libs.pymem.ressources.structure.SMALL_TEB.from_buffer_copy(bytes)
+        libs.pymem.ressources.kernel32.CloseHandle(thread_handle)
         return teb

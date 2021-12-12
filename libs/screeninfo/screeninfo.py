@@ -2,8 +2,8 @@ import importlib
 import typing as T
 from pathlib import Path
 
-from screeninfo import enumerators
-from screeninfo.common import Enumerator, Monitor, ScreenInfoError
+from libs.screeninfo import enumerators
+from libs.screeninfo.common import Enumerator, Monitor, ScreenInfoError
 
 ENUMERATOR_MAP = {
     Enumerator.Windows: enumerators.windows,

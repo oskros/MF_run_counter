@@ -4,8 +4,8 @@ import struct
 import ctypes
 import ctypes.wintypes
 
-from libs import pymem.ressources.psapi
-from libs import pymem.ressources.ntdll
+from . import psapi
+from . import ntdll
 
 
 class LUID(ctypes.Structure):
@@ -128,8 +128,9 @@ class ThreadEntry32(ctypes.Structure):
     # XXX: save it somehow
     @property
     def creation_time(self):
+        from . import kernel32
         THREAD_QUERY_INFORMATION = 0x0040
-        handle = pymem.ressources.kernel32.OpenThread(
+        handle = kernel32.OpenThread(
             THREAD_QUERY_INFORMATION, False, self.th32ThreadID
         )
 
@@ -138,10 +139,10 @@ class ThreadEntry32(ctypes.Structure):
         ktime = FILETIME()
         utime = FILETIME()
 
-        pymem.ressources.kernel32.GetThreadTimes(
+        kernel32.GetThreadTimes(
             handle, ctypes.pointer(ctime), ctypes.pointer(etime), ctypes.pointer(ktime), ctypes.pointer(utime)
         )
-        pymem.ressources.kernel32.CloseHandle(handle)
+        kernel32.CloseHandle(handle)
         return ctime.value
 
     def __init__(self, *args, **kwds):
@@ -321,7 +322,7 @@ class MODULEINFO(ctypes.Structure):
     @property
     def name(self):
         modname = ctypes.c_buffer(ctypes.wintypes.MAX_PATH)
-        pymem.ressources.psapi.GetModuleBaseNameA(
+        psapi.GetModuleBaseNameA(
             self.process_handle,
             ctypes.c_void_p(self.lpBaseOfDll),
             modname,
@@ -332,7 +333,7 @@ class MODULEINFO(ctypes.Structure):
     @property
     def filename(self):
         _filename = ctypes.c_buffer(ctypes.wintypes.MAX_PATH)
-        pymem.ressources.psapi.GetModuleFileNameExA(
+        psapi.GetModuleFileNameExA(
             self.process_handle,
             ctypes.c_void_p(self.lpBaseOfDll),
             _filename,
@@ -438,7 +439,7 @@ class CLIENT_ID(ctypes.Structure):
 
 class THREAD_BASIC_INFORMATION(ctypes.Structure):
     _fields_ = [
-        ("ExitStatus", pymem.ressources.ntdll.NTSTATUS),
+        ("ExitStatus", ntdll.NTSTATUS),
         ("TebBaseAddress", ctypes.wintypes.LPVOID),
         ("ClientId", CLIENT_ID),
         ("AffinityMask", ctypes.c_long),

@@ -1,8 +1,8 @@
 import struct
 
-from libs import pymem.memory
-from libs import pymem.ressources.kernel32
-from libs import pymem.ressources.structure
+import libs.pymem.memory
+import libs.pymem.ressources.kernel32
+import libs.pymem.ressources.structure
 
 
 def scan_pattern_page(handle, address, pattern, mask):
@@ -27,19 +27,19 @@ def scan_pattern_page(handle, address, pattern, mask):
     tuple
         next_region, found address
     """
-    mbi = pymem.memory.virtual_query(handle, address)
+    mbi = libs.pymem.memory.virtual_query(handle, address)
     next_region = mbi.BaseAddress + mbi.RegionSize
     allowed_protections = [
-        pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READ,
-        pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READWRITE,
-        pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READWRITE,
-        pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READONLY,
+        libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READ,
+        libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READWRITE,
+        libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READWRITE,
+        libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READONLY,
     ]
-    if (mbi.state != pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT or
+    if (mbi.state != libs.pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT or
         mbi.protect not in allowed_protections
         ):
         return next_region, []
-    page_bytes = pymem.memory.read_bytes(handle, address, mbi.RegionSize)
+    page_bytes = libs.pymem.memory.read_bytes(handle, address, mbi.RegionSize)
 
     found = None
     for offset in range(0, (mbi.RegionSize - len(pattern)), 1):
@@ -76,14 +76,14 @@ def scan_string_page(handle, address, search):
     tuple
         next_region, found address
     """
-    mbi = pymem.memory.virtual_query(handle, address)
+    mbi = libs.pymem.memory.virtual_query(handle, address)
     next_region = mbi.BaseAddress + mbi.RegionSize
-    if (mbi.state != pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT or
-        mbi.protect != pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READONLY and
-        mbi.type != pymem.ressources.structure.MEMORY_TYPES.MEM_IMAGE
+    if (mbi.state != libs.pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT or
+        mbi.protect != libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_READONLY and
+        mbi.type != libs.pymem.ressources.structure.MEMORY_TYPES.MEM_IMAGE
         ):
         return next_region, []
-    page_bytes = pymem.memory.read_bytes(handle, address, mbi.RegionSize)
+    page_bytes = libs.pymem.memory.read_bytes(handle, address, mbi.RegionSize)
 
     found = None
     for offset in range(0, (mbi.RegionSize - len(search)), 1):
@@ -101,12 +101,12 @@ def scan_string_page(handle, address, search):
 def search_real_address(handle, address, found_address):
     """
     """
-    mbi = pymem.memory.virtual_query(handle, address)
+    mbi = libs.pymem.memory.virtual_query(handle, address)
     next_region = mbi.BaseAddress + mbi.RegionSize
     # Search within code sections
-    if (mbi.protect != pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READ):
+    if (mbi.protect != libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READ):
         return next_region, None
-    page_bytes = pymem.memory.read_bytes(handle, address, mbi.RegionSize)
+    page_bytes = libs.pymem.memory.read_bytes(handle, address, mbi.RegionSize)
 
     found = None
     for i in range(len(page_bytes)):
@@ -153,10 +153,10 @@ def string_scan_module(handle, module, search):
     Examples
     --------
 
-    >>> p = pymem.Pymem()
+    >>> p = libs.pymem.Pymem()
     >>> p.open_process_from_name("Gw2-64.exe")
-    >>> module = pymem.process.module_from_name(p.process_handle, "Gw2-64.exe")
-    >>> GetContext_address = pymem.pattern.pattern_scan_module(p.process_handle, module, GetContext_pattern, GetContext_mask)
+    >>> module = libs.pymem.process.module_from_name(p.process_handle, "Gw2-64.exe")
+    >>> GetContext_address = libs.pymem.pattern.pattern_scan_module(p.process_handle, module, GetContext_pattern, GetContext_mask)
     """
     base_address = module.lpBaseOfDll
     max_address = module.lpBaseOfDll + module.SizeOfImage
@@ -206,12 +206,12 @@ def pattern_scan_module(handle, module, pattern, mask):
 
     Examples
     --------
-    >>> p = pymem.Pymem()
+    >>> p = libs.pymem.Pymem()
     >>> p.open_process_from_name("Gw2-64.exe")
     >>> GetContext_pattern = b"\\x65\\x48\\x8B\\x04\\x25\\x58\\x00\\x00\\x00\\xBA\\x08\\x00\\x00\\x00"
     >>> GetContext_mask = "x" * 14
-    >>> module = pymem.process.module_from_name(p.process_handle, "Gw2-64.exe")
-    >>> GetContext_address = pymem.pattern.pattern_scan_module(p.process_handle, module, GetContext_pattern, GetContext_mask    )
+    >>> module = libs.pymem.process.module_from_name(p.process_handle, "Gw2-64.exe")
+    >>> GetContext_address = libs.pymem.pattern.pattern_scan_module(p.process_handle, module, GetContext_pattern, GetContext_mask    )
     """
     base_address = module.lpBaseOfDll
     max_address = module.lpBaseOfDll + module.SizeOfImage

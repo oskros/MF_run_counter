@@ -2,8 +2,6 @@
 import ctypes
 import ctypes.wintypes
 
-from libs import pymem.ressources.structure
-
 dll = ctypes.WinDLL('ntdll.dll')
 
 NTSTATUS = ctypes.c_ulong

@@ -1,8 +1,7 @@
 """It handles memory management, input/output operations, and interrupts"""
 import ctypes
 import ctypes.wintypes
-
-from libs import pymem.ressources.structure
+from . import structure
 
 
 dll = ctypes.WinDLL('kernel32.dll')
@@ -105,14 +104,14 @@ CreateToolhelp32Snapshot.argtypes = (ctypes.wintypes.DWORD, ctypes.wintypes.DWOR
 #: https://msdn.microsoft.com/en-us/library/windows/desktop/ms684218%28v=vs.85%29.aspx
 Module32First = dll.Module32First
 Module32First.restype = ctypes.c_ulonglong
-Module32First.argtypes = (ctypes.wintypes.HANDLE, pymem.ressources.structure.LPMODULEENTRY32)
+Module32First.argtypes = (ctypes.wintypes.HANDLE, structure.LPMODULEENTRY32)
 
 #: Retrieves information about the next module associated with a process or thread.
 #:
 #: https://msdn.microsoft.com/en-us/library/windows/desktop/ms684221%28v=vs.85%29.aspx
 Module32Next = dll.Module32Next
 Module32Next.restype = ctypes.c_ulonglong
-Module32Next.argtypes = (ctypes.wintypes.HANDLE, pymem.ressources.structure.LPMODULEENTRY32)
+Module32Next.argtypes = (ctypes.wintypes.HANDLE, structure.LPMODULEENTRY32)
 
 #: Retrieves information about the first process encountered in a system snapshot.
 #:
@@ -133,7 +132,7 @@ Thread32First = dll.Thread32First
 Thread32First.restype = ctypes.wintypes.BOOL
 Thread32First.argtypes = [
     ctypes.wintypes.HANDLE,
-    ctypes.POINTER(pymem.ressources.structure.ThreadEntry32)
+    ctypes.POINTER(structure.ThreadEntry32)
 ]
 
 #: Retrieves information about the next thread of any process encountered in the system memory snapshot.
@@ -143,7 +142,7 @@ Thread32Next = dll.Thread32Next
 Thread32Next.restype = ctypes.wintypes.BOOL
 Thread32Next.argtypes = [
     ctypes.wintypes.HANDLE,
-    ctypes.POINTER(pymem.ressources.structure.ThreadEntry32)
+    ctypes.POINTER(structure.ThreadEntry32)
 ]
 
 #: Opens an existing thread object.
@@ -194,7 +193,7 @@ VirtualQueryEx = dll.VirtualQueryEx
 VirtualQueryEx.argtypes = [
     ctypes.wintypes.HANDLE,
     ctypes.wintypes.LPCVOID,
-    ctypes.POINTER(pymem.ressources.structure.MEMORY_BASIC_INFORMATION),
+    ctypes.POINTER(structure.MEMORY_BASIC_INFORMATION),
     ctypes.c_size_t
 ]
 VirtualQueryEx.restype = ctypes.c_ulong
@@ -224,7 +223,7 @@ CreateRemoteThread = dll.CreateRemoteThread
 CreateRemoteThread.restype = ctypes.wintypes.HANDLE
 CreateRemoteThread.argtypes = (
     ctypes.wintypes.HANDLE,
-    pymem.ressources.structure.LPSECURITY_ATTRIBUTES,
+    structure.LPSECURITY_ATTRIBUTES,
     ctypes.wintypes.DWORD,
     ctypes.wintypes.LPVOID,
     ctypes.wintypes.LPVOID,

@@ -1,6 +1,6 @@
 import argparse
 
-from screeninfo.common import Enumerator
+from libs.screeninfo.common import Enumerator
 
 from .screeninfo import get_monitors
 

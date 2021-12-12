@@ -1,12 +1,12 @@
 import typing as T
 
-from screeninfo.common import Monitor, ScreenInfoError
+from libs.screeninfo.common import Monitor, ScreenInfoError
 
 
 def enumerate_monitors() -> T.Iterable[Monitor]:
     import ctypes
 
-    from screeninfo.util import load_library
+    from libs.screeninfo.util import load_library
 
     class XineramaScreenInfo(ctypes.Structure):
         _fields_ = [

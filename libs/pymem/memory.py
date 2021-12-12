@@ -1,9 +1,9 @@
 import ctypes
 import struct
 
-from libs import pymem.exception
-from libs import pymem.ressources.kernel32
-from libs import pymem.ressources.structure
+import libs.pymem.exception
+import libs.pymem.ressources.kernel32
+import libs.pymem.ressources.structure
 
 
 def allocate_memory(handle, size, allocation_type=None, protection_type=None):
@@ -19,9 +19,9 @@ def allocate_memory(handle, size, allocation_type=None, protection_type=None):
         The handle must have the PROCESS_VM_OPERATION access right.
     size: int
         The size of the region of memory to allocate, in bytes.
-    allocation_type: pymem.ressources.structure.MEMORY_STATE
+    allocation_type: libs.pymem.ressources.structure.MEMORY_STATE
         The type of memory allocation.
-    protection_type: pymem.ressources.structure.MEMORY_PROTECTION
+    protection_type: libs.pymem.ressources.structure.MEMORY_PROTECTION
         The memory protection for the region of pages to be allocated.
 
     Returns
@@ -30,11 +30,11 @@ def allocate_memory(handle, size, allocation_type=None, protection_type=None):
         The address of the allocated region of pages.
     """
     if not allocation_type:
-        allocation_type = pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT.value
+        allocation_type = libs.pymem.ressources.structure.MEMORY_STATE.MEM_COMMIT.value
     if not protection_type:
-        protection_type = pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READWRITE.value
+        protection_type = libs.pymem.ressources.structure.MEMORY_PROTECTION.PAGE_EXECUTE_READWRITE.value
     ctypes.windll.kernel32.SetLastError(0)
-    address = pymem.ressources.kernel32.VirtualAllocEx(handle, None, size, allocation_type, protection_type)
+    address = libs.pymem.ressources.kernel32.VirtualAllocEx(handle, None, size, allocation_type, protection_type)
     return address
 
 
@@ -50,7 +50,7 @@ def free_memory(handle, address, free_type=None):
         The handle must have the PROCESS_VM_OPERATION access right.
     address: int
         An address of the region of memory to be freed.
-    free_type: pymem.ressources.structure.MEMORY_PROTECTION
+    free_type: libs.pymem.ressources.structure.MEMORY_PROTECTION
         The type of free operation.
 
     Returns
@@ -59,9 +59,9 @@ def free_memory(handle, address, free_type=None):
         A boolean indicating if the call was a success.
     """
     if not free_type:
-        free_type = pymem.ressources.structure.MEMORY_STATE.MEM_RELEASE
+        free_type = libs.pymem.ressources.structure.MEMORY_STATE.MEM_RELEASE
     ctypes.windll.kernel32.SetLastError(0)
-    ret = pymem.ressources.kernel32.VirtualFreeEx(handle, address, 0, free_type)
+    ret = libs.pymem.ressources.kernel32.VirtualFreeEx(handle, address, 0, free_type)
     return ret
 
 
@@ -98,11 +98,11 @@ def read_bytes(handle, address, byte):
     buff = ctypes.create_string_buffer(byte)
     bytes_read = ctypes.c_size_t()
     ctypes.windll.kernel32.SetLastError(0)
-    pymem.ressources.kernel32.ReadProcessMemory(handle, ctypes.c_void_p(address), ctypes.byref(buff), byte, ctypes.byref(bytes_read))
+    libs.pymem.ressources.kernel32.ReadProcessMemory(handle, ctypes.c_void_p(address), ctypes.byref(buff), byte, ctypes.byref(bytes_read))
     error_code = ctypes.windll.kernel32.GetLastError()
     if error_code:
         ctypes.windll.kernel32.SetLastError(0)
-        raise pymem.exception.WinAPIError(error_code)
+        raise libs.pymem.exception.WinAPIError(error_code)
     raw = buff.raw
     return raw
 
@@ -585,7 +585,7 @@ def write_bytes(handle, address, data, length):
     error_code = ctypes.windll.kernel32.GetLastError()
     if error_code:
         ctypes.windll.kernel32.SetLastError(0)
-        raise pymem.exception.WinAPIError(error_code)
+        raise libs.pymem.exception.WinAPIError(error_code)
     return res
 
 
@@ -1051,8 +1051,8 @@ def virtual_query(handle, address):
     MEMORY_BASIC_INFORMATION
         A memory basic information object
     """
-    mbi = pymem.ressources.structure.MEMORY_BASIC_INFORMATION()
+    mbi = libs.pymem.ressources.structure.MEMORY_BASIC_INFORMATION()
     mbi_pointer = ctypes.byref(mbi)
     size = ctypes.sizeof(mbi)
-    pymem.ressources.kernel32.VirtualQueryEx(handle, address, mbi_pointer, size)
+    libs.pymem.ressources.kernel32.VirtualQueryEx(handle, address, mbi_pointer, size)
     return mbi

@@ -1,6 +1,6 @@
-import screeninfo.enumerators.cygwin
-import screeninfo.enumerators.osx
-import screeninfo.enumerators.windows
-import screeninfo.enumerators.xinerama
-import screeninfo.enumerators.xrandr
-import screeninfo.enumerators.drm
+import libs.screeninfo.enumerators.cygwin
+import libs.screeninfo.enumerators.osx
+import libs.screeninfo.enumerators.windows
+import libs.screeninfo.enumerators.xinerama
+import libs.screeninfo.enumerators.xrandr
+import libs.screeninfo.enumerators.drm
