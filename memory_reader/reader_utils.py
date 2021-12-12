@@ -1,5 +1,5 @@
 import ctypes
-import pymem
+from libs import pymem
 import logging
 from memory_reader import stat_mappings
 from init import *

@@ -1,5 +1,5 @@
 import psutil  # REMOVING THIS LINE BREAKS MEMORY READING FOR GAME.EXE...
-import pymem
+from libs import pymem
 import win32api
 import logging
 from memory_reader import reader_utils, stat_mappings

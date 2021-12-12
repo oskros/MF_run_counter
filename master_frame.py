@@ -11,7 +11,7 @@ import win32api
 import win32gui
 import win32con
 import platform
-import pymem.exception
+from libs import pymem.exception
 from memory_reader import reader, reader_utils
 from utils.config import Config
 from modules.options import Options
