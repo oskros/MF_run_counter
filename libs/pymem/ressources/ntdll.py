@@ -2,7 +2,7 @@
 import ctypes
 import ctypes.wintypes
 
-import pymem.ressources.structure
+from libs import pymem.ressources.structure
 
 dll = ctypes.WinDLL('ntdll.dll')
 

@@ -2,7 +2,7 @@ import os
 import json
 from tkinter import messagebox
 import screeninfo
-import pymem.exception
+from libs import pymem.exception
 import atomicwrites
 
 

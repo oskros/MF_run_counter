@@ -3,9 +3,9 @@ import ctypes.wintypes
 import platform
 import copy
 
-import pymem.ressources.kernel32
-import pymem.ressources.psapi
-import pymem.ressources.structure
+from libs import pymem.ressources.kernel32
+from libs import pymem.ressources.psapi
+from libs import pymem.ressources.structure
 
 
 def inject_dll(handle, filepath):

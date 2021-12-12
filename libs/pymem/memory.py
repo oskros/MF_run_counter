@@ -1,9 +1,9 @@
 import ctypes
 import struct
 
-import pymem.exception
-import pymem.ressources.kernel32
-import pymem.ressources.structure
+from libs import pymem.exception
+from libs import pymem.ressources.kernel32
+from libs import pymem.ressources.structure
 
 
 def allocate_memory(handle, size, allocation_type=None, protection_type=None):

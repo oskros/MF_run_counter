@@ -1,9 +1,9 @@
 import ctypes
 
-import pymem.memory
-import pymem.ressources.kernel32
-import pymem.ressources.ntdll
-import pymem.ressources.structure
+from libs import pymem.memory
+from libs import pymem.ressources.kernel32
+from libs import pymem.ressources.ntdll
+from libs import pymem.ressources.structure
 
 
 class Thread(object):

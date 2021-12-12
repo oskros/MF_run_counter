@@ -4,8 +4,8 @@ import struct
 import ctypes
 import ctypes.wintypes
 
-import pymem.ressources.psapi
-import pymem.ressources.ntdll
+from libs import pymem.ressources.psapi
+from libs import pymem.ressources.ntdll
 
 
 class LUID(ctypes.Structure):

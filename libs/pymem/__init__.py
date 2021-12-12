@@ -6,12 +6,12 @@ import platform
 import struct
 import sys
 
-import pymem.exception
-import pymem.memory
-import pymem.process
-import pymem.ressources.kernel32
-import pymem.ressources.structure
-import pymem.thread
+from libs import pymem.exception
+from libs import pymem.memory
+from libs import pymem.process
+from libs import pymem.ressources.kernel32
+from libs import pymem.ressources.structure
+from libs import pymem.thread
 
 
 logger = logging.getLogger('pymem')

@@ -1,5 +1,5 @@
 import psutil
-import pymem
+from libs import pymem
 import win32api
 # tp = pymem.ressources.structure.TOKEN_PRIVILEGES()
 # luid = pymem.ressources.structure.LUID()

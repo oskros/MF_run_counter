@@ -2,8 +2,8 @@ import ctypes
 import functools
 import struct
 
-import pymem.memory
-import pymem.exception
+from libs import pymem.memory
+from libs import pymem.exception
 
 
 class RemotePointer(object):
