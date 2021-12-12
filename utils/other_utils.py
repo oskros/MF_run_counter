@@ -1,8 +1,8 @@
 import os
 import json
 from tkinter import messagebox
-import screeninfo
-import pymem.exception
+import libs.screeninfo
+from libs.pymem import exception as pymem_exception
 import atomicwrites
 
 
@@ -24,7 +24,7 @@ def build_time_str(elap):
 
 
 def get_monitor_from_coord(x, y, disable_scaling=True):
-    monitors = screeninfo.get_monitors(disable_scaling=disable_scaling)
+    monitors = libs.screeninfo.get_monitors(disable_scaling=disable_scaling)
 
     for m in reversed(monitors):
         if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
@@ -68,5 +68,5 @@ def json_load_err(file_path):
 
 
 
-pymem_err_list = (pymem.exception.ProcessError, pymem.exception.ProcessNotFound, pymem.exception.WinAPIError,
-                  pymem.exception.MemoryReadError, KeyError, AttributeError, TypeError)
+pymem_err_list = (pymem_exception.ProcessError, pymem_exception.ProcessNotFound, pymem_exception.WinAPIError,
+                  pymem_exception.MemoryReadError, KeyError, AttributeError, TypeError)

@@ -11,7 +11,7 @@ import win32api
 import win32gui
 import win32con
 import platform
-import pymem.exception
+from libs.pymem import exception as pymem_exception
 from memory_reader import reader, reader_utils
 from utils.config import Config
 from modules.options import Options
@@ -250,7 +250,7 @@ class MasterFrame(Config):
                 else:
                     self.d2_reader = None
 
-            except pymem.exception.CouldNotOpenProcess:
+            except pymem_exception.CouldNotOpenProcess:
                 err = ('Open process error', 'Memory reader failed to get handle of Game process, try restarting your computer.\n\nDisabling advanced automode')
                 self.d2_reader = False
             except other_utils.pymem_err_list as e:
