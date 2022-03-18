@@ -225,7 +225,11 @@ class ArchiveBrowser(tkd.Toplevel):
             tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
 
     def drop_table(self, drops):
-        flat_drops = [{**drop, 'Run': n, 'Item name': drop.get('item_name', drop.get('input', '')), 'Extra input': drop.get('extra', '')} for n, drop_list in drops.items() for drop in drop_list]
+        flat_drops = []
+        for n, drop_list in drops.items():
+            for drop in drop_list:
+                item_name = drop.get('input', '') if drop.get('item_name') is None else drop.get('item_name')
+                flat_drops.append({**drop, 'Run': n, 'Item name': item_name, 'Extra input': drop.get('extra', '')})
 
         def select_drops_from_filters(event=None):
             tree.delete(*tree.get_children())
