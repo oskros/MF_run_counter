@@ -16,7 +16,7 @@ packaging == 20.4
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\memory_reader\reader.py: 1
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\memory_reader_old.py: 1
-psutil == 5.7.0
+psutil >= 5.7.0
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\main.py: 2
 # C:\Users\oskro\PycharmProjects\MF_run_counter\main_frame.py: 10,11
@@ -33,7 +33,7 @@ pywin32 == 227
 requests == 2.23.0
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\unused_tests\expected_runs_for_grail.py: 3
-scipy == 1.4.1
+scipy >= 1.4.1
 
 # C:\Users\oskro\PycharmProjects\MF_run_counter\utils\other_utils.py: 4
 #screeninfo == 0.6.5 #repository uses custom version of this library - copy from /libs/ folder
