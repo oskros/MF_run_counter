@@ -1,18 +1,18 @@
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_Profiles"
-del "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_config.ini"
-echo d | xcopy "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer\Profiles" "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_Profiles"
-echo f | xcopy "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer\mf_config.ini" "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_config.ini"
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\build"
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\dist"
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release"
-cd "C:\Users\oskro\PycharmProjects\MF_run_counter"
-path=%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Users\oskro\Downloads\WPy64-3830\python-3.8.3.amd64;C:\Users\oskro\Downloads\WPy64-3830\python-3.8.3.amd64\Scripts
-pyinstaller "C:\Users\oskro\PycharmProjects\MF_run_counter\build_exe\directory_exe.spec" --windowed --clean --icon="C:\Users\oskro\PycharmProjects\MF_run_counter\media\icon.ico"
-start C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\build"
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\dist"
-echo d | xcopy "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_Profiles" "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer\Profiles"
-echo f | xcopy "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_config.ini" "C:\Users\oskro\PycharmProjects\MF_run_counter\dict_release\mf_timer\mf_config.ini"
-rmdir /S /Q "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_Profiles"
-del "C:\Users\oskro\PycharmProjects\MF_run_counter\Temp_config.ini"
+cd ..
+rmdir /S /Q "Temp_Profiles"
+del "Temp_config.ini"
+echo d | xcopy "dict_release\mf_timer\Profiles" "Temp_Profiles"
+echo f | xcopy "dict_release\mf_timer\mf_config.ini" "Temp_config.ini"
+rmdir /S /Q "build"
+rmdir /S /Q "dist"
+rmdir /S /Q "dict_release"
+path=%PATH%;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;%SYSTEMROOT%\System32\downlevel;
+pyinstaller "build_exe\directory_exe.spec"
+rmdir /S /Q "build"
+rmdir /S /Q "dist"
+start dict_release\mf_timer
+echo d | xcopy "Temp_Profiles" "dict_release\mf_timer\Profiles"
+echo f | xcopy "Temp_config.ini" "dict_release\mf_timer\mf_config.ini"
+rmdir /S /Q "Temp_Profiles"
+del "Temp_config.ini"
 exit
