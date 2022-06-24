@@ -327,7 +327,7 @@ class Grail(tkd.Frame):
 
         if self.show_eth_grail.get():
             messagebox.showinfo('Eth grail', 'Grail controller cannot be used to modify your eth grail as of right now.\nInstead you can do this on herokuapp, and then sync to the application afterwards')
-            self.update_statistics(eth=False)
+            return
 
         # Initialise the TopLevel window (important we use TopLevel instead of Tk, to pass over information between
         # the defined widgets and the main app)
