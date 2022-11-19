@@ -17,3 +17,4 @@
 *.csv
 /dict_release/
 *.log
+/.idea/.gitignore

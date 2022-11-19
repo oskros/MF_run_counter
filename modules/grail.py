@@ -122,7 +122,10 @@ class Grail(tkd.Frame):
             resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
             if resp:
                 uid = resp[0]
-                heroku_grail, heroku_ethgrail = self.get_grail_from_herokuapp(uid)
+                resp_data = self.get_grail_from_herokuapp(uid)
+                if resp_data is None:
+                    return
+                heroku_grail, heroku_ethgrail = resp_data
                 self.update_grail_from_list(heroku_ethgrail, eth=True)
                 item_lst.extend(heroku_grail)
                 msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
@@ -324,7 +327,7 @@ class Grail(tkd.Frame):
 
         if self.show_eth_grail.get():
             messagebox.showinfo('Eth grail', 'Grail controller cannot be used to modify your eth grail as of right now.\nInstead you can do this on herokuapp, and then sync to the application afterwards')
-            self.update_statistics(eth=False)
+            return
 
         # Initialise the TopLevel window (important we use TopLevel instead of Tk, to pass over information between
         # the defined widgets and the main app)
