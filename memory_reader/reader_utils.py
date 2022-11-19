@@ -155,7 +155,7 @@ def one_of_processes_exists(process_names):
         processes = pymem.process.list_processes()
         names = [n.lower() for n in process_names]
         for process in processes:
-            if process.szExeFile.decode('utf-8').lower() in names:
+            if process.szExeFile.decode('utf-8', errors='ignore').lower() in names:
                 return True
         return False
     # Argument error causing an integer overflow in the pymem.process.list_processes() function every once in a while
@@ -169,7 +169,7 @@ def number_of_processes_with_names(process_names, logging_level=None):
     names = [x.lower() for x in process_names]
     out = 0
     for p in processes:
-        if p.szExeFile.decode('utf-8').lower() in names:
+        if p.szExeFile.decode('utf-8', errors='ignore').lower() in names:
             if logging_level == 'DEBUG':
                 handle = pymem.process.open(p.th32ProcessID, debug=False, verbose=False)
                 base_module = pymem.process.base_module(handle)
