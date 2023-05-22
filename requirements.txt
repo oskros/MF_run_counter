@@ -28,7 +28,7 @@ pywin32 == 227
 # MF_run_counter\modules\grail.py: 8
 # MF_run_counter\utils\github_releases.py: 4
 # MF_run_counter\utils\herokuapp_controller.py: 1
-requests == 2.23.0
+requests == 2.31.0
 
 # MF_run_counter\unused_tests\expected_runs_for_grail.py: 3
 scipy >= 1.4.1
