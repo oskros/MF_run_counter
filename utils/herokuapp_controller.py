@@ -1,14 +1,13 @@
 import requests
 import json
-import os
+from init import utils_path
 from copy import deepcopy
 
-abs_file_path = os.path.dirname(__file__)
 api_page = 'http://d2-holy-grail.herokuapp.com/api/grail/'
-with open(abs_file_path + '/default_grail_data.json', 'r') as fo:
+with open(utils_path + 'default_grail_data.json', 'r') as fo:
     default_data = json.load(fo)
 
-with open(abs_file_path + '/default_eth_grail_data.json', 'r') as fo:
+with open(utils_path + 'default_eth_grail_data.json', 'r') as fo:
     default_eth_data = json.load(fo)
 
 
