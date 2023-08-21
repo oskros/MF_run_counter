@@ -39,10 +39,11 @@ def get_displaced_geom(master, app_x, app_y, pos_x=None, pos_y=None):
 
 class RegistrationForm:
     def __init__(self, master, coords, first_profile):
-        self.new_win = tk.Tk()
+        self.new_win = tk.Toplevel()
         self.new_win.title('Profile registration')
         self.new_win.wm_attributes('-topmost', 1)
         self.new_win.resizable(False, False)
+        self.stringvars = []
 
         geom = get_displaced_geom(master, 290, 185, coords[0], coords[1])
         self.new_win.geometry(geom)
@@ -90,7 +91,8 @@ class RegistrationForm:
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
         tk.Label(frame, width=16, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
-        var = tk.StringVar()
+        self.stringvars.append(tk.StringVar())
+        var = self.stringvars[-1]
         if restricted:
             out = tkd.RestrictedEntry(frame, textvariable=var)
         else:
@@ -103,12 +105,13 @@ class RegistrationForm:
         frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
 
         tk.Label(frame, width=16, text=text + ': ', anchor=tk.W).pack(side=tk.LEFT)
-        var = tk.StringVar()
+        self.stringvars.append(tk.StringVar())
+        var = self.stringvars[-1]
         out = ttk.Combobox(frame, textvariable=var, values=values)
+        out.current(0)
         if readonly:
             out.config(state='readonly')
         out.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
-        out.set(values[0])
         return out
 
     def close_mod(self):
