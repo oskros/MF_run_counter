@@ -616,9 +616,9 @@ class Treeview(ttk.Treeview):
         return super().heading(column, **kwargs)
 
     def _sort(self, column, reverse, data_type, callback):
-        l = [(self.set(k, column), k) for k in self.get_children('')]
-        l.sort(key=lambda t: data_type(t[0]), reverse=reverse)
-        for index, (_, k) in enumerate(l):
+        srt = [(self.set(k, column), k) for k in self.get_children('')]
+        srt.sort(key=lambda t: data_type(t[0]), reverse=reverse)
+        for index, (_, k) in enumerate(srt):
             self.move(k, '', index)
             if self.alternate_colour:
                 if self.item(k)['tags'] in [['Even'], ['Odd']]:
