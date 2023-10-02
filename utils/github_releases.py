@@ -1,5 +1,5 @@
 import time
-from utils.tk_utils import mbox
+from utils import tk_utils
 from init import *
 from requests import request
 import logging
@@ -50,7 +50,7 @@ def check_newest_version(release_repo):
         releases = get_releases('oskros/MF_run_counter')
         latest_ver = releases[0]['tag_name']
         if pk_version.parse(version) < pk_version.parse(latest_ver):
-            mbox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=release_repo)
+            tk_utils.MessageBox(b1='OK', b2='', msg='Your version is not up to date. Get the newest release from', title='New version', hyperlink=release_repo)
         return str(sum(r['assets'][0]['download_count'] for r in releases))
     except Exception as e:
         logging.debug(str(e))

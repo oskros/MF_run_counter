@@ -78,7 +78,7 @@ class Profile(tkd.Frame):
         # Ensure the pop-up is centered over the main program window
         xc = self.root.winfo_rootx() + self.root.winfo_width()//8
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        profile = tk_utils.registration_form(master=self.main_frame, coords=(xc, yc), first_profile=first_profile)
+        profile = tk_utils.RegistrationForm(master=self.main_frame, coords=(xc, yc), first_profile=first_profile).returning
         if profile:
             profile_name = profile.pop('Profile name')
             profile['Game mode'] = 'Single Player' if profile['Game mode'] == '' else profile['Game mode']
@@ -165,7 +165,7 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You need to have at least one profile, create a new profile before deleting this one.')
             return
 
-        resp = tk_utils.mbox(msg='Type "DELETE" to confirm you wish to delete the profile "%s"\n\nThis will permanently delete all records stored for the profile.' % chosen, title='WARNING', disabled_btn_input='DELETE')
+        resp = tk_utils.MessageBox(msg=f'Type "DELETE" to confirm you wish to delete the profile "{chosen}"\n\nThis will permanently delete all records stored for the profile.', title='WARNING', disabled_btn_input='DELETE').returning
         if resp == 'DELETE':
             file = f'Profiles/{chosen}.json'
             os.remove(file)
@@ -185,7 +185,7 @@ class Profile(tkd.Frame):
             tk.messagebox.showerror('Error', 'You cannot delete profile history from here. Please delete all sessions manually, or delete the profile instead')
             return
 
-        resp = tk_utils.mbox(msg='Type "DELETE" to confirm you wish to delete the session "%s" from archive\n\nIt will be permanently deleted' % chosen, title='WARNING', disabled_btn_input='DELETE')
+        resp = tk_utils.MessageBox(msg=f'Type "DELETE" to confirm you wish to delete the session "{chosen}" from archive\n\nIt will be permanently deleted', title='WARNING', disabled_btn_input='DELETE').returning
         if resp == 'DELETE':
             if chosen == 'Active session':
                 # Here we simply reset the timer module

@@ -262,7 +262,7 @@ class MFRunTimer(tkd.Frame):
         if not self.m.curselection():
             return
         sel = self.m.selection_get()
-        if tk_utils.mbox(msg='Do you want to delete the run:\n%s' % sel, title='Warning'):
+        if tk_utils.MessageBox(msg='Do you want to delete the run:\n%s' % sel, title='Warning').returning:
             all_runs = self.m.get(0, tk.END)
             sel_idx = all_runs.index(sel)
 

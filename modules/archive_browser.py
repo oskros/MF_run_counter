@@ -87,7 +87,7 @@ class ArchiveBrowser(tkd.Toplevel):
     def search_statistics(self):
         if not self.tabcontrol.select().endswith('frame'):
             return
-        search_inp = tk_utils.mbox(msg="Search", entry=True)
+        search_inp = tk_utils.MessageBox(msg="Search", entry=True).returning
         if search_inp is not None:
             cvar = tk.StringVar()
             start_pos = self.last_pos if self.last_src == search_inp else 1.0

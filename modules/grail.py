@@ -120,7 +120,7 @@ class Grail(tkd.Frame):
         msg = 'Updated local grail file with:'
         resp = None
         if self.sync_herokuapp.get():
-            resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
+            resp = tk_utils.MultiEntryBox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None]).returning
             if resp:
                 uid = resp[0]
                 resp_data = self.get_grail_from_herokuapp(uid)
@@ -146,7 +146,7 @@ class Grail(tkd.Frame):
             messagebox.showinfo('Grail update', 'No logged items: Nothing to update')
 
     def reset_grail(self):
-        resp = tk_utils.mbox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING', disabled_btn_input='DELETE')
+        resp = tk_utils.MessageBox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING', disabled_btn_input='DELETE').returning
         if resp == 'DELETE':
             self.grail = self.create_empty_grail()
             self.update_statistics()
@@ -244,7 +244,7 @@ class Grail(tkd.Frame):
         return upd_lst, eth_lst
 
     def upload_to_herokuapp(self, upd_dict=None, show_confirm=True, pop_up_msg=None, pop_up_title='d2-holy-grail.herokuapp', eth_dict=None):
-        resp = tk_utils.mebox(entries=['Username', 'Password'], title=pop_up_title, defaults=[self.username.get(), self.password.get()], masks=[None, "*"], msg=pop_up_msg)
+        resp = tk_utils.MultiEntryBox(entries=['Username', 'Password'], title=pop_up_title, defaults=[self.username.get(), self.password.get()], masks=[None, "*"], msg=pop_up_msg).returning
         if resp is None:
             return None
         uid, pwd = resp

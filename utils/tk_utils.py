@@ -122,11 +122,6 @@ class RegistrationForm:
         self.new_win.destroy()
 
 
-def registration_form(master, coords=None, first_profile=False):
-    reg_form = RegistrationForm(master, coords, first_profile)
-    return reg_form.returning
-
-
 class MultiEntryBox(object):
     def __init__(self, entries, coords, title, defaults=None, masks=None, msg=None):
         self.root = tk.Toplevel()
@@ -202,13 +197,8 @@ class MultiEntryBox(object):
         self.root.destroy()
 
 
-def mebox(entries, coords=False, title='Message', defaults=None, masks=None, msg=None):
-    msgbox = MultiEntryBox(entries, coords, title, defaults, masks, msg)
-    return msgbox.returning
-
-
 class MessageBox(object):
-    def __init__(self, msg, b1, b2, entry, coords, title, hyperlink, master=None, disabled_btn_input=None):
+    def __init__(self, msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master=None, disabled_btn_input=None):
         self.root = tk.Toplevel()
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
@@ -331,11 +321,6 @@ class MessageBox(object):
             self.btn_1.config(state=tk.DISABLED)
 
 
-def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master=None, disabled_btn_input=None):
-    msgbox = MessageBox(msg=msg, b1=b1, b2=b2, entry=entry, coords=coords, title=title, hyperlink=hyperlink, master=master, disabled_btn_input=disabled_btn_input)
-    return msgbox.returning
-
-
 def add_circle(parent, pixels, color):
     canvas = tkd.Canvas(parent, width=pixels + 2, height=pixels + 2, borderwidth=0, highlightthickness=0)
 
@@ -347,4 +332,4 @@ def add_circle(parent, pixels, color):
 
 
 if __name__ == '__main__':
-    print(mbox('Type "DELETE" to confirm', entry=True, disabled_btn_input='DELETE'))
+    print(MessageBox('Type "DELETE" to confirm', entry=True, disabled_btn_input='DELETE').returning)

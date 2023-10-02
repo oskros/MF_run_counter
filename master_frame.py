@@ -479,7 +479,7 @@ class MasterFrame(Config):
 
         xc = self.root.winfo_rootx() - self.root.winfo_width()//12
         yc = self.root.winfo_rooty() + self.root.winfo_height()//3
-        if tk_utils.mbox(confirm_msg, b1='Yes', b2='No', coords=[xc, yc], master=self):
+        if tk_utils.MessageBox(confirm_msg, b1='Yes', b2='No', coords=[xc, yc], master=self).returning:
             # Stop any active run and load current session info from timer and drop module.
             self.timer_tab.stop()
             active = self.timer_tab.save_state()

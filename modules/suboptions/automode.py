@@ -138,11 +138,11 @@ class Automode(General):
             self.mp_path_apply.forget()
 
         if got_val == 2:
-            if first is False and not tk_utils.mbox(
+            if first is False and not tk_utils.MessageBox(
                     msg='Activating "Advanced automode" is highly discouraged when playing multiplayer, as it might result in a ban.\n\n'
                         'Explanation: Advanced automode utilizes "memory reading" of the D2 process\n'
                         'to discover information about the current game state, and this could be deemed cheating\n\n'
-                        'If you still wish to continue, click "OK"'):
+                        'If you still wish to continue, click "OK"').returning:
                 self.automode_var.set('0')
                 return self.toggle_automode_btn(first=first, show_error=show_error)
             else:

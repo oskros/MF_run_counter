@@ -57,7 +57,7 @@ class Drops(tkd.Frame):
                                 pop_up_msg="Congrats, a new drop! Add it to grail?\n\nHerokuapp login info:",
                                 pop_up_title="Grail item")
                         else:
-                            resp = tk_utils.mbox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item")
+                            resp = tk_utils.MessageBox(msg="Congrats, a new drop! Add it to local grail?", title="Grail item").returning
                         if resp is not None:
                             self.main_frame.grail_tab.update_grail_from_index(i)
                             prefix += '(*)'
@@ -74,7 +74,7 @@ class Drops(tkd.Frame):
                                 pop_up_msg="Congrats, a new eth drop! Add it to eth grail?\n\nHerokuapp login info:",
                                 pop_up_title="Eth grail item")
                         else:
-                            resp = tk_utils.mbox(msg="Congrats, a new eth drop! Add it to local eth grail?", title="Eth grail item")
+                            resp = tk_utils.MessageBox(msg="Congrats, a new eth drop! Add it to local eth grail?", title="Eth grail item").returning
                         if resp is not None:
                             self.main_frame.grail_tab.grail[i].update({'FoundEth': True})
                             prefix += '(*)'
@@ -113,7 +113,7 @@ class Drops(tkd.Frame):
     def delete_selected_drops(self):
         if self.focus_get()._name == 'droplist':
             cur_row = self.m.get('insert linestart', 'insert lineend+1c').strip()
-            resp = tk_utils.mbox(msg='Do you want to delete the row:\n%s' % cur_row, title='Warning')
+            resp = tk_utils.MessageBox(msg=f'Do you want to delete the row:\n{cur_row}', title='Warning').returning
             if resp is True:
                 sep = cur_row.find(':')
                 run_no = cur_row[:sep].replace('Run ', '')
