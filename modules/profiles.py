@@ -113,10 +113,11 @@ class Profile(tkd.Frame):
         elif first_profile:
             sys.exit()
 
-    def _change_active_profile(self):
+    def _change_active_profile(self, change_from_deleted=False):
         # Save state before changing profile, such that no information is lost. By design choice, if a run is currently
         # active, it will carry over to the next profile instead of being stopped first.
-        self.main_frame.SaveActiveState()
+        if not change_from_deleted:
+            self.main_frame.SaveActiveState()
         act = self.active_profile.get()
         self.main_frame.active_profile = act
 
@@ -174,7 +175,7 @@ class Profile(tkd.Frame):
 
             # We change active profile to an existing profile
             self.active_profile.set(self.main_frame.profiles[0])
-            self._change_active_profile()
+            self._change_active_profile(change_from_deleted=True)
 
     def delete_archived_session(self):
         chosen = self.archive_dropdown.get()
