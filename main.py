@@ -8,7 +8,7 @@ try:
     from utils import tk_utils
     from master_frame import MasterFrame
 
-    mp = os.path.abspath(__file__).replace('\\', '/') + "_{MF RUN COUNTER}"
+    mp = os.path.abspath(__file__).replace('\\', '/') + "_{A957B84C-9800-4BAE-8B56-8F446AB8ED5B}"
     mutex = win32event.CreateMutex(None, False, mp)
     last_error = win32api.GetLastError()
     if last_error == ERROR_ALREADY_EXISTS:
