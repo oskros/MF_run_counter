@@ -1,16 +1,17 @@
 try:
-    import win32gui
+    import win32event
+    import win32api
+    from winerror import ERROR_ALREADY_EXISTS
     import logging
     import sys
     from utils import tk_utils
     from master_frame import MasterFrame
 
-    if win32gui.FindWindow(None, 'MF run counter'):
-        resp = tk_utils.mbox(msg='It seems like you already have an instance of MF Run Counter open.\n'
-                                 'Opening another instance will make the app unstable (If this is a false positive, just ignore it)\n\n'
-                                 'Do you wish to continue anyway?', title='WARNING')
-        if not resp:
-            sys.exit(0)
+    mutex = win32event.CreateMutex(None, False, 'name')
+    last_error = win32api.GetLastError()
+    if last_error == ERROR_ALREADY_EXISTS:
+        logging.exception(f'Application is already open. Aborting. {last_error}')
+        sys.exit(0)
 
     MasterFrame()
 except Exception as e:
