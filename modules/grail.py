@@ -118,6 +118,7 @@ class Grail(tkd.Frame):
     def sync_local_grail(self):
         item_lst = []
         msg = 'Updated local grail file with:'
+        resp = None
         if self.sync_herokuapp.get():
             resp = tk_utils.mebox(entries=['Username'], title='d2-holy-grail.herokuapp', defaults=[self.username.get()], masks=[None])
             if resp:
@@ -133,14 +134,16 @@ class Grail(tkd.Frame):
             item_lst.extend(self.get_grail_from_drops())
             msg += '\n\n- Drops from all saved profiles'
 
-        if item_lst:
+        if self.sync_drops.get() == self.sync_herokuapp.get() == 0:
+            messagebox.showerror('Grail update', 'No update choices selected')
+        elif item_lst:
             self.update_grail_from_list(item_lst)
             self.update_statistics()
             if self.grail_table_open:
                 self.select_from_filters()
             messagebox.showinfo('Grail update', msg)
-        else:
-            messagebox.showerror('Grail update', 'No update choices selected')
+        elif not (self.sync_herokuapp.get() == 1 and resp is None):
+            messagebox.showinfo('Grail update', 'No logged items: Nothing to update')
 
     def reset_grail(self):
         resp = tk_utils.mbox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING', disabled_btn_input='DELETE')
