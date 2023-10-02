@@ -71,6 +71,9 @@ class RegistrationForm:
         self.new_win.protocol("WM_DELETE_WINDOW", self.close_mod)
         self.a1.focus_set()
 
+        self.new_win.focus_force()
+        self.new_win.wait_window()
+
     def b1_action(self, event=None):
         try:
             a1 = self.a1.get()
@@ -81,10 +84,10 @@ class RegistrationForm:
             x = {'Profile name': a1, 'Character name': a2, 'Run type': a3, 'Game mode': a4}
         except AttributeError:
             self.returning = None
-            self.new_win.quit()
+            self.new_win.destroy()
         else:
             self.returning = x
-            self.new_win.quit()
+            self.new_win.destroy()
 
     def make_entry_row(self, text, restricted=False):
         frame = tk.Frame(self.new_win)
@@ -116,35 +119,31 @@ class RegistrationForm:
 
     def close_mod(self):
         self.returning = None
-        self.new_win.quit()
+        self.new_win.destroy()
 
 
 def registration_form(master, coords=None, first_profile=False):
     reg_form = RegistrationForm(master, coords, first_profile)
-    reg_form.new_win.focus_force()
-    reg_form.new_win.mainloop()
-
-    reg_form.new_win.destroy()
     return reg_form.returning
 
 
 class MultiEntryBox(object):
     def __init__(self, entries, coords, title, defaults=None, masks=None, msg=None):
+        self.root = tk.Toplevel()
         self.enum = len(entries)
-        root = self.root = tk.Toplevel()
-        # self.root.attributes('-toolwindow', 1)
+
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
-        root.title(title)
+        self.root.title(title)
         self.root.wm_attributes("-topmost", True)
 
         if msg is not None:
-            frm_0 = tk.Frame(root)
+            frm_0 = tk.Frame(self.root)
             frm_0.pack()
             message = tk.Label(frm_0, text=str(msg), font=('arial', 11))
             message.pack(padx=8, pady=8)
 
-        frm_1 = tk.Frame(root)
+        frm_1 = tk.Frame(self.root)
         frm_1.pack(ipadx=4, ipady=2)
 
         for i, e in enumerate(entries):
@@ -165,49 +164,46 @@ class MultiEntryBox(object):
         frm_2.pack(padx=4, pady=4)
 
         # buttons
-        btn_1 = tk.Button(frm_2, width=8, text='OK')
-        btn_1['command'] = self.b1_action
+        btn_1 = tk.Button(frm_2, width=8, text='OK', command=self.b1_action)
         btn_1.pack(side='left')
 
-        btn_2 = tk.Button(frm_2, width=8, text='Cancel')
-        btn_2['command'] = self.close_mod
+        btn_2 = tk.Button(frm_2, width=8, text='Cancel', command=self.close_mod)
         btn_2.pack(side='left')
 
         # The enter button will trigger button 1, while escape will close the window
-        root.bind('<KeyPress-Return>', func=self.b1_action)
-        root.bind('<KeyPress-Escape>', func=lambda e: self.close_mod())
+        self.root.bind('<KeyPress-Return>', func=self.b1_action)
+        self.root.bind('<KeyPress-Escape>', func=self.close_mod)
 
-        root.update_idletasks()
+        self.root.update_idletasks()
         if coords:
             xp = coords[0]
             yp = coords[1]
         else:
-            xp = (root.winfo_screenwidth() // 2) - (root.winfo_width() // 2)
-            yp = (root.winfo_screenheight() // 2) - (root.winfo_height() // 2)
-        geom = (root.winfo_width(), root.winfo_height(), xp, yp)
-        root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
+            xp = (self.root.winfo_screenwidth() // 2) - (self.root.winfo_width() // 2)
+            yp = (self.root.winfo_screenheight() // 2) - (self.root.winfo_height() // 2)
+        geom = (self.root.winfo_width(), self.root.winfo_height(), xp, yp)
+        self.root.geometry('{0}x{1}+{2}+{3}'.format(*geom))
 
         # call self.close_mod when the close button is pressed
-        root.protocol("WM_DELETE_WINDOW", self.close_mod)
+        self.root.protocol("WM_DELETE_WINDOW", self.close_mod)
 
         # a trick to activate the window (on windows 7)
-        root.deiconify()
+        self.root.deiconify()
+
+        # wait for response before outputting result
+        self.root.wait_window()
 
     def b1_action(self, event=None):
         self.returning = [getattr(self, 'e' + str(i)).get() for i in range(self.enum)]
-        self.root.quit()
+        self.root.destroy()
 
-    def close_mod(self):
+    def close_mod(self, event=None):
         self.returning = None
-        self.root.quit()
+        self.root.destroy()
 
 
 def mebox(entries, coords=False, title='Message', defaults=None, masks=None, msg=None):
     msgbox = MultiEntryBox(entries, coords, title, defaults, masks, msg)
-    msgbox.root.mainloop()
-
-    # the function pauses here until the mainloop is quit
-    msgbox.root.destroy()
     return msgbox.returning
 
 
@@ -217,7 +213,6 @@ class MessageBox(object):
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
         self.root.title(title)
-        # self.root.attributes("-toolwindow", True)
         self.root.wm_attributes("-topmost", True)
         self.msg = str(msg)
         self.disabled_btn_input = disabled_btn_input
@@ -252,6 +247,7 @@ class MessageBox(object):
             self.button = tk.Label(frm_1, text=release_repo, fg="blue", cursor="hand2", font=('arial', 11))
             self.button.pack()
             self.button.bind("<Button-1>", lambda e: webbrowser.open_new(hyperlink))
+
         if entry:
             if disabled_btn_input is not None:
                 self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center', textvariable=self.entry_var)
@@ -265,16 +261,15 @@ class MessageBox(object):
         frm_2.pack(padx=4, pady=4)
 
         # buttons
-        self.btn_1 = tk.Button(frm_2, width=8, text=b1)
-        self.btn_1['command'] = self.b1_action
+        self.btn_1 = tk.Button(frm_2, width=8, text=b1, command=self.b1_action)
         self.btn_1.pack(side='left')
         if disabled_btn_input is not None:
             self.btn_1.config(state=tk.DISABLED)
         if not entry:
             self.btn_1.focus_set()
+
         if b2 != '':
-            btn_2 = tk.Button(frm_2, width=8, text=b2)
-            btn_2['command'] = self.b2_action
+            btn_2 = tk.Button(frm_2, width=8, text=b2, command=self.b2_action)
             btn_2.pack(side='left')
 
         # The enter button will trigger button 1, while escape will close the window
@@ -300,6 +295,9 @@ class MessageBox(object):
         # a trick to activate the window (on windows 7)
         self.root.deiconify()
 
+        # wait for response before outputting result
+        self.root.wait_window()
+
     def b1_action(self, event=None):
         if self.btn_1['state'] == 'disabled':
             return
@@ -308,19 +306,19 @@ class MessageBox(object):
             x = self.entry.get()
         except AttributeError:
             self.returning = self.b1_return
-            self.root.quit()
+            self.root.destroy()
         else:
             if x:
                 self.returning = x
-                self.root.quit()
+                self.root.destroy()
 
     def b2_action(self, event=None):
         self.returning = self.b2_return
-        self.root.quit()
+        self.root.destroy()
 
     def close_mod(self):
         self.returning = None
-        self.root.quit()
+        self.root.destroy()
 
     def to_clip(self, event=None):
         self.root.clipboard_clear()
@@ -335,10 +333,6 @@ class MessageBox(object):
 
 def mbox(msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master=None, disabled_btn_input=None):
     msgbox = MessageBox(msg=msg, b1=b1, b2=b2, entry=entry, coords=coords, title=title, hyperlink=hyperlink, master=master, disabled_btn_input=disabled_btn_input)
-    msgbox.root.mainloop()
-
-    # the function pauses here until the mainloop is quit
-    msgbox.root.destroy()
     return msgbox.returning
 
 
@@ -353,6 +347,4 @@ def add_circle(parent, pixels, color):
 
 
 if __name__ == '__main__':
-    # r = tk.Tk()
-
-    print(mbox('hi', entry=True, disabled_btn_input='DELETE'))
+    print(mbox('Type "DELETE" to confirm', entry=True, disabled_btn_input='DELETE'))
