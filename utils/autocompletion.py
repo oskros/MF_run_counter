@@ -21,14 +21,14 @@ class AutocompleteEntry:
         self.entry.bind("<Down>", self.move_down)
         self.entry.bind("<Tab>", self.selection)
 
-        self.listboxUp = False
+        self.listbox_up = False
 
     def changed(self, name=None, index=None, mode=None):
         var = self.var.get()
         if var == '':
-            if self.listboxUp:
+            if self.listbox_up:
                 self.listbox.destroy()
-                self.listboxUp = False
+                self.listbox_up = False
         else:
             if self.enable:
                 words = self.comparison(var)
@@ -38,33 +38,33 @@ class AutocompleteEntry:
                 words = []
 
             if words:
-                if self.listboxUp:
+                if self.listbox_up:
                     self.listbox.destroy()
                 self.listbox = tk.Listbox(self.master, width=self.width, height=min(len(words), 6))
                 self.listbox.bind("<Double-Button-1>", self.selection)
                 self.listbox.bind("<Tab>", self.selection)
                 self.listbox.place(relx=0, rely=0.3)
                 self.listbox.tkraise()
-                self.listboxUp = True
+                self.listbox_up = True
 
                 self.listbox.delete(0, tk.END)
                 for w in words:
                     self.listbox.insert(tk.END, w)
             else:
-                if self.listboxUp:
+                if self.listbox_up:
                     self.listbox.destroy()
-                    self.listboxUp = False
+                    self.listbox_up = False
 
     def selection(self, event=None):
-        if self.listboxUp:  # and self.listbox.curselection():
+        if self.listbox_up:  # and self.listbox.curselection():
             self.chosen = self.listbox.get(tk.ACTIVE)
             self.var.set(self.chosen + ' ')
             self.listbox.destroy()
-            self.listboxUp = False
+            self.listbox_up = False
             self.entry.icursor(tk.END)
 
     def move_up(self, event):
-        if self.listboxUp:
+        if self.listbox_up:
             if self.listbox.curselection() == ():
                 index = tk.END
                 hl_idx = tk.END
@@ -80,7 +80,7 @@ class AutocompleteEntry:
                 self.listbox.activate(hl_idx)
 
     def move_down(self, event):
-        if self.listboxUp:
+        if self.listbox_up:
             if self.listbox.curselection() == ():
                 index = '0'
                 hl_idx = '0'
@@ -133,7 +133,7 @@ class ACMbox(object):
         self.root.resizable(False, False)
 
         frm_1 = tk.Frame(self.root)
-        frm_1.pack(ipadx=4, ipady=2, fill=tk.BOTH, expand=tk.Y)
+        frm_1.pack(ipadx=4, ipady=2, fill=tk.BOTH, expand=True)
 
         self.last_run_var = tk.IntVar(value=add_to_last_run)
         tk.Checkbutton(frm_1, variable=self.last_run_var, text='Add to prev run').pack()
@@ -156,8 +156,10 @@ class ACMbox(object):
         # a trick to activate the window (on windows 7)
         self.root.deiconify()
 
+        self.root.wait_window()
+
     def b1_action(self, event=None):
-        if self.entry.listboxUp:
+        if self.entry.listbox_up:
             self.entry.selection(event)
         else:
             item_name = self.entry.chosen
@@ -170,23 +172,19 @@ class ACMbox(object):
                 eth_item = True
             extra_input = user_input.replace(item_name, '').strip().replace('  ', ' ') if item_name is not None else ''
             self.returning = {'item_name': item_name, 'input': user_input, 'extra': extra_input, 'eth': eth_item, 'last_run': self.last_run_var.get()}
-            self.root.quit()
+            self.root.destroy()
 
     def close_mod(self, event=None):
-        if self.entry.listboxUp:
+        if self.entry.listbox_up:
             self.entry.listbox.destroy()
-            self.entry.listboxUp = False
+            self.entry.listbox_up = False
         else:
             self.returning = None
-            self.root.quit()
+            self.root.destroy()
 
 
 def acbox(title='Drop', enable=True, unid_mode=False, add_to_last_run=False):
     msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode, add_to_last_run=add_to_last_run)
-    msgbox.root.mainloop()
-
-    # the function pauses here until the mainloop is quit
-    msgbox.root.destroy()
     return msgbox.returning
 
 
