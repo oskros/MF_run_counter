@@ -1,12 +1,11 @@
 import utils.other_utils
-import json
 import os
 import sys
 import time
 import tkinter as tk
 from modules import archive_browser
 from utils import tk_dynamic as tkd, tk_utils, other_utils
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 
 
 class Profile(tkd.Frame):
@@ -72,7 +71,7 @@ class Profile(tkd.Frame):
         frame.propagate(False)
         frame.pack(expand=True, fill=tk.X)
 
-        tkd.Label(frame, text='%s:' % text, font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
+        tkd.Label(frame, text=f'{text}:', font='helvetica 8', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
         tkd.Label(frame, textvariable=var, font='helvetica 8 bold', anchor=tk.W, justify=tk.LEFT).pack(side=tk.LEFT)
 
     def _add_new_profile(self, first_profile=False):
@@ -88,7 +87,7 @@ class Profile(tkd.Frame):
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
                 return self._add_new_profile(first_profile=first_profile)
             elif profile_name.lower() == 'grail':
-                messagebox.showerror('Reserved name', '"%s" is a reserved profile name, please choose another one.' % profile_name)
+                messagebox.showerror('Reserved name', f'"{profile_name}" is a reserved profile name, please choose another one.')
                 return self._add_new_profile(first_profile=first_profile)
             if not first_profile and profile_name.lower() in [x.lower() for x in self.profile_dropdown['values']]:
                 messagebox.showerror('Duplicate name', 'Profile name already in use - please choose another name.')
@@ -103,7 +102,7 @@ class Profile(tkd.Frame):
             self.active_profile.set(profile_name)
 
             # Create a save file for the new profile
-            file = 'Profiles/%s.json' % self.active_profile.get()
+            file = f'Profiles/{self.active_profile.get()}.json'
             other_utils.atomic_json_dump(file, {'extra_data': {**profile, 'Last update': time.time()}})
 
             # Update active profile
@@ -168,7 +167,7 @@ class Profile(tkd.Frame):
 
         resp = tk_utils.mbox(msg='Type "DELETE" to confirm you wish to delete the profile "%s"\n\nThis will permanently delete all records stored for the profile.' % chosen, title='WARNING', disabled_btn_input='DELETE')
         if resp == 'DELETE':
-            file = 'Profiles/%s.json' % chosen
+            file = f'Profiles/{chosen}.json'
             os.remove(file)
             self.main_frame.profiles.remove(chosen)
             self.profile_dropdown['values'] = self.main_frame.profiles
@@ -198,7 +197,7 @@ class Profile(tkd.Frame):
                 # Load the profile .json, delete the selected session and save the modified dictionary back to the .json
                 cache = self.main_frame.load_state_file()
                 removed = cache.pop(chosen, None)
-                file = 'Profiles/%s.json' % self.active_profile.get()
+                file = f'Profiles/{self.active_profile.get()}.json'
                 other_utils.atomic_json_dump(file, cache)
 
                 # Update archive dropdown and descriptive statistics
