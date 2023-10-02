@@ -51,12 +51,12 @@ class Grail(tkd.Frame):
         tkd.Button(bfr3, text='Grail controller', borderwidth=3, command=self.open_grail_controller, width=1).pack(side=tk.LEFT, fill=tk.X, padx=1, pady=1, expand=tk.YES)
 
         descr = tkd.ListboxFrame(self)
-        # descr.propagate(False)
-        tk.Grid.columnconfigure(descr, 0, weight=1)
-        tk.Grid.columnconfigure(descr, 1, weight=1)
-        tk.Grid.columnconfigure(descr, 2, weight=1)
-        tk.Grid.columnconfigure(descr, 3, weight=1)
+        descr.columnconfigure(0, weight=1)
+        descr.columnconfigure(1, weight=1)
+        descr.columnconfigure(2, weight=1)
+        descr.columnconfigure(3, weight=1)
         descr.pack(side=tk.BOTTOM, fill=tk.X, expand=True)
+
         tkd.EthGrailCheckbutton(descr, text='Eth grail', font=('Segoe UI', 9), variable=self.show_eth_grail, command=self.update_statistics).grid(row=0, column=0, sticky=tk.W)
         for i, l in enumerate(['Exist', 'Left', '%    '], 1):
             tkd.ListboxLabel(descr, text=l, font=('Segoe UI', 9, 'bold')).grid(row=0, column=i, sticky=tk.E)
@@ -266,7 +266,7 @@ class Grail(tkd.Frame):
         try:
             herokuapp_controller.put_grail(uid=uid, pwd=pwd, data=herokuapp_grail, proxies=prox)
         except requests.exceptions.HTTPError:
-            messagebox.showerror('Password 401', "Password incorrect for user '%s', try again" % uid)
+            messagebox.showerror('Password 401', f"Password incorrect for user '{uid}', try again")
             return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
 
         self.username.set(uid)
@@ -312,7 +312,7 @@ class Grail(tkd.Frame):
                             topframe = tkd.Frame(frame)
                             topframe.pack(side=tk.LEFT, expand=True, anchor=tk.NW)
                         new_frame = tkd.Frame(topframe)
-                        new_frame.pack(side=tk.TOP, expand=True, anchor=tk.NW, fill=tk.Y, pady=[0, 30])
+                        new_frame.pack(side=tk.TOP, expand=True, anchor=tk.NW, fill=tk.Y, pady=(0, 30))
                         cnt += 1
                     else:
                         new_frame = tkd.Frame(frame)
@@ -324,7 +324,7 @@ class Grail(tkd.Frame):
                     tkd.Label(new_frame, text=txt, font='Arial 15 bold').pack(expand=True, anchor=tk.N)
                     rec_checkbox_add(master, new_frame, v, rows, depth + [k])
 
-        # We dont allow more than one open window of the grail controller
+        # We don't allow more than one open window of the grail controller
         if win32gui.FindWindow(None, 'Grail controller'):
             return
 
