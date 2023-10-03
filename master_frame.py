@@ -335,7 +335,7 @@ class MasterFrame(Config):
         if show:
             self.root.update()
             self.root.config(height=self.root.winfo_height()+drops_height)
-            self.drops_tab.pack(pady=[0, 2])
+            self.drops_tab.pack(pady=(0, 2))
         else:
             if hasattr(self, 'drops_tab') and self.drops_tab.winfo_ismapped():
                 self.drops_tab.forget()
@@ -382,9 +382,9 @@ class MasterFrame(Config):
         """
         try:
             self.queue.get(False)()
-            self.root.after(50, lambda: self.process_queue())
         except queue.Empty:
-            self.root.after(50, lambda: self.process_queue())
+            pass
+        self.root.after(50, lambda: self.process_queue())
 
     def set_clickthrough(self):
         """
@@ -428,8 +428,6 @@ class MasterFrame(Config):
         """
         x = self.tabcontrol.select()
         if x.endswith('profile'):
-            # self.SaveActiveState()
-            # self.profile_tab.profile_dropdown['values'] = self.sorted_profiles()
             self.profile_tab.update_descriptive_statistics()
         # A 'hack' to ensure that dropdown menus don't take focus immediately when you switch tabs by focusing the
         # banner image instead :)
@@ -494,7 +492,6 @@ class MasterFrame(Config):
                 stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stamp_from_epoch))
             self.profile_tab.available_archive.insert(2, stamp)
             self.profile_tab.archive_dropdown['values'] = self.profile_tab.available_archive
-            # self.profile_tab.update_descriptive_statistics()
 
             # Update profile .json with the session
             state = self.load_state_file()
@@ -502,7 +499,7 @@ class MasterFrame(Config):
             state[stamp] = active
             state.setdefault('extra_data', dict())['Last update'] = time.time()
 
-            file = 'Profiles/%s.json' % self.active_profile
+            file = f'Profiles/{self.active_profile}.json'
             other_utils.atomic_json_dump(file, state)
 
             # When session has been successfully saved, the session is reset
@@ -536,7 +533,7 @@ class MasterFrame(Config):
         cache.setdefault('extra_data', dict())['Game mode'] = self.profile_tab.game_mode.get()
         if is_updated or 'Last update' not in cache['extra_data']:
             cache['extra_data']['Last update'] = time.time()
-        file = 'Profiles/%s.json' % self.active_profile
+        file = f'Profiles/{self.active_profile}.json'
         other_utils.atomic_json_dump(file, cache)
         self.grail_tab.save_grail()
 
