@@ -123,7 +123,7 @@ class RegistrationForm:
 
 
 class MultiEntryBox(object):
-    def __init__(self, entries, coords, title, defaults=None, masks=None, msg=None):
+    def __init__(self, entries, title, coords=None, defaults=None, masks=None, msg=None):
         self.root = tk.Toplevel()
         self.enum = len(entries)
 
