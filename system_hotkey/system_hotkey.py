@@ -751,12 +751,14 @@ class SystemHotkey(MixIn):
             key = self._nt_get_keysym(keycode)
             mod = self._nt_get_keymod(masks)
             # msg = 'The bind could be in use elsewhere: ' + keysym
-            messagebox.showerror('Keybind error', 'The keybind "%s+%s" is reserved by the OS. Error occured, closing app.' % (mod, key)
-                                                 + '\nProgress since last autosave is lost')
+            messagebox.showerror(
+                'Keybind error',
+                f'The keybind "{mod}+{key}" is reserved by the OS. Error occured, closing app.\nProgress since last autosave is lost'
+            )
             os._exit(0)
             # raise SystemRegisterError(msg)
 
-    def _xlib_get_keycode(self, key) :
+    def _xlib_get_keycode(self, key):
         keysym = XK.string_to_keysym(key)
         if keysym == 0:
             try:

@@ -11,7 +11,7 @@ def safe_eval(inp_str):
         return inp_str
     try:
         return eval(inp_str, {'__builtins__': {}})
-    except SyntaxError:
+    except (SyntaxError, NameError):
         return inp_str
 
 
