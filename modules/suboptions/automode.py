@@ -126,6 +126,9 @@ class Automode(General):
         self.main_frame.game_path = self.game_path.get()
         self.main_frame.toggle_automode()
 
+        if not self.main_frame.timer_tab.automode_active:
+            messagebox.showerror('Wrong path', 'Chosen path does not contain any character files (files with extensions ctl/ctlo/d2x)\n\nTry another path...')
+
     def add_automode_flag(self):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         lf.propagate(False)
