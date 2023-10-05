@@ -49,7 +49,7 @@ class Config:
         config['OPTIONS']['check_for_new_version'] = '1'
         config['OPTIONS']['enable_sound_effects'] = '0'
         config['OPTIONS']['show_drops_tab_below'] = '1'
-        config['OPTIONS']['active_theme'] = 'light'
+        config['OPTIONS']['active_theme'] = 'dark'
         config['OPTIONS']['start_run_delay_seconds'] = '0.0'
         config['OPTIONS']['auto_upload_herokuapp'] = '0'
         config['OPTIONS']['auto_archive_hours'] = '0.0'
