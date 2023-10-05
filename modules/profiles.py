@@ -133,7 +133,6 @@ class Profile(tkd.Frame):
         self.update_descriptive_statistics()
         if self.main_frame.automode:
             self.main_frame.toggle_automode()
-        self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
         self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)
         self.profile_dropdown['values'] = self.main_frame.sorted_profiles()
 
