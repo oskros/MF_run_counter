@@ -119,7 +119,7 @@ class Automode(General):
         found_path = config.Config.find_game_path(force_find=force_find)
         if found_path:
             self.game_path.set(found_path)
-        else:
+        elif not force_find:
             tk.messagebox.showinfo('Path', f'Failed to find save folder path. Please enter manually')
 
     def activate_simple(self):
