@@ -306,8 +306,10 @@ class MFRunTimer(tkd.Frame):
                 self.c1.itemconfigure(self.circ_id, fill='green3')
 
             if self.automode_active:
-                if self.main_frame.automode == 1 and os.path.isfile(self.char_file_path):
-                    self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
+                if self.main_frame.automode == 1:
+                    files = self.get_char_files()
+                    if files:
+                        self.cached_file_stamp = max(os.stat(f).st_mtime for f in files)
                 elif self.main_frame.automode == 2 and user_paused:
                     try:
                         self.cached_is_ingame = self.main_frame.d2_reader.in_game()
@@ -341,15 +343,19 @@ class MFRunTimer(tkd.Frame):
     def save_state(self):
         return dict(laps=self.laps, session_time=self.session_time)
 
+    def get_char_files(self):
+        d2_save_path = os.path.normpath(self.main_frame.game_path)
+        extensions = ('ctl', 'ctlo', 'd2x')
+        files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+        return files
+
     def toggle_automode(self):
         if hasattr(self, '_game_check'):
             self.after_cancel(self._game_check)
 
         if self.main_frame.automode:
             if self.main_frame.automode == 1:
-                d2_save_path = os.path.normpath(self.main_frame.game_path)
-                extensions = ('ctl', 'ctlo', 'd2x')
-                files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+                files = self.get_char_files()
                 if files:
                     self.cached_file_stamp = max(os.stat(f).st_mtime for f in files)
                     self._check_entered_game(advanced_mode=False)
