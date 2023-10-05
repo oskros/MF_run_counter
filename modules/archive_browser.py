@@ -135,7 +135,6 @@ class ArchiveBrowser(tkd.Toplevel):
         self.txt_list.insert(tk.END, 'Statistics', tag='HEADER')
         self.txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
         self.txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
-        self.txt_list.insert(tk.END, '\nGame mode:      %s' % self.main_frame.profile_tab.extra_data.get('Game mode', 'Single Player'))
 
         self.txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
         self.txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))

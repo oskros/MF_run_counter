@@ -273,13 +273,6 @@ class MasterFrame(Config):
                 return state.get('extra_data', dict()).get('Last update', os.stat(file).st_mtime)
         return sorted(self.profiles, key=sort_key, reverse=True)
 
-    def character_file_extension(self):
-        game_mode = self.profile_tab.game_mode.get()
-        if game_mode == 'Single Player':
-            return '.d2s'
-        else:
-            return '.map'
-
     def toggle_automode(self):
         """
         Enables or disables automode. Shows a small label on top of the banner image with the text "Automode" when
@@ -520,7 +513,6 @@ class MasterFrame(Config):
         else:
             is_updated = False
         cache['active_state'] = {**timer_state, **drops_state, **advanced_stats_state}
-        cache.setdefault('extra_data', dict())['Game mode'] = self.profile_tab.game_mode.get()
         if is_updated or 'Last update' not in cache['extra_data']:
             cache['extra_data']['Last update'] = time.time()
         file = f'Profiles/{self.active_profile}.json'
@@ -531,7 +523,7 @@ class MasterFrame(Config):
         """
         Stops the active run, updates config, saves current state to profile .json, and finally exits the application
         """
-        if self.timer_tab.is_running and not (self.profile_tab.game_mode.get() == 'Single Player' and self.timer_tab.automode_active and self.automode == 1):
+        if self.timer_tab.is_running and not (self.timer_tab.automode_active and self.automode == 1):
             self.timer_tab.stop()
         self.SaveActiveState()
         self.update_config(self)

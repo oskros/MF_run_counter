@@ -44,10 +44,8 @@ class Profile(tkd.Frame):
         tkd.Button(profile_dropdown_frame, text='Delete', command=self._delete_profile).pack(side=tk.LEFT)
 
         self.run_type = tk.StringVar(self, value=self.extra_data.get('Run type', ''))
-        self.game_mode = tk.StringVar(self, value=self.extra_data.get('Game mode', 'Single Player'))
         self.char_name = tk.StringVar(self, value=self.extra_data.get('Character name', ''))
         self._extra_info_label('Run type', self.run_type)
-        # self._extra_info_label('Game mode', self.game_mode)
         self._extra_info_label('Character name', self.char_name)
 
         tkd.Label(self, text='Select an archived run for this profile', justify=tk.LEFT).pack(anchor=tk.W, pady=(6, 0))
@@ -81,7 +79,6 @@ class Profile(tkd.Frame):
         profile = tk_utils.RegistrationForm(master=self.main_frame, coords=(xc, yc), first_profile=first_profile).returning
         if profile:
             profile_name = profile.pop('Profile name')
-            profile['Game mode'] = 'Single Player' if profile['Game mode'] == '' else profile['Game mode']
             # Handle non-allowed profile names
             if profile_name == '':
                 messagebox.showerror('No profile name', 'No profile name was entered. Please try again')
@@ -123,7 +120,6 @@ class Profile(tkd.Frame):
         # Load extra data, defaulting to empty strings if no extra data is found in the new profile
         profile_cache = self.main_frame.load_state_file()
         self.extra_data = profile_cache.get('extra_data', dict())
-        self.game_mode.set(self.extra_data.get('Game mode', 'Single Player'))
         self.run_type.set(self.extra_data.get('Run type', ''))
         self.char_name.set(self.extra_data.get('Character name', ''))
 
@@ -138,7 +134,6 @@ class Profile(tkd.Frame):
         if self.main_frame.automode:
             self.main_frame.toggle_automode()
         self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
-        self.main_frame.options_tab.tab3.game_mode.set(self.game_mode.get())
         self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)
         self.profile_dropdown['values'] = self.main_frame.sorted_profiles()
 

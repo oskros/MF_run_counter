@@ -45,7 +45,7 @@ class RegistrationForm:
         self.new_win.resizable(False, False)
         self.stringvars = []
 
-        geom = get_displaced_geom(master, 290, 185, coords[0], coords[1])
+        geom = get_displaced_geom(master, 290, 160, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(media_path + 'icon.ico')
@@ -62,7 +62,6 @@ class RegistrationForm:
             '(A4) River of Flame', '(A4) Chaos Sanctuary', '(A4) Diablo', '-----------------------',
             '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Red Portals', '(A5) Drifter Cavern', '(A5) Icy Cellar', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
             '(A5) Baal', '(A5) Uber Quest'], readonly=False)
-        self.a4 = self.make_combobox_row('Game mode', ['Single Player', 'Multiplayer'])
 
         tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
         self.new_win.bind('<KeyPress-Return>', func=self.b1_action)
@@ -79,9 +78,8 @@ class RegistrationForm:
             a1 = self.a1.get()
             a2 = self.a2.get()
             a3 = self.a3.get()
-            a4 = self.a4.get()
 
-            x = {'Profile name': a1, 'Character name': a2, 'Run type': a3, 'Game mode': a4}
+            x = {'Profile name': a1, 'Character name': a2, 'Run type': a3}
         except AttributeError:
             self.returning = None
             self.new_win.destroy()
