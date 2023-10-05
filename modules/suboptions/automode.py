@@ -105,17 +105,18 @@ class Automode(General):
             self.charname_text_lab.pack(side=tk.LEFT)
             self.charname_val_lab.pack(side=tk.RIGHT)
 
-            self.sp_path_lab.pack(pady=[0, 0])
-            self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
-            self.sp_path_frame.pack()
-            self.sp_path_get.pack(side=tk.LEFT, padx=1)
-            self.sp_path_apply.pack(side=tk.LEFT)
-
-            self.mp_path_lab.pack(pady=[0, 0])
-            self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
-            self.mp_path_frame.pack()
-            self.mp_path_get.pack(side=tk.LEFT, padx=1)
-            self.mp_path_apply.pack(side=tk.LEFT)
+            if self.game_mode.get() == 'Single Player':
+                self.sp_path_lab.pack(pady=(7, 0))
+                self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
+                self.sp_path_frame.pack()
+                self.sp_path_get.pack(side=tk.LEFT, padx=1)
+                self.sp_path_apply.pack(side=tk.LEFT)
+            else:
+                self.mp_path_lab.pack(pady=(7, 0))
+                self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
+                self.mp_path_frame.pack()
+                self.mp_path_get.pack(side=tk.LEFT, padx=1)
+                self.mp_path_apply.pack(side=tk.LEFT)
         else:
             self.gamemode_frame.forget()
             self.gamemode_lab.forget()
@@ -166,17 +167,45 @@ class Automode(General):
             self.main_frame.toggle_automode()
 
     def get_game_path(self, is_sp=True):
-        found_path = config.Config.find_SP_game_path() if is_sp else config.Config.find_MP_game_path()
+        found_path = config.Config.find_SP_game_path(True) if is_sp else config.Config.find_MP_game_path(True)
         if found_path:
             if is_sp:
                 self.SP_game_path.set(found_path)
             else:
                 self.MP_game_path.set(found_path)
         else:
-            tk.messagebox.showerror('Path', 'Failed to find save folder path for single player. Please enter manually')
+            tk.messagebox.showerror('Path', f'Failed to find save folder path for {"single " if is_sp else "multi"}player. Please enter manually')
 
     def update_game_mode(self):
-        self.main_frame.profile_tab.game_mode.set(self.game_mode.get())
+        game_mode = self.game_mode.get()
+
+        if game_mode == 'Single Player':
+            self.mp_path_lab.forget()
+            self.mp_path_entry.forget()
+            self.mp_path_frame.forget()
+            self.mp_path_get.forget()
+            self.mp_path_apply.forget()
+
+            self.sp_path_lab.pack(pady=(0, 0))
+            self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
+            self.sp_path_frame.pack()
+            self.sp_path_get.pack(side=tk.LEFT, padx=1)
+            self.sp_path_apply.pack(side=tk.LEFT)
+
+        elif game_mode == 'Multiplayer':
+            self.sp_path_lab.forget()
+            self.sp_path_entry.forget()
+            self.sp_path_frame.forget()
+            self.sp_path_get.forget()
+            self.sp_path_apply.forget()
+
+            self.mp_path_lab.pack(pady=(0, 0))
+            self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
+            self.mp_path_frame.pack()
+            self.mp_path_get.pack(side=tk.LEFT, padx=1)
+            self.mp_path_apply.pack(side=tk.LEFT)
+
+        self.main_frame.profile_tab.game_mode.set(game_mode)
         self.main_frame.toggle_automode()
 
     def apply_path_ch(self):

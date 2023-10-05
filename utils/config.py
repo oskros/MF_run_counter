@@ -3,14 +3,14 @@ import os
 import base64
 import configparser
 import system_hotkey
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from utils import other_utils
 mf_config_path = 'mf_config.ini'
 
 
 class Config:
     @staticmethod
-    def find_SP_game_path():
+    def find_SP_game_path(force_find=False):
         possible_paths = [
             'C:/Program Files (x86)/Diablo II - 1.13c/Save/',
             'C:/Program Files (x86)/Diablo II Plugy/Save/',
@@ -26,10 +26,13 @@ class Config:
             'C:/Diablo II 1/Save/',
             'C:/Diablo II 2/Save/',
         ]
-        return next((path for path in possible_paths if os.path.exists(path)), '')
+        path = next((path for path in possible_paths if os.path.exists(path)), '')
+        if path == '' and force_find:
+            path = filedialog.askdirectory(title='Please select directory')
+        return path
 
     @staticmethod
-    def find_MP_game_path():
+    def find_MP_game_path(force_find=False):
         possible_paths = [
             'C:/Diablo 2/Diablo II/Path of Diablo/Save/Path of Diablo',
             'C:/Program Files (x86)/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
@@ -45,7 +48,10 @@ class Config:
             'C:/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
             'C:/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
         ]
-        return next((path for path in possible_paths if os.path.exists(path)), '')
+        path = next((path for path in possible_paths if os.path.exists(path)), '')
+        if path == '' and force_find:
+            path = filedialog.askdirectory(title='Please select directory')
+        return path
 
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
