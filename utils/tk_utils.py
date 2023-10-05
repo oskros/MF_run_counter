@@ -196,7 +196,7 @@ class MultiEntryBox(object):
 
 
 class MessageBox(object):
-    def __init__(self, msg, b1='OK', b2='Cancel', entry=False, coords=False, title='Message', hyperlink='', master=None, disabled_btn_input=None):
+    def __init__(self, msg, b1='OK', b2='Cancel', entry=False, coords=None, title='Message', hyperlink='', master=None, disabled_btn_input=None):
         self.root = tk.Toplevel()
         self.root.focus_set()
         self.root.iconbitmap(media_path + 'icon.ico')
@@ -242,7 +242,6 @@ class MessageBox(object):
             else:
                 self.entry = tk.Entry(frm_1, font=('arial', 11), justify='center')
             self.entry.pack()
-            self.entry.focus_set()
 
         # button frame
         frm_2 = tk.Frame(frm_1)
@@ -253,8 +252,6 @@ class MessageBox(object):
         self.btn_1.pack(side='left')
         if disabled_btn_input is not None:
             self.btn_1.config(state=tk.DISABLED)
-        if not entry:
-            self.btn_1.focus_set()
 
         if b2 != '':
             btn_2 = tk.Button(frm_2, width=8, text=b2, command=self.b2_action)
@@ -282,6 +279,11 @@ class MessageBox(object):
 
         # a trick to activate the window (on windows 7)
         self.root.deiconify()
+
+        if entry:
+            self.entry.focus_set()
+        else:
+            self.btn_1.focus_set()
 
         # wait for response before outputting result
         self.root.wait_window()

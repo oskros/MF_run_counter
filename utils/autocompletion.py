@@ -156,6 +156,8 @@ class ACMbox(object):
         # a trick to activate the window (on windows 7)
         self.root.deiconify()
 
+        self.entry.entry.focus_set()
+
         self.root.wait_window()
 
     def b1_action(self, event=None):
