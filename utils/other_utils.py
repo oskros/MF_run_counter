@@ -32,22 +32,6 @@ def get_monitor_from_coord(x, y, disable_scaling=True):
     return monitors[0]
 
 
-def test_mapfile_path(game_path, char_name):
-    if not os.path.exists(game_path) or game_path in ['', '.']:
-        messagebox.showerror('Game path error', """Game path not found, please update the path in options (for PoD, it's ending with "/Path of Diablo/Save/Path of Diablo") \n\n"""
-                                                'This session will continue in manual mode.')
-        return False
-    elif char_name == '':
-        messagebox.showerror('Character name missing', 'Chosen profile has no character name specified. Create a new profile with a character name to use automode\n\n'
-                                                       'This session will continue in manual mode.')
-        return False
-    elif not os.path.exists(os.path.join(game_path, char_name)):
-        messagebox.showerror('Character file not found', 'Map file for specified character not found. Make sure the character name in chosen profile is identical to your in-game character name. If not, create a new profile with the correct character name\n\n'
-                                                         'This session will continue in manual mode')
-        return False
-    return True
-
-
 def atomic_json_dump(dest_file: str, data: [dict, list]) -> None:
     """
     Some users experienced data loss in case of sudden power outages, this wrapper should ensure that file saves are

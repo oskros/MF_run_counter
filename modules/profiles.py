@@ -136,7 +136,7 @@ class Profile(tkd.Frame):
         self.main_frame.LoadActiveState(profile_cache)
         self.update_descriptive_statistics()
         if self.main_frame.automode:
-            self.main_frame.toggle_automode(self.char_name.get())
+            self.main_frame.toggle_automode()
         self.main_frame.options_tab.tab3.char_var.set(self.char_name.get())
         self.main_frame.options_tab.tab3.game_mode.set(self.game_mode.get())
         self.main_frame.timer_tab._set_laps(add_lap=self.main_frame.timer_tab.is_running)

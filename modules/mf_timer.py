@@ -87,7 +87,7 @@ class MFRunTimer(tkd.Frame):
         if self.main_frame.automode == 2:
             return self.main_frame.d2_reader is not None
         else:
-            return reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE])
+            return reader_utils.one_of_processes_exists([reader.D2_SE_EXE, reader.D2_GAME_EXE, reader.D2R_EXE])
 
     def _update_session_time(self):
         if not (self.is_running or self.is_game_open()) or self.is_paused:
@@ -132,11 +132,17 @@ class MFRunTimer(tkd.Frame):
                 self.stop_start()
                 self.cached_is_ingame = is_ingame
         else:
-            # Simple automode - If file was moved / during runtime of the app, it doesn't crash with this line
-            stamp = os.stat(self.char_file_path).st_mtime if os.path.isfile(self.char_file_path) else self.cached_file_stamp
-            if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
-                self.stop_start()
-                self.cached_file_stamp = stamp
+            # Simple automode - if any file is updated, run is started
+            d2_save_path = os.path.normpath(self.main_frame.game_path)
+            extensions = ('ctl', 'ctlo', 'd2x')
+            files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+            if files:
+                cur_file = max(files, key=lambda f: os.stat(f).st_mtime)
+                stamp = os.stat(cur_file).st_mtime
+
+                if stamp > (self.cached_file_stamp + 1) and not self.is_paused:
+                    self.stop_start()
+                    self.cached_file_stamp = stamp
 
         self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
 
@@ -335,20 +341,18 @@ class MFRunTimer(tkd.Frame):
     def save_state(self):
         return dict(laps=self.laps, session_time=self.session_time)
 
-    def toggle_automode(self, char_name):
+    def toggle_automode(self):
         if hasattr(self, '_game_check'):
             self.after_cancel(self._game_check)
 
         if self.main_frame.automode:
             if self.main_frame.automode == 1:
-                d2_save_path = os.path.normpath(self.main_frame.game_path())
-                char_extension = char_name + self.main_frame.character_file_extension()
-                self.char_file_path = os.path.join(d2_save_path, char_extension)
-
-                if utils.other_utils.test_mapfile_path(d2_save_path, char_extension):
-                    self.cached_file_stamp = os.stat(self.char_file_path).st_mtime
+                d2_save_path = os.path.normpath(self.main_frame.game_path)
+                extensions = ('ctl', 'ctlo', 'd2x')
+                files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+                if files:
+                    self.cached_file_stamp = max(os.stat(f).st_mtime for f in files)
                     self._check_entered_game(advanced_mode=False)
-
                     self.automode_active = True
                 else:
                     self.automode_active = False

@@ -10,53 +10,32 @@ mf_config_path = 'mf_config.ini'
 
 class Config:
     @staticmethod
-    def find_SP_game_path(force_find=False):
-        possible_paths = [
-            'C:/Program Files (x86)/Diablo II - 1.13c/Save/',
-            'C:/Program Files (x86)/Diablo II Plugy/Save/',
-            'C:/Program Files (x86)/Diablo II/Save/',
-            'C:/Program Files (x86)/Diablo II 1/Save/',
-            'C:/Program Files (x86)/Diablo II 2/Save/',
-            'C:/Program Files/Diablo II PoD/Save/',
-            'C:/Program Files/Diablo II/Save/',
-            'C:/Program Files/Diablo II 1/Save/',
-            'C:/Program Files/Diablo II 2/Save/',
-            'C:/Diablo II PoD/Save/',
-            'C:/Diablo II/Save/',
-            'C:/Diablo II 1/Save/',
-            'C:/Diablo II 2/Save/',
-        ]
-        path = next((path for path in possible_paths if os.path.exists(path)), '')
-        if path == '' and force_find:
+    def find_game_path(force_find=False):
+        if force_find:
             path = filedialog.askdirectory(title='Please select directory')
-        return path
-
-    @staticmethod
-    def find_MP_game_path(force_find=False):
-        possible_paths = [
-            'C:/Diablo 2/Diablo II/Path of Diablo/Save/Path of Diablo',
-            'C:/Program Files (x86)/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files (x86)/Diablo II/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files (x86)/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files (x86)/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files/Diablo II/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
-            'C:/Program Files/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
-            'C:/Diablo II PoD/Path of Diablo/Save/Path of Diablo/',
-            'C:/Diablo II/Path of Diablo/Save/Path of Diablo/',
-            'C:/Diablo II 1/Path of Diablo/Save/Path of Diablo/',
-            'C:/Diablo II 2/Path of Diablo/Save/Path of Diablo/',
-        ]
-        path = next((path for path in possible_paths if os.path.exists(path)), '')
-        if path == '' and force_find:
-            path = filedialog.askdirectory(title='Please select directory')
+        else:
+            possible_paths = [
+                f'C:/Users/{os.getenv("username")}/Saved Games/Diablo II Resurrected/',
+                'C:/Program Files (x86)/Diablo II - 1.13c/Save/',
+                'C:/Program Files (x86)/Diablo II Plugy/Save/',
+                'C:/Program Files (x86)/Diablo II/Save/',
+                'C:/Program Files (x86)/Diablo II 1/Save/',
+                'C:/Program Files (x86)/Diablo II 2/Save/',
+                'C:/Program Files/Diablo II PoD/Save/',
+                'C:/Program Files/Diablo II/Save/',
+                'C:/Program Files/Diablo II 1/Save/',
+                'C:/Program Files/Diablo II 2/Save/',
+                'C:/Diablo II PoD/Save/',
+                'C:/Diablo II/Save/',
+                'C:/Diablo II 1/Save/',
+                'C:/Diablo II 2/Save/',
+            ]
+            path = next((path for path in possible_paths if os.path.exists(path)), '')
         return path
 
     def default_config(self):
         config = configparser.ConfigParser(comment_prefixes='# ', allow_no_value=True)
-        config['DEFAULT']['SP_game_path'] = self.find_SP_game_path()
-        config['DEFAULT']['MP_game_path'] = self.find_MP_game_path()
+        config['DEFAULT']['game_path'] = self.find_game_path()
         config['DEFAULT']['window_start_position'] = str((100, 100))
         config['DEFAULT']['active_profile'] = ''
         config['DEFAULT']['herokuapp_username'] = ''
@@ -160,8 +139,7 @@ class Config:
         # Update position
         x = parent.root.winfo_x()
         y = parent.root.winfo_y()
-        cfg['DEFAULT']['SP_game_path'] = str(parent.SP_game_path)
-        cfg['DEFAULT']['MP_game_path'] = str(parent.MP_game_path)
+        cfg['DEFAULT']['game_path'] = str(parent.game_path)
         cfg['DEFAULT']['window_start_position'] = str((x, y))
         cfg['DEFAULT']['active_profile'] = str(parent.active_profile)
         cfg['DEFAULT']['herokuapp_username'] = str(parent.herokuapp_username)

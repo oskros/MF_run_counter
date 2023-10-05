@@ -9,6 +9,7 @@ from collections import defaultdict
 
 D2_GAME_EXE = 'Game.exe'
 D2_SE_EXE = 'D2SE.exe'
+D2R_EXE = 'D2R.exe'
 
 
 class D2Reader:

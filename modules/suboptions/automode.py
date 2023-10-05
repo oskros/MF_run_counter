@@ -16,53 +16,27 @@ class Automode(General):
         #     self.open_stats_tracker()
 
     def make_widgets(self):
-        self.gamemode_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
-        self.gamemode_frame.propagate(False)
-
-        self.gamemode_lab = tkd.Label(self.gamemode_frame, text='Game mode', tooltip=
-        'If Multiplayer is selected, the .map file is used to check for updates.\n'
-        'Thus, new runs begin every time you enter a new game (since your local .map files will be updated by this)\n\n'
-        'If Single Player is selected the .d2s file is used to check for updates.\n'
-        'Thus, a new run begins every time you leave a game (since your .d2s files are saved upon exit)')
-
-        self.game_mode = tk.StringVar()
-        self.game_mode.set(self.main_frame.profile_tab.game_mode.get())
-        self.gamemode_cb = ttk.Combobox(self.gamemode_frame, textvariable=self.game_mode, state='readonly', values=['Single Player', 'Multiplayer'])
-        self.gamemode_cb.bind("<FocusOut>", lambda e: self.gamemode_cb.selection_clear())
-        self.gamemode_cb.config(width=11)
-        self.game_mode.trace_add('write', lambda name, index, mode: self.update_game_mode())
-
         self.charname_frame = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
         self.charname_frame.propagate(False)
 
-        self.char_var = tk.StringVar()
-        self.char_var.set(self.main_frame.profile_tab.char_name.get())
-        self.charname_text_lab = tkd.Label(self.charname_frame, text='Character name', tooltip=
-        'Your character name is inferred from the active profile.\n'
-        'Make sure the character name in your profile is matching your in-game character name')
-        self.charname_val_lab = tkd.Label(self.charname_frame, textvariable=self.char_var)
+        self.path_label = tkd.Label(self, text='Game path')
+        self.game_path = tk.StringVar()
+        self.game_path.set(self.main_frame.game_path)
+        self.path_entry = tkd.Entry(self, textvariable=self.game_path)
 
-        self.sp_path_lab = tkd.Label(self, text='Game path (Single Player)')
-        self.SP_game_path = tk.StringVar()
-        self.SP_game_path.set(self.main_frame.SP_game_path)
-        self.sp_path_entry = tkd.Entry(self, textvariable=self.SP_game_path)
+        self.path_frame = tkd.Frame(self)
+        self.path_infer = tkd.Button(self.path_frame, text='Infer path', command=lambda: self.get_game_path(False), tooltip=
+        'The app tries to automatically find your game path\n'
+        'If nothing is returned you have to browse for the path manually')
+        self.path_browse = tkd.Button(self.path_frame, text='Browse...', command=lambda: self.get_game_path(True))
+        self.path_apply = tkd.Button(self.path_frame, text='Apply', command=self.activate_simple, tooltip='Apply the current specified path')
 
-        self.sp_path_frame = tkd.Frame(self)
-        self.sp_path_get = tkd.Button(self.sp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=True), tooltip=
-        'The app tries to automatically find your game path for single player\n'
-        'If nothing is returned you have to type it in manually')
-        self.sp_path_apply = tkd.Button(self.sp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
-
-        self.mp_path_lab = tkd.Label(self, text='Game path (Multiplayer)')
-        self.MP_game_path = tk.StringVar()
-        self.MP_game_path.set(self.main_frame.MP_game_path)
-        self.mp_path_entry = tkd.Entry(self, textvariable=self.MP_game_path)
-        self.mp_path_frame = tkd.Frame(self)
-
-        self.mp_path_get = tkd.Button(self.mp_path_frame, text='Get', command=lambda: self.get_game_path(is_sp=False), tooltip=
-        'The app tries to automatically find your game path for multiplayer\n'
-        'If nothing is returned you have to type it in manually')
-        self.mp_path_apply = tkd.Button(self.mp_path_frame, text='Apply', command=self.apply_path_ch, tooltip='Apply the current specified path')
+        self.simple_disclaimer = tkd.Label(self, text=
+        'Disclaimer: While using simple \n'
+        'automode, you need to manually \n'
+        'start the first run, and manually \n'
+        'end the last run (this can be done \n'
+        'using hotkeys)', justify=tk.LEFT)
 
         # Stuff for advanced mode
         self.advanced_mode_stop = self.add_flag(
@@ -97,46 +71,21 @@ class Automode(General):
         self.main_frame.automode = got_val
 
         if got_val == 1:
-            self.gamemode_frame.pack(expand=False, fill=tk.X)
-            self.gamemode_lab.pack(side=tk.LEFT)
-            self.gamemode_cb.pack(side=tk.RIGHT)
-
-            self.charname_frame.pack(expand=False, fill=tk.X)
-            self.charname_text_lab.pack(side=tk.LEFT)
-            self.charname_val_lab.pack(side=tk.RIGHT)
-
-            if self.game_mode.get() == 'Single Player':
-                self.sp_path_lab.pack(pady=(7, 0))
-                self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
-                self.sp_path_frame.pack()
-                self.sp_path_get.pack(side=tk.LEFT, padx=1)
-                self.sp_path_apply.pack(side=tk.LEFT)
-            else:
-                self.mp_path_lab.pack(pady=(7, 0))
-                self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
-                self.mp_path_frame.pack()
-                self.mp_path_get.pack(side=tk.LEFT, padx=1)
-                self.mp_path_apply.pack(side=tk.LEFT)
+            self.path_label.pack(pady=(7, 0))
+            self.path_entry.pack(fill=tk.BOTH, padx=4)
+            self.path_frame.pack()
+            self.path_infer.pack(side=tk.LEFT, padx=1)
+            self.path_browse.pack(side=tk.LEFT)
+            self.path_apply.pack(side=tk.LEFT)
+            self.simple_disclaimer.pack(pady=(10,0))
         else:
-            self.gamemode_frame.forget()
-            self.gamemode_lab.forget()
-            self.gamemode_cb.forget()
-
-            self.charname_frame.forget()
-            self.charname_text_lab.forget()
-            self.charname_val_lab.forget()
-
-            self.sp_path_lab.forget()
-            self.sp_path_entry.forget()
-            self.sp_path_frame.forget()
-            self.sp_path_get.forget()
-            self.sp_path_apply.forget()
-
-            self.mp_path_lab.forget()
-            self.mp_path_entry.forget()
-            self.mp_path_frame.forget()
-            self.mp_path_get.forget()
-            self.mp_path_apply.forget()
+            self.path_label.forget()
+            self.path_entry.forget()
+            self.path_frame.forget()
+            self.path_infer.forget()
+            self.path_browse.forget()
+            self.path_apply.forget()
+            self.simple_disclaimer.forget()
 
         if got_val == 2:
             if first is False and not tk_utils.MessageBox(
@@ -166,51 +115,15 @@ class Automode(General):
         if not first:
             self.main_frame.toggle_automode()
 
-    def get_game_path(self, is_sp=True):
-        found_path = config.Config.find_SP_game_path(True) if is_sp else config.Config.find_MP_game_path(True)
+    def get_game_path(self, force_find):
+        found_path = config.Config.find_game_path(force_find=force_find)
         if found_path:
-            if is_sp:
-                self.SP_game_path.set(found_path)
-            else:
-                self.MP_game_path.set(found_path)
+            self.game_path.set(found_path)
         else:
-            tk.messagebox.showerror('Path', f'Failed to find save folder path for {"single " if is_sp else "multi"}player. Please enter manually')
+            tk.messagebox.showinfo('Path', f'Failed to find save folder path. Please enter manually')
 
-    def update_game_mode(self):
-        game_mode = self.game_mode.get()
-
-        if game_mode == 'Single Player':
-            self.mp_path_lab.forget()
-            self.mp_path_entry.forget()
-            self.mp_path_frame.forget()
-            self.mp_path_get.forget()
-            self.mp_path_apply.forget()
-
-            self.sp_path_lab.pack(pady=(0, 0))
-            self.sp_path_entry.pack(fill=tk.BOTH, padx=4)
-            self.sp_path_frame.pack()
-            self.sp_path_get.pack(side=tk.LEFT, padx=1)
-            self.sp_path_apply.pack(side=tk.LEFT)
-
-        elif game_mode == 'Multiplayer':
-            self.sp_path_lab.forget()
-            self.sp_path_entry.forget()
-            self.sp_path_frame.forget()
-            self.sp_path_get.forget()
-            self.sp_path_apply.forget()
-
-            self.mp_path_lab.pack(pady=(0, 0))
-            self.mp_path_entry.pack(fill=tk.BOTH, padx=4)
-            self.mp_path_frame.pack()
-            self.mp_path_get.pack(side=tk.LEFT, padx=1)
-            self.mp_path_apply.pack(side=tk.LEFT)
-
-        self.main_frame.profile_tab.game_mode.set(game_mode)
-        self.main_frame.toggle_automode()
-
-    def apply_path_ch(self):
-        self.main_frame.SP_game_path = self.SP_game_path.get()
-        self.main_frame.MP_game_path = self.MP_game_path.get()
+    def activate_simple(self):
+        self.main_frame.game_path = self.game_path.get()
         self.main_frame.toggle_automode()
 
     def add_automode_flag(self):

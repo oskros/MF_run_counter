@@ -55,8 +55,7 @@ class MasterFrame(Config):
         self.cfg = self.load_config_file()
         if hasattr(logging, self.cfg['DEFAULT']['logging_level']):
             logging.getLogger().setLevel(getattr(logging, self.cfg['DEFAULT']['logging_level']))
-        self.SP_game_path = self.cfg['DEFAULT']['SP_game_path']
-        self.MP_game_path = self.cfg['DEFAULT']['MP_game_path']
+        self.game_path = self.cfg['DEFAULT']['game_path']
         self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
         self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
         self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
@@ -274,13 +273,6 @@ class MasterFrame(Config):
                 return state.get('extra_data', dict()).get('Last update', os.stat(file).st_mtime)
         return sorted(self.profiles, key=sort_key, reverse=True)
 
-    def game_path(self):
-        game_mode = self.profile_tab.game_mode.get()
-        if game_mode == 'Single Player':
-            return self.SP_game_path
-        else:
-            return self.MP_game_path
-
     def character_file_extension(self):
         game_mode = self.profile_tab.game_mode.get()
         if game_mode == 'Single Player':
@@ -288,14 +280,12 @@ class MasterFrame(Config):
         else:
             return '.map'
 
-    def toggle_automode(self, char_name=None):
+    def toggle_automode(self):
         """
         Enables or disables automode. Shows a small label on top of the banner image with the text "Automode" when
         automode is activated. Takes an optional argument "char_name" which is used by the profile manager when changing
         between profiles, such that the automode loop listens to changes in the correct save file.
         """
-        if char_name is None:
-            char_name = self.profile_tab.char_name.get()
         if self.automode:
             self.am_lab.configure(state=tk.NORMAL)
             self.am_lab.delete(1.0, tk.END)
@@ -310,7 +300,7 @@ class MasterFrame(Config):
             self.am_lab.insert(tk.END, "OFF", "off")
             self.am_lab.config(width=15)
             self.am_lab.configure(state=tk.DISABLED)
-        self.timer_tab.toggle_automode(char_name=char_name)
+        self.timer_tab.toggle_automode()
 
     def toggle_tab_keys_global(self):
         """
