@@ -2,7 +2,6 @@ import os
 import time
 import logging
 import tkinter as tk
-import utils.other_utils
 from memory_reader import reader, reader_utils
 from utils import tk_dynamic as tkd, tk_utils, sound, other_utils
 from tkinter import ttk
@@ -135,7 +134,7 @@ class MFRunTimer(tkd.Frame):
             # Simple automode - if any file is updated, run is started
             d2_save_path = os.path.normpath(self.main_frame.game_path)
             extensions = ('ctl', 'ctlo', 'd2x')
-            files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+            files = [os.path.join(d2_save_path, f) for f in other_utils.listdir(d2_save_path) if f.endswith(extensions)]
             if files:
                 cur_file = max(files, key=lambda f: os.stat(f).st_mtime)
                 stamp = os.stat(cur_file).st_mtime
@@ -147,7 +146,7 @@ class MFRunTimer(tkd.Frame):
         self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
 
     def _set_time(self, elap, for_session):
-        time_str = utils.other_utils.build_time_str(elap)
+        time_str = other_utils.build_time_str(elap)
         if for_session:
             self.session_time_str = time_str
             self.sessionstr.set('Session time: ' + self.session_time_str)
@@ -163,13 +162,13 @@ class MFRunTimer(tkd.Frame):
 
     def _set_fastest(self):
         if self.laps:
-            self.min_lap.set('Fastest time: %s' % utils.other_utils.build_time_str(min(l['Run time'] for l in self.laps)))
+            self.min_lap.set('Fastest time: %s' % other_utils.build_time_str(min(l['Run time'] for l in self.laps)))
         else:
             self.min_lap.set('Fastest time: --:--:--.-')
 
     def _set_average(self):
         if self.laps:
-            self.avg_lap.set('Average time: %s' % utils.other_utils.build_time_str(sum(l['Run time'] for l in self.laps) / len(self.laps)))
+            self.avg_lap.set('Average time: %s' % other_utils.build_time_str(sum(l['Run time'] for l in self.laps) / len(self.laps)))
         else:
             self.avg_lap.set('Average time: --:--:--.-')
 
@@ -250,7 +249,7 @@ class MFRunTimer(tkd.Frame):
     def lap(self, lap_info):
         self.laps.append(lap_info)
         str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
-        self.m.insert(tk.END, 'Run ' + str_n + ': ' + utils.other_utils.build_time_str(lap_info['Run time']))
+        self.m.insert(tk.END, 'Run ' + str_n + ': ' + other_utils.build_time_str(lap_info['Run time']))
         self.m.yview_moveto(1)
         self._set_laps(add_lap=False)
         self._set_fastest()
@@ -346,7 +345,7 @@ class MFRunTimer(tkd.Frame):
     def get_char_files(self):
         d2_save_path = os.path.normpath(self.main_frame.game_path)
         extensions = ('ctl', 'ctlo', 'd2x')
-        files = [os.path.join(d2_save_path, f) for f in os.listdir(d2_save_path) if f.endswith(extensions)]
+        files = [os.path.join(d2_save_path, f) for f in other_utils.listdir(d2_save_path) if f.endswith(extensions)]
         return files
 
     def toggle_automode(self):

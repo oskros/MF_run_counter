@@ -4,11 +4,49 @@ import base64
 import configparser
 import system_hotkey
 from tkinter import messagebox, filedialog
-from utils import other_utils
+from utils import other_utils, color_themes
 mf_config_path = 'mf_config.ini'
 
 
 class Config:
+    def __init__(self):
+        self.cfg = self.load_config_file()
+
+        # Build/load config file
+        self.logging_level = self.cfg['DEFAULT']['logging_level']
+        self.game_path = self.cfg['DEFAULT']['game_path']
+        self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
+        self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
+        self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
+        self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
+        self.end_run_in_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['end_run_in_menu'])
+        self.pause_on_esc_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_on_esc_menu'])
+        self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
+        self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
+        self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
+        self.enable_sound_effects = other_utils.safe_eval(self.cfg['OPTIONS']['enable_sound_effects'])
+        self.start_run_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['start_run_delay_seconds'])
+        self.show_drops_frame = other_utils.safe_eval(self.cfg['OPTIONS']['show_drops_tab_below'])
+        self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
+        self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
+        self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
+        self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
+        self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
+        self.disable_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
+        self.advanced_tracker_open = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open'])
+        self.active_profile = self.cfg['DEFAULT']['active_profile']
+        self.window_start_pos = other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position'])
+
+        # UI config
+        self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])
+        self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
+        self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
+        self.show_xp_tracker = other_utils.safe_eval(self.cfg['UI']['show_xp_tracker'])
+
+        if self.active_theme not in color_themes.available_themes:
+            self.active_theme = color_themes.available_themes[0]
+        self.theme = color_themes.Theme(used_theme=self.active_theme)
+
     @staticmethod
     def find_game_path(force_find=False):
         if force_find:
@@ -113,7 +151,7 @@ class Config:
             valid_entry = bind is not None and len(bind) > 0 and bind[0] in ["[", "("]
             if valid_entry and tuple(str(x).lower() for x in other_utils.safe_eval(bind)) in used:
                 parser['KEYBINDS'][key] = str([other_utils.safe_eval(bind)[0], 'NO_BIND'])
-                messagebox.showerror('Used keybind', 'Configured keybind for %s (%s) is already in use by the system.\nUnbinding "%s" - please set a new bind in options.' % (key, bind, key))
+                messagebox.showerror('Used keybind', f'Configured keybind for {key} ({bind}) is already in use by the system.\nUnbinding "{key}" - please set a new bind in options.')
 
         return parser
 
@@ -150,7 +188,7 @@ class Config:
         cfg['OPTIONS']['tab_switch_keys_global'] = str(parent.tab_switch_keys_global)
         cfg['OPTIONS']['check_for_new_version'] = str(parent.check_for_new_version)
         cfg['OPTIONS']['enable_sound_effects'] = str(parent.enable_sound_effects)
-        cfg['OPTIONS']['show_drops_tab_below'] = str(int(parent.show_drops_tab_below))
+        cfg['OPTIONS']['show_drops_tab_below'] = str(int(parent.show_drops_frame))
         cfg['OPTIONS']['active_theme'] = str(parent.active_theme)
         cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
         cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)

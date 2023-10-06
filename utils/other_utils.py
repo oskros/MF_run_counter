@@ -1,9 +1,17 @@
 import os
 import json
-from tkinter import messagebox
 import libs.screeninfo
 from libs.pymem import exception as pymem_exception
 import atomicwrites
+import logging
+
+
+def listdir(path):
+    try:
+        return os.listdir(path=path)
+    except FileNotFoundError as e:
+        logging.warning(f'Path not found. Error: {e}')
+        return []
 
 
 def safe_eval(inp_str):
@@ -49,7 +57,6 @@ def json_load_err(file_path):
             e.args = (e.args[0] + f' - file: {file_path}', *e.args[1:])
             raise e
     return state
-
 
 
 pymem_err_list = (pymem_exception.ProcessError, pymem_exception.ProcessNotFound, pymem_exception.WinAPIError,

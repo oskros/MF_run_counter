@@ -45,7 +45,7 @@ class RegistrationForm:
         self.new_win.resizable(False, False)
         self.stringvars = []
 
-        geom = get_displaced_geom(master, 290, 160, coords[0], coords[1])
+        geom = get_displaced_geom(master, 290, 154, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
         self.new_win.iconbitmap(media_path + 'icon.ico')

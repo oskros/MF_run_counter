@@ -111,7 +111,7 @@ class Drops(tkd.Frame):
         self.m.config(state=tk.DISABLED)
 
     def delete_selected_drops(self):
-        if self.focus_get()._name == 'droplist':
+        if self.focus_get().winfo_name() == 'droplist':
             cur_row = self.m.get('insert linestart', 'insert lineend+1c').strip()
             resp = tk_utils.MessageBox(msg=f'Do you want to delete the row:\n{cur_row}', title='Warning').returning
             if resp is True:

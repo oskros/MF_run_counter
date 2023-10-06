@@ -1,148 +1,93 @@
-from init import *
-import sys
-import time
-import json
-import queue
-import base64
-import logging
 import ctypes
-import traceback
-import win32api
-import win32gui
-import win32con
+import logging
 import platform
+import queue
+import time
+import tkinter as tk
+import traceback
+from tkinter import messagebox
+
+import win32api
+import win32con
+import win32gui
+
+from init import *
 from libs.pymem import exception as pymem_exception
 from memory_reader import reader, reader_utils
-from utils.config import Config
-from modules.options import Options
-from modules.profiles import Profile
-from utils.color_themes import Theme, available_themes
-from tkinter import messagebox
-import tkinter as tk
-from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils
-from modules.stats_tracker import StatsTracker
-from modules.about import About
-from modules.drops import Drops
-from modules.mf_timer import MFRunTimer
-from modules.grail import Grail
+from modules import Options, Profile, StatsTracker, About, Drops, MFRunTimer, Grail
+from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils, config
 
 
-class MasterFrame(Config):
+class MasterFrame(config.Config):
     def __init__(self):
-        # Check if application is already open
-        self.title = 'MF run counter'
+        # Create root
+        self.root = tkd.Tk()
+        self.root.report_callback_exception = self.report_callback_exception
+
+        # Build/load config file
+        super().__init__()
 
         # Create error logger
         lh = logging.FileHandler(filename='mf_timer.log', mode='w', delay=True)
         logging.basicConfig(handlers=[lh],
                             format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                             datefmt='%H:%M:%S',
-                            level=logging.WARNING)
+                            level=getattr(logging, self.logging_level, 'WARNING'))
 
         # Check OS
         self.os_platform = platform.system()
-        self.os_release = platform.release()
-        if not self.os_platform == 'Windows':
-            raise SystemError("MF Run Counter only supports windows")
+        if self.os_platform != 'Windows':
+            err = "MF Run Counter only runs on Windows"
+            messagebox.showerror('OS Error', err)
+            raise SystemError(err)
 
-        # Create root
-        self.root = tkd.Tk()
-
-        # Ensure errors are handled with an exception pop-up if encountered
-        self.root.report_callback_exception = self.report_callback_exception
-
-        # Build/load config file
-        self.cfg = self.load_config_file()
-        if hasattr(logging, self.cfg['DEFAULT']['logging_level']):
-            logging.getLogger().setLevel(getattr(logging, self.cfg['DEFAULT']['logging_level']))
-        self.game_path = self.cfg['DEFAULT']['game_path']
-        self.herokuapp_username = self.cfg['DEFAULT']['herokuapp_username']
-        self.herokuapp_password = base64.b64decode(self.cfg['DEFAULT']['herokuapp_password']).decode('utf-8')
-        self.webproxies = other_utils.safe_eval(self.cfg['DEFAULT']['webproxies'])
-        self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
-        self.end_run_in_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['end_run_in_menu'])
-        self.pause_on_esc_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_on_esc_menu'])
-        self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
-        self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
-        self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
-        self.enable_sound_effects = other_utils.safe_eval(self.cfg['OPTIONS']['enable_sound_effects'])
-        self.start_run_delay_seconds = other_utils.safe_eval(self.cfg['OPTIONS']['start_run_delay_seconds'])
-        self.show_drops_tab_below = other_utils.safe_eval(self.cfg['OPTIONS']['show_drops_tab_below'])
-        self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
-        self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
-        self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
-        self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
-        self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
-        self.disable_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
-
-        # UI config
-        self.show_buttons = other_utils.safe_eval(self.cfg['UI']['show_buttons'])
-        self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
-        self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
-        self.show_xp_tracker = other_utils.safe_eval(self.cfg['UI']['show_xp_tracker'])
+        # A trick to disable windows DPI scaling - the app doesn't work well with scaling, unfortunately
+        if platform.release() == '10' and self.disable_scaling:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Initiate variables for memory reading
         self.is_user_admin = reader_utils.is_user_admin()
         self.advanced_error_thrown = False
         self.d2_reader = None
 
-        # Load theme
-        if self.active_theme not in available_themes:
-            self.active_theme = 'vista'
-        self.theme = Theme(used_theme=self.active_theme)
-
         # Create hotkey queue and initiate process for monitoring the queue
         self.queue = queue.Queue(maxsize=1)
         self.process_queue()
 
         # Check for version update
-        if self.check_for_new_version:
-            self.dl_count = github_releases.check_newest_version(release_repo)
-        else:
-            self.dl_count = ''
+        self.dl_count = github_releases.check_newest_version(release_repo) if self.check_for_new_version else ''
 
         # Load profile info
         self.make_profile_folder()
-        self.profiles = [x[:-5] for x in os.listdir('Profiles') if x.endswith('.json') and not x == 'grail.json']
-        self.active_profile = self.cfg['DEFAULT']['active_profile']
-        if len(self.profiles) == 0:
-            self.active_profile = ''
-        elif len(self.profiles) > 0 and self.active_profile not in self.profiles:
-            self.active_profile = self.profiles[0]
-
+        self.profiles = [x[:-5] for x in os.listdir('Profiles') if x.endswith('.json') and x != 'grail.json']
+        if self.active_profile not in self.profiles:
+            self.active_profile = (self.profiles + [''])[0]
         self.profiles = self.sorted_profiles()
 
         # Modify root window
+        self.title = 'MF run counter'
         self.root.title(self.title)
         self.clickable = True
         self.root.resizable(False, False)
-        self.root.geometry('+%d+%d' % other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position']))
+        self.root.geometry('+%d+%d' % self.window_start_pos)
         self.root.config(borderwidth=2, height=365, width=240, relief='raised')
-        # self.root.wm_attributes("-transparentcolor", "purple")
         self.root.wm_attributes("-topmost", self.always_on_top)
-        self.root.focus_get()
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
         self.root.iconbitmap(media_path + 'icon.ico')
-        self.root.pack_propagate(False)
+        # self.root.pack_propagate(False)
+        self.root.bind("<Delete>", self.delete_selection)
+        self.root.unbind_all('<Alt_L>')  # Pressing ALT_L paused UI updates when in focus
 
         # Build banner image and make window draggable on the banner
         d2banner = media_path + 'd2icon.png'
-        img = tk.PhotoImage(file=d2banner)
-        self.img_panel = tkd.Label(self.root, image=img, borderwidth=0)
+        img = tk.PhotoImage(master=self.root, file=d2banner)
+        self.img_panel = tkd.ImgLabel(self.root, image=img, borderwidth=0)
         self.img_panel.pack()
-        self.img_panel.bind("<ButtonPress-1>", self.root.start_move)
-        self.img_panel.bind("<ButtonRelease-1>", self.root.stop_move)
-        self.img_panel.bind("<B1-Motion>", self.root.on_motion)
-        self.root.bind("<Delete>", self.delete_selection)
-        self.root.bind("<Left>", self.root.moveleft)
-        self.root.bind("<Right>", self.root.moveright)
-        self.root.bind("<Up>", self.root.moveup)
-        self.root.bind("<Down>", self.root.movedown)
 
         # Add buttons to main widget
         self.btn_frame = tkd.Frame(self.root)
-        tkd.Button(self.btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[2, 1], pady=1)
-        tkd.Button(self.btn_frame, text='Archive session', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=[0, 1], pady=1)
+        tkd.Button(self.btn_frame, text='Delete selection', command=self.delete_selection).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=(2, 1), pady=1)
+        tkd.Button(self.btn_frame, text='Archive session', command=self.ArchiveReset).pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=(0, 1), pady=1)
 
         # Build tabs
         self.caret_frame = tkd.Frame(self.root)
@@ -164,27 +109,19 @@ class MasterFrame(Config):
         self.tabcontrol.add(self.grail_tab, text='Grail')
         self.tabcontrol.add(self.about_tab, text='About')
 
-        self.root.bind("<<NotebookTabChanged>>", lambda _e: self.notebook_tab_change())
-        self.profile_tab.update_descriptive_statistics()
+        self.root.bind("<<NotebookTabChanged>>", lambda _: self.notebook_tab_change())
+        self.toggle_tab_keys_global(initial_run=True)  # Register binds for changing tabs
 
-        self.toggle_drops_frame(show=self.show_drops_tab_below)
-        self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_tab_below, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
+        self.toggle_drops_frame(show=self.show_drops_frame)
+        self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_frame, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
         self.drops_caret.propagate(False)
-        self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
+        self.drops_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=(2, 1), pady=(0, 1))
 
-        tracker_is_active = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open']) and self.automode == 2 and self.is_user_admin
+        tracker_is_active = self.advanced_tracker_open and self.automode == 2 and self.is_user_admin
         self.advanced_stats_tracker = StatsTracker(self, self.adv_stats_frame)
         self.advanced_stats_caret = tkd.CaretButton(self.adv_stats_frame, active=tracker_is_active, text='Advanced stats', compound=tk.RIGHT, height=13, command=self.toggle_advanced_stats_frame)
         self.advanced_stats_caret.propagate(False)
-        self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=[2, 1], pady=[0, 1])
-
-        # Register binds for changing tabs
-        if self.tab_switch_keys_global:
-            self.options_tab.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
-            self.options_tab.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
-        else:
-            self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
-            self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
+        self.advanced_stats_caret.pack(side=tk.BOTTOM, fill=tk.X, expand=True, padx=(2, 1), pady=(0, 1))
 
         # Load save state and start autosave process
         active_state = self.load_state_file()
@@ -204,15 +141,8 @@ class MasterFrame(Config):
         self.toggle_automode()
         self.toggle_advanced_stats_frame(show=tracker_is_active)
 
-        # A trick to disable windows DPI scaling - the app doesnt work well with scaling, unfortunately
-        if self.os_release == '10' and self.disable_scaling:
-            ctypes.windll.shcore.SetProcessDpiAwareness(2)
-
         # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
-
-        # Pressing ALT_L paused UI updates when in focus, disable (probably hooked to opening menus)
-        self.root.unbind_all('<Alt_L>')
 
         # Start the program
         self.root.mainloop()
@@ -220,7 +150,7 @@ class MasterFrame(Config):
     def delete_selection(self, event=None):
         if self.timer_tab.m.curselection():
             self.timer_tab.delete_selected_run()
-        elif self.drops_tab.focus_get()._name == 'droplist':
+        elif self.root.focus_get().winfo_name() == 'droplist':
             self.drops_tab.delete_selected_drops()
 
     def load_memory_reader(self, show_err=True):
@@ -233,7 +163,7 @@ class MasterFrame(Config):
         elif self.automode != 2:
             err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
             self.d2_reader = None
-        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE], logging_level=self.cfg['DEFAULT']['logging_level']) > 1:
+        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE], logging_level=self.logging_level) > 1:
             err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif not d2_game_open and not d2_se_open:
@@ -265,7 +195,7 @@ class MasterFrame(Config):
 
     def sorted_profiles(self):
         def sort_key(x):
-            file = 'Profiles/%s.json' % x
+            file = f'Profiles/{x}.json'
             if not os.path.isfile(file):
                 return float('inf')
             else:
@@ -295,7 +225,7 @@ class MasterFrame(Config):
             self.am_lab.configure(state=tk.DISABLED)
         self.timer_tab.toggle_automode()
 
-    def toggle_tab_keys_global(self):
+    def toggle_tab_keys_global(self, initial_run=False):
         """
         Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
         the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
@@ -306,8 +236,9 @@ class MasterFrame(Config):
             self.options_tab.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
             self.options_tab.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
-            self.options_tab.tab2.hk.unregister(['control', 'shift', 'next'])
-            self.options_tab.tab2.hk.unregister(['control', 'shift', 'prior'])
+            if not initial_run:
+                self.options_tab.tab2.hk.unregister(['control', 'shift', 'next'])
+                self.options_tab.tab2.hk.unregister(['control', 'shift', 'prior'])
             self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
@@ -323,7 +254,7 @@ class MasterFrame(Config):
             if hasattr(self, 'drops_tab') and self.drops_tab.winfo_ismapped():
                 self.drops_tab.forget()
                 self.root.config(height=self.root.winfo_height()-drops_height)
-        self.show_drops_tab_below = show
+        self.show_drops_frame = show
         self.img_panel.focus_force()
 
     def toggle_advanced_stats_frame(self, show=None):
@@ -401,7 +332,7 @@ class MasterFrame(Config):
         for bug fixing
         """
         err = traceback.format_exception(*args)
-        tk.messagebox.showerror('Exception occured', 'Progress since last autosave is lost...\n\n' + ''.join(err))
+        messagebox.showerror('Exception occured', 'Progress since last autosave is lost...\n\n' + ''.join(err))
         logging.exception(args)
         os._exit(0)
 
@@ -427,7 +358,7 @@ class MasterFrame(Config):
         file exists, and if not an empty dictionary is returned.
         """
         self.make_profile_folder()
-        file = 'Profiles/%s.json' % self.active_profile
+        file = f'Profiles/{self.active_profile}.json'
         if not os.path.isfile(file):
             state = dict()
         else:
@@ -466,7 +397,6 @@ class MasterFrame(Config):
             active = self.timer_tab.save_state()
             self.profile_tab.tot_laps += len(active['laps'])
             active.update(self.drops_tab.save_state())
-            active.update(self.advanced_stats_tracker.save_state())
 
             # Update session dropdown for the profile
             if stamp_from_epoch is None:
@@ -496,7 +426,6 @@ class MasterFrame(Config):
         active_state = state.get('active_state', dict())
         self.timer_tab.load_from_state(active_state)
         self.drops_tab.load_from_state(active_state)
-        self.advanced_stats_tracker.load_from_state(active_state)
 
     def SaveActiveState(self):
         """
@@ -507,12 +436,11 @@ class MasterFrame(Config):
         cache = self.load_state_file()
         timer_state = self.timer_tab.save_state()
         drops_state = self.drops_tab.save_state()
-        advanced_stats_state = self.advanced_stats_tracker.save_state()
         if cache.get('active_state', dict()).get('laps', []) != timer_state.get('laps', []) or cache.get('active_state', dict()).get('drops', dict()) != drops_state.get('drops', dict()):
             is_updated = True
         else:
             is_updated = False
-        cache['active_state'] = {**timer_state, **drops_state, **advanced_stats_state}
+        cache['active_state'] = {**timer_state, **drops_state}
         if is_updated or 'Last update' not in cache['extra_data']:
             cache['extra_data']['Last update'] = time.time()
         file = f'Profiles/{self.active_profile}.json'

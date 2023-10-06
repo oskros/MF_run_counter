@@ -211,39 +211,6 @@ class StatsTracker(tkd.Frame):
         self.hours_level_sv.set('0')
         self.runs_level_sv.set('0')
 
-    def save_state(self):
-        return dict()#session_char_xp_start=self.session_char_xp_start,
-                    # session_char_xp=self.session_char_xp,
-                    # session_char_time_start=time.time() - self.session_char_time_start,
-                    # session_char_xp_missing=self.session_char_xp_missing,
-                    # session_xp_runs=list(self.session_xp_runs))
-
-    def load_from_state(self, active_state):
-        return
-
-        # self.session_char_xp_start = active_state.get('session_char_xp_start', 0)
-        # self.session_char_xp = active_state.get('session_char_xp', 0)
-        # self.session_char_time_start = time.time() - active_state.get('session_char_time_start', 0)
-        # self.session_char_xp_missing = active_state.get('session_char_xp_missing', 0)
-        # self.session_xp_runs = set(active_state.get('session_xp_runs', set()))
-        #
-        # if self.session_char_xp > 0:
-        #     self.curr_run_xp = self.session_char_xp
-        #
-        # self.name_sv.set('-----')
-        # self.level_sv.set('-----')
-        # self.mf_sv.set('-----')
-        # self.players_x_sv.set('-----')
-        #
-        # self.exp_sv.set('0')
-        # self.exp_level_sv.set('{:,.0f}'.format(self.session_char_xp_missing))
-        # self.exp_session_sv.set('{:,.0f}'.format(self.session_char_xp - self.session_char_xp_start))
-        # if len(self.session_xp_runs) > 0:
-        #     self.avg_run = sum(self.session_xp_runs) / len(self.session_xp_runs)
-        #     self.runs_level_sv.set('{:.0f}'.format(-(-self.session_char_xp_missing / self.avg_run // 1)))
-        # else:
-        #     self.runs_level_sv.set('0')
-
     @staticmethod
     def format_time(hours):
         h = hours // 1

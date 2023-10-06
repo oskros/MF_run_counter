@@ -98,6 +98,11 @@ class Tk(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.bind("<Left>", self.moveleft)
+        self.bind("<Right>", self.moveright)
+        self.bind("<Up>", self.moveup)
+        self.bind("<Down>", self.movedown)
+
         self.__class__.objects.append(self)
 
     @classmethod
@@ -189,6 +194,14 @@ class Label(tk.Label):
     def destroy(self):
         self.__class__.objects.remove(self)
         super().destroy()
+
+
+class ImgLabel(Label):
+    def __init__(self, root, *args, **kwargs):
+        super().__init__(root, *args, **kwargs)
+        self.bind("<ButtonPress-1>", root.start_move)
+        self.bind("<ButtonRelease-1>", root.stop_move)
+        self.bind("<B1-Motion>", root.on_motion)
 
 
 class Checkbutton(tk.Checkbutton):
@@ -639,8 +652,8 @@ class CaretButton(Button):
         pic_geom = (374, 43)
         new_geom = (130, 14)
 
-        self.up_arrow = tk.PhotoImage(file=up_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
-        self.dn_arrow = tk.PhotoImage(file=dn_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
+        self.up_arrow = tk.PhotoImage(master=root, file=up_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
+        self.dn_arrow = tk.PhotoImage(master=root, file=dn_arrow_path).subsample(pic_geom[0]//new_geom[0], pic_geom[1]//new_geom[1])
 
         self.active = bool(active)
         super().__init__(root, image=self.up_arrow if self.active else self.dn_arrow, command=self.command, **kwargs)
