@@ -1,5 +1,5 @@
 from init import *
-import os, sys
+import textwrap
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
@@ -512,37 +512,21 @@ class Text(tk.Text):
             self.tag_add(tag, "end-1c linestart", "end-1c lineend")
 
 
-class Tooltip(object):
+class Tooltip:
     def __init__(self, widget):
         self.widget = widget
         self.tipwindow = None
         self.id = None
         self.x = self.y = 0
+        self.text = None
 
-    # @staticmethod
-    # def get_monitor_from_coord(x, y):
-    #     monitors = screeninfo.get_monitors()
-    #
-    #     for m in reversed(monitors):
-    #         if m.x <= x <= m.width + m.x and m.y <= y <= m.height + m.y:
-    #             return m
-    #     return monitors[0]
-    #
-    # def get_displaced_geom(self, root, window_width, window_height, pos_x, pos_y):
-    #     mon = self.get_monitor_from_coord(root.winfo_rootx(), root.winfo_rooty())
-    #     min_x = mon.x
-    #     min_y = mon.y
-    #     max_x = mon.width + min_x
-    #     max_y = mon.height + min_y
-    #
-    #     displaced_x = max(min(pos_x, max_x - window_width), min_x - 5)
-    #     displaced_y = max(min(pos_y, max_y - window_height), min_y)
-    #
-    #     return '%sx%s+%s+%s' % (window_width, window_height, displaced_x, displaced_y)
+    @staticmethod
+    def linebreak_text(text):
+        return '\n'.join(textwrap.fill(line, 50) for line in text.split('\n'))
 
     def showtip(self, text):
-        "Display text in tooltip window"
-        self.text = text
+        """ Display text in tooltip window """
+        self.text = self.linebreak_text(text)
         if self.tipwindow or not self.text:
             return
         x, y, cx, cy = self.widget.bbox("insert")
@@ -550,29 +534,22 @@ class Tooltip(object):
         x = x + self.widget.winfo_rootx() + 57
         y = y + cy + self.widget.winfo_rooty() + 27
 
-        self.tipwindow = tw = tk.Toplevel(self.widget)
+        self.tipwindow = tk.Toplevel(self.widget)
         self.tipwindow.wm_attributes('-topmost', True)
-        tw.wm_overrideredirect(1)
+        self.tipwindow.wm_overrideredirect(True)
 
-        # tw.wm_geometry("+%d+%d" % (x, y))
-        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+        label = tk.Label(self.tipwindow, text=self.text, justify=tk.LEFT,
                          background="#ffffe0", relief=tk.SOLID, borderwidth=1,
                          font=("tahoma", "8", "normal"))
         label.pack(ipadx=1)
 
-
-        # tw.update()
-        # geom = self.get_displaced_geom(self.widget, self.tipwindow.winfo_width(), self.tipwindow.winfo_height(), x, y)
-        # tw.wm_geometry(geom)
-
         geom = "+%d+%d" % (x, y)
-        tw.wm_geometry(geom)
+        self.tipwindow.wm_geometry(geom)
 
     def hidetip(self):
-        tw = self.tipwindow
+        if self.tipwindow:
+            self.tipwindow.destroy()
         self.tipwindow = None
-        if tw:
-            tw.destroy()
 
 
 def create_tooltip(widget, text):
@@ -589,9 +566,6 @@ class Treeview(ttk.Treeview):
             self.even_row = True
             self.tag_configure('Odd', background='gray95')
             self.tag_configure('Even', background='white')
-
-        # self.highlighted_item = None
-        # self.highlighted_prev_tags = ''
 
         self.tag_configure('highlighted_line', background='#1874CD', foreground='white')
         self.bind('<Control-c>', lambda _: self.copy_highlighted_to_clipboard())
@@ -620,18 +594,20 @@ class Treeview(ttk.Treeview):
         self.heading(column, command=partial(callback, column, not reverse))
 
     def _sort_by_num(self, column, reverse):
-        if reverse:
-            foo = lambda x: float('-inf') if x == '' else float(x.replace('%', ''))
-        else:
-            foo = lambda x: float('inf') if x == '' else float(x.replace('%', ''))
-        self._sort(column, reverse, foo, self._sort_by_num)
+        def sort_fnc(x):
+            if x == '':
+                return float('-inf') if reverse else float('inf')
+            return float(x.replace('%', ''))
+
+        self._sort(column, reverse, sort_fnc, self._sort_by_num)
 
     def _sort_by_name(self, column, reverse):
-        if reverse:
-            foo = lambda x: str(x)
-        else:
-            foo = lambda x: '€'*100 if x == '' else str(x)
-        self._sort(column, reverse, foo, self._sort_by_name)
+        def sort_fnc(x):
+            if x == '' and not reverse:
+                return '€'*100
+            return str(x)
+
+        self._sort(column, reverse, sort_fnc, self._sort_by_name)
 
     def insert(self, *args, **kwargs):
         if self.alternate_colour:
