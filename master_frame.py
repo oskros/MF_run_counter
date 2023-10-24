@@ -99,6 +99,7 @@ class MasterFrame(config.Config):
         self.profile_tab = Profile(self, parent=self.tabcontrol)
         self.timer_tab = MFRunTimer(self, parent=self.tabcontrol)
         self.drops_tab = Drops(self, parent=self.drops_frame)
+        self.profile_tab.update_descriptive_statistics()  # FIXME: Total number of runs isn't read correctly unless we load descriptive statistics before packing the timer tab...
         self.options_tab = Options(self, self.timer_tab, self.drops_tab, parent=self.tabcontrol)
         self.grail_tab = Grail(self, parent=self.tabcontrol)
         self.about_tab = About(self, parent=self.tabcontrol)
