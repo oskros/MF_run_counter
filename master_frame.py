@@ -78,7 +78,7 @@ class MasterFrame(config.Config):
         self.root.bind("<Delete>", self.delete_selection)
         self.root.unbind_all('<Alt_L>')  # Pressing ALT_L paused UI updates when in focus
 
-        # Build banner image and make window draggable on the banner
+        # Build banner image
         d2banner = media_path + 'd2icon.png'
         img = tk.PhotoImage(master=self.root, file=d2banner)
         self.img_panel = tkd.ImgLabel(self.root, image=img, borderwidth=0)
@@ -183,7 +183,7 @@ class MasterFrame(config.Config):
                 err = ('Open process error', 'Memory reader failed to get handle of Game process, try restarting your computer.\n\nDisabling advanced automode')
                 self.d2_reader = False
             except other_utils.pymem_err_list as e:
-                logging.debug('Load reader error: %s' % e)
+                logging.debug(f'Load reader error: {e}')
                 self.d2_reader = None
 
         if err is not None and (not self.advanced_error_thrown or show_err):
