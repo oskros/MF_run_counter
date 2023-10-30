@@ -1,6 +1,6 @@
 import sys
 import os
-version = '1.5.0b'
+version = '1.5.0'
 
 # The exe files do not have a media folder, so the media folder should only be added to the path when code is run
 # directly through Python
