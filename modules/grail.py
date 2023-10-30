@@ -37,13 +37,13 @@ class Grail(tkd.Frame):
         bfr1.propagate(False)
         bfr1.pack(expand=False, fill=tk.X, padx=1, pady=1)
 
-        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail to include items logged either\nin your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
+        tkd.Button(bfr1, text='Sync', width=6, command=self.sync_local_grail, relief=tk.RIDGE, borderwidth=1, tooltip='Updates your local grail to include items logged either in your profiles or on herokuapp').pack(side=tk.LEFT, padx=[1, 15], pady=1)
         tkd.Checkbutton(bfr1, text='Profiles', variable=self.sync_drops).pack(side=tk.LEFT)
         tkd.Checkbutton(bfr1, text='Herokuapp', variable=self.sync_herokuapp).pack(side=tk.LEFT)
 
         bfr2 = tkd.Frame(self)
         bfr2.pack(pady=12, expand=True, fill=tk.X)
-        tkd.Button(bfr2, text='Upload grail to herokuapp', command=self.upload_to_herokuapp, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not\nin your local grail, but only add new items').pack(padx=8, side=tk.LEFT, fill=tk.X, expand=True)
+        tkd.Button(bfr2, text='Upload grail to herokuapp', command=self.upload_to_herokuapp, borderwidth=3, tooltip='This will not delete already found items on herokuapp if they are not in your local grail, but only add new items').pack(padx=8, side=tk.LEFT, fill=tk.X, expand=True)
 
         bfr3 = tkd.Frame(self)
         bfr3.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.X)
