@@ -26,17 +26,8 @@ def _request(*args, **kwargs):
     return response
 
 
-# def _recursive_gh_get(href, items):
-#     response = _request('GET', href)
-#     response.raise_for_status()
-#     items.extend(response.json())
-
-
 def get_releases(repo_name):
     releases = []
-    # _recursive_gh_get(
-    #     GITHUB_API + '/repos/{0}/releases'.format(repo_name), releases)
-
     response = _request('GET', GITHUB_API + '/repos/{0}/releases'.format(repo_name), timeout=2)
     response.raise_for_status()
     releases.extend(response.json())
