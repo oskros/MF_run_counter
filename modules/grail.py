@@ -129,7 +129,7 @@ class Grail(tkd.Frame):
                 heroku_grail, heroku_ethgrail = resp_data
                 self.update_grail_from_list(heroku_ethgrail, eth=True)
                 item_lst.extend(heroku_grail)
-                msg += '\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "%s"' % self.username.get()
+                msg += f'\n\n- Grail data from d2-holy-grail.herokuapp for user\n  "{self.username.get()}"'
         if self.sync_drops.get():
             item_lst.extend(self.get_grail_from_drops())
             msg += '\n\n- Drops from all saved profiles'
@@ -182,7 +182,7 @@ class Grail(tkd.Frame):
 
         # Iterate through all saved profiles
         for p in self.main_frame.profiles:
-            file = 'Profiles/%s.json' % p
+            file = f'Profiles/{p}.json'
             state = other_utils.json_load_err(file)
 
             # Iterate through saved keys in each profile
@@ -206,8 +206,8 @@ class Grail(tkd.Frame):
             if item.get('Item', None) in lst:
                 self.grail[i].update({update_key: True})
                 if not eth:
-                    if hasattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')):
-                        getattr(self, 'grail_item_' + item.get('Item', '').replace("'", "1").replace(' ', '_')).set(1)
+                    if hasattr(self, 'grail_item_' + self.fix_name(item)):
+                        getattr(self, 'grail_item_' + self.fix_name(item)).set(1)
 
     def update_grail_from_name(self, name):
         for i, item in enumerate(self.grail):
@@ -224,15 +224,15 @@ class Grail(tkd.Frame):
         self.update_statistics()
         if self.grail_table_open:
             self.select_from_filters()
-        if hasattr(self, 'grail_item_' + self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')):
-            getattr(self, 'grail_item_' + self.grail[idx]['Item'].replace("'", "1").replace(' ', '_')).set(1)
+        if hasattr(self, f"grail_item_{self.fix_name(self.grail[idx]['Item'])}"):
+            getattr(self, f"grail_item_{self.fix_name(self.grail[idx]['Item'])}").set(1)
 
     def get_grail_from_herokuapp(self, uid):
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
             herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
         except requests.exceptions.HTTPError:
-            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com" % uid)
+            messagebox.showerror('Username 404', f"Username '{uid}' doesn't exist on d2-holy-grail.herokuapp.com")
             return
 
         self.username.set(uid)
@@ -252,7 +252,7 @@ class Grail(tkd.Frame):
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
             herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
         except requests.exceptions.HTTPError:
-            messagebox.showerror('Username 404', "Username '%s' doesn't exist on d2-holy-grail.herokuapp.com. Try again" % uid)
+            messagebox.showerror('Username 404', f"Username '{uid}' doesn't exist on d2-holy-grail.herokuapp. Try again")
             return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
 
         if upd_dict is None and eth_dict is None:
@@ -273,12 +273,11 @@ class Grail(tkd.Frame):
         self.password.set(pwd)
 
         if show_confirm:
-            messagebox.showinfo('Success', 'Upload to "%s" on d2-holy-grail.herokuapp.com successful!' % uid)
+            messagebox.showinfo('Success', f'Upload to "{uid}" on d2-holy-grail.herokuapp.com successful!')
         return True
 
     def open_grail_controller(self):
         def rec_checkbox_add(master, frame, dct, rows=4, depth=None):
-            # Default arguments cannot be mutable
             if depth is None:
                 depth = []
 
@@ -292,11 +291,11 @@ class Grail(tkd.Frame):
                     # Due to weird handling of rainbow facets in herokuapp, we utilise the saved stack of keys (in the
                     # 'depth' variable) to determine the appropriate item name
                     if k in ['Cold', 'Fire', 'Light', 'Poison']:
-                        i_name = 'Rainbow Facet (%s %s)' % (k, depth[-1].title())
-                        var_name = 'grail_item_' + i_name.replace("'", "1").replace(' ', '_')
+                        i_name = f'Rainbow Facet ({k} {depth[-1].title()})'
+                        var_name = f'grail_item_{self.fix_name(i_name)}'
                     else:
                         # Replace characters that cannot be used in variable names
-                        var_name = 'grail_item_' + k.replace("'", "1").replace(' ', '_')
+                        var_name = f'grail_item_{self.fix_name(k)}'
                         i_name = k
 
                     # Define an IntVar as a class attribute that we can later call when needed. Then build the
@@ -423,7 +422,7 @@ class Grail(tkd.Frame):
     def select_from_filters(self, event=None):
         self.tree.delete(*self.tree.get_children())
 
-        # The filtering function breaks if column name has underscore in it - potential issue that could be fixed..
+        # The filtering function breaks if column name has underscore in it - potential issue that could be fixed...
         all_filter = lambda x: all(str(x.get(f.split('_')[-1], '')) == getattr(self, f).get() or getattr(self, f).get() == '' for f in self.filters)
         for item in self.grail:
             if all_filter(item):
@@ -433,5 +432,9 @@ class Grail(tkd.Frame):
     def close_grail_table(self, window):
         self.grail_table_open = False
         window.destroy()
+
+    @staticmethod
+    def fix_name(name):
+        return name.replace("'", "1").replace(' ', '_')
 
 
