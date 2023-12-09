@@ -34,4 +34,4 @@ requests == 2.23.0
 scipy >= 1.4.1
 
 # MF_run_counter\build_exe
-pyinstaller == 5.1
+pyinstaller == 5.13.1
