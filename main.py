@@ -1,8 +1,10 @@
+import logging
+
+
 try:
     import win32event
     import win32api
     from winerror import ERROR_ALREADY_EXISTS
-    import logging
     import sys
     import os
     from tkinter import messagebox
