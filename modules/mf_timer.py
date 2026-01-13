@@ -69,10 +69,22 @@ class MFRunTimer(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5, padx=1)
 
     def _update_timers(self):
-        if self.main_frame.pause_on_esc_menu:
-            memory_pause = getattr(self.main_frame.d2_reader, 'is_game_paused', lambda: False)()
-            if not self.is_user_paused and self.is_paused != memory_pause:
-                self.pause(user_paused=False)
+        # Determine if we should be paused based on all automatic pause conditions
+        should_be_paused = False
+        if not self.is_user_paused:
+            if self.main_frame.pause_on_esc_menu:
+                memory_pause = getattr(self.main_frame.d2_reader, 'is_game_paused', lambda: False)()
+                if memory_pause:
+                    should_be_paused = True
+            if self.main_frame.pause_in_town:
+                in_town = getattr(self.main_frame.d2_reader, 'is_player_in_town', lambda: False)()
+                if in_town:
+                    should_be_paused = True
+        
+        # Only toggle pause if the state doesn't match what it should be
+        if not self.is_user_paused and self.is_paused != should_be_paused:
+            self.pause(user_paused=False)
+        
         self._update_lap_time()
         self._update_session_time()
         self._timer = self.after(50, self._update_timers)

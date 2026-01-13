@@ -1,5 +1,6 @@
 from utils import tk_dynamic as tkd, color_themes, other_utils
 from collections import defaultdict
+from memory_reader import stat_mappings
 import tkinter as tk
 import time
 import logging
@@ -33,6 +34,7 @@ class StatsTracker(tkd.Frame):
         self.level_sv = tk.StringVar(value='-----')
         self.mf_sv = tk.StringVar(value='-----')
         self.players_x_sv = tk.StringVar(value='-----')
+        self.area_sv = tk.StringVar(value='-----')
 
         self.exp_perc_sv = tk.StringVar(value='0')
         self.exp_session_sv = tk.StringVar(value='0')
@@ -53,6 +55,7 @@ class StatsTracker(tkd.Frame):
         lf0.pack(expand=False, fill=tk.X, padx=1)
         self.create_row(self.mf_sv, label_name='MF', lf=lf0)
         self.create_row(self.players_x_sv, label_name='Players X', lf=lf0)
+        self.create_row(self.area_sv, label_name='Area', lf=lf0)
 
         lf1 = tkd.LabelFrame(self)
         lf1.pack(expand=False, fill=tk.X, padx=1, pady=[8, 0])
@@ -142,6 +145,18 @@ class StatsTracker(tkd.Frame):
             self.max_mf = max(self.max_mf, player_unit_stats['MF'])
             self.mf_sv.set('%s%%' % player_unit_stats['MF'])
         self.players_x_sv.set(player_unit_stats['Players X'])
+        
+        # Update area
+        try:
+            current_area = self.main_frame.d2_reader.get_current_area()
+            if current_area is not None:
+                area_name = stat_mappings.AREA_ID_TO_NAME.get(current_area, str(current_area))
+                self.area_sv.set(area_name)
+            else:
+                self.area_sv.set('-----')
+        except other_utils.pymem_err_list:
+            self.area_sv.set('-----')
+        
         self.exp_perc_sv.set('{0:.1f}%'.format(player_unit_stats['Exp %']*100))
 
         self.char_xp = player_unit_stats['Exp']
@@ -201,6 +216,7 @@ class StatsTracker(tkd.Frame):
         self.level_sv.set('-----')
         self.mf_sv.set('-----')
         self.players_x_sv.set('-----')
+        self.area_sv.set('-----')
 
         self.exp_perc_sv.set('0')
         self.exp_session_sv.set('0')

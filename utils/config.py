@@ -21,6 +21,7 @@ class Config:
         self.automode = other_utils.safe_eval(self.cfg['AUTOMODE']['automode'])
         self.end_run_in_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['end_run_in_menu'])
         self.pause_on_esc_menu = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_on_esc_menu'])
+        self.pause_in_town = other_utils.safe_eval(self.cfg['AUTOMODE']['pause_in_town'])
         self.always_on_top = other_utils.safe_eval(self.cfg['OPTIONS']['always_on_top'])
         self.tab_switch_keys_global = other_utils.safe_eval(self.cfg['OPTIONS']['tab_switch_keys_global'])
         self.check_for_new_version = other_utils.safe_eval(self.cfg['OPTIONS']['check_for_new_version'])
@@ -100,6 +101,7 @@ class Config:
         config['AUTOMODE']['advanced_tracker_open'] = '0'
         config['AUTOMODE']['end_run_in_menu'] = '1'
         config['AUTOMODE']['pause_on_esc_menu'] = '0'
+        config['AUTOMODE']['pause_in_town'] = '0'
 
         config.add_section('UI')
         config['UI']['show_buttons'] = '1'
@@ -201,6 +203,7 @@ class Config:
         cfg['AUTOMODE']['advanced_tracker_open'] = str(int(parent.advanced_stats_caret.active)) if parent.automode == 2 else '0'
         cfg['AUTOMODE']['end_run_in_menu'] = str(parent.end_run_in_menu)
         cfg['AUTOMODE']['pause_on_esc_menu'] = str(parent.pause_on_esc_menu)
+        cfg['AUTOMODE']['pause_in_town'] = str(parent.pause_in_town)
 
         cfg['UI']['show_buttons'] = str(parent.show_buttons)
         cfg['UI']['show_drops_section'] = str(parent.show_drops_section)

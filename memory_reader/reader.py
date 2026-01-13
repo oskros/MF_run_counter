@@ -62,6 +62,7 @@ class D2Reader:
         self.hovered_item = None
         self.item_descripts = None
         self.game_id = None
+        self.area_ptr = None
         self.str_indexer_table = None
         self.str_address_table = None
         self.patch_str_indexer_table = None
@@ -80,6 +81,7 @@ class D2Reader:
             self.game_id = self.d2net + 0x00B428
             self.hovered_item    = self.d2client + 0x11BC38
             self.item_descripts  = self.d2common + 0x9FB94
+            self.area_ptr        = self.d2client + 0x11C310
             self.str_indexer_table       = self.d2lang + 0x10A64
             self.str_address_table       = self.d2lang + 0x10a68
             self.patch_str_indexer_table = self.d2lang + 0x10A80
@@ -96,6 +98,7 @@ class D2Reader:
             self.game_id         = self.d2net + 0x00B420
             self.hovered_item    = self.d2client + 0x11CB28
             self.item_descripts  = self.d2common + 0xA4CB0
+            self.area_ptr        = self.d2client + 0x08F66C
         elif self.d2_ver == '1.14b':
             self.world_ptr       = self.base_address + 0x47BD78
             self.players_x_ptr   = self.base_address + 0x47BDB0
@@ -106,6 +109,7 @@ class D2Reader:
             self.game_id         = self.base_address + 0x47AD4C
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x564A98
+            self.area_ptr        = self.base_address + 0x39B1C8
         elif self.d2_ver == '1.14c':
             self.world_ptr       = self.base_address + 0x47ACC0
             self.players_x_ptr   = self.base_address + 0x47ACF8
@@ -116,6 +120,7 @@ class D2Reader:
             self.game_id         = self.base_address + 0x479C94
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x5639E0
+            self.area_ptr        = self.base_address + 0x39A1C8
         elif self.d2_ver == '1.14d':
             self.world_ptr       = self.base_address + 0x483D38
             self.players_x_ptr   = self.base_address + 0x483D70
@@ -126,6 +131,7 @@ class D2Reader:
             self.game_id         = self.base_address + 0x482D0C
             self.hovered_item    = None
             self.item_descripts  = self.base_address + 0x56CA58
+            self.area_ptr        = self.base_address + 0x3A3140
         else:
             self.patch_supported = False
 
@@ -138,6 +144,17 @@ class D2Reader:
         else:
             out = False
         return out
+
+    def get_current_area(self):
+        if self.area_ptr is not None:
+            try:
+                return self.pm.read_uint(self.area_ptr)
+            except pymem_err_list:
+                return None
+        return None
+
+    def is_player_in_town(self):
+        return self.get_current_area() in [1, 40, 75, 103, 109]
 
     def get_d2_version(self):
         if self.is_d2se:
