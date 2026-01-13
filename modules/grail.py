@@ -206,8 +206,9 @@ class Grail(tkd.Frame):
             if item.get('Item', None) in lst:
                 self.grail[i].update({update_key: True})
                 if not eth:
-                    if hasattr(self, 'grail_item_' + self.fix_name(item)):
-                        getattr(self, 'grail_item_' + self.fix_name(item)).set(1)
+                    item_name = item.get('Item', None)
+                    if item_name and hasattr(self, 'grail_item_' + self.fix_name(item_name)):
+                        getattr(self, 'grail_item_' + self.fix_name(item_name)).set(1)
 
     def update_grail_from_name(self, name):
         for i, item in enumerate(self.grail):
