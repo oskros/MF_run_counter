@@ -188,7 +188,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.tabcontrol.add(run_table_fr, text='Run table')
 
         cols = ["Run", "Run time", "Real time", "Name", "MF", "Players X", "Level", "XP Gained", "Uniques kills",
-                "Champions kills", "Minion kills", "Total kills", "Session", "Map seed"]
+                "Champions kills", "Minion kills", "Total kills", "Session", "Map seed", "Areas visited"]
         tree_frame = tkd.Frame(run_table_fr)
         btn_frame2 = tkd.Frame(run_table_fr)
         btn_frame2.pack(side=tk.BOTTOM)
@@ -208,7 +208,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
         renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
         tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80, 70]
+        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80, 70, 200]
         for i, col in enumerate(renamed_cols):
             tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
             if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
@@ -221,6 +221,12 @@ class ArchiveBrowser(tkd.Toplevel):
             tmp_lap = dict(lap)
             tmp_lap['Run time'] = other_utils.build_time_str(tmp_lap['Run time'])
             tmp_lap['Run'] = n
+            # Format areas visited as comma-separated string
+            areas_visited = tmp_lap.get('Areas visited', [])
+            if isinstance(areas_visited, list) and areas_visited:
+                tmp_lap['Areas visited'] = ', '.join(areas_visited)
+            else:
+                tmp_lap['Areas visited'] = ''
             tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
 
     def drop_table(self, drops):

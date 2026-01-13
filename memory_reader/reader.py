@@ -154,7 +154,7 @@ class D2Reader:
         return None
 
     def is_player_in_town(self):
-        return self.get_current_area() in [1, 40, 75, 103, 109]
+        return self.get_current_area() in stat_mappings.TOWN_AREA_IDS
 
     def get_d2_version(self):
         if self.is_d2se:
@@ -187,6 +187,10 @@ class D2Reader:
         try:
             # Gets character name - returns memory error out of game
             self.pm.read_string(self.pm.read_uint(player_unit + 0x14))
+            # Check if area ID is valid (not 0, which indicates game is still loading)
+            current_area = self.get_current_area()
+            if current_area is None or current_area == 0:
+                return False
             return True
         except pymem_exception.MemoryReadError:
             return False

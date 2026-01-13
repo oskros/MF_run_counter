@@ -216,6 +216,7 @@ class MFRunTimer(tkd.Frame):
         out['Level'] = self.main_frame.advanced_stats_tracker.level_sv.get()
         out['Name'] = self.main_frame.advanced_stats_tracker.name_sv.get()
         out['Map seed'] = self.main_frame.advanced_stats_tracker.map_seed
+        out['Areas visited'] = sorted(self.main_frame.advanced_stats_tracker.run_areas_visited)
 
         return out
 

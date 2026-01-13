@@ -550,7 +550,38 @@ AREA_ID_TO_NAME = {
     130: "Worldstone Keep Level 3",
     131: "Throne of Destruction",
     132: "Worldstone Chamber",
+
+    # Maps
+    139: "(T1) Arreat Battlefield",
+    141: "(T1) Sewers of Harrogath",
+    142: "(T1) Horazon's Memory",
+    148: "(T1) Torajan Jungle",
+    155: "(T1) The Fall of Caldeum",
+    169: "(T1) Shadows of Westmarch",
+    170: "(T1) Royal Crypts",
+    193: "(T1) The Halls of Torture",
+
+    143: "(T2) Ruins of Viz-Jun",
+    144: "(T2) River of Blood",
+    146: "(T2) The Ancestral Trial",
+    149: "(T2) Bastion Keep",
+    151: "(T2) Tomb of Zoltun Kulle",
+    158: "(T2) The Lost Temple",
+    190: "(T2) The Skovos Stronghold",
+    191: "(T2) The Demon Road",
+
+    145: "(T3) Phlegethon",
+    147: "(T3) Kehjistan Marketplace",
+    150: "(T3) Throne of Insanity",
+    156: "(T3) The Pandemonium Citadel",
+    160: "(T3) The Canyon of Sescheron",
+    167: "(T3) The Sanitorium",
+    174: "(T3) The Ruined Cistern",
+    175: "(T3) The Ashen Plains",
 }
+
+# Town area IDs: Rogue Encampment, Lut Gholein, Kurast Docks, Pandemonium Fortress, Harrogath
+TOWN_AREA_IDS = [1, 40, 75, 103, 109]
 
 
 STAT_MAP = load_stat_map()

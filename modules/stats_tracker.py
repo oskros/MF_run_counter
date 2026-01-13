@@ -23,6 +23,7 @@ class StatsTracker(tkd.Frame):
         self.session_xp_runs = set()
         self.min_mf = 1999
         self.max_mf = 0
+        self.run_areas_visited = set()  # Track unique areas visited during current run (excluding towns)
 
         # StringVars
         self.tot_kills_sv = tk.StringVar(value='0')
@@ -149,9 +150,12 @@ class StatsTracker(tkd.Frame):
         # Update area
         try:
             current_area = self.main_frame.d2_reader.get_current_area()
-            if current_area is not None:
+            if current_area is not None and current_area != 0:
                 area_name = stat_mappings.AREA_ID_TO_NAME.get(current_area, str(current_area))
                 self.area_sv.set(area_name)
+                # Track areas visited (excluding towns and area ID 0 which indicates game is loading)
+                if current_area not in stat_mappings.TOWN_AREA_IDS:
+                    self.run_areas_visited.add(area_name)
             else:
                 self.area_sv.set('-----')
         except other_utils.pymem_err_list:
@@ -182,6 +186,7 @@ class StatsTracker(tkd.Frame):
         self.run_char_xp = 0
         self.min_mf = 1999
         self.max_mf = 0
+        self.run_areas_visited = set()  # Reset areas visited for new run
 
         if self.main_frame.d2_reader is not None:
             self.main_frame.d2_reader.dead_guids = []
@@ -200,6 +205,7 @@ class StatsTracker(tkd.Frame):
             self.session_time = 0.0
             self.run_char_xp_start = self.session_char_xp_start
             self.session_xp_runs = set()
+            self.run_areas_visited = set()
             self.runs_level_sv.set('0')
 
     def reset_session(self):
@@ -209,6 +215,7 @@ class StatsTracker(tkd.Frame):
         self.session_time = 0.0
         self.char_xp_missing = 0
         self.session_xp_runs = set()
+        self.run_areas_visited = set()
         if hasattr(self, 'curr_run_xp'):
             delattr(self, 'curr_run_xp')
 
