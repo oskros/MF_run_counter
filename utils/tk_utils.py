@@ -61,7 +61,8 @@ class RegistrationForm:
             '(A3) Arachnid Lair', '(A3) Swampy Pit', '(A3) Lower Kurast', '(A3) Sewers', '(A3) Kurast Temples', '(A3) Travincal', '(A3) Mephisto', '-----------------------',
             '(A4) River of Flame', '(A4) Chaos Sanctuary', '(A4) Diablo', '-----------------------',
             '(A5) Eldritch + Shenk', '(A5) Thresh Socket', '(A5) Red Portals', '(A5) Drifter Cavern', '(A5) Icy Cellar', '(A5) Pindleskin', '(A5) Nihlathak', '(A5) WSK + Baal',
-            '(A5) Baal', '(A5) Uber Quest'], readonly=False)
+            '(A5) Baal', '(A5) Uber Quest', '-----------------------',
+            'Tier 1 maps', 'Tier 2 maps', 'Tier 3 maps', 'Mixed maps'], readonly=False)
 
         tk.Button(self.new_win, text='Submit', font='helvetica 12 bold', command=self.b1_action, bd=2).pack(fill=tk.X, expand=tk.YES)
         self.new_win.bind('<KeyPress-Return>', func=self.b1_action)
