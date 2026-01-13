@@ -183,51 +183,95 @@ class ArchiveBrowser(tkd.Toplevel):
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
         btn_frame1.pack(side=tk.BOTTOM)
 
+    @staticmethod
+    def _normalize_lap(lap: dict, run: int) -> dict:
+        tmp = dict(lap)
+
+        run_time_seconds = tmp.get('Run time') or 0
+        tmp['Run'] = run
+        tmp['Run time'] = other_utils.build_time_str(run_time_seconds)
+
+        # kills/min
+        total_kills_raw = tmp.get('Total kills') or 0
+        try:
+            total_kills = int(total_kills_raw)
+        except (TypeError, ValueError):
+            total_kills = 0
+
+        tmp['Kills/min'] = (
+            f"{(total_kills * 60) / run_time_seconds:.2f}" if run_time_seconds > 0 else ''
+        )
+
+        # Areas visited -> comma-separated
+        areas = tmp.get('Areas visited')
+        tmp['Areas visited'] = ', '.join(areas) if isinstance(areas, list) and areas else ''
+
+        return tmp
+
     def run_table(self, laps):
         run_table_fr = tkd.Frame(self.tabcontrol)
         self.tabcontrol.add(run_table_fr, text='Run table')
 
-        cols = ["Run", "Run time", "Real time", "Name", "MF", "Players X", "Level", "XP Gained", "Uniques kills",
-                "Champions kills", "Minion kills", "Total kills", "Session", "Map seed", "Areas visited"]
+        # One source of truth: order + label + width + sorting + data-key mapping
+        columns = [
+            {"key": "Run", "label": "Run", "width": 35, "sort": "num"},
+            {"key": "Run time", "label": "Run time", "width": 60, "sort": "name"},
+            {"key": "Real time", "label": "Real time", "width": 115, "sort": "name"},
+            {"key": "Name", "label": "Name", "width": 60, "sort": "name"},
+            {"key": "MF", "label": "MF", "width": 42, "sort": "num"},
+            {"key": "Players X", "label": "Players X", "width": 58, "sort": "num"},
+            {"key": "Level", "label": "Level", "width": 45, "sort": "num"},
+            {"key": "XP Gained", "label": "XP Gained", "width": 75, "sort": "num"},
+            {"key": "Uniques kills", "label": "Unique kills", "width": 71, "sort": "num"},
+            {"key": "Champions kills", "label": "Champion kills", "width": 89, "sort": "num"},
+            {"key": "Minion kills", "label": "Minion kills", "width": 71, "sort": "num"},
+            {"key": "Total kills", "label": "Total kills", "width": 59, "sort": "num"},
+            {"key": "Kills/min", "label": "Kills/min", "width": 70, "sort": "num"},
+            {"key": "Session", "label": "Session", "width": 80, "sort": "name"},
+            {"key": "Map seed", "label": "Map seed", "width": 70, "sort": "name"},
+            {"key": "Areas visited", "label": "Areas visited", "width": 200, "sort": "name"},
+        ]
+
+        display_cols = [c["label"] for c in columns]
+
         tree_frame = tkd.Frame(run_table_fr)
-        btn_frame2 = tkd.Frame(run_table_fr)
-        btn_frame2.pack(side=tk.BOTTOM)
+        btn_frame = tkd.Frame(run_table_fr)
+        btn_frame.pack(side=tk.BOTTOM)
 
-        vscroll_tree = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
-        hscroll_tree = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
-        tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll_tree.set,
-                            xscrollcommand=hscroll_tree.set, show='headings', columns=cols, alternate_colour=True)
-        hscroll_tree.config(command=tree.xview)
-        vscroll_tree.config(command=tree.yview)
-        tkd.Button(btn_frame2, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(side=tk.LEFT, fill=tk.X)
+        vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
+        hscroll = ttk.Scrollbar(run_table_fr, orient=tk.HORIZONTAL)
 
-        vscroll_tree.pack(side=tk.RIGHT, fill=tk.Y)
+        tree = tkd.Treeview(
+            tree_frame,
+            selectmode=tk.BROWSE,
+            yscrollcommand=vscroll.set,
+            xscrollcommand=hscroll.set,
+            show='headings',
+            columns=display_cols,
+            alternate_colour=True,
+        )
+        vscroll.config(command=tree.yview)
+        hscroll.config(command=tree.xview)
+
+        tkd.Button(btn_frame, text='Save as .csv', command=lambda: self.save_to_csv(tree)).pack(
+            side=tk.LEFT, fill=tk.X
+        )
+
+        vscroll.pack(side=tk.RIGHT, fill=tk.Y)
         tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        hscroll_tree.pack(side=tk.BOTTOM, fill=tk.X)
+        hscroll.pack(side=tk.BOTTOM, fill=tk.X)
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        renamed_cols = [c.replace('Uniques', 'Unique').replace('Champions', 'Champion') for c in cols]
-        tree['columns'] = renamed_cols
-        widths = [35, 60, 115, 60, 42, 58, 45, 75, 71, 89, 71, 59, 80, 70, 200]
-        for i, col in enumerate(renamed_cols):
-            tree.column(col, stretch=tk.NO, minwidth=0, width=widths[i])
-            if col in ['Run', 'XP Gained', 'Champion kills', 'Unique kills', 'Minion kills', 'Total kills']:
-                sort_by = 'num'
-            else:
-                sort_by = 'name'
-            tree.heading(col, text=col, sort_by=sort_by)
+        # Configure columns/headings
+        for col in columns:
+            label = col["label"]
+            tree.column(label, stretch=tk.NO, minwidth=0, width=col["width"])
+            tree.heading(label, text=label, sort_by=col["sort"])
 
-        for n, lap in enumerate(laps, 1):
-            tmp_lap = dict(lap)
-            tmp_lap['Run time'] = other_utils.build_time_str(tmp_lap['Run time'])
-            tmp_lap['Run'] = n
-            # Format areas visited as comma-separated string
-            areas_visited = tmp_lap.get('Areas visited', [])
-            if isinstance(areas_visited, list) and areas_visited:
-                tmp_lap['Areas visited'] = ', '.join(areas_visited)
-            else:
-                tmp_lap['Areas visited'] = ''
-            tree.insert('', tk.END, values=[tmp_lap.get(col, '') for col in cols])
+        # Insert rows
+        for run, lap in enumerate(laps, start=1):
+            tmp_lap = self._normalize_lap(lap, run)
+            tree.insert('', tk.END, values=[tmp_lap.get(col["key"], '') for col in columns])
 
     def drop_table(self, drops):
         flat_drops = []
