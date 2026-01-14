@@ -7,7 +7,7 @@ import csv
 
 class ArchiveBrowser(tkd.Toplevel):
     def __init__(self, main_frame, **kw):
-        tkd.Toplevel.__init__(self, **kw)
+        super().__init__(**kw)
         self.main_frame = main_frame
 
         self.title('Archive Browser')
@@ -27,7 +27,8 @@ class ArchiveBrowser(tkd.Toplevel):
 
         collected_data = self.collect_data()
 
-        self.statistics(**collected_data)
+        self.statistics_overview(**collected_data)
+
         self.run_table(laps=collected_data['laps'])
         self.drop_table(drops=collected_data['drops'])
         self.map_evaluation(laps=collected_data['laps'])
@@ -107,23 +108,66 @@ class ArchiveBrowser(tkd.Toplevel):
                 self.last_src = search_inp
                 self.last_pos = str(float(pos) + 0.1)
 
-    def statistics(self, laps, drops, session_time):
-        statistics_fr = tkd.Frame(self.tabcontrol)
-        self.tabcontrol.add(statistics_fr, text='Statistics')
-
+    @staticmethod
+    def _calculate_statistics(laps, drops, session_time):
+        """Calculate all statistics and prepare formatted data from laps, drops, and session_time."""
         sum_laps = sum(x['Run time'] for x in laps)
-        avg_lap = sum_laps / len(laps) if laps else 0
-        pct = sum_laps * 100 / session_time if session_time > 0 else 0
+        avg_lap = other_utils.safe_avg([x['Run time'] for x in laps], default=0)
+        pct = other_utils.safe_divide(sum_laps * 100, session_time, default=0)
 
-        # Kill averages
         list_uniques = [int(x['Uniques kills']) for x in laps if x.get('Uniques kills')]
         list_champs = [int(x['Champions kills']) for x in laps if x.get('Champions kills')]
-        avg_uniques = sum(list_uniques) / len(list_uniques) if list_uniques else 0
-        avg_champs = sum(list_champs) / len(list_champs) if list_champs else 0
+        avg_uniques = other_utils.safe_avg(list_uniques, default=0)
+        avg_champs = other_utils.safe_avg(list_champs, default=0)
         avg_packs = avg_uniques + avg_champs / 2.534567
-        seconds_per_pack = avg_lap / avg_packs if avg_packs > 0 else 0
+        seconds_per_pack = other_utils.safe_divide(avg_lap, avg_packs, default=0)
 
-        # Configure the list frame with scrollbars which displays the archive of the chosen session
+        fastest_run_time = min([x['Run time'] for x in laps], default=0)
+        number_of_runs = len(laps)
+        width = len(str(number_of_runs))
+
+        # Prepare formatted drops for display
+        formatted_drops = []
+        if drops and any(drops.values()):
+            for run_no, drop in drops.items():
+                if drop:
+                    str_n = str(run_no).rjust(width)
+                    items = ', '.join(x['input'].strip() for x in drop)
+                    formatted_drops.append(f'\nRun {str_n} - {items}')
+
+        # Prepare formatted run times with drops
+        formatted_runs = []
+        for n, lap in enumerate(laps, 1):
+            run_info = [f'\nRun {str(n).rjust(width)}: {other_utils.build_time_str(lap["Run time"])}']
+            if drops.get(str(n)):
+                run_info.append(", ".join(d["input"].strip() for d in drops.get(str(n))))
+            formatted_runs.append(" - ".join(run_info))
+
+        return {
+            'sum_laps': sum_laps,
+            'avg_lap': avg_lap,
+            'pct': pct,
+            'avg_uniques': avg_uniques,
+            'avg_champs': avg_champs,
+            'avg_packs': avg_packs,
+            'seconds_per_pack': seconds_per_pack,
+            'fastest_run_time': fastest_run_time,
+            'number_of_runs': number_of_runs,
+            'session_time': session_time,
+            'width': width,
+            'formatted_drops': formatted_drops,
+            'formatted_runs': formatted_runs,
+            'has_drops': bool(drops and any(drops.values())),
+            'has_laps': bool(laps)
+        }
+
+    def statistics_overview(self, laps, drops, session_time):
+        """Build the statistics overview tab with all statistics display."""
+        statistics_fr = tkd.Frame(self.tabcontrol)
+        self.tabcontrol.add(statistics_fr, text='Statistics')
+        
+        stats = self._calculate_statistics(laps, drops, session_time)
+        
         list_win = tkd.Frame(statistics_fr)
         list_frame = tkd.Frame(list_win)
         vscroll = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
@@ -142,40 +186,28 @@ class ArchiveBrowser(tkd.Toplevel):
         self.txt_list.insert(tk.END, '\nCharacter name: %s' % self.main_frame.profile_tab.extra_data.get('Character name', ''))
         self.txt_list.insert(tk.END, '\nRun type:       %s' % self.main_frame.profile_tab.extra_data.get('Run type', ''))
 
-        self.txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(session_time))
-        self.txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(sum_laps))
-        self.txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(avg_lap))
-        self.txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(min([x['Run time'] for x in laps], default=0)))
-        self.txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(len(laps)))
-        self.txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(pct, 2)))
+        self.txt_list.insert(tk.END, '\n\nTotal session time: %s' % self.build_padded_str(stats['session_time']))
+        self.txt_list.insert(tk.END, '\nTotal run time:     %s' % self.build_padded_str(stats['sum_laps']))
+        self.txt_list.insert(tk.END, '\nAverage run time:   %s' % self.build_padded_str(stats['avg_lap']))
+        self.txt_list.insert(tk.END, '\nFastest run time:   %s' % self.build_padded_str(stats['fastest_run_time']))
+        self.txt_list.insert(tk.END, '\nNumber of runs:       %s' % str(stats['number_of_runs']))
+        self.txt_list.insert(tk.END, '\nTime spent in runs:   %s%%' % str(round(stats['pct'], 2)))
 
-        self.txt_list.insert(tk.END, '\n\nAvg unique kills:     %s' % str(round(avg_uniques, 2)))
-        self.txt_list.insert(tk.END, '\nAvg champion kills:   %s' % str(round(avg_champs, 2)))
-        self.txt_list.insert(tk.END, '\nAvg pack kills:       %s' % str(round(avg_packs, 2)))
-        self.txt_list.insert(tk.END, '\nAvg seconds/pack:     %s' % str(round(seconds_per_pack, 2)))
+        self.txt_list.insert(tk.END, '\n\nAvg unique kills:     %s' % str(round(stats['avg_uniques'], 2)))
+        self.txt_list.insert(tk.END, '\nAvg champion kills:   %s' % str(round(stats['avg_champs'], 2)))
+        self.txt_list.insert(tk.END, '\nAvg pack kills:       %s' % str(round(stats['avg_packs'], 2)))
+        self.txt_list.insert(tk.END, '\nAvg seconds/pack:     %s' % str(round(stats['seconds_per_pack'], 2)))
 
         # List all drops collected
-        width = len(str(len(laps)))
-        if drops and any(drops.values()):
+        if stats['has_drops']:
             self.txt_list.insert(tk.END, '\n\nCollected drops', tag='HEADER')
+            for drop_line in stats['formatted_drops']:
+                self.txt_list.insert(tk.END, drop_line)
 
-            for run_no, drop in drops.items():
-                if drop:
-                    str_n = str(run_no).rjust(width)
-                    items = ', '.join(x['input'].strip() for x in drop)
-                    self.txt_list.insert(tk.END, f'\nRun {str_n} - {items}')
-
-        if laps:
+        if stats['has_laps']:
             self.txt_list.insert(tk.END, '\n\nRun times', tag='HEADER')
-
-        # Loop through all runs and add run times and drops for each run
-        for n, lap in enumerate(laps, 1):
-            run_info = [f'\nRun {str(n).rjust(width)}: {other_utils.build_time_str(lap["Run time"])}']
-
-            if drops.get(str(n)):
-                run_info.append(", ".join(d["input"].strip() for d in drops.get(str(n))))
-
-            self.txt_list.insert(tk.END, " - ".join(run_info))
+            for run_line in stats['formatted_runs']:
+                self.txt_list.insert(tk.END, run_line)
 
         # Disable modifications to the Text widget after all lines have been inserted
         self.txt_list.config(state=tk.DISABLED)
@@ -189,6 +221,7 @@ class ArchiveBrowser(tkd.Toplevel):
         list_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
         btn_frame1.pack(side=tk.BOTTOM)
+
 
     @staticmethod
     def _normalize_lap(lap: dict, run: int) -> dict:
@@ -346,7 +379,7 @@ class ArchiveBrowser(tkd.Toplevel):
         )
 
         # Create mapping from filter names to data keys
-        filter_key_map = {f: col["key"] for f, col in zip(filters, columns)}
+        filter_key_map = {}
         
         def select_drops_from_filters(event=None):
             tree.delete(*tree.get_children())
@@ -380,6 +413,7 @@ class ArchiveBrowser(tkd.Toplevel):
 
             name = 'combofilter_' + label
             filters.append(name)
+            filter_key_map[name] = key
             setattr(self, name, tkd.Combobox(
                 filter_frame,
                 values=sorted(set(str(x.get(key, '')) for x in flat_drops).union({''}), key=sort_key),

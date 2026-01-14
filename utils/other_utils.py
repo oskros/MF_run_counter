@@ -77,37 +77,39 @@ def filter_items(data_list, field):
     return [item for item in data_list if field in item and '--' not in str(item[field])]
 
 
-def safe_avg(values, decimals=None):
+def safe_avg(values, decimals=None, default=''):
     """
-    Calculate average, returning empty string if values list is empty.
+    Calculate average, returning default if values list is empty.
     
     Args:
         values: List of numeric values
         decimals: Number of decimal places for rounding (None for no rounding)
+        default: Value to return if values is empty (default: empty string)
     
     Returns:
-        Average (rounded if decimals specified), or empty string if no values
+        Average (rounded if decimals specified), or default if no values
     """
     if not values:
-        return ''
+        return default
     result = sum(values) / len(values)
     return round(result, decimals) if decimals is not None else result
 
 
-def safe_divide(numerator, denominator, decimals=None):
+def safe_divide(numerator, denominator, decimals=None, default=''):
     """
-    Safely divide two numbers, returning empty string if denominator is zero/falsy or numerator is empty string.
+    Safely divide two numbers, returning default value if denominator is zero/falsy or numerator is empty string.
     
     Args:
         numerator: Numerator value (can be empty string)
         denominator: Denominator value (can be empty string, zero, or falsy)
         decimals: Number of decimal places for rounding (None for no rounding)
+        default: Default value to return if division is invalid (defaults to empty string)
     
     Returns:
-        Division result (rounded if decimals specified), or empty string if invalid
+        Division result (rounded if decimals specified), or default value if invalid
     """
     if not denominator or numerator == '':
-        return ''
+        return default
     result = numerator / denominator
     return round(result, decimals) if decimals is not None else result
 
