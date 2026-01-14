@@ -335,5 +335,37 @@ def add_circle(parent, pixels, color):
     return canvas, circ_id
 
 
+def create_treeview_filter(filter_names, get_filter_value, get_data_key):
+    """
+    Creates a filter predicate for treeview data filtering.
+    
+    Returns a function that filters data items based on combobox filter values.
+    An item passes if all filter values match (empty filters show all).
+    
+    Args:
+        filter_names: List of filter widget names
+        get_filter_value: Function taking filter name, returns current filter value
+        get_data_key: Function taking filter name, returns data key to check
+    
+    Returns:
+        function: Predicate that takes a data item (dict) and returns True if it matches all filters
+    """
+    def filter_predicate(data_item):
+        for filter_name in filter_names:
+            filter_value = get_filter_value(filter_name)
+            if filter_value == '':
+                continue
+            
+            data_key = get_data_key(filter_name)
+            data_value = str(data_item.get(data_key, ''))
+            
+            if data_value != filter_value:
+                return False
+        
+        return True
+    
+    return filter_predicate
+
+
 if __name__ == '__main__':
     print(MessageBox('Type "DELETE" to confirm', entry=True, disabled_btn_input='DELETE').returning)

@@ -61,3 +61,78 @@ def json_load_err(file_path):
 
 pymem_err_list = (pymem_exception.ProcessError, pymem_exception.ProcessNotFound, pymem_exception.WinAPIError,
                   pymem_exception.MemoryReadError, KeyError, AttributeError, TypeError)
+
+
+def filter_items(data_list, field):
+    """
+    Filter items from a list of dictionaries where field exists and doesn't contain '--'.
+    
+    Args:
+        data_list: List of dictionaries
+        field: Field name to check
+    
+    Returns:
+        List of filtered items (dictionaries)
+    """
+    return [item for item in data_list if field in item and '--' not in str(item[field])]
+
+
+def safe_avg(values, decimals=None):
+    """
+    Calculate average, returning empty string if values list is empty.
+    
+    Args:
+        values: List of numeric values
+        decimals: Number of decimal places for rounding (None for no rounding)
+    
+    Returns:
+        Average (rounded if decimals specified), or empty string if no values
+    """
+    if not values:
+        return ''
+    result = sum(values) / len(values)
+    return round(result, decimals) if decimals is not None else result
+
+
+def safe_divide(numerator, denominator, decimals=None):
+    """
+    Safely divide two numbers, returning empty string if denominator is zero/falsy or numerator is empty string.
+    
+    Args:
+        numerator: Numerator value (can be empty string)
+        denominator: Denominator value (can be empty string, zero, or falsy)
+        decimals: Number of decimal places for rounding (None for no rounding)
+    
+    Returns:
+        Division result (rounded if decimals specified), or empty string if invalid
+    """
+    if not denominator or numerator == '':
+        return ''
+    result = numerator / denominator
+    return round(result, decimals) if decimals is not None else result
+
+
+def numeric_sort_key(value, empty_first=True):
+    """
+    Returns a sort key for numeric values that may contain percentage signs.
+    Handles empty strings, percentage signs, and invalid values gracefully.
+    
+    Args:
+        value: The value to create a sort key for (string or number)
+        empty_first: If True, empty values sort first (return -inf), else last (return inf)
+    
+    Returns:
+        float: Sort key value (-inf/inf for empty, numeric value otherwise)
+    """
+    if value == '' or value is None:
+        return float('-inf') if empty_first else float('inf')
+    
+    try:
+        # Convert to string, remove percentage sign, and convert to float
+        str_value = str(value).replace('%', '').strip()
+        if not str_value:
+            return float('-inf') if empty_first else float('inf')
+        return float(str_value)
+    except (ValueError, TypeError):
+        # If conversion fails, treat as empty
+        return float('-inf') if empty_first else float('inf')

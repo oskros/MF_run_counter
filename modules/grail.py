@@ -395,21 +395,26 @@ class Grail(tkd.Frame):
 
         self.tree['columns'] = self.cols
         self.filters = []
+        # Create mapping from filter names to column names to handle underscores in column names
+        filter_col_map = {}
         for col in self.cols:
             self.tree.column(col, stretch=tk.YES, minwidth=0, width=80)
             if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance']:
                 sort_by = 'num'
-                sort_key = lambda x: float('-inf') if x == '' else float(x.replace('%', ''))
+                sort_key = lambda x: other_utils.numeric_sort_key(x, empty_first=True)
             else:
                 sort_by = 'name'
                 sort_key = lambda x: x
             self.tree.heading(col, text=col, sort_by=sort_by)
 
             name = 'combofilter_' + col
+            filter_col_map[name] = col
             self.filters.append(name)
             setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
+        
+        self.filter_col_map = filter_col_map
 
         for item in self.grail:
             tag = 'Owned' if item.get('Found', False) else 'Missing'
@@ -423,10 +428,14 @@ class Grail(tkd.Frame):
     def select_from_filters(self, event=None):
         self.tree.delete(*self.tree.get_children())
 
-        # The filtering function breaks if column name has underscore in it - potential issue that could be fixed...
-        all_filter = lambda x: all(str(x.get(f.split('_')[-1], '')) == getattr(self, f).get() or getattr(self, f).get() == '' for f in self.filters)
+        filter_fn = tk_utils.create_treeview_filter(
+            self.filters,
+            lambda f: getattr(self, f).get(),
+            lambda f: self.filter_col_map[f]  # Use mapping to handle underscores in column names
+        )
+        
         for item in self.grail:
-            if all_filter(item):
+            if filter_fn(item):
                 tag = 'Owned' if item.get('Found', False) else 'Missing'
                 self.tree.insert('', tk.END, values=[v for k, v in item.items() if k in self.cols], tags=(tag,))
 

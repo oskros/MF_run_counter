@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import webbrowser
 from functools import partial
+from utils import other_utils
 
 
 class Toplevel(tk.Toplevel):
@@ -595,9 +596,9 @@ class Treeview(ttk.Treeview):
 
     def _sort_by_num(self, column, reverse):
         def sort_fnc(x):
-            if x == '':
-                return float('-inf') if reverse else float('inf')
-            return float(x.replace('%', ''))
+            # Use shared utility function, adjusting for reverse logic
+            empty_first = reverse  # When reverse=True, empty should be -inf (first)
+            return other_utils.numeric_sort_key(x, empty_first=empty_first)
 
         self._sort(column, reverse, sort_fnc, self._sort_by_num)
 
