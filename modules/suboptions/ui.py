@@ -14,6 +14,7 @@ class UI(General):
         self.add_ui_flag(flag_name='Show drops section', comment='Show or hide the item drops section on the UI')
         self.add_ui_flag(flag_name='Show advanced tracker', comment='Show or hide the advanced stats tracker')
         self.add_ui_flag(flag_name='Show XP tracker', comment='Show or hide the XP tracker part of the advanced stats tracker')
+        self.add_ui_flag(flag_name='Track kills min', comment='On the MF timer front page, show kills/min instead of run time')
 
     def toggle_button(self, attr, first=False):
         val = other_utils.safe_eval(getattr(self, attr).get())
@@ -71,6 +72,20 @@ class UI(General):
                 self.main_frame.advanced_stats_caret.invoke()
                 self.main_frame.root.update()
                 self.main_frame.advanced_stats_caret.invoke()
+
+        elif attr == 'track_kills_min':
+            # Update the timer display when this option changes
+            if hasattr(self.main_frame, 'timer_tab'):
+                if val and self.main_frame.timer_tab.is_running:
+                    self.main_frame.timer_tab._set_kills_per_min(self.main_frame.timer_tab._laptime)
+                else:
+                    if val:
+                        self.main_frame.timer_tab._set_kills_per_min(0)
+                    else:
+                        self.main_frame.timer_tab._set_time(self.main_frame.timer_tab._laptime, for_session=False)
+                self.main_frame.timer_tab._refresh_run_list()
+                self.main_frame.timer_tab._set_fastest()
+                self.main_frame.timer_tab._set_average()
 
         if show_drops or show_advanced:
             self.main_frame.caret_frame.pack(fill=tk.BOTH, expand=True, side=tk.BOTTOM)

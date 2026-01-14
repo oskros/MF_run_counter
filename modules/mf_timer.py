@@ -22,7 +22,7 @@ class MFRunTimer(tkd.Frame):
         self.cached_is_ingame = False
         self.session_running = False
         self.sessionstr = tk.StringVar()
-        self.timestr = tk.StringVar()
+        self.run_display_str = tk.StringVar()
         self.no_of_laps = tk.StringVar()
         self.total_laps = tk.StringVar()
         self.min_lap = tk.StringVar()
@@ -41,8 +41,11 @@ class MFRunTimer(tkd.Frame):
         tkd.Label(flt, textvariable=self.sessionstr, font='arial 10').grid(row=0, column=1, sticky=tk.N, padx=20)
         self._set_time(self.session_time, for_session=True)
 
-        tkd.Label(self, textvariable=self.timestr, font='arial 20').pack(fill=tk.X, expand=False, pady=4)
-        self._set_time(0, for_session=False)
+        tkd.Label(self, textvariable=self.run_display_str, font='arial 20').pack(fill=tk.X, expand=False, pady=4)
+        if self.main_frame.track_kills_min:
+            self._set_kills_per_min(0)
+        else:
+            self._set_time(0, for_session=False)
 
         l2f = tkd.Frame(self)
         l2f.pack(pady=2)
@@ -85,13 +88,16 @@ class MFRunTimer(tkd.Frame):
         if not self.is_user_paused and self.is_paused != should_be_paused:
             self.pause(user_paused=False)
         
-        self._update_lap_time()
+        self._update_run_display()
         self._update_session_time()
         self._timer = self.after(50, self._update_timers)
 
-    def _update_lap_time(self):
+    def _update_run_display(self):
         if self.is_running and not self.is_paused:
             self._laptime = time.time() - self._start
+        if self.main_frame.track_kills_min:
+            self._set_kills_per_min(self._laptime)
+        else:
             self._set_time(self._laptime, for_session=False)
 
     def is_game_open(self):
@@ -163,7 +169,24 @@ class MFRunTimer(tkd.Frame):
             self.session_time_str = time_str
             self.sessionstr.set('Session time: ' + self.session_time_str)
         else:
-            self.timestr.set(time_str)
+            self.run_display_str.set(time_str)
+
+    def _calculate_kills_per_min(self, total_kills, run_time):
+        """Calculate kills/min from total kills and run time."""
+        try:
+            total_kills_int = int(total_kills or 0)
+            return other_utils.safe_divide(total_kills_int * 60, run_time, decimals=2, default=0)
+        except (ValueError, TypeError):
+            return 0
+
+    def _set_kills_per_min(self, elap):
+        """Set the display to show kills/min for the current run."""
+        kills_per_min = 0
+        if hasattr(self.main_frame, 'advanced_stats_tracker'):
+            total_kills = self.main_frame.advanced_stats_tracker.tot_kills_sv.get()
+            kills_per_min = self._calculate_kills_per_min(total_kills, elap)
+
+        self.run_display_str.set(f'{kills_per_min:.2f} kpm')
 
     def _set_laps(self, add_lap):
         run_count = len(self.laps)
@@ -173,16 +196,25 @@ class MFRunTimer(tkd.Frame):
         self.total_laps.set('(' + str(run_count + self.main_frame.profile_tab.tot_laps) + ')')
 
     def _set_fastest(self):
-        if self.laps:
-            self.min_lap.set('Fastest time: %s' % other_utils.build_time_str(min(l['Run time'] for l in self.laps)))
+        if self.main_frame.track_kills_min:
+            kpm_lst = [l.get('Kills/min', 0) for l in self.laps if isinstance(l, dict)]
+            self.min_lap.set(f'Highest kpm: {max(kpm_lst):.2f}' if kpm_lst else 'Highest kpm: --')
         else:
-            self.min_lap.set('Fastest time: --:--:--.-')
+            if self.laps:
+                self.min_lap.set('Fastest time: %s' % other_utils.build_time_str(min(l['Run time'] for l in self.laps)))
+            else:
+                self.min_lap.set('Fastest time: --:--:--.-')
 
     def _set_average(self):
-        if self.laps:
-            self.avg_lap.set('Average time: %s' % other_utils.build_time_str(sum(l['Run time'] for l in self.laps) / len(self.laps)))
+        if self.main_frame.track_kills_min:
+            kpm_lst = [l.get('Kills/min', 0) for l in self.laps if isinstance(l, dict)]
+            avg_kpm = other_utils.safe_avg(kpm_lst, decimals=2, default='')
+            self.avg_lap.set(f'Average kpm: {avg_kpm:.2f}' if avg_kpm != '' else 'Average kpm: --')
         else:
-            self.avg_lap.set('Average time: --:--:--.-')
+            if self.laps:
+                self.avg_lap.set('Average time: %s' % other_utils.build_time_str(sum(l['Run time'] for l in self.laps) / len(self.laps)))
+            else:
+                self.avg_lap.set('Average time: --:--:--.-')
 
     def load_from_state(self, state):
         self.laps = []
@@ -217,6 +249,9 @@ class MFRunTimer(tkd.Frame):
         out['Name'] = self.main_frame.advanced_stats_tracker.name_sv.get()
         out['Map seed'] = self.main_frame.advanced_stats_tracker.map_seed
         out['Areas visited'] = sorted(self.main_frame.advanced_stats_tracker.run_areas_visited)
+        
+        # Calculate and store kills/min for this run
+        out['Kills/min'] = self._calculate_kills_per_min(out['Total kills'], self._laptime)
 
         return out
 
@@ -226,7 +261,7 @@ class MFRunTimer(tkd.Frame):
                 self.pause()
             self.c1.itemconfigure(self.circ_id, fill='green3')
             self._start = time.time() - self._laptime
-            # self._update_lap_time()
+            # self._update_run_display()
             self.is_running = True
             self._set_laps(self.is_running)
             self._waiting_for_delay = False
@@ -251,7 +286,10 @@ class MFRunTimer(tkd.Frame):
             self.c1.itemconfigure(self.circ_id, fill='red')
             self._laptime = 0.0
             self.is_running = False
-            self._set_time(0, for_session=False)
+            if self.main_frame.track_kills_min:
+                self._set_kills_per_min(0)
+            else:
+                self._set_time(0, for_session=False)
             if play_sound and self.main_frame.enable_sound_effects:
                 sound.queue_sound(self)
 
@@ -259,10 +297,26 @@ class MFRunTimer(tkd.Frame):
         self.stop(play_sound=False)
         self.start(play_sound=True)
 
+    def _format_run_display(self, lap_info):
+        """Format run display string based on track_kills_min setting."""
+        if self.main_frame.track_kills_min:
+            kpm = lap_info.get('Kills/min', 0)
+            return f"{kpm:.2f} kpm"
+        else:
+            return other_utils.build_time_str(lap_info['Run time'])
+
+    def _refresh_run_list(self):
+        """Refresh the run list display based on current track_kills_min setting."""
+        self.m.delete(0, tk.END)
+        for idx, lap_info in enumerate(self.laps, 1):
+            str_n = ' ' * max(3 - len(str(idx)), 0) + str(idx)
+            self.m.insert(tk.END, 'Run ' + str_n + ': ' + self._format_run_display(lap_info))
+        self.m.yview_moveto(1)
+
     def lap(self, lap_info):
         self.laps.append(lap_info)
         str_n = ' ' * max(3 - len(str(len(self.laps))), 0) + str(len(self.laps))
-        self.m.insert(tk.END, 'Run ' + str_n + ': ' + other_utils.build_time_str(lap_info['Run time']))
+        self.m.insert(tk.END, 'Run ' + str_n + ': ' + self._format_run_display(lap_info))
         self.m.yview_moveto(1)
         self._set_laps(add_lap=False)
         self._set_fastest()
@@ -335,7 +389,10 @@ class MFRunTimer(tkd.Frame):
         if self.is_running:
             self._start = time.time()
             self._laptime = 0.0
-            self._set_time(self._laptime, for_session=False)
+            if self.main_frame.track_kills_min:
+                self._set_kills_per_min(0)
+            else:
+                self._set_time(self._laptime, for_session=False)
 
     def reset_session(self):
         if self.is_running:
@@ -346,7 +403,10 @@ class MFRunTimer(tkd.Frame):
         self._session_start = time.time()
         self.laps = []
         self.m.delete(0, tk.END)
-        self._set_time(self._laptime, for_session=False)
+        if self.main_frame.track_kills_min:
+            self._set_kills_per_min(0)
+        else:
+            self._set_time(self._laptime, for_session=False)
         self._set_time(self.session_time, for_session=True)
         self._set_laps(add_lap=self.is_running)
         self._set_fastest()

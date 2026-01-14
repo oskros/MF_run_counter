@@ -43,6 +43,7 @@ class Config:
         self.show_drops_section = other_utils.safe_eval(self.cfg['UI']['show_drops_section'])
         self.show_advanced_tracker = other_utils.safe_eval(self.cfg['UI']['show_advanced_tracker'])
         self.show_xp_tracker = other_utils.safe_eval(self.cfg['UI']['show_xp_tracker'])
+        self.track_kills_min = other_utils.safe_eval(self.cfg['UI']['track_kills_min'])
 
         if self.active_theme not in color_themes.available_themes:
             self.active_theme = color_themes.available_themes[0]
@@ -108,6 +109,7 @@ class Config:
         config['UI']['show_drops_section'] = '1'
         config['UI']['show_advanced_tracker'] = '1'
         config['UI']['show_xp_tracker'] = '1'
+        config['UI']['track_kills_min'] = '0'
 
         config.add_section('VERSION')
         config['VERSION']['version'] = version
@@ -209,6 +211,7 @@ class Config:
         cfg['UI']['show_drops_section'] = str(parent.show_drops_section)
         cfg['UI']['show_advanced_tracker'] = str(parent.show_advanced_tracker)
         cfg['UI']['show_xp_tracker'] = str(parent.show_xp_tracker)
+        cfg['UI']['track_kills_min'] = str(parent.track_kills_min)
 
         # Update hotkeys
         cfg.remove_section('KEYBINDS')
