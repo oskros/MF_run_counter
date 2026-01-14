@@ -573,6 +573,7 @@ AREA_ID_TO_NAME = {
     145: "(T3) Phlegethon",
     147: "(T3) Kehjistan Marketplace",
     150: "(T3) Throne of Insanity",
+    154: "(T3) Blood Moon",
     156: "(T3) The Pandemonium Citadel",
     160: "(T3) The Canyon of Sescheron",
     167: "(T3) The Sanitorium",
