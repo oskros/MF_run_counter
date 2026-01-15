@@ -107,6 +107,49 @@ FULL_ITEM_LIST = [
     "Wolfhowl", "Wormskull", "Wraith Flight", "Zakarum's Hand", "Zod Rune",
     "Key of Destruction", "Key of Hate", "Key of Terror"]
 
+FULL_ITEM_LIST_PD2_ADD = [
+    "Bul-Kathos' Death Band",
+    "Cyclopean Roar",
+    "Quetzalcoatl",
+    "Kalan's Legacy",
+    "Sankekur's Fall",
+    "True Silver",
+    "Mage Slayer",
+    "Tempest",
+    "Purgatory",
+    "Occultist",
+    "Merman's Sprocket",
+    "Raekor's Virtue",
+    "Ursa's Nightmare",
+    "Martyrdom",
+    "Zerae's Resolve",
+    "Stalker's Cull",
+    "Akarat's Devotion",
+    "Brimstone Rain",
+    "Odium",
+    "Uldyssian's Awakening",
+    "Leoric's Mithril Bane",
+    "Titan's Grip",
+    "Wraithskin",
+    "Twilight's Reflection",
+    "Denmother",
+    "Ebonbane",
+    "Shatterblade",
+    "Constricting Loop",
+    "Skorn",
+    "Whispering Mirage",
+    "Skywarden",
+    "Fenris",
+    "Wildspeaker",
+    "Achilles Strike",
+    "Siggard's Staunch",
+    "Sacred Totem"
+]
+
+UNID_ITEM_LIST_NO_PD2 = [
+    "Mythical Sword (Set)",
+]
+
 UNID_ITEM_LIST = [
     "Aegis (Unique)", "Amulet (Set)", "Amulet (Unique)", "Ancient Armor (Set)", "Ancient Armor (Unique)",
     "Ancient Axe (Unique)", "Ancient Shield (Unique)", "Ancient Sword (Unique)", "Arbalest (Unique)",
@@ -173,7 +216,7 @@ UNID_ITEM_LIST = [
     "Mesh Belt (Set)", "Mesh Belt (Unique)", "Mesh Boots (Set)", "Mesh Boots (Unique)", "Mighty Scepter (Unique)",
     "Military Axe (Unique)", "Military Pick (Set)", "Military Pick (Unique)", "Mithril Coil (Set)",
     "Mithril Coil (Unique)", "Monarch (Unique)", "Morning Star (Unique)", "Myrmidon Greaves (Unique)",
-    "Mythical Sword (Set)", "Naga (Unique)", "Ogre Axe (Unique)", "Ogre Gauntlets (Unique)", "Ogre Maul (Set)",
+    "Naga (Unique)", "Ogre Axe (Unique)", "Ogre Gauntlets (Unique)", "Ogre Maul (Set)",
     "Ogre Maul (Unique)", "Ornate Plate (Set)", "Ornate Plate (Unique)", "Partizan (Unique)", "Pavise (Unique)",
     "Petrified Wand (Unique)", "Phase Blade (Unique)", "Pike (Unique)", "Plate Mail (Unique)", "Plated Belt (Set)",
     "Plated Belt (Unique)", "Poignard (Unique)", "Poleaxe (Unique)", "Quarterstaff (Unique)", "Quilted Armor (Set)",
@@ -261,6 +304,23 @@ UNID_ITEM_LIST = [
 ]
 
 
+# PD2 base items to add to UNID_ITEM_LIST when PD2 mode is enabled
+UNID_ITEM_LIST_PD2_ADD = [
+    "Alpha Helm (Unique)", "Archon Plate (Unique)", "Bramble Mitts (Unique)",
+    "Colossus Girdle (Unique)", "Colossus Sword (Set)", "Colossus Sword (Unique)",
+    "Crusader Gauntlets (Unique)", "Crystalline Globe (Unique)", "Diamond Mail (Unique)",
+    "Dream Spirit (Unique)", "Ghost Spear (Unique)", "Glowing Orb (Unique)",
+    "Grand Matron Bow (Unique)", "Guardian Crown (Unique)", "Hawk Helm (Unique)",
+    "Hellspawn Skull (Unique)", "Heraldic Shield (Unique)", "Highland Blade (Unique)",
+    "Hurlbat (Unique)", "Hyperion (Unique)", "Jawbone Visor (Unique)", "Lion Helm (Unique)",
+    "Maiden Javelin (Unique)", "Matriarchal Pike (Unique)", "Mithril Point (Unique)",
+    "Mummified Trophy (Unique)", "Overseer Skull (Unique)", "Quhab (Unique)",
+    "Ring (Set)", "Ring (Unique)", "Runic Talons (Unique)",
+    "Seraph Rod (Unique)", "Shillelagh (Unique)", "Sun Spirit (Unique)",
+    "Vortex Shield (Unique)", "War Fist (Unique)", "Wyrmhide Boots (Unique)"
+]
+
+
 NO_UNIQUE_MAP = {
     'Jewel': {'TC': 1, 'Item Class': 'Jewel'},
     'Small Charm': {'TC': 1, 'Item Class': 'Charm'},
@@ -284,6 +344,20 @@ NO_UNIQUE_MAP = {
     'Guardian Crown': {'TC': 87, 'Item Class': 'Helm'},
 }
 
+
+NO_UNIQUE_MAP_PD2 = {
+    'Jewel': {'TC': 1, 'Item Class': 'Jewel'},
+    'Small Charm': {'TC': 1, 'Item Class': 'Charm'},
+    'Large Charm': {'TC': 1, 'Item Class': 'Charm'},
+    'Grand Charm': {'TC': 1, 'Item Class': 'Charm'},
+
+    'Coronet': {'TC': 54, 'Item Class': 'Circlet'},
+
+    'Sacred Targe': {'TC': 63, 'Item Class': 'Shield'},
+    'Kurast Shield': {'TC': 75, 'Item Class': 'Shield'},
+
+    'Great Poleaxe': {'TC': 84, 'Item Class': 'Polearm'},
+}
 
 ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 "Aldur's Weapon": "Aldur's Rhythm",
@@ -390,7 +464,8 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'WWs': 'Waterwalk',
                 'Wizzy': 'Wizardspike'}
 
-ETH_ITEM_LIST = [
+
+ETH_ITEM_SET = {
     'Greyform', "Blinkbat's Form", 'The Centurion', 'Twitchthroe', 'Darkglow', 'Hawkmail', 'Venom Ward',
     'Sparking Mail', 'Iceblink', 'Heavenly Garb', 'Rockfleece', 'Boneflesh', 'Rattlecage', 'Goldskin',
     'Silks of the Victor', 'The Spirit Shroud', 'Skin of the Vipermagi', 'Skin of the Flayed One',
@@ -441,4 +516,57 @@ ETH_ITEM_LIST = [
     "Demonhorn's Edge", "Halaberd's Reign", 'Wolfhowl', "Jalal's Mane", "Cerebus' Bite", 'Ravenlore',
     'Spirit Keeper', 'Homunculus', 'Boneflame', 'Darkforce Spawn', 'Herald of Zakarum', 'Alma Negra',
     'Dragonscale', 'The Oculus', "Death's Fathom", "Eschuta's Temper"
-]
+}
+
+
+ETH_ITEM_SET_PD2_ADD = {
+    "Achilles Strike",
+    "Akarat's Devotion",
+    "Brimstone Rain",
+    "Cyclopean Roar",
+    "Denmother",
+    "Ebonbane",
+    "Fenris",
+    "Kalan's Legacy",
+    "Leoric's Mithril Bane",
+    "Mage Slayer",
+    "Martyrdom",
+    "Merman's Sprocket",
+    "Occultist",
+    "Odium",
+    "Purgatory",
+    "Quetzalcoatl",
+    "Raekor's Virtue",
+    "Sacred Totem",
+    "Sankekur's Fall",
+    "Shatterblade",
+    "Siggard's Staunch",
+    "Skorn",
+    "Skywarden",
+    "Stalker's Cull",
+    "Tempest",
+    "Titan's Grip",
+    "True Silver",
+    "Twilight's Reflection",
+    "Uldyssian's Awakening",
+    "Ursa's Nightmare",
+    "Whispering Mirage",
+    "Wildspeaker",
+    "Wraithskin",
+    "Zerae's Resolve",
+    
+    # Items that can spawn as ethereal in PD2 but not in vanilla
+    "Butcher's Pupil",
+    "The Gavel of Pain",
+    "Schaefer's Hammer",
+    "The Cranium Basher",
+    "Doombringer",
+    "The Grandfather",
+    "Steel Pillar",
+    "Stormspire",
+}
+
+
+def get_eth_item_set(pd2_mode=False):
+    """Get the ethereal item set based on PD2 mode."""
+    return ETH_ITEM_SET | ETH_ITEM_SET_PD2_ADD if pd2_mode else ETH_ITEM_SET

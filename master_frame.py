@@ -234,12 +234,12 @@ class MasterFrame(config.Config):
         if self.tab_switch_keys_global:
             self.root.unbind_all('<Control-Shift-Next>')
             self.root.unbind_all('<Control-Shift-Prior>')
-            self.options_tab.tab2.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
-            self.options_tab.tab2.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
+            self.options_tab.tab3.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
+            self.options_tab.tab3.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
         else:
             if not initial_run:
-                self.options_tab.tab2.hk.unregister(['control', 'shift', 'next'])
-                self.options_tab.tab2.hk.unregister(['control', 'shift', 'prior'])
+                self.options_tab.tab3.hk.unregister(['control', 'shift', 'next'])
+                self.options_tab.tab3.hk.unregister(['control', 'shift', 'prior'])
             self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
             self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 

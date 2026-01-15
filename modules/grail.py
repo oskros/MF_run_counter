@@ -1,14 +1,14 @@
 from init import *
 from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller, other_utils
 from utils.color_themes import Theme
-from utils.item_name_lists import ETH_ITEM_LIST
+from utils.item_name_lists import get_eth_item_set, FULL_ITEM_LIST_PD2_ADD
 import tkinter as tk
 from tkinter import ttk
-import json
 import requests
 import csv
 import win32gui
 from tkinter import messagebox
+import logging
 
 
 class Grail(tkd.Frame):
@@ -102,9 +102,12 @@ class Grail(tkd.Frame):
         tot = 0
         owned = 0
         for item in self.grail:
+            # Filter out PD2 items if PD2 mode is not enabled
+            if not self.main_frame.pd2_mode and item.get('PD2 item', False):
+                continue
             if all(item.get(k, None) == v for k, v in conditions.items()):
                 if eth:
-                    if item.get('Item', '') in ETH_ITEM_LIST:
+                    if item.get('Item', '') in get_eth_item_set(self.main_frame.pd2_mode):
                         tot += 1
                         if item.get('FoundEth', False):
                             owned += 1
@@ -157,8 +160,17 @@ class Grail(tkd.Frame):
                     getattr(self, var).set(0)
 
     def create_empty_grail(self):
-        with open(media_path + 'item_library.csv', 'r') as fo:
-            grail_dict = [{**row, 'Found': False, 'FoundEth': False} if row['Item'] in ETH_ITEM_LIST else {**row, 'Found': False} for row in csv.DictReader(fo)]
+        # Use item_library_pd2.csv which contains all items (regular + PD2)
+        grail_dict = []
+        with open(media_path + 'item_library_pd2.csv', 'r') as fo:
+            for row in csv.DictReader(fo):
+                item_dict = {**row, 'Found': False}
+                # Check if item can be ethereal (considering PD2 mode)
+                if row['Item'] in get_eth_item_set(self.main_frame.pd2_mode):
+                    item_dict['FoundEth'] = False
+                # Set PD2 item attribute based on the CSV column
+                item_dict['PD2 item'] = row.get('PD2 item', '').upper() == 'TRUE'
+                grail_dict.append(item_dict)
 
         other_utils.atomic_json_dump(self.file_name, grail_dict)
         return grail_dict
@@ -168,7 +180,39 @@ class Grail(tkd.Frame):
             self.create_empty_grail()
 
         state = other_utils.json_load_err(self.file_name)
+        
+        # Only repopulate if PD2 items are missing (backwards compatibility)
+        pd2_items_in_state = any(item.get('PD2 item', False) for item in state)
+        if not pd2_items_in_state:
+            state = self.repopulate_grail_for_pd2(state)
+        
+        return state
 
+    def repopulate_grail_for_pd2(self, state):
+        """Backwards compatibility: merge in PD2 items if they're missing from existing grail files."""
+        existing_items = {item.get('Item', '') for item in state}
+        eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
+        
+        # Load PD2 items and add missing ones
+        with open(media_path + 'item_library_pd2.csv', 'r') as fo:
+            for row in csv.DictReader(fo):
+                if row.get('PD2 item', '').upper() == 'TRUE' and row['Item'] not in existing_items:
+                    item_dict = {**row, 'Found': False}
+                    if row['Item'] in eth_item_set:
+                        item_dict['FoundEth'] = False
+                    item_dict['PD2 item'] = True
+                    state.append(item_dict)
+        
+        # Ensure all items have the PD2 item attribute and correct eth property
+        for item in state:
+            item_name = item.get('Item', '')
+            if 'PD2 item' not in item:
+                item['PD2 item'] = item_name in FULL_ITEM_LIST_PD2_ADD
+            
+            # Add FoundEth property if item can be ethereal in current PD2 mode
+            if item_name in eth_item_set and 'FoundEth' not in item:
+                item['FoundEth'] = False
+        
         return state
 
     def save_grail(self):
@@ -231,7 +275,7 @@ class Grail(tkd.Frame):
     def get_grail_from_herokuapp(self, uid):
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
-            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
+            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox, pd2_mode=self.main_frame.pd2_mode)
         except requests.exceptions.HTTPError:
             messagebox.showerror('Username 404', f"Username '{uid}' doesn't exist on d2-holy-grail.herokuapp.com")
             return
@@ -251,7 +295,7 @@ class Grail(tkd.Frame):
         uid, pwd = resp
         try:
             prox = self.main_frame.webproxies if isinstance(self.main_frame.webproxies, dict) else None
-            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox)
+            herokuapp_grail = herokuapp_controller.get_grail(uid, proxies=prox, pd2_mode=self.main_frame.pd2_mode)
         except requests.exceptions.HTTPError:
             messagebox.showerror('Username 404', f"Username '{uid}' doesn't exist on d2-holy-grail.herokuapp. Try again")
             return self.upload_to_herokuapp(upd_dict=upd_dict, show_confirm=show_confirm, pop_up_msg=pop_up_msg, pop_up_title=pop_up_title)
@@ -281,7 +325,7 @@ class Grail(tkd.Frame):
         def rec_checkbox_add(master, frame, dct, rows=4, depth=None):
             if depth is None:
                 depth = []
-
+            
             # Init count to determine number of rows before adding a new column
             cnt = 0
             for k, v in dct.items():
@@ -340,8 +384,31 @@ class Grail(tkd.Frame):
         window.iconbitmap(media_path + 'icon.ico')
 
         # Build nested dict with information from the current grail
-        upd_dict = {x['Item']: True for x in self.grail if x.get('Found', None) is True}
-        nested_grail = herokuapp_controller.update_grail_dict(dct=herokuapp_controller.default_data, item_upg_dict=upd_dict)
+        # Filter items based on PD2 mode - include PD2 items when PD2 mode is active
+        visible_grail = [x for x in self.grail if self.main_frame.pd2_mode or not x.get('PD2 item', False)]
+        upd_dict = {x['Item']: True for x in visible_grail if x.get('Found', None) is True}
+        nested_grail = herokuapp_controller.update_grail_dict(
+            dct=herokuapp_controller.get_default_data(pd2_mode=self.main_frame.pd2_mode),
+            item_upg_dict=upd_dict
+        )
+
+        # Revert patches for display: Kira's Guardian should show under Exceptional, not Elite
+        try:
+            nested_grail['uniques']['armor']['circlet'].setdefault('exceptional', {})["Kira's Guardian"] = nested_grail['uniques']['armor']['circlet']['elite'].pop("Kira's Guardian")
+        except (KeyError, AttributeError) as e:
+            logging.warning(f"Failed to revert Kira's Guardian patch in grail controller: {e}")
+
+        # Fix quality ordering for groups where items are processed out of quality order
+        def fix_quality_ordering(group_path):
+            """Reorder quality keys to: normal → exceptional → elite."""
+            ordered = [(q, group_path[q]) for q in ('normal', 'exceptional', 'elite') if q in group_path]
+
+            group_path.clear()
+            group_path.update(ordered)
+        
+        # Fix ordering for known problematic groups
+        fix_quality_ordering(nested_grail['uniques']['armor']['circlet'])
+        fix_quality_ordering(nested_grail['uniques']['weapons']['throwing'])
 
         tabcontrol = ttk.Notebook(window)
         tabcontrol.pack(expand=True, fill=tk.BOTH)
@@ -361,7 +428,7 @@ class Grail(tkd.Frame):
 
         rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
         rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
-        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
+        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 2)
         rec_checkbox_add(self, sets, nested_grail['sets'], 5)
         rec_checkbox_add(self, runes, nested_grail['runes'], 1)
 
@@ -379,10 +446,15 @@ class Grail(tkd.Frame):
         window.iconbitmap(media_path + 'icon.ico')
         window.protocol("WM_DELETE_WINDOW", lambda: self.close_grail_table(window))
 
+        # Add PD2 item column if PD2 mode is active
+        cols = list(self.cols)
+        if self.main_frame.pd2_mode:
+            cols.append('PD2 item')
+
         tree_frame = tkd.Frame(window)
         vscroll = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL)
         hscroll = ttk.Scrollbar(window, orient=tk.HORIZONTAL)
-        self.tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=self.cols)
+        self.tree = tkd.Treeview(tree_frame, selectmode=tk.BROWSE, yscrollcommand=vscroll.set, xscrollcommand=hscroll.set, show='headings', columns=cols)
         hscroll.config(command=self.tree.xview)
         vscroll.config(command=self.tree.yview)
 
@@ -393,11 +465,11 @@ class Grail(tkd.Frame):
         hscroll.pack(side=tk.BOTTOM, fill=tk.X)
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        self.tree['columns'] = self.cols
+        self.tree['columns'] = cols
         self.filters = []
         # Create mapping from filter names to column names to handle underscores in column names
         filter_col_map = {}
-        for col in self.cols:
+        for col in cols:
             self.tree.column(col, stretch=tk.YES, minwidth=0, width=80)
             if col in ['TC', 'QLVL', 'Roll rarity', 'Roll chance']:
                 sort_by = 'num'
@@ -410,15 +482,20 @@ class Grail(tkd.Frame):
             name = 'combofilter_' + col
             filter_col_map[name] = col
             self.filters.append(name)
-            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in self.grail).union({''}), key=sort_key), state="readonly", width=1))
+            # Only include values from items visible based on PD2 mode
+            visible_items = [x for x in self.grail if self.main_frame.pd2_mode or not x.get('PD2 item', False)]
+            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in visible_items).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
         
         self.filter_col_map = filter_col_map
 
         for item in self.grail:
+            # Filter out PD2 items if PD2 mode is not enabled
+            if not self.main_frame.pd2_mode and item.get('PD2 item', False):
+                continue
             tag = 'Owned' if item.get('Found', False) else 'Missing'
-            self.tree.insert('', tk.END, values=[item.get(col, '') for col in self.cols], tags=(tag,))
+            self.tree.insert('', tk.END, values=[item.get(col, '') for col in cols], tags=(tag,))
 
         self.tree.tag_configure('Owned', background='#e6ffe6')
         self.tree.tag_configure('Missing', background='peach puff')
@@ -434,10 +511,18 @@ class Grail(tkd.Frame):
             lambda f: self.filter_col_map[f]  # Use mapping to handle underscores in column names
         )
         
+        # Get the columns list (including PD2 item if PD2 mode is active)
+        cols = list(self.cols)
+        if self.main_frame.pd2_mode:
+            cols.append('PD2 item')
+        
         for item in self.grail:
+            # Filter out PD2 items if PD2 mode is not enabled
+            if not self.main_frame.pd2_mode and item.get('PD2 item', False):
+                continue
             if filter_fn(item):
                 tag = 'Owned' if item.get('Found', False) else 'Missing'
-                self.tree.insert('', tk.END, values=[v for k, v in item.items() if k in self.cols], tags=(tag,))
+                self.tree.insert('', tk.END, values=[item.get(col, '') for col in cols], tags=(tag,))
 
     def close_grail_table(self, window):
         self.grail_table_open = False

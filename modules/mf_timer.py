@@ -130,8 +130,8 @@ class MFRunTimer(tkd.Frame):
                     logging.debug(e)
                     self.main_frame.load_memory_reader(show_err=False)
                     if self.main_frame.advanced_error_thrown:
-                        self.main_frame.options_tab.tab3.automode_var.set('0')
-                        self.main_frame.options_tab.tab3.toggle_automode_btn(first=False, show_error=False)
+                        self.main_frame.options_tab.tab4.automode_var.set('0')
+                        self.main_frame.options_tab.tab4.toggle_automode_btn(first=False, show_error=False)
                     else:
                         self._game_check = self.after(50, lambda: self._check_entered_game(advanced_mode=advanced_mode))
                     return

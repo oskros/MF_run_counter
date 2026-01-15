@@ -1,6 +1,6 @@
 import json
 import re
-from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, ETH_ITEM_LIST
+from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, ETH_ITEM_SET
 from utils import other_utils
 
 
@@ -78,7 +78,7 @@ def comparison(var, eth=False):
             # Append true entry from the alias list - if none are found, add the match from original list
             i_name = ITEM_ALIASES.get(w, w)
             if eth:
-                if i_name in ETH_ITEM_LIST:
+                if i_name in ETH_ITEM_SET:
                     out.add(i_name)
             else:
                 out.add(i_name)

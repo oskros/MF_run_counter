@@ -32,6 +32,7 @@ class Config:
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
         self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
+        self.pd2_mode = other_utils.safe_eval(self.cfg['OPTIONS']['pd2_mode'])
         self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
         self.disable_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
         self.advanced_tracker_open = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open'])
@@ -96,6 +97,7 @@ class Config:
         config['OPTIONS']['autocompletion_unids'] = '0'
         config['OPTIONS']['add_to_last_run'] = '0'
         config['OPTIONS']['disable_dpi_scaling'] = '1'
+        config['OPTIONS']['pd2_mode'] = '0'
 
         config.add_section('AUTOMODE')
         config['AUTOMODE']['automode'] = '0'
@@ -199,6 +201,7 @@ class Config:
         cfg['OPTIONS']['auto_archive_hours'] = str(parent.auto_archive_hours)
         cfg['OPTIONS']['autocompletion_unids'] = str(parent.autocompletion_unids)
         cfg['OPTIONS']['add_to_last_run'] = str(parent.add_to_last_run)
+        cfg['OPTIONS']['pd2_mode'] = str(parent.pd2_mode)
 
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)
@@ -217,12 +220,12 @@ class Config:
         cfg.remove_section('KEYBINDS')
         cfg.add_section('KEYBINDS')
         cfg.set('KEYBINDS', '# Please only edit keybinds from within the app')
-        cfg['KEYBINDS']['start_key'] = str(parent.options_tab.tab2._start_new_run)
-        cfg['KEYBINDS']['end_key'] = str(parent.options_tab.tab2._end_run)
-        cfg['KEYBINDS']['delete_prev_key'] = str(parent.options_tab.tab2._delete_prev)
-        cfg['KEYBINDS']['pause_key'] = str(parent.options_tab.tab2._pause)
-        cfg['KEYBINDS']['drop_key'] = str(parent.options_tab.tab2._add_drop)
-        cfg['KEYBINDS']['reset_key'] = str(parent.options_tab.tab2._reset_lap)
-        cfg['KEYBINDS']['make_unclickable'] = str(parent.options_tab.tab2._make_unclickable)
+        cfg['KEYBINDS']['start_key'] = str(parent.options_tab.tab3._start_new_run)
+        cfg['KEYBINDS']['end_key'] = str(parent.options_tab.tab3._end_run)
+        cfg['KEYBINDS']['delete_prev_key'] = str(parent.options_tab.tab3._delete_prev)
+        cfg['KEYBINDS']['pause_key'] = str(parent.options_tab.tab3._pause)
+        cfg['KEYBINDS']['drop_key'] = str(parent.options_tab.tab3._add_drop)
+        cfg['KEYBINDS']['reset_key'] = str(parent.options_tab.tab3._reset_lap)
+        cfg['KEYBINDS']['make_unclickable'] = str(parent.options_tab.tab3._make_unclickable)
 
         self.build_config_file(cfg)

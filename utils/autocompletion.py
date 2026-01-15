@@ -1,14 +1,15 @@
 import tkinter as tk
 import re
 from init import *
-from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, UNID_ITEM_LIST, ETH_ITEM_LIST
+from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, UNID_ITEM_LIST, UNID_ITEM_LIST_NO_PD2, UNID_ITEM_LIST_PD2_ADD, get_eth_item_set, FULL_ITEM_LIST_PD2_ADD
 
 
 class AutocompleteEntry:
-    def __init__(self, master, width, textvariable, enable=True, unid_mode=False):
+    def __init__(self, master, width, textvariable, enable=True, unid_mode=False, pd2_mode=False):
         self.chosen = None
         self.enable = enable
         self.unid_mode = unid_mode
+        self.pd2_mode = pd2_mode
         self.master = master
         self.width = width
         self.var = textvariable
@@ -105,15 +106,20 @@ class AutocompleteEntry:
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
 
         if self.unid_mode:
-            item_lst = UNID_ITEM_LIST
+            if self.pd2_mode:
+                item_lst = UNID_ITEM_LIST + UNID_ITEM_LIST_PD2_ADD
+            else:
+                item_lst = UNID_ITEM_LIST + UNID_ITEM_LIST_NO_PD2
         else:
             item_lst = FULL_ITEM_LIST + list(ITEM_ALIASES.keys())
+            if self.pd2_mode:
+                item_lst = item_lst + FULL_ITEM_LIST_PD2_ADD
         for w in item_lst:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
                 i_name = ITEM_ALIASES.get(w, w)
                 if eth:
-                    if self.unid_mode or i_name in ETH_ITEM_LIST:
+                    if self.unid_mode or i_name in get_eth_item_set(self.pd2_mode):
                         out.add('Eth ' + i_name)
                 else:
                     out.add(i_name)
@@ -121,7 +127,7 @@ class AutocompleteEntry:
 
 
 class ACMbox(object):
-    def __init__(self, title, enable=True, unid_mode=False, add_to_last_run=False):
+    def __init__(self, title, enable=True, unid_mode=False, add_to_last_run=False, pd2_mode=False):
         self.root = tk.Toplevel()
         self.root.geometry(
             '200x146+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
@@ -139,7 +145,7 @@ class ACMbox(object):
         tk.Checkbutton(frm_1, variable=self.last_run_var, text='Add to prev run').pack()
 
         tw = tk.StringVar()
-        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, unid_mode=unid_mode)
+        self.entry = AutocompleteEntry(frm_1, width=32, textvariable=tw, enable=enable, unid_mode=unid_mode, pd2_mode=pd2_mode)
 
         frm_2 = tk.Frame(frm_1)
         frm_2.pack(padx=4, pady=4)
@@ -185,8 +191,8 @@ class ACMbox(object):
             self.root.destroy()
 
 
-def acbox(title='Drop', enable=True, unid_mode=False, add_to_last_run=False):
-    msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode, add_to_last_run=add_to_last_run)
+def acbox(title='Drop', enable=True, unid_mode=False, add_to_last_run=False, pd2_mode=False):
+    msgbox = ACMbox(title, enable=enable, unid_mode=unid_mode, add_to_last_run=add_to_last_run, pd2_mode=pd2_mode)
     return msgbox.returning
 
 

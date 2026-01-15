@@ -1,17 +1,13 @@
 import requests
 import json
-from init import utils_path
 from copy import deepcopy
+from init import utils_path
+from utils.herokuapp_json_generator import get_default_data, get_default_eth_data
 
 api_page = 'http://d2-holy-grail.herokuapp.com/api/grail/'
-with open(utils_path + 'default_grail_data.json', 'r') as fo:
-    default_data = json.load(fo)
-
-with open(utils_path + 'default_eth_grail_data.json', 'r') as fo:
-    default_eth_data = json.load(fo)
 
 
-def get_grail(uid, proxies=None):
+def get_grail(uid, proxies=None, pd2_mode=False):
     try:
         req = requests.get(url=api_page + uid, proxies=proxies)
     except Exception as e:
@@ -19,11 +15,11 @@ def get_grail(uid, proxies=None):
     req.raise_for_status()
     out = req.json()
     if out.get('data', None) is None:
-        dd = deepcopy(default_data)
+        dd = deepcopy(get_default_data(pd2_mode))
         del dd['runes']
         out['data'] = dd
     if out.get('ethData', None) is None:
-        out['ethData'] = deepcopy(default_eth_data)
+        out['ethData'] = deepcopy(get_default_eth_data(pd2_mode))
     return out
 
 

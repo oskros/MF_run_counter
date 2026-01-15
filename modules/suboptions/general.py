@@ -13,11 +13,7 @@ class General(tkd.Frame):
         self.add_flag(flag_name='Tab switch keys global', comment='Controls whether the <Ctrl-Shift-PgUp/PgDn> hotkeys are global or only works when application has focus')
         self.add_flag(flag_name='Check for new version', comment='Choose whether you want to check for new releases in Github every time the application is started')
         self.add_flag(flag_name='Enable sound effects', comment='Enable or disable sound effects when a run is started or stopped')
-        self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp.com')
-        self.add_flag(flag_name='Autocompletion unids', comment='Enable autocompletion for unid set/uniques, for tc84/87 items and for circlets, charms and jewels')
         self.add_theme_choice(comment='Select which color/style theme to use for the application')
-        self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')
-        self.add_num_entry(flag_name='Auto archive (hours)', comment='Automatically calls "Archive session" if more than configured number of hours have passed since last time the profile was used\n\nDisabled when equal to zero (0.0)\n\nThis is checked when app is opened and when profile is changed')
 
     def add_theme_choice(self, comment=None):
         lf = tkd.LabelFrame(self, height=LAB_HEIGHT, width=LAB_WIDTH)
