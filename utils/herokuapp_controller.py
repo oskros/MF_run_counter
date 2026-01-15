@@ -1,7 +1,6 @@
 import requests
 import json
 from copy import deepcopy
-from init import utils_path
 from utils.herokuapp_json_generator import get_default_data, get_default_eth_data
 
 api_page = 'http://d2-holy-grail.herokuapp.com/api/grail/'

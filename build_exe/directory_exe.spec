@@ -49,12 +49,11 @@ a.datas += [('d2icon.png', path+'\\..\\MF_run_counter\\media\\d2icon.png', 'Data
 a.datas += [('run_sound.wav', path+'\\..\\MF_run_counter\\media\\run_sound.wav', 'Data')]
 a.datas += [('icon.ico', path+'\\..\\MF_run_counter\\media\\icon.ico', 'Data')]
 a.datas += [('item_library.csv', path+'\\..\\MF_run_counter\\media\\item_library.csv', 'Data')]
+a.datas += [('item_library_pd2.csv', path+'\\..\\MF_run_counter\\media\\item_library_pd2.csv', 'Data')]
 a.datas += [('stat_map.csv', path+'\\..\\MF_run_counter\\media\\stat_map.csv', 'Data')]
 a.datas += [('caret-down.png', path+'\\..\\MF_run_counter\\media\\caret-down.png', 'Data')]
 a.datas += [('caret-up.png', path+'\\..\\MF_run_counter\\media\\caret-up.png', 'Data')]
 a.datas += [('about_icon.png', path+'\\..\\MF_run_counter\\media\\about_icon.png', 'Data')]
-a.datas += [('default_eth_grail_data.json', path+'\\..\\MF_run_counter\\utils\\default_eth_grail_data.json', 'Data')]
-a.datas += [('default_grail_data.json', path+'\\..\\MF_run_counter\\utils\\default_grail_data.json', 'Data')]
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
