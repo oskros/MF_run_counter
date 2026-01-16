@@ -2,6 +2,7 @@ from init import *
 from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller, other_utils
 from utils.color_themes import Theme
 from utils.item_name_lists import get_eth_item_set, FULL_ITEM_LIST_PD2_ADD
+from utils.herokuapp_json_generator import get_default_data, get_default_eth_data
 import tkinter as tk
 from tkinter import ttk
 import requests
@@ -28,6 +29,7 @@ class Grail(tkd.Frame):
                      "Roll rarity", "Roll chance", "Drop Andariel", "Drop Mephisto", "Drop Diablo", "Drop Pindleskin",
                      "Found", "FoundEth"]
         self.grail_table_open = False
+        self._grail_controller_eth_mode = False
 
         self._make_widgets()
         self.update_statistics()
@@ -255,10 +257,13 @@ class Grail(tkd.Frame):
                         getattr(self, 'grail_item_' + self.fix_name(item_name)).set(1)
 
     def update_grail_from_name(self, name):
+        # Check if we're in eth mode (set when grail controller is opened)
+        update_key = 'FoundEth' if self._grail_controller_eth_mode else 'Found'
+        
         for i, item in enumerate(self.grail):
             if item.get('Item', None) == name:
-                found_value = not item.get('Found', False)
-                self.grail[i].update({'Found': found_value})
+                found_value = not item.get(update_key, False)
+                self.grail[i].update({update_key: found_value})
                 self.update_statistics()
                 if self.grail_table_open:
                     self.select_from_filters()
@@ -372,23 +377,33 @@ class Grail(tkd.Frame):
         if win32gui.FindWindow(None, 'Grail controller'):
             return
 
-        if self.show_eth_grail.get():
-            messagebox.showinfo('Eth grail', 'Grail controller cannot be used to modify your eth grail as of right now.\nInstead you can do this on herokuapp, and then sync to the application afterwards')
-            return
-
+        # Store eth mode state for use in update_grail_from_name
+        eth_mode = self.show_eth_grail.get()
+        self._grail_controller_eth_mode = eth_mode
+        
         # Initialise the TopLevel window (important we use TopLevel instead of Tk, to pass over information between
         # the defined widgets and the main app)
         window = tkd.Toplevel()
-        window.title('Grail controller')
+        window.title('Grail controller' + (' (Eth)' if eth_mode else ''))
         window.resizable(True, True)
         window.iconbitmap(media_path + 'icon.ico')
 
         # Build nested dict with information from the current grail
         # Filter items based on PD2 mode - include PD2 items when PD2 mode is active
         visible_grail = [x for x in self.grail if self.main_frame.pd2_mode or not x.get('PD2 item', False)]
-        upd_dict = {x['Item']: True for x in visible_grail if x.get('Found', None) is True}
+        
+        # Filter to eth-capable items and use FoundEth when in eth mode
+        if eth_mode:
+            eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
+            visible_grail = [x for x in visible_grail if x.get('Item', '') in eth_item_set]
+            upd_dict = {x['Item']: True for x in visible_grail if x.get('FoundEth', None) is True}
+            default_data = get_default_eth_data(pd2_mode=self.main_frame.pd2_mode)
+        else:
+            upd_dict = {x['Item']: True for x in visible_grail if x.get('Found', None) is True}
+            default_data = get_default_data(pd2_mode=self.main_frame.pd2_mode)
+        
         nested_grail = herokuapp_controller.update_grail_dict(
-            dct=herokuapp_controller.get_default_data(pd2_mode=self.main_frame.pd2_mode),
+            dct=default_data,
             item_upg_dict=upd_dict
         )
 
@@ -417,20 +432,23 @@ class Grail(tkd.Frame):
         unique_armor = tkd.Frame(tabcontrol)
         unique_weapons = tkd.Frame(tabcontrol)
         unique_other = tkd.Frame(tabcontrol)
-        sets = tkd.Frame(tabcontrol)
-        runes = tkd.Frame(tabcontrol)
-
         tabcontrol.add(unique_armor, text='Unique Armor')
         tabcontrol.add(unique_weapons, text='Unique Weapons')
         tabcontrol.add(unique_other, text='Unique Other')
-        tabcontrol.add(sets, text='Sets')
-        tabcontrol.add(runes, text='Runes')
+        
+        # Only show sets and runes tabs when not in eth mode (they can't be ethereal)
+        if not eth_mode:
+            sets = tkd.Frame(tabcontrol)
+            runes = tkd.Frame(tabcontrol)
+            tabcontrol.add(sets, text='Sets')
+            tabcontrol.add(runes, text='Runes')
 
         rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
         rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
         rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 2)
-        rec_checkbox_add(self, sets, nested_grail['sets'], 5)
-        rec_checkbox_add(self, runes, nested_grail['runes'], 1)
+        if not eth_mode:
+            rec_checkbox_add(self, sets, nested_grail['sets'], 5)
+            rec_checkbox_add(self, runes, nested_grail['runes'], 1)
 
         # Make sure to update the theme for the newly created widgets
         theme = Theme(self.main_frame.active_theme)
