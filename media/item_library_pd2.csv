@@ -1,4 +1,32 @@
 Item,Base Item,Item Group 0,Item Group 1,Item Group 2,Item Class,Quality,Rarity,Class restriction,TC,QLVL,Roll rarity,Roll chance,Drop Andariel,Drop Duriel,Drop Mephisto,Drop Diablo,Drop Pindleskin,PD2 item
+Lenymo,Sash,Unique Armor,Belt,Normal,Belt,Normal,Unique,,3,10,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Snakecord,Light Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,9,16,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Nightsmoke,Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,12,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Goldwrap,Heavy Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,21,36,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Bladebuckle,Plated Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,27,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+String of Ears,Demonhide Sash,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,36,37,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Razortail,Sharkskin Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,39,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Gloom's Trap,Mesh Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,45,45,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Snowclash,Battle Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,51,49,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Thundergod's Vigor,War Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,54,55,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Arachnid Mesh,Spiderweb Sash,Unique Armor,Belt,Elite,Belt,Elite,Unique,,63,87,,,FALSE,TRUE,TRUE,TRUE,FALSE,FALSE
+Nosferatu's Coil,Vampirefang Belt,Unique Armor,Belt,Elite,Belt,Elite,Unique,,69,68,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Verdungo's Hearty Cord,Mithril Coil,Unique Armor,Belt,Elite,Belt,Elite,Unique,,75,71,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
+Siggard's Staunch,Colossus Girdle,Unique Armor,Belt,Elite,Belt,Elite,Unique,,87,87,,,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE
+Hotspur,Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,3,7,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Gorefoot,Heavy Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,9,12,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Treads of Cthon,Chain Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,12,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Goblin Toe,Light Plated Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,21,30,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Tearhaunch,Greaves,Unique Armor,Boots,Normal,Boots,Normal,Unique,,27,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Infernostride,Demonhide Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,36,37,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Waterwalk,Sharkskin Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,39,40,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Silkweave,Mesh Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,45,44,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+War Traveler,Battle Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,51,50,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Gore Rider,War Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,54,55,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Merman's Sprocket,Wyrmhide Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,60,60,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Sandstorm Trek,Scarabshell Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,66,72,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Marrowwalk,Boneweave Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,72,74,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Shadow Dancer,Myrmidon Greaves,Unique Armor,Boots,Elite,Boots,Elite,Unique,,87,79,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
 Greyform,Quilted Armor,Unique Armor,Chest,Normal,Armor,Normal,Unique,,3,10,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Blinkbat's Form,Leather Armor,Unique Armor,Chest,Normal,Armor,Normal,Unique,,3,16,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 The Centurion,Hard Leather Armor,Unique Armor,Chest,Normal,Armor,Normal,Unique,,6,19,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -38,34 +66,6 @@ Steel Carapace,Shadow Plate,Unique Armor,Chest,Elite,Armor,Elite,Unique,,84,74,,
 Purgatory,Archon Plate,Unique Armor,Chest,Elite,Armor,Elite,Unique,,84,87,,,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE
 Templar's Might,Sacred Armor,Unique Armor,Chest,Elite,Armor,Elite,Unique,,87,82,8,88.90%,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
 Tyrael's Might,Sacred Armor,Unique Armor,Chest,Elite,Armor,Elite,Unique,,87,87,1,11.10%,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
-Lenymo,Sash,Unique Armor,Belt,Normal,Belt,Normal,Unique,,3,10,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Snakecord,Light Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,9,16,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Nightsmoke,Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,12,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Goldwrap,Heavy Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,21,36,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Bladebuckle,Plated Belt,Unique Armor,Belt,Normal,Belt,Normal,Unique,,27,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-String of Ears,Demonhide Sash,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,36,37,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Razortail,Sharkskin Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,39,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Gloom's Trap,Mesh Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,45,45,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Snowclash,Battle Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,51,49,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Thundergod's Vigor,War Belt,Unique Armor,Belt,Exceptional,Belt,Exceptional,Unique,,54,55,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Arachnid Mesh,Spiderweb Sash,Unique Armor,Belt,Elite,Belt,Elite,Unique,,63,87,,,FALSE,TRUE,TRUE,TRUE,FALSE,FALSE
-Nosferatu's Coil,Vampirefang Belt,Unique Armor,Belt,Elite,Belt,Elite,Unique,,69,68,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Verdungo's Hearty Cord,Mithril Coil,Unique Armor,Belt,Elite,Belt,Elite,Unique,,75,71,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
-Siggard's Staunch,Colossus Girdle,Unique Armor,Belt,Elite,Belt,Elite,Unique,,87,87,,,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE
-Hotspur,Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,3,7,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Gorefoot,Heavy Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,9,12,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Treads of Cthon,Chain Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,12,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Goblin Toe,Light Plated Boots,Unique Armor,Boots,Normal,Boots,Normal,Unique,,21,30,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Tearhaunch,Greaves,Unique Armor,Boots,Normal,Boots,Normal,Unique,,27,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Infernostride,Demonhide Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,36,37,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Waterwalk,Sharkskin Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,39,40,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Silkweave,Mesh Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,45,44,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-War Traveler,Battle Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,51,50,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Gore Rider,War Boots,Unique Armor,Boots,Exceptional,Boots,Exceptional,Unique,,54,55,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Merman's Sprocket,Wyrmhide Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,60,60,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Sandstorm Trek,Scarabshell Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,66,72,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Marrowwalk,Boneweave Boots,Unique Armor,Boots,Elite,Boots,Elite,Unique,,72,74,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
-Shadow Dancer,Myrmidon Greaves,Unique Armor,Boots,Elite,Boots,Elite,Unique,,87,79,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
 Kira's Guardian,Tiara,Unique Armor,Circlet,Exceptional,Circlet,Exceptional,Unique,,72,85,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Griffon's Eye,Diadem,Unique Armor,Circlet,Elite,Circlet,Elite,Unique,,87,84,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
 The Hand of Broc,Leather Gloves,Unique Armor,Gloves,Normal,Gloves,Normal,Unique,,3,7,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -129,28 +129,21 @@ Stormshield,Monarch,Unique Armor,Shield,Elite,Shield,Elite,Unique,,72,77,,,FALSE
 Head Hunter's Glory,Troll Nest,Unique Armor,Shield,Elite,Shield,Elite,Unique,,78,83,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Medusa's Gaze,Aegis,Unique Armor,Shield,Elite,Shield,Elite,Unique,,81,84,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
 Spirit Ward,Ward,Unique Armor,Shield,Elite,Shield,Elite,Unique,,84,76,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
-Nagelring,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,10,15,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Nokozan Relic,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,14,20,26.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Manald Heal,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,20,15,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-The Eye of Etlich,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,20,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-The Mahim-Oak Curio,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,34,10,13.30%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Stone of Jordan,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,39,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Dwarf Star,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,53,10,16.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Raven Frost,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,53,10,16.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Saracen's Chance,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,53,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Crescent Moon,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-The Cat's Eye,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-The Rising Sun,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Atma's Scarab,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,60,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Bul-Kathos' Wedding Band,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,66,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Carrion Wind,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,68,3,5.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Constricting Loop,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,73,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Highlord's Wrath,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,73,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Seraph's Hymn,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,73,3,4.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Nature's Peace,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,77,3,5.00%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
-Mara's Kaleidoscope,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,80,5,6.70%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
-Wisp Projector,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,84,1,1.67%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
-Metalgrid,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,85,2,2.70%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Balefire,Blunt Arrows,Unique Other,Arrows,Normal,Arrows,Normal,Unique,,6,14,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Swiftwind Needle,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,32,4,57.14%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Tombsong,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,36,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Aetherwing,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,55,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Basilisk's Quill,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,62,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Doom's Finger,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,87,1,11.11%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
+Ramfodder,Light Bolts,Unique Other,Bolts,Normal,Bolts,Normal,Unique,,12,8,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Anvilguard Strap,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,34,3,75.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Shatterhead,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,47,1,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Abyssal Ward,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Bannerlord's Call,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Frozen Sorrow,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,87,1,14.29%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
+Gheed's Fortune,Grand Charm,Unique Other,Charms,All,Charm,,Unique,,1,70,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Annihilus,Small Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
+Hellfire Torch,Large Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
 Quetzalcoatl,Hawk Helm,Unique Other,Classes,Druid,Helm,Normal,Unique,Druid,9,35,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
 Sankekur's Fall,Heraldic Shield,Unique Other,Classes,Paladin,Shield,Normal,Unique,Paladin,18,37,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
 True Silver,Maiden Javelin,Unique Other,Classes,Amazon,Javelin,Normal,Unique,Amazon,24,24,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
@@ -198,9 +191,6 @@ Death's Fathom,Dimensional Shard,Unique Other,Classes,Sorceress,Orb,Elite,Unique
 Skywarden,Vortex Shield,Unique Other,Classes,Paladin,Shield,Elite,Unique,Paladin,87,85,,,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE
 Ursa's Nightmare,Dream Spirit,Unique Other,Classes,Druid,Helm,Elite,Unique,Druid,87,85,,,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE
 Raekor's Virtue,Guardian Crown,Unique Other,Classes,Barbarian,Helm,Elite,Unique,Barbarian,87,87,,,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE
-Gheed's Fortune,Grand Charm,Unique Other,Charms,All,Charm,,Unique,,1,70,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Annihilus,Small Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
-Hellfire Torch,Large Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
 Rainbow Facet (Cold Die),Jewel,Unique Other,Rainbow Facet (Jewel),Die,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Rainbow Facet (Cold Level Up),Jewel,Unique Other,Rainbow Facet (Jewel),Level Up,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Rainbow Facet (Fire Die),Jewel,Unique Other,Rainbow Facet (Jewel),Die,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -209,6 +199,28 @@ Rainbow Facet (Light Die),Jewel,Unique Other,Rainbow Facet (Jewel),Die,Jewel,,Un
 Rainbow Facet (Light Level Up),Jewel,Unique Other,Rainbow Facet (Jewel),Level Up,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Rainbow Facet (Poison Die),Jewel,Unique Other,Rainbow Facet (Jewel),Die,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Rainbow Facet (Poison Level Up),Jewel,Unique Other,Rainbow Facet (Jewel),Level Up,Jewel,,Unique,,1,85,1,12.50%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Nagelring,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,10,15,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Manald Heal,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,20,15,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Stone of Jordan,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,39,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Dwarf Star,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,53,10,16.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Raven Frost,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,53,10,16.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Bul-Kathos' Wedding Band,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,66,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Carrion Wind,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,68,3,5.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Constricting Loop,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,73,1,1.67%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Nature's Peace,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,77,3,5.00%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Wisp Projector,Ring,Unique Other,Jewelry,Rings,Ring,,Unique,,1,84,1,1.67%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Nokozan Relic,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,14,20,26.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+The Eye of Etlich,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,20,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+The Mahim-Oak Curio,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,34,10,13.30%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Saracen's Chance,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,53,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Crescent Moon,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+The Cat's Eye,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+The Rising Sun,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,58,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Atma's Scarab,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,60,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Highlord's Wrath,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,73,5,6.70%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Seraph's Hymn,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,73,3,4.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Mara's Kaleidoscope,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,80,5,6.70%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
+Metalgrid,Amulet,Unique Other,Jewelry,Amulets,Amulet,,Unique,,1,85,2,2.70%,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 The Gnasher,Hand Axe,Unique Weapons,Axe 1H,Normal,Axe 1H,Normal,Unique,,3,7,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Deathspade,Axe,Unique Weapons,Axe 1H,Normal,Axe 1H,Normal,Unique,,9,12,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Bladebone,Double Axe,Unique Weapons,Axe 1H,Normal,Axe 1H,Normal,Unique,,15,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -419,12 +431,9 @@ Aldur's Advance,Battle Boots,Sets,Aldur's Watchtower,,Boots,Exceptional,Set,,51,
 Aldur's Deception,Shadow Plate,Sets,Aldur's Watchtower,,Armor,Elite,Set,,84,29,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
 Angelic Sickle,Sabre,Sets,Angelic Raiment,,Sword 1H,Normal,Set,,9,17,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Angelic Mantle,Ring Mail,Sets,Angelic Raiment,,Armor,Normal,Set,,12,17,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Angelic Halo,Ring,Sets,Angelic Raiment,,Ring,,Set,,1,17,30,29.41%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Angelic Wings,Amulet,Sets,Angelic Raiment,,Amulet,,Set,,1,17,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arcanna's Head,Skull Cap,Sets,Arcanna's Tricks,,Helm,Normal,Set,,6,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arcanna's Deathwand,War Staff,Sets,Arcanna's Tricks,,Staff,Normal,Set,,24,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arcanna's Flesh,Light Plate,Sets,Arcanna's Tricks,,Armor,Normal,Set,,36,20,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Arcanna's Sign,Amulet,Sets,Arcanna's Tricks,,Amulet,,Set,,1,20,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arctic Furs,Quilted Armor,Sets,Arctic Gear,,Armor,Normal,Set,,3,3,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arctic Binding,Light Belt,Sets,Arctic Gear,,Belt,Normal,Set,,9,3,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Arctic Mitts,Light Gauntlets,Sets,Arctic Gear,,Gloves,Normal,Set,,21,3,7,50.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -434,15 +443,11 @@ Berserker's Hatchet,Double Axe,Sets,Berserker's Arsenal,,Axe 1H,Normal,Set,,15,5
 Berserker's Hauberk,Splint Mail,Sets,Berserker's Arsenal,,Armor,Normal,Set,,21,5,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Bul-Kathos' Tribal Guardian,Colossus Sword,Sets,Bul-Kathos' Children,,Sword 2H,Elite,Set,,81,50,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
 Bul-Kathos' Sacred Charge,Colossus Blade,Sets,Bul-Kathos' Children,,Sword 2H,Elite,Set,,87,50,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
-Bul-Kathos' Death Band,Ring,Sets,Bul-Kathos' Children,,Ring,,Set,,1,50,2,1.96%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
 Cathan's Mesh,Chain Mail,Sets,Cathan's Traps,,Armor,Normal,Set,,15,15,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Cathan's Rule,Battle Staff,Sets,Cathan's Traps,,Staff,Normal,Set,,18,15,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Cathan's Visage,Mask,Sets,Cathan's Traps,,Helm,Normal,Set,,21,15,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Cathan's Seal,Ring,Sets,Cathan's Traps,,Ring,,Set,,1,15,70,68.63%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Cathan's Sigil,Amulet,Sets,Cathan's Traps,,Amulet,,Set,,1,15,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Civerb's Ward,Large Shield,Sets,Civerb's Vestments,,Shield,Normal,Set,,12,13,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Civerb's Cudgel,Grand Scepter,Sets,Civerb's Vestments,,Scepter,Normal,Set,,15,13,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Civerb's Icon,Amulet,Sets,Civerb's Vestments,,Amulet,,Set,,1,13,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Cleglaw's Claw,Small Shield,Sets,Cleglaw's Brace,,Shield,Normal,Set,,6,6,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Cleglaw's Pincers,Chain Gloves,Sets,Cleglaw's Brace,,Gloves,Normal,Set,,12,6,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Cleglaw's Tooth,Long Sword,Sets,Cleglaw's Brace,,Sword 1H,Normal,Set,,21,6,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -479,7 +484,6 @@ Infernal Torch,Grim Wand,Sets,Infernal Tools,,Wand,Normal,Set,,27,7,,,TRUE,TRUE,
 Iratha's Cord,Heavy Belt,Sets,Iratha's Finery,,Belt,Normal,Set,,21,21,7,50.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Iratha's Cuff,Light Gauntlets,Sets,Iratha's Finery,,Gloves,Normal,Set,,21,21,7,50.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Iratha's Coil,Crown,Sets,Iratha's Finery,,Helm,Normal,Set,,30,21,7,50.00%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Iratha's Collar,Amulet,Sets,Iratha's Finery,,Amulet,,Set,,1,21,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Isenhart's Horns,Full Helm,Sets,Isenhart's Armory,,Helm,Normal,Set,,15,11,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Isenhart's Lightbrand,Broad Sword,Sets,Isenhart's Armory,,Sword 1H,Normal,Set,,15,11,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Isenhart's Case,Breast Plate,Sets,Isenhart's Armory,,Armor,Normal,Set,,18,11,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -521,17 +525,14 @@ Tal Rasha's Fine Spun Cloth,Mesh Belt,Sets,Tal Rasha's Wrappings,,Belt,Exception
 Tal Rasha's Horadric Crest,Death Mask,Sets,Tal Rasha's Wrappings,,Helm,Exceptional,Set,,48,26,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tal Rasha's Lidless Eye,Swirling Crystal,Sets,Tal Rasha's Wrappings,,Orb,Exceptional,Set,Sorceress,51,26,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tal Rasha's Guardianship,Lacquered Plate,Sets,Tal Rasha's Wrappings,,Armor,Elite,Set,,84,26,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
-Tal Rasha's Adjudication,Amulet,Sets,Tal Rasha's Wrappings,,Amulet,,Set,,1,26,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tancred's Hobnails,Boots,Sets,Tancred's Battlegear,,Boots,Normal,Set,,3,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tancred's Crowbill,Military Pick,Sets,Tancred's Battlegear,,Axe 1H,Normal,Set,,21,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tancred's Skull,Bone Helm,Sets,Tancred's Battlegear,,Helm,Normal,Set,,24,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Tancred's Spine,Full Plate Mail,Sets,Tancred's Battlegear,,Armor,Normal,Set,,39,27,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
-Tancred's Weird,Amulet,Sets,Tancred's Battlegear,,Amulet,,Set,,1,27,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Rite of Passage,Demonhide Boots,Sets,The Disciple,,Boots,Exceptional,Set,,36,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Laying of Hands,Bramble Mitts,Sets,The Disciple,,Gloves,Elite,Set,,57,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Dark Adherent,Dusk Shroud,Sets,The Disciple,,Armor,Elite,Set,,66,39,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Credendum,Mithril Coil,Sets,The Disciple,,Belt,Elite,Set,,75,39,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
-Telling of Beads,Amulet,Sets,The Disciple,,Amulet,,Set,,1,39,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Trang-Oul's Claws,Heavy Bracers,Sets,Trang-Oul's Avatar,,Gloves,Exceptional,Set,,45,32,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Trang-Oul's Wing,Cantor Trophy,Sets,Trang-Oul's Avatar,,Shield,Exceptional,Set,Necromancer,51,32,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Trang-Oul's Scales,Chaos Armor,Sets,Trang-Oul's Avatar,,Armor,Exceptional,Set,,63,32,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -540,6 +541,17 @@ Trang-Oul's Guise,Bone Visage,Sets,Trang-Oul's Avatar,,Helm,Elite,Set,,84,32,,,F
 Vidala's Ambush,Leather Armor,Sets,Vidala's Rig,,Armor,Normal,Set,,3,19,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Vidala's Fetlock,Light Plated Boots,Sets,Vidala's Rig,,Boots,Normal,Set,,21,19,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Vidala's Barb,Long Battle Bow,Sets,Vidala's Rig,,Bow,Normal,Set,,24,19,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Angelic Halo,Ring,Sets,Angelic Raiment,,Ring,,Set,,1,17,30,29.41%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Bul-Kathos' Death Band,Ring,Sets,Bul-Kathos' Children,,Ring,,Set,,1,50,2,1.96%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Cathan's Seal,Ring,Sets,Cathan's Traps,,Ring,,Set,,1,15,70,68.63%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Angelic Wings,Amulet,Sets,Angelic Raiment,,Amulet,,Set,,1,17,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Arcanna's Sign,Amulet,Sets,Arcanna's Tricks,,Amulet,,Set,,1,20,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Cathan's Sigil,Amulet,Sets,Cathan's Traps,,Amulet,,Set,,1,15,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Civerb's Icon,Amulet,Sets,Civerb's Vestments,,Amulet,,Set,,1,13,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Iratha's Collar,Amulet,Sets,Iratha's Finery,,Amulet,,Set,,1,21,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Tal Rasha's Adjudication,Amulet,Sets,Tal Rasha's Wrappings,,Amulet,,Set,,1,26,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Tancred's Weird,Amulet,Sets,Tancred's Battlegear,,Amulet,,Set,,1,27,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Telling of Beads,Amulet,Sets,The Disciple,,Amulet,,Set,,1,39,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Vidala's Snare,Amulet,Sets,Vidala's Rig,,Amulet,,Set,,1,19,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 El Rune,El Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Eld Rune,Eld Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
@@ -574,15 +586,3 @@ Ber Rune,Ber Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Jah Rune,Jah Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Cham Rune,Cham Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Zod Rune,Zod Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
-Balefire,Blunt Arrows,Unique Other,Arrows,Normal,Arrows,Normal,Unique,,6,14,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Swiftwind Needle,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,32,4,57.14%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Tombsong,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,36,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Aetherwing,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,55,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Basilisk's Quill,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,62,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Doom's Finger,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,87,1,11.11%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
-Ramfodder,Light Bolts,Unique Other,Bolts,Normal,Bolts,Normal,Unique,,12,8,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Anvilguard Strap,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,34,3,0.75,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Shatterhead,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,47,1,0.25,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Abyssal Ward,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,0.428571429,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Bannerlord's Call,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,0.428571429,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Frozen Sorrow,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,87,1,0.142857143,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE

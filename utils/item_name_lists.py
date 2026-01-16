@@ -145,6 +145,20 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Siggard's Staunch",
     "Sacred Totem",
     
+    # PD2 unique arrows and bolts
+    "Balefire",
+    "Swiftwind Needle",
+    "Tombsong",
+    "Aetherwing",
+    "Basilisk's Quill",
+    "Doom's Finger",
+    "Ramfodder",
+    "Anvilguard Strap",
+    "Shatterhead",
+    "Abyssal Ward",
+    "Bannerlord's Call",
+    "Frozen Sorrow"
+
     # PD2 special non-equipment items
     "Worldstone Shard",
     "Larzuk's Puzzlebox",
@@ -168,7 +182,7 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Zhar's Sanctum Map",
     "Stygian Caverns Map",
     "Imperial Palace Map",
-    "Outer Void Map"
+    "Outer Void Map",
 ]
 
 UNID_ITEM_LIST_NO_PD2 = [
@@ -343,7 +357,13 @@ UNID_ITEM_LIST_PD2_ADD = [
     "Ring (Set)", "Ring (Unique)", "Runic Talons (Unique)",
     "Seraph Rod (Unique)", "Shillelagh (Unique)", "Sun Spirit (Unique)",
     "Vortex Shield (Unique)", "War Fist (Unique)", "Wyrmhide Boots (Unique)",
-    "Map (Unique)"
+    "Map (Unique)",
+    "Blunt Arrows (Unique)",
+    "Sharp Arrows (Unique)",
+    "Razor Arrows (Unique)",
+    "Light Bolts (Unique)",
+    "Heavy Bolts (Unique)",
+    "War Bolts (Unique)"
 ]
 
 
@@ -493,6 +513,7 @@ ITEM_ALIASES = {
 
 # PD2-only aliases (only active when PD2 mode is enabled)
 ITEM_ALIASES_PD2 = {
+    'BK death': "Bul-Kathos' Death Band",
     'wss': 'Worldstone Shard',
     'pbox': "Larzuk's Puzzlebox",
     'piece': "Larzuk's Puzzlepiece",
