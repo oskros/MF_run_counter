@@ -574,3 +574,15 @@ Ber Rune,Ber Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE
 Jah Rune,Jah Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Cham Rune,Cham Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Zod Rune,Zod Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
+Balefire,Blunt Arrows,Unique Other,Arrows,Normal,Arrows,Normal,Unique,,6,14,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Swiftwind Needle,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,32,4,57.14%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Tombsong,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,36,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Aetherwing,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,55,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Basilisk's Quill,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,62,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Doom's Finger,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,87,1,11.11%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
+Ramfodder,Light Bolts,Unique Other,Bolts,Normal,Bolts,Normal,Unique,,12,8,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Anvilguard Strap,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,34,3,0.75,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Shatterhead,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,47,1,0.25,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Abyssal Ward,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,0.428571429,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Bannerlord's Call,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,0.428571429,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Frozen Sorrow,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,87,1,0.142857143,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
