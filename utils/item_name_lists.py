@@ -133,6 +133,7 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Wraithskin",
     "Twilight's Reflection",
     "Denmother",
+    "Crackleshot",
     "Ebonbane",
     "Shatterblade",
     "Constricting Loop",
@@ -345,7 +346,7 @@ UNID_ITEM_LIST = [
 
 # PD2 base items to add to UNID_ITEM_LIST when PD2 mode is enabled
 UNID_ITEM_LIST_PD2_ADD = [
-    "Alpha Helm (Unique)", "Archon Plate (Unique)", "Bramble Mitts (Unique)",
+    "Alpha Helm (Unique)", "Archon Plate (Unique)", "Blade Bow (Unique)", "Bramble Mitts (Unique)",
     "Colossus Girdle (Unique)", "Colossus Sword (Set)", "Colossus Sword (Unique)",
     "Crusader Gauntlets (Unique)", "Crystalline Globe (Unique)", "Diamond Mail (Unique)",
     "Dream Spirit (Unique)", "Ghost Spear (Unique)", "Glowing Orb (Unique)",
@@ -582,7 +583,6 @@ ETH_ITEM_SET_PD2_ADD = {
     "Brimstone Rain",
     "Cyclopean Roar",
     "Denmother",
-    "Ebonbane",
     "Fenris",
     "Kalan's Legacy",
     "Leoric's Mithril Bane",

@@ -265,6 +265,7 @@ Witchwild String,Short Siege Bow,Unique Weapons,Bow,Exceptional,Bow,Exceptional,
 Cliffkiller,Large Siege Bow,Unique Weapons,Bow,Exceptional,Bow,Exceptional,Unique,,48,49,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Magewrath,Rune Bow,Unique Weapons,Bow,Exceptional,Bow,Exceptional,Unique,,51,51,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Goldstrike Arch,Gothic Bow,Unique Weapons,Bow,Exceptional,Bow,Exceptional,Unique,,54,54,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
+Crackleshot,Blade Bow,Unique Weapons,Bow,Elite,Bow,Elite,Unique,,60,87,,,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
 Eaglehorn,Crusader Bow,Unique Weapons,Bow,Elite,Bow,Elite,Unique,,78,77,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Widowmaker,Ward Bow,Unique Weapons,Bow,Elite,Bow,Elite,Unique,,81,73,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
 Windforce,Hydra Bow,Unique Weapons,Bow,Elite,Bow,Elite,Unique,,87,80,,,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE
