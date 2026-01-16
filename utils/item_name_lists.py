@@ -165,6 +165,9 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Larzuk's Puzzlebox",
     "Larzuk's Puzzlepiece",
     "Demonic Cube",
+    "Horadrim Navigator",
+    "Horadrim Almanac",
+    "Skeleton Key",
     "Vial of Lightsong",
     "Lilith's Mirror",
     "Sigil of Madawc",
@@ -184,6 +187,7 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Stygian Caverns Map",
     "Imperial Palace Map",
     "Outer Void Map",
+
 ]
 
 UNID_ITEM_LIST_NO_PD2 = [

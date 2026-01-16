@@ -129,18 +129,18 @@ Stormshield,Monarch,Unique Armor,Shield,Elite,Shield,Elite,Unique,,72,77,,,FALSE
 Head Hunter's Glory,Troll Nest,Unique Armor,Shield,Elite,Shield,Elite,Unique,,78,83,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE
 Medusa's Gaze,Aegis,Unique Armor,Shield,Elite,Shield,Elite,Unique,,81,84,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
 Spirit Ward,Ward,Unique Armor,Shield,Elite,Shield,Elite,Unique,,84,76,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE
-Balefire,Blunt Arrows,Unique Other,Arrows,Normal,Arrows,Normal,Unique,,6,14,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Swiftwind Needle,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,32,4,57.14%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Tombsong,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,15,36,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Aetherwing,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,55,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Basilisk's Quill,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,62,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Doom's Finger,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,30,87,1,11.11%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
-Ramfodder,Light Bolts,Unique Other,Bolts,Normal,Bolts,Normal,Unique,,12,8,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Anvilguard Strap,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,34,3,75.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Shatterhead,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,27,47,1,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Abyssal Ward,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Bannerlord's Call,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-Frozen Sorrow,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,60,87,1,14.29%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
+Balefire,Blunt Arrows,Unique Other,Arrows,Normal,Arrows,Normal,Unique,,1,14,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Swiftwind Needle,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,1,32,4,57.14%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Tombsong,Sharp Arrows,Unique Other,Arrows,Exceptional,Arrows,Exceptional,Unique,,1,36,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Aetherwing,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,1,55,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Basilisk's Quill,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,1,62,4,44.44%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Doom's Finger,Razor Arrows,Unique Other,Arrows,Elite,Arrows,Elite,Unique,,1,87,1,11.11%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
+Ramfodder,Light Bolts,Unique Other,Bolts,Normal,Bolts,Normal,Unique,,1,8,,,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Anvilguard Strap,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,1,34,3,75.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Shatterhead,Heavy Bolts,Unique Other,Bolts,Exceptional,Bolts,Exceptional,Unique,,1,47,1,25.00%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Abyssal Ward,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,1,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Bannerlord's Call,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,1,60,3,42.86%,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
+Frozen Sorrow,War Bolts,Unique Other,Bolts,Elite,Bolts,Elite,Unique,,1,87,1,14.29%,FALSE,TRUE,TRUE,TRUE,FALSE,TRUE
 Gheed's Fortune,Grand Charm,Unique Other,Charms,All,Charm,,Unique,,1,70,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE
 Annihilus,Small Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
 Hellfire Torch,Large Charm,Unique Other,Charms,All,Charm,,Unique,,1,110,,,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
