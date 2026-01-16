@@ -445,7 +445,7 @@ class Grail(tkd.Frame):
 
         rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
         rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
-        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 2)
+        rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
         if not eth_mode:
             rec_checkbox_add(self, sets, nested_grail['sets'], 5)
             rec_checkbox_add(self, runes, nested_grail['runes'], 1)
