@@ -631,3 +631,18 @@ ETH_ITEM_SET_PD2_ADD = {
 def get_eth_item_set(pd2_mode=False):
     """Get the ethereal item set based on PD2 mode."""
     return ETH_ITEM_SET | ETH_ITEM_SET_PD2_ADD if pd2_mode else ETH_ITEM_SET
+
+
+def get_base_item(row, pd2_mode=False):
+    """Get the base item for a row, using PD2 Base item if PD2 mode is enabled
+    
+    Args:
+        row: Dictionary row from CSV
+        pd2_mode: If True and 'PD2 Base item' exists, use it; otherwise use 'Base Item'
+    
+    Returns:
+        Base item string
+    """
+    if pd2_mode and row.get('PD2 Base item'):
+        return row['PD2 Base item']
+    return row.get('Base Item', '')

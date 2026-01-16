@@ -1,5 +1,5 @@
 from utils import tk_dynamic as tkd, tk_utils, autocompletion
-from utils.item_name_lists import NO_UNIQUE_MAP, NO_UNIQUE_MAP_PD2
+from utils.item_name_lists import NO_UNIQUE_MAP, NO_UNIQUE_MAP_PD2, get_base_item
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -41,7 +41,7 @@ class Drops(tkd.Frame):
                         drop['TC'] = no_unique_map[base].get('TC', '')
                         drop['Item Class'] = no_unique_map[base].get('Item Class', '')
                         break
-                    if base == item['Base Item']:
+                    if base == get_base_item(item, self.main_frame.pd2_mode):
                         drop['TC'] = item.get('TC', '')
                         drop['Item Class'] = item.get('Item Class', '')
                         break

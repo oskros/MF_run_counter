@@ -6,7 +6,7 @@ class Advanced(General):
     def __init__(self, main_frame, parent=None, **kw):
         tkd.Frame.__init__(self, parent, kw)
         self.main_frame = main_frame
-        self.add_flag(flag_name='PD2 mode', comment='Enable PD2 mode to use item_library_pd2 instead of item_library. Requires app restart to take effect.')
+        self.add_flag(flag_name='PD2 mode', comment='Enable PD2 mode to access PD2-specific items and settings from item_library.')
         self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp.com')
         self.add_flag(flag_name='Autocompletion unids', comment='Enable autocompletion for unid set/uniques, for tc84/87 items and for circlets, charms and jewels')
         self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')

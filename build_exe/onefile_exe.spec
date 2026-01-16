@@ -54,7 +54,6 @@ a.datas += [('d2icon.png', path+'\\..\\MF_run_counter\\media\\d2icon.png', 'DATA
 a.datas += [('run_sound.wav', path+'\\..\\MF_run_counter\\media\\run_sound.wav', 'DATA')]
 a.datas += [('icon.ico', path+'\\..\\MF_run_counter\\media\\icon.ico', 'DATA')]
 a.datas += [('item_library.csv', path+'\\..\\MF_run_counter\\media\\item_library.csv', 'DATA')]
-a.datas += [('item_library_pd2.csv', path+'\\..\\MF_run_counter\\media\\item_library_pd2.csv', 'DATA')]
 a.datas += [('stat_map.csv', path+'\\..\\MF_run_counter\\media\\stat_map.csv', 'DATA')]
 a.datas += [('caret-down.png', path+'\\..\\MF_run_counter\\media\\caret-down.png', 'DATA')]
 a.datas += [('caret-up.png', path+'\\..\\MF_run_counter\\media\\caret-up.png', 'DATA')]

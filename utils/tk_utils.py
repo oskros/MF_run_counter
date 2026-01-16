@@ -335,7 +335,7 @@ def add_circle(parent, pixels, color):
     return canvas, circ_id
 
 
-def create_treeview_filter(filter_names, get_filter_value, get_data_key):
+def create_treeview_filter(filter_names, get_filter_value, get_data_key, get_data_value=None):
     """
     Creates a filter predicate for treeview data filtering.
     
@@ -346,10 +346,15 @@ def create_treeview_filter(filter_names, get_filter_value, get_data_key):
         filter_names: List of filter widget names
         get_filter_value: Function taking filter name, returns current filter value
         get_data_key: Function taking filter name, returns data key to check
+        get_data_value: Optional function taking (data_item, data_key) and returning the value to compare.
+                       If None, uses data_item.get(data_key, '') as default.
     
     Returns:
         function: Predicate that takes a data item (dict) and returns True if it matches all filters
     """
+    if get_data_value is None:
+        get_data_value = lambda item, key: item.get(key, '')
+    
     def filter_predicate(data_item):
         for filter_name in filter_names:
             filter_value = get_filter_value(filter_name)
@@ -357,7 +362,7 @@ def create_treeview_filter(filter_names, get_filter_value, get_data_key):
                 continue
             
             data_key = get_data_key(filter_name)
-            data_value = str(data_item.get(data_key, ''))
+            data_value = str(get_data_value(data_item, data_key))
             
             if data_value != filter_value:
                 return False

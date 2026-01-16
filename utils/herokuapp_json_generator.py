@@ -3,7 +3,7 @@ import csv
 import re
 from functools import lru_cache
 from init import media_path
-from utils.item_name_lists import get_eth_item_set
+from utils.item_name_lists import get_eth_item_set, get_base_item
 
 # Mapping from CSV format to JSON format for Item Group 1
 # Items not in this mapping will default to .lower()
@@ -41,14 +41,17 @@ UNIQUE_CATEGORY_MAPPING = {
 
 # Handler functions for special unique item categories
 # Each handler builds the path and returns (path, key) tuple
-def handle_jewelry(path, row, quality):
-    subcategory = BASE_ITEM_MAPPING.get(row['Base Item'], 'jewelry')
+def handle_jewelry(path, row, **kwargs):
+    quality = kwargs.get('quality')
+    pd2_mode = kwargs.get('pd2_mode', False)
+    base_item = get_base_item(row, pd2_mode)
+    subcategory = BASE_ITEM_MAPPING.get(base_item, 'jewelry')
     path = path.setdefault(subcategory, {})
     if quality:
         path = path.setdefault(quality.lower(), {})
     return path, row['Item']
 
-def handle_rainbow_facet(path, row, quality):
+def handle_rainbow_facet(path, row, **kwargs):
     activation_type = row['Item Group 2'].lower()
     # Extract damage type from "Rainbow Facet (Cold Die)" -> "Cold"
     match = re.search(r'Rainbow Facet \(([A-Za-z]+)', row['Item'])
@@ -56,18 +59,20 @@ def handle_rainbow_facet(path, row, quality):
     path = path.setdefault(activation_type, {})
     return path, damage_type
 
-def handle_classes(path, row, quality):
+def handle_classes(path, row, **kwargs):
     class_name = row['Class restriction'].lower()
     path = path.setdefault(class_name, {})
     return path, row['Item']
 
-def handle_charms(path, row, quality):
+def handle_charms(path, row, **kwargs):
+    quality = kwargs.get('quality')
     path = path.setdefault('all', {})
     if quality:
         path = path.setdefault(quality.lower(), {})
     return path, row['Item']
 
-def handle_default(path, row, quality):
+def handle_default(path, row, **kwargs):
+    quality = kwargs.get('quality')
     # Special case: Kira's Guardian is marked as Exceptional in CSV but incorrectly goes under elite in JSON (API requirement)
     item_name = row['Item']
     if item_name == "Kira's Guardian":
@@ -87,7 +92,7 @@ UNIQUE_HANDLERS = {
 
 @lru_cache(maxsize=4)
 def generate_default_grail_data(pd2_mode=False, eth=False):
-    """Generate default grail data structure from item_library_pd2.csv
+    """Generate default grail data structure from item_library.csv
     
     Args:
         pd2_mode: If True, include PD2 items
@@ -104,7 +109,7 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
     
     # Load items from CSV
     eth_item_set = get_eth_item_set(pd2_mode)
-    with open(media_path + 'item_library_pd2.csv', 'r', encoding='utf-8') as fo:
+    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as fo:
         for row in csv.DictReader(fo):
             item_name = row['Item']
             
@@ -136,7 +141,7 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
                 
                 # Build the path using the handler
                 path = data['uniques'][category].setdefault(normalized_group_1, {})
-                path, key = handler(path, row, quality)
+                path, key = handler(path, row, quality=quality, pd2_mode=pd2_mode)
                 
                 path[key] = {}
     

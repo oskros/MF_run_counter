@@ -1,7 +1,7 @@
 from init import *
 from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller, other_utils
 from utils.color_themes import Theme
-from utils.item_name_lists import get_eth_item_set, FULL_ITEM_LIST_PD2_ADD
+from utils.item_name_lists import get_eth_item_set, FULL_ITEM_LIST_PD2_ADD, get_base_item
 from utils.herokuapp_json_generator import get_default_data, get_default_eth_data
 import tkinter as tk
 from tkinter import ttk
@@ -162,9 +162,9 @@ class Grail(tkd.Frame):
                     getattr(self, var).set(0)
 
     def create_empty_grail(self):
-        # Use item_library_pd2.csv which contains all items (regular + PD2)
+        # Use item_library.csv which contains all items (regular + PD2)
         grail_dict = []
-        with open(media_path + 'item_library_pd2.csv', 'r') as fo:
+        with open(media_path + 'item_library.csv', 'r') as fo:
             for row in csv.DictReader(fo):
                 item_dict = {**row, 'Found': False}
                 # Check if item can be ethereal (considering PD2 mode)
@@ -196,7 +196,7 @@ class Grail(tkd.Frame):
         eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
         
         # Load PD2 items and add missing ones
-        with open(media_path + 'item_library_pd2.csv', 'r') as fo:
+        with open(media_path + 'item_library.csv', 'r') as fo:
             for row in csv.DictReader(fo):
                 if row.get('PD2 item', '').upper() == 'TRUE' and row['Item'] not in existing_items:
                     item_dict = {**row, 'Found': False}
@@ -502,7 +502,8 @@ class Grail(tkd.Frame):
             self.filters.append(name)
             # Only include values from items visible based on PD2 mode
             visible_items = [x for x in self.grail if self.main_frame.pd2_mode or not x.get('PD2 item', False)]
-            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(x.get(col, '')) for x in visible_items).union({''}), key=sort_key), state="readonly", width=1))
+            # Use _get_column_value to get transformed values (e.g., Base Item in PD2 mode)
+            setattr(self, name, tkd.Combobox(combofr, values=sorted(set(str(self._get_column_value(x, col)) for x in visible_items).union({''}), key=sort_key), state="readonly", width=1))
             getattr(self, name).pack(side=tk.LEFT, expand=True, fill=tk.X)
             getattr(self, name).bind('<<ComboboxSelected>>', self.select_from_filters)
         
@@ -513,20 +514,28 @@ class Grail(tkd.Frame):
             if not self.main_frame.pd2_mode and item.get('PD2 item', False):
                 continue
             tag = 'Owned' if item.get('Found', False) else 'Missing'
-            self.tree.insert('', tk.END, values=[item.get(col, '') for col in cols], tags=(tag,))
+            values = [self._get_column_value(item, col) for col in cols]
+            self.tree.insert('', tk.END, values=values, tags=(tag,))
 
         self.tree.tag_configure('Owned', background='#e6ffe6')
         self.tree.tag_configure('Missing', background='peach puff')
 
         self.grail_table_open = True
 
+    def _get_column_value(self, item, col):
+        """Get the value for a column, handling special cases like Base Item in PD2 mode"""
+        if col == 'Base Item':
+            return get_base_item(item, self.main_frame.pd2_mode)
+        return item.get(col, '')
+    
     def select_from_filters(self, event=None):
         self.tree.delete(*self.tree.get_children())
 
         filter_fn = tk_utils.create_treeview_filter(
             self.filters,
             lambda f: getattr(self, f).get(),
-            lambda f: self.filter_col_map[f]  # Use mapping to handle underscores in column names
+            lambda f: self.filter_col_map[f],  # Use mapping to handle underscores in column names
+            get_data_value=self._get_column_value  # Use transformed values (e.g., Base Item in PD2 mode)
         )
         
         # Get the columns list (including PD2 item if PD2 mode is active)
@@ -540,7 +549,8 @@ class Grail(tkd.Frame):
                 continue
             if filter_fn(item):
                 tag = 'Owned' if item.get('Found', False) else 'Missing'
-                self.tree.insert('', tk.END, values=[item.get(col, '') for col in cols], tags=(tag,))
+                values = [self._get_column_value(item, col) for col in cols]
+                self.tree.insert('', tk.END, values=values, tags=(tag,))
 
     def close_grail_table(self, window):
         self.grail_table_open = False
