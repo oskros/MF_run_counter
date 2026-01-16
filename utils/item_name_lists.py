@@ -143,7 +143,31 @@ FULL_ITEM_LIST_PD2_ADD = [
     "Wildspeaker",
     "Achilles Strike",
     "Siggard's Staunch",
-    "Sacred Totem"
+    "Sacred Totem",
+    # PD2 special non-equipment items
+    "Worldstone Shard",
+    "Larzuk's Puzzlebox",
+    "Larzuk's Puzzlepiece",
+    "Demonic Cube",
+    "Vial of Lightsong",
+    "Lilith's Mirror",
+    "Sigil of Madawc",
+    "Sigil of Talic",
+    "Sigil of Korlic",
+    "Prime Evil Soul",
+    "Pure Demonic Essence",
+    "Splinter of the Void",
+    "Trang-Oul's Jawbone",
+    "Demonic Insignia",
+    "Talisman of Transgression",
+    "Flesh of Malic",
+    "Horadrim Scarab",
+    "Catalyst Shard",
+    "Fallen Garden's Map",
+    "Zhar's Sanctum Map",
+    "Stygian Caverns Map",
+    "Imperial Palace Map",
+    "Outer Void Map"
 ]
 
 UNID_ITEM_LIST_NO_PD2 = [
@@ -317,7 +341,8 @@ UNID_ITEM_LIST_PD2_ADD = [
     "Mummified Trophy (Unique)", "Overseer Skull (Unique)", "Quhab (Unique)",
     "Ring (Set)", "Ring (Unique)", "Runic Talons (Unique)",
     "Seraph Rod (Unique)", "Shillelagh (Unique)", "Sun Spirit (Unique)",
-    "Vortex Shield (Unique)", "War Fist (Unique)", "Wyrmhide Boots (Unique)"
+    "Vortex Shield (Unique)", "War Fist (Unique)", "Wyrmhide Boots (Unique)",
+    "Map (Unique)"
 ]
 
 
@@ -463,6 +488,15 @@ ITEM_ALIASES = {"Aldur's Boots": "Aldur's Advance",
                 'WTrav': 'War Traveler',
                 'WWs': 'Waterwalk',
                 'Wizzy': 'Wizardspike'}
+
+# PD2-only aliases (only active when PD2 mode is enabled)
+ITEM_ALIASES_PD2 = {
+    'wss': 'Worldstone Shard',
+    'pbox': "Larzuk's Puzzlebox",
+    'piece': "Larzuk's Puzzlepiece",
+    'pes': 'Prime Evil Soul',
+    'pde': 'Pure Demonic Essence'
+}
 
 
 ETH_ITEM_SET = {
