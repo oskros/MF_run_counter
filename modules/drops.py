@@ -1,5 +1,5 @@
 from utils import tk_dynamic as tkd, tk_utils, autocompletion
-from utils.item_name_lists import get_no_unique_map, get_base_item
+from utils.item_name_lists import get_no_unique_map, get_base_item, get_item_aliases, get_full_item_list, get_unid_item_list
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -26,9 +26,10 @@ class Drops(tkd.Frame):
         scrollbar.config(command=self.m.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
-    def add_drop(self):
-        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.unid_item_mode, add_to_last_run=self.main_frame.add_to_last_run, pd2_mode=self.main_frame.pd2_mode)
-        if not drop or drop['input'] == '':
+    def add_drop(self, drop=None):
+        if drop is None:
+            drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.unid_item_mode, add_to_last_run=self.main_frame.add_to_last_run, pd2_mode=self.main_frame.pd2_mode)
+        if not drop or drop.get('input', '') == '':
             return
 
         if drop['item_name'] is not None:
@@ -110,6 +111,58 @@ class Drops(tkd.Frame):
         self.m.insert(tk.END, line)
         self.m.yview_moveto(1)
         self.m.config(state=tk.DISABLED)
+
+    def add_drop_from_clipboard(self, item_dict):
+        fix_item_names = {
+            "Wartraveler": "War Traveler",
+            "Que-Hegan's Wisdon": "Que-Hegan's Wisdom",
+            "Thudergod's Vigor": "Thundergod's Vigor",
+            "McAuley's Riprap": "Sander's Riprap",
+            "Merman's Speed": "Merman's Sprocket",
+            "Griswolds's Redemption": "Griswold's Redemption",
+            "Souldrain": "Soul Drainer",
+            #"Immortal King's Soul Cage": ""
+            "Steelshade": "Steel Shade",
+            "Titangrip": "Titan's Grip"
+        }
+
+        unid = item_dict.get('unidentified', False)
+        is_ethereal = item_dict.get('isEthereal', False)
+        item_name = item_dict.get('name')
+        item_type = item_dict.get('type')
+        item_quality = item_dict.get('quality')
+
+        if 'runeword' in item_dict:
+            output_name = f"{item_dict['runeword']} ({item_type})"
+        elif 'name' not in item_dict and 'type' in item_dict:
+            if item_quality == 'Normal':
+                output_name = item_type
+            else:
+                output_name = f"{item_type} ({item_quality})"
+        elif item_quality in ['Unique', 'Set']:
+            output_name = fix_item_names.get(item_name, item_name)
+        elif item_quality == 'Rare':
+            output_name = f"{item_name} ({item_quality} {item_type})"
+        elif item_quality == 'Magic':
+            output_name = f"{item_name} ({item_quality})"
+        else:
+            output_name = f"{item_type ({item_quality})}"
+
+        if unid:
+            output_name = 'Unid ' + output_name
+
+
+        drop = {
+            'item_name': output_name.strip(),
+            'input': ('Eth ' if is_ethereal else '') + output_name,
+            'extra': '',
+            'eth': is_ethereal,
+            'last_run': self.main_frame.add_to_last_run
+        }
+        
+        # Reuse existing add_drop logic
+        self.add_drop(drop=drop)
+        return True
 
     def delete_selected_drops(self):
         if self.focus_get().winfo_name() == 'droplist':

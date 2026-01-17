@@ -3,6 +3,7 @@ from utils import tk_dynamic as tkd
 import tkinter as tk
 from tkinter import ttk
 import webbrowser
+import json
 from utils.other_utils import get_monitor_from_coord
 
 
@@ -369,6 +370,22 @@ def create_treeview_filter(filter_names, get_filter_value, get_data_key, get_dat
         return True
     
     return filter_predicate
+
+
+def read_json_from_clipboard(root):
+    try:
+        clipboard_text = root.clipboard_get()
+    except tk.TclError:
+        # Clipboard may be empty or not accessible
+        return None
+    
+    if not clipboard_text:
+        return None
+    
+    try:
+        return json.loads(clipboard_text)
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return None
 
 
 if __name__ == '__main__':

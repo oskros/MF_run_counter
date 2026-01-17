@@ -35,6 +35,7 @@ class Config:
         self.pd2_mode = other_utils.safe_eval(self.cfg['OPTIONS']['pd2_mode'])
         self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
         self.disable_dpi_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
+        self.add_drops_from_clipboard = other_utils.safe_eval(self.cfg['OPTIONS']['add_drops_from_clipboard'])
         self.advanced_tracker_open = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open'])
         self.active_profile = self.cfg['DEFAULT']['active_profile']
         self.window_start_pos = other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position'])
@@ -97,6 +98,7 @@ class Config:
         config['OPTIONS']['unid_item_mode'] = '0'
         config['OPTIONS']['add_to_last_run'] = '0'
         config['OPTIONS']['disable_dpi_scaling'] = '1'
+        config['OPTIONS']['add_drops_from_clipboard'] = '0'
         config['OPTIONS']['pd2_mode'] = '0'
 
         config.add_section('AUTOMODE')
@@ -203,6 +205,7 @@ class Config:
         cfg['OPTIONS']['add_to_last_run'] = str(parent.add_to_last_run)
         cfg['OPTIONS']['pd2_mode'] = str(parent.pd2_mode)
         cfg['OPTIONS']['disable_dpi_scaling'] = str(parent.disable_dpi_scaling)
+        cfg['OPTIONS']['add_drops_from_clipboard'] = str(parent.add_drops_from_clipboard)
 
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)

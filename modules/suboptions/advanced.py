@@ -10,6 +10,7 @@ class Advanced(General):
         self.add_flag(flag_name='Auto upload herokuapp', comment='Automatically upload newly found grailers to d2-holy-grail.herokuapp.com')
         self.add_flag(flag_name='Unid item mode', comment='Toggle autocompletion in the drop window for unidentified set/unique items, and some selected magic and rare items.')
         self.add_flag(flag_name='Disable DPI scaling', comment='Disable Windows DPI scaling for the application. Requires a restart of the app to take effect.\n\nNote that the app is not guaranteed to behave well if DPI scaling is enabled.')
+        self.add_flag(flag_name='Add drops from clipboard', comment='Monitor clipboard for JSON items and automatically add drops when a JSON with a "name" key is detected.')
         self.add_num_entry(flag_name='Start run delay (seconds)', comment='Add an artificial delay to the "start run" command')
         self.add_num_entry(flag_name='Auto archive (hours)', comment='Automatically calls "Archive session" if more than the configured number of hours have passed since last time the profile was used\n\nDisabled when equal to zero (0.0)\n\nThis is checked when app is opened and when profile is changed')
 
@@ -20,3 +21,12 @@ class Advanced(General):
         # Refresh grail tab summary when PD2 mode changes
         if attr == 'pd2_mode' and hasattr(self.main_frame, 'grail_tab'):
             self.main_frame.grail_tab.update_statistics()
+        
+        # Start/stop clipboard monitoring when flag changes
+        if attr == 'add_drops_from_clipboard':
+            if self.main_frame.add_drops_from_clipboard:
+                if not hasattr(self.main_frame, 'last_clipboard_content'):
+                    self.main_frame.last_clipboard_content = None
+                self.main_frame._start_clipboard_monitoring()
+            else:
+                self.main_frame.last_clipboard_content = None

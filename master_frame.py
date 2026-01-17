@@ -145,6 +145,12 @@ class MasterFrame(config.Config):
         # Used if "auto archive session" is activated
         self.profile_tab.auto_reset_session()
 
+        # Clipboard monitoring for drops
+        self.last_clipboard_content = None
+        self.clipboard_after_id = None
+        if self.add_drops_from_clipboard:
+            self._start_clipboard_monitoring()
+
         # Start the program
         self.root.mainloop()
 
@@ -447,6 +453,30 @@ class MasterFrame(config.Config):
         file = f'Profiles/{self.active_profile}.json'
         other_utils.atomic_json_dump(file, cache)
         self.grail_tab.save_grail()
+
+    def _start_clipboard_monitoring(self):
+        """Start monitoring clipboard for JSON items."""
+        self._check_clipboard()
+
+    def _stop_clipboard_monitoring(self):
+        """Stop monitoring clipboard for JSON items."""
+        if self.clipboard_after_id is not None:
+            self.root.after_cancel(self.clipboard_after_id)
+            self.clipboard_after_id = None
+
+    def _check_clipboard(self):
+        """Check clipboard for JSON with 'name' key and process if changed."""
+        if not self.add_drops_from_clipboard:
+            return
+        
+        clipboard_json = tk_utils.read_json_from_clipboard(self.root)
+        if clipboard_json and clipboard_json != self.last_clipboard_content:
+            self.last_clipboard_content = clipboard_json
+            if isinstance(clipboard_json, dict) and 'iLevel' in clipboard_json:
+                self.drops_tab.add_drop_from_clipboard(clipboard_json)
+        
+        # Schedule next check (poll every 500ms)
+        self.clipboard_after_id = self.root.after(500, self._check_clipboard)
 
     def Quit(self):
         """
