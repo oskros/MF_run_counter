@@ -1,7 +1,7 @@
 from init import *
 from utils import tk_dynamic as tkd, tk_utils, herokuapp_controller, other_utils
 from utils.color_themes import Theme
-from utils.item_name_lists import get_eth_item_set, FULL_ITEM_LIST_PD2_ADD, get_base_item
+from utils.item_name_lists import get_eth_item_set, get_base_item, is_pd2_item
 from utils.herokuapp_json_generator import get_default_data, get_default_eth_data
 import tkinter as tk
 from tkinter import ttk
@@ -209,7 +209,7 @@ class Grail(tkd.Frame):
         for item in state:
             item_name = item.get('Item', '')
             if 'PD2 item' not in item:
-                item['PD2 item'] = item_name in FULL_ITEM_LIST_PD2_ADD
+                item['PD2 item'] = is_pd2_item(item_name)
             
             # Add FoundEth property if item can be ethereal in current PD2 mode
             if item_name in eth_item_set and 'FoundEth' not in item:

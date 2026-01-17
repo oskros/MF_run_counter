@@ -1,5 +1,5 @@
 from utils import tk_dynamic as tkd, tk_utils, autocompletion
-from utils.item_name_lists import NO_UNIQUE_MAP, NO_UNIQUE_MAP_PD2, get_base_item
+from utils.item_name_lists import get_no_unique_map, get_base_item
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -27,16 +27,16 @@ class Drops(tkd.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(2, 1), padx=0)
 
     def add_drop(self):
-        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.autocompletion_unids, add_to_last_run=self.main_frame.add_to_last_run, pd2_mode=self.main_frame.pd2_mode)
+        drop = autocompletion.acbox(enable=True, title='Add drop', unid_mode=self.main_frame.unid_item_mode, add_to_last_run=self.main_frame.add_to_last_run, pd2_mode=self.main_frame.pd2_mode)
         if not drop or drop['input'] == '':
             return
 
         if drop['item_name'] is not None:
             for i, item in enumerate(self.main_frame.grail_tab.grail):
-                if self.main_frame.autocompletion_unids:
+                if self.main_frame.unid_item_mode:
                     base = ' '.join(drop['item_name'].split(' ')[:-1])
                     drop['Rarity'] = drop['item_name'].split(' ')[-1].replace('(', '').replace(')', '')
-                    no_unique_map = NO_UNIQUE_MAP_PD2 if self.main_frame.pd2_mode else NO_UNIQUE_MAP
+                    no_unique_map = get_no_unique_map(pd2_mode=self.main_frame.pd2_mode)
                     if base in no_unique_map:
                         drop['TC'] = no_unique_map[base].get('TC', '')
                         drop['Item Class'] = no_unique_map[base].get('Item Class', '')

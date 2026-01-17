@@ -1,7 +1,7 @@
 import tkinter as tk
 import re
 from init import *
-from utils.item_name_lists import FULL_ITEM_LIST, ITEM_ALIASES, ITEM_ALIASES_PD2, UNID_ITEM_LIST, UNID_ITEM_LIST_NO_PD2, UNID_ITEM_LIST_PD2_ADD, get_eth_item_set, FULL_ITEM_LIST_PD2_ADD
+from utils.item_name_lists import get_item_aliases, get_eth_item_set, get_full_item_list, get_unid_item_list
 
 
 class AutocompleteEntry:
@@ -105,23 +105,15 @@ class AutocompleteEntry:
         # ".*" allows anything to follow after the already typed letters
         pattern = re.compile(r"\b" + hyphen_escape + r".*\b", flags=re.IGNORECASE)
 
+        item_aliases = get_item_aliases(pd2_mode=self.pd2_mode)
         if self.unid_mode:
-            if self.pd2_mode:
-                item_lst = UNID_ITEM_LIST + UNID_ITEM_LIST_PD2_ADD
-            else:
-                item_lst = UNID_ITEM_LIST + UNID_ITEM_LIST_NO_PD2
+            item_lst = get_unid_item_list(pd2_mode=self.pd2_mode)
         else:
-            item_lst = FULL_ITEM_LIST + list(ITEM_ALIASES.keys())
-            if self.pd2_mode:
-                item_lst = item_lst + FULL_ITEM_LIST_PD2_ADD + list(ITEM_ALIASES_PD2.keys())
+            item_lst = get_full_item_list(pd2_mode=self.pd2_mode) + list(item_aliases.keys())
         for w in item_lst:
             if re.search(pattern, w):
                 # Append true entry from the alias list - if none are found, add the match from original list
-                # Check PD2 aliases first if in PD2 mode, then fall back to regular aliases
-                if self.pd2_mode and w in ITEM_ALIASES_PD2:
-                    i_name = ITEM_ALIASES_PD2.get(w, w)
-                else:
-                    i_name = ITEM_ALIASES.get(w, w)
+                i_name = item_aliases.get(w, w)
                 if eth:
                     if self.unid_mode or i_name in get_eth_item_set(self.pd2_mode):
                         out.add('Eth ' + i_name)

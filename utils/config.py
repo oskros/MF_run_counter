@@ -31,10 +31,10 @@ class Config:
         self.active_theme = self.cfg['OPTIONS']['active_theme'].lower()
         self.auto_upload_herokuapp = other_utils.safe_eval(self.cfg['OPTIONS']['auto_upload_herokuapp'])
         self.auto_archive_hours = other_utils.safe_eval(self.cfg['OPTIONS']['auto_archive_hours'])
-        self.autocompletion_unids = other_utils.safe_eval(self.cfg['OPTIONS']['autocompletion_unids'])
+        self.unid_item_mode = other_utils.safe_eval(self.cfg['OPTIONS'].get('unid_item_mode', '0'))
         self.pd2_mode = other_utils.safe_eval(self.cfg['OPTIONS']['pd2_mode'])
         self.add_to_last_run = other_utils.safe_eval(self.cfg['OPTIONS']['add_to_last_run'])
-        self.disable_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
+        self.disable_dpi_scaling = other_utils.safe_eval(self.cfg['OPTIONS']['disable_dpi_scaling'])
         self.advanced_tracker_open = other_utils.safe_eval(self.cfg['AUTOMODE']['advanced_tracker_open'])
         self.active_profile = self.cfg['DEFAULT']['active_profile']
         self.window_start_pos = other_utils.safe_eval(self.cfg['DEFAULT']['window_start_position'])
@@ -94,7 +94,7 @@ class Config:
         config['OPTIONS']['start_run_delay_seconds'] = '0.0'
         config['OPTIONS']['auto_upload_herokuapp'] = '0'
         config['OPTIONS']['auto_archive_hours'] = '0.0'
-        config['OPTIONS']['autocompletion_unids'] = '0'
+        config['OPTIONS']['unid_item_mode'] = '0'
         config['OPTIONS']['add_to_last_run'] = '0'
         config['OPTIONS']['disable_dpi_scaling'] = '1'
         config['OPTIONS']['pd2_mode'] = '0'
@@ -199,9 +199,10 @@ class Config:
         cfg['OPTIONS']['start_run_delay_seconds'] = str(parent.start_run_delay_seconds)
         cfg['OPTIONS']['auto_upload_herokuapp'] = str(parent.auto_upload_herokuapp)
         cfg['OPTIONS']['auto_archive_hours'] = str(parent.auto_archive_hours)
-        cfg['OPTIONS']['autocompletion_unids'] = str(parent.autocompletion_unids)
+        cfg['OPTIONS']['unid_item_mode'] = str(parent.unid_item_mode)
         cfg['OPTIONS']['add_to_last_run'] = str(parent.add_to_last_run)
         cfg['OPTIONS']['pd2_mode'] = str(parent.pd2_mode)
+        cfg['OPTIONS']['disable_dpi_scaling'] = str(parent.disable_dpi_scaling)
 
         # Update automodes
         cfg['AUTOMODE']['automode'] = str(parent.automode)

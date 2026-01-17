@@ -42,7 +42,7 @@ class MasterFrame(config.Config):
             raise SystemError(err)
 
         # A trick to disable windows DPI scaling - the app doesn't work well with scaling, unfortunately
-        if platform.release() == '10' and self.disable_scaling:
+        if platform.release() == '10' and self.disable_dpi_scaling:
             ctypes.windll.shcore.SetProcessDpiAwareness(2)
 
         # Initiate variables for memory reading

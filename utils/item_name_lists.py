@@ -1,303 +1,34 @@
-FULL_ITEM_LIST = [
-    "Aldur's Advance", "Aldur's Deception", "Aldur's Rhythm", "Aldur's Stony Gaze", "Alma Negra",
-    "Amn Rune", "Andariel's Visage", "Angelic Halo", "Angelic Mantle", "Angelic Sickle",
-    "Angelic Wings", "Annihilus", "Arachnid Mesh", "Arcanna's Deathwand", "Arcanna's Flesh",
-    "Arcanna's Head", "Arcanna's Sign", "Arctic Binding", "Arctic Furs", "Arctic Horn",
-    "Arctic Mitts", "Arioc's Needle", "Arkaine's Valor", "Arm of King Leoric", "Arreat's Face",
-    "Astreon's Iron Ward", "Athena's Wrath", "Atma's Scarab", "Atma's Wail", "Axe of Fechmar",
-    "Azurewrath", "Baezil's Vortex", "Bane Ash", "Baranar's Star", "Bartuc's Cut-Throat",
-    "Ber Rune", "Berserker's Hatchet", "Berserker's Hauberk", "Berserker's Headgear",
-    "Biggin's Bonnet", "Bing Sz Wang", "Black Hades", "Blackbog's Sharp", "Blackhand Key",
-    "Blackhorn's Face", "Blackleach Blade", "Blackoak Shield", "Blacktongue", "Blade of Ali Baba",
-    "Bladebone", "Bladebuckle", "Blastbark", "Blinkbat's Form", "Blood Crescent",
-    "Blood Raven's Charge", "Bloodfist", "Bloodletter", "Bloodmoon", "Bloodrise", "Bloodthief",
-    "Bloodtree Stump", "Boneflame", "Boneflesh", "Bonehew", "Boneshade", "Boneslayer Blade",
-    "Bonesnap", "Brainhew", "Bul-Kathos' Sacred Charge", "Bul-Kathos' Tribal Guardian",
-    "Bul-Kathos' Wedding Band", "Buriza-Do Kyanon", "Butcher's Pupil", "Bverrit Keep",
-    "Carin Shard", "Carrion Wind", "Cathan's Mesh", "Cathan's Rule", "Cathan's Seal",
-    "Cathan's Sigil", "Cathan's Visage", "Cerebus' Bite", "Cham Rune", "Chance Guards",
-    "Chromatic Ire", "Civerb's Cudgel", "Civerb's Icon", "Civerb's Ward", "Cleglaw's Claw",
-    "Cleglaw's Pincers", "Cleglaw's Tooth", "Cliffkiller", "Cloudcrack", "Coif of Glory",
-    "Coldkill", "Coldsteel Eye", "Corpsemourn", "Cow King's Hide", "Cow King's Hooves",
-    "Cow King's Horns", "Crainte Vomir", "Cranebeak", "Credendum", "Crescent Moon", "Crow Caw",
-    "Crown of Ages", "Crown of Thieves", "Crushflange", "Culwen's Point", "Dangoon's Teaching",
-    "Dark Adherent", "Dark Clan Crusher", "Darkforce Spawn", "Darkglow", "Darksight Helm",
-    "Death Cleaver", "Deathbit", "Death's Fathom", "Death's Guard", "Death's Hand", "Death's Touch",
-    "Death's Web", "Deathspade", "Demon Limb", "Demon Machine", "Demonhorn's Edge", "Demon's Arch",
-    "Dimoak's Hew", "Djinn Slayer", "Dol Rune", "Doombringer", "Doomslinger", "Dracul's Grasp",
-    "Dragonscale", "Duriel's Shell", "Duskdeep", "Dwarf Star", "Eaglehorn", "Earth Shifter",
-    "Earthshaker", "El Rune", "Eld Rune", "Endlesshail", "Eschuta's Temper", "Eth Rune",
-    "Ethereal Edge", "Executioner's Justice", "Fal Rune", "Felloak", "Firelizard's Talons",
-    "Flamebellow", "Fleshrender", "Fleshripper", "Frostburn", "Frostwind", "Gargoyle's Bite",
-    "Gerke's Sanctuary", "Gheed's Fortune", "Ghostflame", "Ghoulhide", "Giant Skull", "Gimmershred",
-    "Ginther's Rift", "Gleamscythe", "Gloom's Trap", "Goblin Toe", "Goldskin", "Goldstrike Arch",
-    "Goldwrap", "Gore Rider", "Gorefoot", "Goreshovel", "Gravenspine", "Gravepalm", "Greyform",
-    "Griffon's Eye", "Grim's Burning Dead", "Griswold's Edge", "Griswold's Heart",
-    "Griswold's Honor", "Griswold's Redemption", "Griswold's Valor", "Guardian Angel",
-    "Guardian Naga", "Guillaume's Face", "Gul Rune", "Gull", "Gut Siphon", "Haemosu's Adamant",
-    "Halaberd's Reign", "Hand of Blessed Light", "Harlequin Crest", "Hawkmail",
-    "Head Hunter's Glory", "Headstriker", "Heart Carver", "Heavenly Garb", "Heaven's Light",
-    "Hel Rune", "Hellcast", "Hellclap", "Hellfire Torch", "Hellmouth", "Hellplague", "Hellrack",
-    "Hellslayer", "Herald of Zakarum", "Hexfire", "Highlord's Wrath", "Homunculus", "Hone Sundan",
-    "Horizon's Tornado", "Hotspur", "Howltusk", "Hsarus' Iron Fist", "Hsarus' Iron Heel",
-    "Hsarus' Iron Stay", "Humongous", "Husoldal Evo", "Hwanin's Blessing", "Hwanin's Justice",
-    "Hwanin's Refuge", "Hwanin's Splendor", "Iceblink", "Ichorsting", "Immortal King's Detail",
-    "Immortal King's Forge", "Immortal King's Pillar", "Immortal King's Soul Cage",
-    "Immortal King's Stone Crusher", "Immortal King's Will", "Infernal Cranium", "Infernal Sign",
-    "Infernal Torch", "Infernostride", "Io Rune", "Iratha's Coil", "Iratha's Collar",
-    "Iratha's Cord", "Iratha's Cuff", "Iron Pelt", "Ironstone", "Isenhart's Case",
-    "Isenhart's Horns", "Isenhart's Lightbrand", "Isenhart's Parry", "Islestrike", "Ist Rune",
-    "Ith Rune", "Jade Talon", "Jah Rune", "Jalal's Mane", "Kelpie Snare", "Kinemil's Awl",
-    "Kira's Guardian", "Knell Striker", "Ko Rune", "Kuko Shakaku", "Lacerator", "Lance Guard",
-    "Lance of Yaggai", "Langer Briser", "Lava Gout", "Laying of Hands", "Leadcrow", "Lem Rune",
-    "Lenymo", "Leviathan", "Lidless Wall", "Lightsabre", "Lo Rune", "Lum Rune", "Lycander's Aim",
-    "Lycander's Flank", "Maelstrom", "Magefist", "Magewrath", "Magnus' Skin", "Mal Rune",
-    "Manald Heal", "Mang Song's Lesson", "Mara's Kaleidoscope", "Marrowwalk", "M'avina's Caster",
-    "M'avina's Embrace", "M'avina's Icy Clutch", "M'avina's Tenet", "M'avina's True Sight",
-    "Medusa's Gaze", "Messerschmidt's Reaver", "Metalgrid", "Milabrega's Diadem", "Milabrega's Orb",
-    "Milabrega's Robe", "Milabrega's Rod", "Moonfall", "Moser's Blessed Circle", "Nagelring",
-    "Naj's Circlet", "Naj's Light Plate", "Naj's Puzzler", "Natalya's Mark", "Natalya's Shadow",
-    "Natalya's Soul", "Natalya's Totem", "Nature's Peace", "Nef Rune", "Nightsmoke",
-    "Nightwing's Veil", "Nokozan Relic", "Nord's Tenderizer", "Nosferatu's Coil", "Ohm Rune",
-    "Ondal's Almighty", "Ondal's Wisdom", "Ormus' Robes", "Ort Rune",
-    "Peasant Crown", "Pelta Lunata", "Pierre Tombale Couant", "Plague Bearer", "Pluckeye",
-    "Pompeii's Wrath", "Pul Rune", "Pus Spitter", "Que-Hegan's Wisdom", "Radament's Sphere",
-    "Rainbow Facet (Cold Die)", "Rainbow Facet (Cold Level Up)", "Rainbow Facet (Fire Die)",
-    "Rainbow Facet (Fire Level Up)", "Rainbow Facet (Light Die)", "Rainbow Facet (Light Level Up)",
-    "Rainbow Facet (Poison Die)", "Rainbow Facet (Poison Level Up)", "Rakescar", "Ral Rune", "Rattlecage",
-    "Raven Claw", "Raven Frost", "Ravenlore", "Razor's Edge", "Razorswitch", "Razortail", "Razortine",
-    "Ribcracker", "Riphook", "Ripsaw", "Rite of Passage", "Rixot's Keen", "Rockfleece", "Rockstopper",
-    "Rogue's Bow", "Rune Master", "Rusthandle", "Sander's Paragon", "Sander's Riprap",
-    "Sander's Superstition", "Sander's Taboo", "Sandstorm Trek", "Saracen's Chance",
-    "Sazabi's Cobalt Redeemer", "Sazabi's Ghost Liberator", "Sazabi's Mental Sheath", "Schaefer's Hammer",
-    "Seraph's Hymn", "Serpent Lord", "Shadow Dancer", "Shadow Killer", "Shadowfang", "Shael Rune",
-    "Shaftstop", "Sigon's Gage", "Sigon's Guard", "Sigon's Sabot", "Sigon's Shelter", "Sigon's Visor",
-    "Sigon's Wrap", "Silks of the Victor", "Silkweave", "Skewer of Krintiz",
-    "Skin of the Flayed One", "Skin of the Vipermagi", "Skull Collector", "Skull Splitter",
-    "Skullder's Ire", "Skystrike", "Snakecord", "Snowclash", "Sol Rune", "Soul Drainer",
-    "Soul Harvest", "Soulfeast Tine", "Soulflay", "Sparking Mail", "Spectral Shard", "Spellsteel",
-    "Spike Thorn", "Spineripper", "Spire of Honor", "Spire of Lazarus", "Spirit Forge",
-    "Spirit Keeper", "Spirit Ward", "Stealskull", "Steel Carapace", "Steel Pillar", "Steel Shade",
-    "Steelclash", "Steeldriver", "Steelgoad", "Steelrend", "Stone Crusher", "Stone of Jordan",
-    "Stoneraven", "Stormchaser", "Stormeye", "Stormguild", "Stormlash", "Stormrider",
-    "Stormshield", "Stormspike", "Stormspire", "Stormstrike", "Stoutnail", "String of Ears",
-    "Suicide Branch", "Sur Rune", "Sureshrill Frost", "Swordback Hold", "Swordguard",
-    "Taebaek's Glory", "Tal Rasha's Adjudication", "Tal Rasha's Fine Spun Cloth",
-    "Tal Rasha's Guardianship", "Tal Rasha's Horadric Crest", "Tal Rasha's Lidless Eye", "Tal Rune",
-    "Tancred's Crowbill", "Tancred's Hobnails", "Tancred's Skull", "Tancred's Spine",
-    "Tancred's Weird", "Tarnhelm", "Tearhaunch", "Telling of Beads", "Templar's Might",
-    "The Atlantean", "The Battlebranch", "The Cat's Eye", "The Centurion", "The Chieftain",
-    "The Cranium Basher", "The Diggler", "The Dragon Chang", "The Eye of Etlich",
-    "The Face of Horror", "The Fetid Sprinkler", "The Gavel of Pain", "The General's Tan Do Li Ga",
-    "The Gladiator's Bane", "The Gnasher", "The Grandfather", "The Grim Reaper",
-    "The Hand of Broc", "The Impaler", "The Iron Jang Bong", "The Jade Tan Do",
-    "The Mahim-Oak Curio", "The Meat Scraper", "The Minotaur", "The Oculus", "The Patriarch",
-    "The Reaper's Toll", "The Redeemer", "The Rising Sun", "The Salamander", "The Scalper",
-    "The Spirit Shroud", "The Tannr Gorerod", "The Vile Husk", "The Ward", "Thul Rune",
-    "Thundergod's Vigor", "Thunderstroke", "Tiamat's Rebuke", "Tir Rune", "Titan's Revenge",
-    "Todesfaelle Flamme", "Tomb Reaver", "Toothrow", "Torch of Iro", "Trang-Oul's Claws",
-    "Trang-Oul's Girth", "Trang-Oul's Guise", "Trang-Oul's Scales", "Trang-Oul's Wing",
-    "Treads of Cthon", "Twitchthroe", "Tyrael's Might", "Um Rune", "Umbral Disk",
-    "Ume's Lament", "Undead Crown", "Valkyrie Wing", "Vampire Gaze", "Veil of Steel",
-    "Venom Grip", "Venom Ward", "Verdungo's Hearty Cord", "Vex Rune", "Vidala's Ambush",
-    "Vidala's Barb", "Vidala's Fetlock", "Vidala's Snare", "Viperfork", "Visceratuant",
-    "Wall of the Eyeless", "War Traveler", "Warlord's Trust", "Warpspear", "Warshrike", "Waterwalk",
-    "Whitstan's Guard", "Widowmaker", "Wilhelm's Pride", "Windforce", "Windhammer",
-    "Wisp Projector", "Witchwild String", "Witherstring", "Wizardspike", "Wizendraw", "Woestave",
-    "Wolfhowl", "Wormskull", "Wraith Flight", "Zakarum's Hand", "Zod Rune",
-    "Key of Destruction", "Key of Hate", "Key of Terror"]
+"""Item name lists and mappings for autocompletion and grail logic"""
+from functools import lru_cache
+import csv
+from init import media_path
 
-FULL_ITEM_LIST_PD2_ADD = [
-    "Bul-Kathos' Death Band",
-    "Cyclopean Roar",
-    "Quetzalcoatl",
-    "Kalan's Legacy",
-    "Sankekur's Fall",
-    "True Silver",
-    "Mage Slayer",
-    "Tempest",
-    "Purgatory",
-    "Occultist",
-    "Merman's Sprocket",
-    "Raekor's Virtue",
-    "Ursa's Nightmare",
-    "Martyrdom",
-    "Zerae's Resolve",
-    "Stalker's Cull",
-    "Akarat's Devotion",
-    "Brimstone Rain",
-    "Odium",
-    "Uldyssian's Awakening",
-    "Leoric's Mithril Bane",
-    "Titan's Grip",
-    "Wraithskin",
-    "Twilight's Reflection",
-    "Denmother",
-    "Crackleshot",
-    "Ebonbane",
-    "Shatterblade",
-    "Constricting Loop",
-    "Skorn",
-    "Whispering Mirage",
-    "Skywarden",
-    "Fenris",
-    "Wildspeaker",
-    "Achilles Strike",
-    "Siggard's Staunch",
-    "Sacred Totem",
-    
-    # PD2 unique arrows and bolts
-    "Balefire",
-    "Swiftwind Needle",
-    "Tombsong",
-    "Aetherwing",
-    "Basilisk's Quill",
-    "Doom's Finger",
-    "Ramfodder",
-    "Anvilguard Strap",
-    "Shatterhead",
-    "Abyssal Ward",
-    "Bannerlord's Call",
-    "Frozen Sorrow"
 
-    # PD2 special non-equipment items
-    "Worldstone Shard",
-    "Larzuk's Puzzlebox",
-    "Larzuk's Puzzlepiece",
-    "Demonic Cube",
-    "Horadrim Navigator",
-    "Horadrim Almanac",
-    "Skeleton Key",
-    "Vial of Lightsong",
-    "Lilith's Mirror",
-    "Sigil of Madawc",
-    "Sigil of Talic",
-    "Sigil of Korlic",
-    "Prime Evil Soul",
-    "Pure Demonic Essence",
-    "Splinter of the Void",
-    "Trang-Oul's Jawbone",
-    "Demonic Insignia",
-    "Talisman of Transgression",
-    "Flesh of Malic",
-    "Horadrim Scarab",
-    "Catalyst Shard",
-    "Fallen Garden's Map",
-    "Zhar's Sanctum Map",
-    "Stygian Caverns Map",
-    "Imperial Palace Map",
-    "Outer Void Map",
+# ============================================================================
+# Constants
+# ============================================================================
 
+# Special non-equipment items that are NOT in the CSV
+SPECIAL_VANILLA_ITEMS = [
+    "Key of Destruction", "Key of Hate", "Key of Terror"
 ]
 
-UNID_ITEM_LIST_NO_PD2 = [
-    "Mythical Sword (Set)",
+SPECIAL_PD2_ITEMS = [
+    "Worldstone Shard", "Larzuk's Puzzlebox", "Larzuk's Puzzlepiece",
+    "Demonic Cube", "Horadrim Navigator", "Horadrim Almanac", "Skeleton Key",
+    "Vial of Lightsong", "Lilith's Mirror", "Sigil of Madawc", "Sigil of Talic",
+    "Sigil of Korlic", "Prime Evil Soul", "Pure Demonic Essence",
+    "Splinter of the Void", "Trang-Oul's Jawbone", "Demonic Insignia",
+    "Talisman of Transgression", "Flesh of Malic", "Horadrim Scarab",
+    "Catalyst Shard", "Fallen Garden's Map", "Zhar's Sanctum Map",
+    "Stygian Caverns Map", "Imperial Palace Map", "Outer Void Map"
 ]
 
-UNID_ITEM_LIST = [
-    "Aegis (Unique)", "Amulet (Set)", "Amulet (Unique)", "Ancient Armor (Set)", "Ancient Armor (Unique)",
-    "Ancient Axe (Unique)", "Ancient Shield (Unique)", "Ancient Sword (Unique)", "Arbalest (Unique)",
-    "Archon Staff (Unique)", "Armet (Unique)", "Ataghan (Unique)", "Avenger Guard (Set)", "Axe (Unique)",
-    "Ballista (Unique)", "Balrog Blade (Unique)", "Balrog Skin (Set)", "Balrog Skin (Unique)", "Balrog Spear (Unique)",
-    "Barbed Club (Unique)", "Barbed Shield (Unique)", "Bardiche (Unique)", "Basinet (Set)", "Basinet (Unique)",
-    "Bastard Sword (Unique)", "Battle Axe (Unique)", "Battle Belt (Set)", "Battle Belt (Unique)", "Battle Boots (Set)",
-    "Battle Boots (Unique)", "Battle Cestus (Unique)", "Battle Dart (Unique)", "Battle Gauntlets (Set)",
-    "Battle Gauntlets (Unique)", "Battle Hammer (Unique)", "Battle Scythe (Unique)", "Battle Staff (Set)",
-    "Battle Staff (Unique)", "Battle Sword (Unique)", "Bearded Axe (Unique)", "Bec-De-Corbin (Unique)", "Belt (Set)",
-    "Belt (Unique)", "Berserker Axe (Unique)", "Bill (Set)", "Bill (Unique)", "Blade (Unique)",
-    "Blade Barrier (Unique)", "Blood Spirit (Unique)", "Bloodlord Skull (Unique)", "Bone Helm (Set)",
-    "Bone Helm (Unique)", "Bone Knife (Unique)", "Bone Shield (Unique)", "Bone Visage (Set)", "Bone Visage (Unique)",
-    "Bone Wand (Set)", "Bone Wand (Unique)", "Boneweave Boots (Unique)", "Boots (Set)", "Boots (Unique)",
-    "Bramble Mitts (Set)", "Brandistock (Unique)", "Breast Plate (Set)", "Breast Plate (Unique)", "Broad Axe (Unique)",
-    "Broad Sword (Set)", "Broad Sword (Unique)", "Buckler (Set)", "Buckler (Unique)", "Burnt Wand (Unique)",
-    "Caduceus (Set)", "Caduceus (Unique)", "Cantor Trophy (Set)", "Cap (Set)", "Cap (Unique)", "Casque (Unique)",
-    "Cedar Bow (Unique)", "Cedar Staff (Unique)", "Ceremonial Bow (Unique)", "Ceremonial Javelin (Unique)",
-    "Ceremonial Pike (Unique)", "Chain Boots (Set)", "Chain Boots (Unique)", "Chain Gloves (Set)",
-    "Chain Gloves (Unique)", "Chain Mail (Set)", "Chain Mail (Unique)", "Champion Axe (Unique)",
-    "Champion Sword (Unique)", "Chaos Armor (Set)", "Chaos Armor (Unique)", "Chu-Ko-Nu (Unique)", "Cinquedeas (Unique)",
-    "Circlet (Set)", "Claymore (Unique)", "Cleaver (Unique)", "Club (Unique)", "Colossus Blade (Set)",
-    "Colossus Blade (Unique)", "Colossus Crossbow (Unique)", "Composite Bow (Unique)", "Conqueror Crown (Unique)",
-    "Corona (Set)", "Corona (Unique)", "Crossbow (Unique)", "Crowbill (Unique)", "Crown (Set)", "Crown (Unique)",
-    "Crusader Bow (Unique)", "Cryptic Axe (Unique)", "Cryptic Sword (Set)", "Cryptic Sword (Unique)", "Cudgel (Unique)",
-    "Cuirass (Set)", "Cuirass (Unique)", "Cutlass (Unique)", "Dacian Falx (Unique)", "Dagger (Unique)",
-    "Death Mask (Set)", "Death Mask (Unique)", "Decapitator (Unique)", "Defender (Unique)", "Demon Crossbow (Unique)",
-    "Demonhead (Unique)", "Demonhide Armor (Unique)", "Demonhide Boots (Set)", "Demonhide Boots (Unique)",
-    "Demonhide Gloves (Unique)", "Demonhide Sash (Unique)", "Destroyer Helm (Unique)", "Devil Star (Unique)",
-    "Diadem (Set)", "Diadem (Unique)", "Dimensional Blade (Unique)", "Dimensional Shard (Unique)", "Dirk (Unique)",
-    "Divine Scepter (Unique)", "Double Axe (Set)", "Double Axe (Unique)", "Double Bow (Unique)",
-    "Dragon Shield (Unique)", "Dusk Shroud (Set)", "Dusk Shroud (Unique)", "Earth Spirit (Unique)", "Edge Bow (Unique)",
-    "Elder Staff (Set)", "Elder Staff (Unique)", "Eldritch Orb (Unique)", "Elegant Blade (Unique)",
-    "Embossed Plate (Unique)", "Espandon (Unique)", "Ettin Axe (Unique)", "Executioner Sword (Unique)",
-    "Falchion (Unique)", "Fanged Knife (Unique)", "Feral Claws (Unique)", "Field Plate (Unique)", "Flail (Unique)",
-    "Flamberge (Unique)", "Flanged Mace (Unique)", "Flying Axe (Unique)", "Francisca (Unique)", "Full Helm (Set)",
-    "Full Helm (Unique)", "Full Plate Mail (Set)", "Full Plate Mail (Unique)", "Fury Visor (Unique)",
-    "Fuscina (Unique)", "Gauntlets (Set)", "Gauntlets (Unique)", "Ghost Armor (Unique)", "Ghost Glaive (Unique)",
-    "Giant Axe (Unique)", "Giant Sword (Unique)", "Giant Thresher (Unique)", "Gilded Shield (Unique)",
-    "Gladius (Unique)", "Glorious Axe (Unique)", "Gnarled Staff (Unique)", "Gothic Axe (Unique)", "Gothic Bow (Unique)",
-    "Gothic Plate (Set)", "Gothic Plate (Unique)", "Gothic Shield (Set)", "Gothic Shield (Unique)",
-    "Gothic Staff (Unique)", "Gothic Sword (Unique)", "Grand Charm (Unique)", "Grand Crown (Set)",
-    "Grand Crown (Unique)", "Grand Matron Bow (Set)", "Grand Scepter (Set)", "Grand Scepter (Unique)",
-    "Grave Wand (Unique)", "Great Axe (Unique)", "Great Helm (Set)", "Great Helm (Unique)", "Great Maul (Unique)",
-    "Great Sword (Unique)", "Greater Talons (Unique)", "Greaves (Set)", "Greaves (Unique)", "Grim Helm (Set)",
-    "Grim Helm (Unique)", "Grim Scythe (Unique)", "Grim Shield (Unique)", "Grim Wand (Set)", "Grim Wand (Unique)",
-    "Halberd (Unique)", "Hand Axe (Unique)", "Hard Leather Armor (Unique)", "Hatchet (Unique)", "Heavy Belt (Set)",
-    "Heavy Belt (Unique)", "Heavy Boots (Set)", "Heavy Boots (Unique)", "Heavy Bracers (Set)", "Heavy Bracers (Unique)",
-    "Heavy Crossbow (Unique)", "Heavy Gloves (Set)", "Heavy Gloves (Unique)", "Hellforge Plate (Set)", "Helm (Set)",
-    "Helm (Unique)", "Hierophant Trophy (Unique)", "Holy Water Sprinkler (Unique)", "Hunter's Bow (Unique)",
-    "Hunter's Guise (Set)", "Hydra Bow (Unique)", "Hyperion Spear (Unique)", "Jagged Star (Set)",
-    "Jagged Star (Unique)", "Jewel (Unique)", "Jo Staff (Unique)", "Kite Shield (Set)", "Kite Shield (Unique)",
-    "Knout (Unique)", "Kraken Shell (Set)", "Kraken Shell (Unique)", "Kris (Unique)", "Lacquered Plate (Set)",
-    "Lance (Unique)", "Large Axe (Unique)", "Large Charm (Unique)", "Large Shield (Set)", "Large Shield (Unique)",
-    "Large Siege Bow (Unique)", "Leather Armor (Set)", "Leather Armor (Unique)", "Leather Gloves (Set)",
-    "Leather Gloves (Unique)", "Legend Spike (Unique)", "Legendary Mallet (Unique)", "Lich Wand (Unique)",
-    "Light Belt (Set)", "Light Belt (Unique)", "Light Crossbow (Unique)", "Light Gauntlets (Set)",
-    "Light Gauntlets (Unique)", "Light Plate (Set)", "Light Plate (Unique)", "Light Plated Boots (Set)",
-    "Light Plated Boots (Unique)", "Linked Mail (Unique)", "Lochaber Axe (Unique)", "Long Battle Bow (Set)",
-    "Long Battle Bow (Unique)", "Long Bow (Unique)", "Long Staff (Unique)", "Long Sword (Set)", "Long Sword (Unique)",
-    "Long War Bow (Unique)", "Loricated Mail (Set)", "Luna (Unique)", "Mace (Unique)", "Mage Plate (Unique)",
-    "Mancatcher (Unique)", "Martel de Fer (Unique)", "Mask (Set)", "Mask (Unique)", "Matriarcal Spear (Unique)",
-    "Matriarchal Bow (Unique)", "Matriarchal Javelin (Unique)", "Maul (Unique)", "Mesh Armor (Unique)",
-    "Mesh Belt (Set)", "Mesh Belt (Unique)", "Mesh Boots (Set)", "Mesh Boots (Unique)", "Mighty Scepter (Unique)",
-    "Military Axe (Unique)", "Military Pick (Set)", "Military Pick (Unique)", "Mithril Coil (Set)",
-    "Mithril Coil (Unique)", "Monarch (Unique)", "Morning Star (Unique)", "Myrmidon Greaves (Unique)",
-    "Naga (Unique)", "Ogre Axe (Unique)", "Ogre Gauntlets (Unique)", "Ogre Maul (Set)",
-    "Ogre Maul (Unique)", "Ornate Plate (Set)", "Ornate Plate (Unique)", "Partizan (Unique)", "Pavise (Unique)",
-    "Petrified Wand (Unique)", "Phase Blade (Unique)", "Pike (Unique)", "Plate Mail (Unique)", "Plated Belt (Set)",
-    "Plated Belt (Unique)", "Poignard (Unique)", "Poleaxe (Unique)", "Quarterstaff (Unique)", "Quilted Armor (Set)",
-    "Quilted Armor (Unique)", "Razor Bow (Unique)", "Reinforced Mace (Set)", "Repeating Crossbow (Unique)",
-    "Ring (Set)", "Ring (Unique)", "Ring Mail (Set)", "Ring Mail (Unique)", "Rondel (Unique)", "Round Shield (Set)",
-    "Round Shield (Unique)", "Rune Bow (Unique)", "Rune Scepter (Unique)", "Rune Staff (Unique)", "Rune Sword (Unique)",
-    "Russet Armor (Unique)", "Sabre (Set)", "Sabre (Unique)", "Sacred Armor (Set)", "Sacred Armor (Unique)",
-    "Sacred Rondache (Unique)", "Sallet (Unique)", "Sash (Set)", "Sash (Unique)", "Scale Mail (Unique)",
-    "Scarabshell Boots (Unique)", "Scepter (Unique)", "Scimitar (Unique)", "Scissors Suwayyah (Set)",
-    "Scourge (Unique)", "Scutum (Unique)", "Scythe (Unique)", "Serpentskin Armor (Unique)", "Shadow Plate (Set)",
-    "Shadow Plate (Unique)", "Shako (Unique)", "Shamshir (Unique)", "Sharktooth Armor (Unique)", "Sharkskin Belt (Set)",
-    "Sharkskin Belt (Unique)", "Sharkskin Boots (Unique)", "Sharkskin Gloves (Set)", "Sharkskin Gloves (Unique)",
-    "Short Battle Bow (Unique)", "Short Bow (Unique)", "Short Siege Bow (Unique)", "Short Staff (Unique)",
-    "Short Sword (Unique)", "Short War Bow (Set)", "Short War Bow (Unique)", "Siege Crossbow (Unique)",
-    "Silver-Edged Axe (Unique)", "Skull Cap (Set)", "Skull Cap (Unique)", "Sky Spirit (Unique)",
-    "Slayer Guard (Unique)", "Small Charm (Unique)", "Small Shield (Set)", "Small Shield (Unique)",
-    "Spear (Unique)", "Spetum (Unique)", "Spiderweb Sash (Unique)", "Spiked Club (Unique)", "Spiked Shield (Unique)",
-    "Spired Helm (Set)", "Spired Helm (Unique)", "Splint Mail (Set)", "Splint Mail (Unique)", "Stiletto (Unique)",
-    "Studded Leather (Set)", "Studded Leather (Unique)", "Succubus Skull (Unique)", "Swirling Crystal (Set)",
-    "Swirling Crystal (Unique)", "Tabar (Unique)", "Templar Coat (Unique)", "Thresher (Unique)",
-    "Thunder Maul (Unique)", "Tiara (Unique)", "Tigulated Mail (Set)", "Tigulated Mail (Unique)", "Tomahawk (Unique)",
-    "Tomb Wand (Unique)", "Totemic Mask (Unique)", "Tower Shield (Set)", "Tower Shield (Unique)",
-    "Trellised Armor (Unique)", "Trident (Unique)", "Troll Belt (Set)", "Troll Nest (Unique)", "Truncheon (Unique)",
-    "Tulwar (Unique)", "Tusk Sword (Unique)", "Twin Axe (Unique)", "Two-Handed Sword (Unique)", "Tyrant Club (Unique)",
-    "Unearthed Wand (Unique)", "Vambraces (Unique)", "Vampirebone Gloves (Unique)", "Vampirefang Belt (Unique)",
-    "Vortex Shield (Set)", "Voulge (Unique)", "Wand (Unique)", "War Axe (Unique)", "War Belt (Set)",
-    "War Belt (Unique)", "War Boots (Set)", "War Boots (Unique)", "War Club (Unique)", "War Fork (Unique)",
-    "War Gauntlets (Set)", "War Gauntlets (Unique)", "War Hammer (Unique)", "War Hat (Set)", "War Hat (Unique)",
-    "War Pike (Unique)", "War Scepter (Set)", "War Scepter (Unique)", "War Scythe (Unique)", "War Spear (Unique)",
-    "War Spike (Unique)", "War Staff (Set)", "War Staff (Unique)", "War Sword (Set)", "War Sword (Unique)",
-    "Ward (Set)", "Ward (Unique)", "Ward Bow (Unique)", "Winged Axe (Unique)", "Winged Harpoon (Unique)",
-    "Winged Helm (Set)", "Winged Helm (Unique)", "Winged Knife (Unique)", "Wire Fleece (Unique)",
-    "Wrist Sword (Unique)", "Yari (Unique)", "Yew Wand (Unique)", "Zakarum Shield (Unique)", "Zweihander (Unique)",
-
+# Hardcoded UNID items that need special handling (Magic/Rare versions of items without unique/set)
+UNID_SPECIAL_ITEMS = [
     # Selected tc81
     "Spired Helm (Magic)", "Spired Helm (Rare)", "Cryptic Axe (Magic)", "Cryptic Axe (Rare)",
-
+    
     # Magic version of tc84/87 with unique/set counterparts
     "Archon Staff (Magic)", "Berserker Axe (Magic)", "Bloodlord Skull (Magic)", "Bone Visage (Magic)",
     "Caduceus (Magic)", "Champion Axe (Magic)", "Colossus Blade (Magic)", "Corona (Magic)", "Cryptic Sword (Magic)",
@@ -307,7 +38,7 @@ UNID_ITEM_LIST = [
     "Ogre Gauntlets (Magic)", "Sacred Armor (Magic)", "Scissors Suwayyah (Magic)", "Shadow Plate (Magic)",
     "Sky Spirit (Magic)", "Thunder Maul (Magic)", "Troll Belt (Magic)", "Unearthed Wand (Magic)",
     "Vortex Shield (Magic)", "War Pike (Magic)", "Ward (Magic)", "Winged Harpoon (Magic)", "Zakarum Shield (Magic)",
-
+    
     # Rare version of tc84/87 with unique/set counterparts
     "Archon Staff (Rare)", "Berserker Axe (Rare)", "Bloodlord Skull (Rare)", "Bone Visage (Rare)",
     "Caduceus (Rare)", "Champion Axe (Rare)", "Colossus Blade (Rare)", "Corona (Rare)", "Cryptic Sword (Rare)",
@@ -317,18 +48,18 @@ UNID_ITEM_LIST = [
     "Ogre Gauntlets (Rare)", "Sacred Armor (Rare)", "Scissors Suwayyah (Rare)", "Shadow Plate (Rare)",
     "Sky Spirit (Rare)", "Thunder Maul (Rare)", "Troll Belt (Rare)", "Unearthed Wand (Rare)",
     "Vortex Shield (Rare)", "War Pike (Rare)", "Ward (Rare)", "Winged Harpoon (Rare)", "Zakarum Shield (Rare)",
-
+    
     # Charms and jewels
     "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)", "Jewel (Rare)",
-
+    
     # TC84 with no set/unique
     "Archon Plate (Magic)", "Archon Plate (Rare)", "Ghost Spear (Magic)", "Ghost Spear (Rare)", "Shillelagh (Magic)",
     "Shillelagh (Rare)", "Vortex Orb (Magic)", "Vortex Orb (Rare)", "Great Poleaxe (Magic)", "Great Poleaxe (Rare)",
-
+    
     # TC87 with no set/unique
     "Colossus Girdle (Magic)", "Colossus Girdle (Rare)", "Dream Spirit (Magic)", "Dream Spirit (Rare)",
     "Guardian Crown (Magic)", "Guardian Crown (Rare)",
-
+    
     # Circlet types
     "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
     "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
@@ -336,48 +67,13 @@ UNID_ITEM_LIST = [
     # Other items requested by the CHOSEN Juan
     "Sacred Rondache (Magic)", "Sacred Targe (Magic)", "Kurast Shield (Magic)", "Colossus Sword (Magic)", "Monarch (Magic)",
     "Sacred Rondache (Rare)", "Sacred Targe (Rare)", "Kurast Shield (Rare)", "Colossus Sword (Rare)", "Monarch (Rare)",
-
-    # Runes
-    'El Rune', 'Eld Rune', 'Tir Rune', 'Nef Rune', 'Eth Rune', 'Ith Rune', 'Tal Rune', 'Ral Rune', 'Ort Rune', 'Thul Rune',
-    'Amn Rune', 'Sol Rune', 'Shael Rune', 'Dol Rune', 'Hel Rune', 'Io Rune', 'Lum Rune', 'Ko Rune', 'Fal Rune', 'Lem Rune',
-    'Pul Rune', 'Um Rune', 'Mal Rune', 'Ist Rune', 'Gul Rune', 'Vex Rune', 'Ohm Rune', 'Lo Rune', 'Sur Rune', 'Ber Rune',
-    'Jah Rune', 'Cham Rune', 'Zod Rune'
-    
-    # Keys
-    'Key of Hate', 'Key of Destruction', 'Key of Terror'
 ]
 
-
-# PD2 base items to add to UNID_ITEM_LIST when PD2 mode is enabled
-UNID_ITEM_LIST_PD2_ADD = [
-    "Alpha Helm (Unique)", "Archon Plate (Unique)", "Blade Bow (Unique)", "Bramble Mitts (Unique)",
-    "Colossus Girdle (Unique)", "Colossus Sword (Set)", "Colossus Sword (Unique)",
-    "Crusader Gauntlets (Unique)", "Crystalline Globe (Unique)", "Diamond Mail (Unique)",
-    "Dream Spirit (Unique)", "Ghost Spear (Unique)", "Glowing Orb (Unique)",
-    "Grand Matron Bow (Unique)", "Guardian Crown (Unique)", "Hawk Helm (Unique)",
-    "Hellspawn Skull (Unique)", "Heraldic Shield (Unique)", "Highland Blade (Unique)",
-    "Hurlbat (Unique)", "Hyperion (Unique)", "Jawbone Visor (Unique)", "Lion Helm (Unique)",
-    "Maiden Javelin (Unique)", "Matriarchal Pike (Unique)", "Mithril Point (Unique)",
-    "Mummified Trophy (Unique)", "Overseer Skull (Unique)", "Quhab (Unique)",
-    "Ring (Set)", "Ring (Unique)", "Runic Talons (Unique)",
-    "Seraph Rod (Unique)", "Shillelagh (Unique)", "Sun Spirit (Unique)",
-    "Vortex Shield (Unique)", "War Fist (Unique)", "Wyrmhide Boots (Unique)",
+UNID_PD2_SPECIAL_ITEMS = [
     "Map (Unique)",
-    "Blunt Arrows (Unique)",
-    "Sharp Arrows (Unique)",
-    "Razor Arrows (Unique)",
-    "Light Bolts (Unique)",
-    "Heavy Bolts (Unique)",
-    "War Bolts (Unique)"
 ]
-
 
 NO_UNIQUE_MAP = {
-    'Jewel': {'TC': 1, 'Item Class': 'Jewel'},
-    'Small Charm': {'TC': 1, 'Item Class': 'Charm'},
-    'Large Charm': {'TC': 1, 'Item Class': 'Charm'},
-    'Grand Charm': {'TC': 1, 'Item Class': 'Charm'},
-
     'Coronet': {'TC': 54, 'Item Class': 'Circlet'},
 
     'Sacred Targe': {'TC': 63, 'Item Class': 'Shield'},
@@ -395,13 +91,7 @@ NO_UNIQUE_MAP = {
     'Guardian Crown': {'TC': 87, 'Item Class': 'Helm'},
 }
 
-
 NO_UNIQUE_MAP_PD2 = {
-    'Jewel': {'TC': 1, 'Item Class': 'Jewel'},
-    'Small Charm': {'TC': 1, 'Item Class': 'Charm'},
-    'Large Charm': {'TC': 1, 'Item Class': 'Charm'},
-    'Grand Charm': {'TC': 1, 'Item Class': 'Charm'},
-
     'Coronet': {'TC': 54, 'Item Class': 'Circlet'},
 
     'Sacred Targe': {'TC': 63, 'Item Class': 'Shield'},
@@ -526,112 +216,9 @@ ITEM_ALIASES_PD2 = {
     'pde': 'Pure Demonic Essence'
 }
 
-
-ETH_ITEM_SET = {
-    'Greyform', "Blinkbat's Form", 'The Centurion', 'Twitchthroe', 'Darkglow', 'Hawkmail', 'Venom Ward',
-    'Sparking Mail', 'Iceblink', 'Heavenly Garb', 'Rockfleece', 'Boneflesh', 'Rattlecage', 'Goldskin',
-    'Silks of the Victor', 'The Spirit Shroud', 'Skin of the Vipermagi', 'Skin of the Flayed One',
-    'Iron Pelt', 'Crow Caw', 'Spirit Forge', "Duriel's Shell", 'Shaftstop', "Skullder's Ire",
-    "Que-Hegan's Wisdom", 'Toothrow', 'Guardian Angel', "Atma's Wail", 'Black Hades', 'Corpsemourn',
-    "Ormus' Robes", "The Gladiator's Bane", "Arkaine's Valor", 'Steel Carapace', "Templar's Might",
-    "Biggin's Bonnet", 'Tarnhelm', 'Coif of Glory', 'Duskdeep', 'Wormskull', 'Howltusk', 'Undead Crown',
-    'The Face of Horror', 'Peasant Crown', 'Rockstopper', 'Stealskull', 'Darksight Helm', 'Vampire Gaze',
-    'Valkyrie Wing', 'Crown of Thieves', "Blackhorn's Face", "Andariel's Visage", 'Giant Skull',
-    'Harlequin Crest', "Nightwing's Veil", 'Steel Shade', 'Veil of Steel', "Kira's Guardian", "Griffon's Eye",
-    'The Hand of Broc', 'Bloodfist', 'Chance Guards', 'Magefist', 'Frostburn', 'Venom Grip', 'Gravepalm',
-    'Ghoulhide', 'Lava Gout', 'Hellmouth', "Dracul's Grasp", 'Soul Drainer', 'Steelrend', 'Lenymo',
-    'Snakecord', 'Nightsmoke', 'Goldwrap', 'Bladebuckle', 'String of Ears', 'Razortail', "Gloom's Trap",
-    'Snowclash', "Thundergod's Vigor", 'Arachnid Mesh', "Nosferatu's Coil", "Verdungo's Hearty Cord",
-    'Hotspur', 'Gorefoot', 'Treads of Cthon', 'Goblin Toe', 'Tearhaunch', 'Infernostride', 'Waterwalk',
-    'Silkweave', 'War Traveler', 'Gore Rider', 'Marrowwalk', 'Sandstorm Trek', 'Shadow Dancer', 'Pelta Lunata',
-    'Umbral Disk', 'Stormguild', 'Swordback Hold', 'Steelclash', 'Wall of the Eyeless', 'Bverrit Keep',
-    'The Ward', 'Visceratuant', "Moser's Blessed Circle", 'Stormchaser', 'Lance Guard', "Tiamat's Rebuke",
-    'Lidless Wall', "Gerke's Sanctuary", "Radament's Sphere", 'Blackoak Shield', "Head Hunter's Glory",
-    "Medusa's Gaze", 'Spike Thorn', 'Spirit Ward', 'The Gnasher', 'Deathspade', 'Bladebone', 'Skull Splitter',
-    'Rakescar', 'Coldkill', 'Islestrike', "Pompeii's Wrath", 'Guardian Naga', "Razor's Edge", 'Rune Master',
-    'Cranebeak', 'Death Cleaver', 'Axe of Fechmar', 'Goreshovel', 'The Chieftain', 'Brainhew', 'Humongous',
-    "Warlord's Trust", 'Spellsteel', 'Stormrider', 'Boneslayer Blade', 'The Minotaur', 'Hellslayer',
-    "Messerschmidt's Reaver", "Executioner's Justice", 'Ethereal Edge', 'Gull', 'The Diggler',
-    'The Jade Tan Do', 'Spectral Shard', 'Spineripper', 'Heart Carver', "Blackbog's Sharp", 'Stormspike',
-    'Fleshripper', 'Ghostflame', 'Felloak', 'Stoutnail', 'Crushflange', 'Bloodrise',
-    "The General's Tan Do Li Ga", 'Ironstone', 'Dark Clan Crusher', 'Fleshrender', 'Sureshrill Frost',
-    'Moonfall', "Baezil's Vortex", 'Earthshaker', "Nord's Tenderizer", "Baranar's Star", 'Demon Limb',
-    'Stormlash', "Horizon's Tornado", 'Stone Crusher', 'Bonesnap', 'Steeldriver', 'Bloodtree Stump',
-    'Windhammer', 'Earth Shifter', "Dimoak's Hew", 'Steelgoad', 'Soul Harvest', 'The Battlebranch', 'Woestave',
-    'The Grim Reaper', 'The Meat Scraper', 'Blackleach Blade', "Athena's Wrath", 'Pierre Tombale Couant',
-    'Husoldal Evo', "Grim's Burning Dead", 'Bonehew', "The Reaper's Toll", 'Tomb Reaver', 'Knell Striker',
-    'Rusthandle', 'Stormeye', "Zakarum's Hand", 'The Fetid Sprinkler', 'Hand of Blessed Light',
-    "Astreon's Iron Ward", "Heaven's Light", 'The Redeemer', 'The Dragon Chang', 'Razortine', 'Bloodthief',
-    'Lance of Yaggai', 'The Tannr Gorerod', 'The Impaler', 'Kelpie Snare', 'Soulfeast Tine', 'Hone Sundan',
-    'Spire of Honor', "Arioc's Needle", 'Viperfork', 'Bane Ash', 'Serpent Lord', 'Spire of Lazarus',
-    'The Salamander', 'The Iron Jang Bong', 'Razorswitch', 'Ribcracker', 'Chromatic Ire', 'Warpspear',
-    'Skull Collector', "Mang Song's Lesson", "Ondal's Wisdom", "Rixot's Keen", 'Blood Crescent',
-    'Skewer of Krintiz', 'Gleamscythe', "Griswold's Edge", 'Hellplague', "Culwen's Point", 'Bloodletter',
-    'Coldsteel Eye', 'Hexfire', 'Blade of Ali Baba', "Ginther's Rift", 'Headstriker', 'Plague Bearer',
-    'The Atlantean', 'Bloodmoon', 'Djinn Slayer', 'Frostwind', 'Shadowfang', 'Soulflay', "Kinemil's Awl",
-    'Blacktongue', 'Ripsaw', 'The Patriarch', 'Crainte Vomir', 'Bing Sz Wang', 'The Vile Husk', 'Cloudcrack',
-    'Todesfaelle Flamme', 'Swordguard', 'Flamebellow', 'Torch of Iro', 'Maelstrom', 'Gravenspine',
-    "Ume's Lament", 'Suicide Branch', 'Carin Shard', 'Arm of King Leoric', 'Blackhand Key', 'Boneshade',
-    "Death's Web", 'Deathbit', 'The Scalper', 'Gimmershred', 'Lacerator', 'Warshrike', "Demon's Arch",
-    "Gargoyle's Bite", 'Wraith Flight', "Titan's Revenge", "Lycander's Flank", 'Thunderstroke', 'Stoneraven',
-    "Bartuc's Cut-Throat", "Firelizard's Talons", 'Jade Talon', 'Shadow Killer', "Arreat's Face",
-    "Demonhorn's Edge", "Halaberd's Reign", 'Wolfhowl', "Jalal's Mane", "Cerebus' Bite", 'Ravenlore',
-    'Spirit Keeper', 'Homunculus', 'Boneflame', 'Darkforce Spawn', 'Herald of Zakarum', 'Alma Negra',
-    'Dragonscale', 'The Oculus', "Death's Fathom", "Eschuta's Temper"
-}
-
-
-ETH_ITEM_SET_PD2_ADD = {
-    "Achilles Strike",
-    "Akarat's Devotion",
-    "Brimstone Rain",
-    "Cyclopean Roar",
-    "Denmother",
-    "Fenris",
-    "Kalan's Legacy",
-    "Leoric's Mithril Bane",
-    "Mage Slayer",
-    "Martyrdom",
-    "Merman's Sprocket",
-    "Occultist",
-    "Odium",
-    "Purgatory",
-    "Quetzalcoatl",
-    "Raekor's Virtue",
-    "Sacred Totem",
-    "Sankekur's Fall",
-    "Shatterblade",
-    "Siggard's Staunch",
-    "Skorn",
-    "Skywarden",
-    "Stalker's Cull",
-    "Tempest",
-    "Titan's Grip",
-    "True Silver",
-    "Twilight's Reflection",
-    "Uldyssian's Awakening",
-    "Ursa's Nightmare",
-    "Whispering Mirage",
-    "Wildspeaker",
-    "Wraithskin",
-    "Zerae's Resolve",
-    
-    # Items that can spawn as ethereal in PD2 but not in vanilla
-    "Butcher's Pupil",
-    "The Gavel of Pain",
-    "Schaefer's Hammer",
-    "The Cranium Basher",
-    "Doombringer",
-    "The Grandfather",
-    "Steel Pillar",
-    "Stormspire",
-}
-
-
-def get_eth_item_set(pd2_mode=False):
-    """Get the ethereal item set based on PD2 mode."""
-    return ETH_ITEM_SET | ETH_ITEM_SET_PD2_ADD if pd2_mode else ETH_ITEM_SET
-
+# ============================================================================
+# Functions
+# ============================================================================
 
 def get_base_item(row, pd2_mode=False):
     """Get the base item for a row, using PD2 Base item if PD2 mode is enabled
@@ -646,3 +233,158 @@ def get_base_item(row, pd2_mode=False):
     if pd2_mode and row.get('PD2 Base item'):
         return row['PD2 Base item']
     return row.get('Base Item', '')
+
+
+@lru_cache(maxsize=2)
+def get_eth_item_set(pd2_mode=False):
+    """Get the ethereal item set based on PD2 mode, dynamically generated from CSV
+    
+    Args:
+        pd2_mode: If True, return items with eth_possible_pd2=True; otherwise return items with eth_possible=True
+    
+    Returns:
+        Set of item names that can spawn as ethereal
+    """
+    items = set()
+    
+    # Read items from CSV
+    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Check appropriate column based on pd2_mode
+            eth_column = 'eth_possible_pd2' if pd2_mode else 'eth_possible'
+            if row.get(eth_column, '').upper() == 'TRUE':
+                items.add(row['Item'])
+    
+    return items
+
+
+@lru_cache(maxsize=2)
+def get_no_unique_map(pd2_mode=False):
+    """Get the NO_UNIQUE_MAP based on PD2 mode
+    
+    Args:
+        pd2_mode: If True, return NO_UNIQUE_MAP_PD2; otherwise return NO_UNIQUE_MAP
+    
+    Returns:
+        Dictionary mapping base item names to TC and Item Class
+    """
+    return NO_UNIQUE_MAP_PD2 if pd2_mode else NO_UNIQUE_MAP
+
+
+@lru_cache(maxsize=2)
+def get_item_aliases(pd2_mode=False):
+    """Get item aliases based on PD2 mode
+    
+    Args:
+        pd2_mode: If True, return merged ITEM_ALIASES and ITEM_ALIASES_PD2; otherwise return ITEM_ALIASES only
+    
+    Returns:
+        Dictionary mapping alias names to item names
+    """
+    if pd2_mode:
+        # Merge aliases with PD2 aliases (no overlap exists, but this is safe)
+        return ITEM_ALIASES | ITEM_ALIASES_PD2
+    return ITEM_ALIASES
+
+
+@lru_cache(maxsize=2)
+def get_full_item_list(pd2_mode=False):
+    """Generate FULL_ITEM_LIST dynamically from CSV with lru_cache
+    
+    Args:
+        pd2_mode: If True, include PD2 items
+    
+    Returns:
+        Sorted list of item names
+    """
+    items = set()
+    
+    # Read items from CSV
+    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            # Filter based on PD2 mode
+            if not pd2_mode and row.get('PD2 item', '').upper() == 'TRUE':
+                continue
+            
+            # Add item name
+            items.add(row['Item'])
+    
+    # Add special vanilla items (keys)
+    items.update(SPECIAL_VANILLA_ITEMS)
+    
+    # Add special PD2 items if PD2 mode
+    if pd2_mode:
+        items.update(SPECIAL_PD2_ITEMS)
+    
+    return sorted(list(items))
+
+
+@lru_cache(maxsize=2)
+def get_unid_item_list(pd2_mode=False):
+    """Generate UNID_ITEM_LIST dynamically from CSV with lru_cache
+    
+    Args:
+        pd2_mode: If True, include PD2 items and use PD2 base items where applicable
+    
+    Returns:
+        Sorted list of unid item names (Base Item + (Rarity))
+    """
+    items = set()
+    runes = set()
+    
+    # Read items from CSV and generate base item + rarity combinations
+    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            # Filter based on PD2 mode
+            if not pd2_mode and row.get('PD2 item', '').upper() == 'TRUE':
+                continue
+            
+            item_group_0 = row.get('Item Group 0', '')
+            rarity = row.get('Rarity', '').strip()
+            
+            # Extract runes directly from CSV
+            if item_group_0 == 'Runes':
+                runes.add(row['Item'])
+            elif rarity in ('Unique', 'Set'):
+                # Use get_base_item to handle PD2 mode correctly
+                base_item = get_base_item(row, pd2_mode)
+                if base_item:
+                    items.add(f"{base_item} ({rarity})")
+    
+    # Add special hardcoded UNID items (Magic/Rare versions of selected items)
+    items.update(UNID_SPECIAL_ITEMS)
+    
+    # Add runes
+    items.update(runes)
+    
+    # Add keys (from SPECIAL_VANILLA_ITEMS)
+    items.update(SPECIAL_VANILLA_ITEMS)
+    
+    # Add PD2-specific special items if PD2 mode
+    if pd2_mode:
+        items.update(UNID_PD2_SPECIAL_ITEMS)
+        # Add special PD2 non-equipment items
+        items.update(SPECIAL_PD2_ITEMS)
+    
+    return sorted(list(items))
+
+
+@lru_cache(maxsize=1)
+def _get_pd2_only_items():
+    """Get set of PD2-only items (items in PD2 list but not in vanilla list)"""
+    vanilla_items = set(get_full_item_list(pd2_mode=False))
+    pd2_items = set(get_full_item_list(pd2_mode=True))
+    return pd2_items - vanilla_items
+
+
+def is_pd2_item(item_name):
+    """Check if an item is PD2-only (not in vanilla item list)
+    
+    Args:
+        item_name: Name of the item to check
+    
+    Returns:
+        True if item is PD2-only, False otherwise
+    """
+    return item_name in _get_pd2_only_items()

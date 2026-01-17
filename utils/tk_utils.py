@@ -11,7 +11,7 @@ def get_displaced_coords(master, app_x, app_y, pos_x=None, pos_y=None):
         pos_x = master.root.winfo_rootx()
     if pos_y is None:
         pos_y = master.root.winfo_rooty()
-    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_scaling)
+    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_dpi_scaling)
     min_x = mon.x
     min_y = mon.y
     max_x = mon.width + min_x
@@ -25,7 +25,7 @@ def get_displaced_geom(master, app_x, app_y, pos_x=None, pos_y=None):
         pos_x = master.root.winfo_rootx()
     if pos_y is None:
         pos_y = master.root.winfo_rooty()
-    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_scaling)
+    mon = get_monitor_from_coord(master.root.winfo_rootx(), master.root.winfo_rooty(), disable_scaling=master.disable_dpi_scaling)
     min_x = mon.x
     min_y = mon.y
     max_x = mon.width + min_x
@@ -361,8 +361,7 @@ def create_treeview_filter(filter_names, get_filter_value, get_data_key, get_dat
             if filter_value == '':
                 continue
             
-            data_key = get_data_key(filter_name)
-            data_value = str(get_data_value(data_item, data_key))
+            data_value = str(get_data_value(data_item, get_data_key(filter_name)))
             
             if data_value != filter_value:
                 return False

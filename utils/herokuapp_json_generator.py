@@ -96,7 +96,7 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
     
     Args:
         pd2_mode: If True, include PD2 items
-        eth: If True, only include items that can spawn as ethereal (from ETH_ITEM_SET)
+        eth: If True, only include items that can spawn as ethereal
     """
     
     data = {
