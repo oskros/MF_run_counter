@@ -18,3 +18,4 @@
 /dict_release/
 *.log
 /.idea/.gitignore
+*.md
