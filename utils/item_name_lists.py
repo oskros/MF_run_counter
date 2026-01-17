@@ -8,66 +8,39 @@ from init import media_path
 # Constants
 # ============================================================================
 
-# Special non-equipment items that are NOT in the CSV
-SPECIAL_VANILLA_ITEMS = [
-    "Key of Destruction", "Key of Hate", "Key of Terror"
-]
+# Special items are now in the CSV (Item Group 0='Misc', Item Group 1='Special')
 
-SPECIAL_PD2_ITEMS = [
-    "Worldstone Shard", "Larzuk's Puzzlebox", "Larzuk's Puzzlepiece",
-    "Demonic Cube", "Horadrim Navigator", "Horadrim Almanac", "Skeleton Key",
-    "Vial of Lightsong", "Lilith's Mirror", "Sigil of Madawc", "Sigil of Talic",
-    "Sigil of Korlic", "Prime Evil Soul", "Pure Demonic Essence",
-    "Splinter of the Void", "Trang-Oul's Jawbone", "Demonic Insignia",
-    "Talisman of Transgression", "Flesh of Malic", "Horadrim Scarab",
-    "Catalyst Shard", "Fallen Garden's Map", "Zhar's Sanctum Map",
-    "Stygian Caverns Map", "Imperial Palace Map", "Outer Void Map"
-]
-
-# Hardcoded UNID items that need special handling (Magic/Rare versions of items without unique/set)
-UNID_SPECIAL_ITEMS = [
+# Base items for UNID mode that could be interesting to include (Magic/Rare versions generated dynamically)
+INTESTING_MAGIC_RARE_BASES = [
     # Selected tc81
-    "Spired Helm (Magic)", "Spired Helm (Rare)", "Cryptic Axe (Magic)", "Cryptic Axe (Rare)",
+    "Spired Helm", "Cryptic Axe",
     
-    # Magic version of tc84/87 with unique/set counterparts
-    "Archon Staff (Magic)", "Berserker Axe (Magic)", "Bloodlord Skull (Magic)", "Bone Visage (Magic)",
-    "Caduceus (Magic)", "Champion Axe (Magic)", "Colossus Blade (Magic)", "Corona (Magic)", "Cryptic Sword (Magic)",
-    "Demon Crossbow (Magic)", "Diadem (Magic)", "Dimensional Shard (Magic)", "Fanged Knife (Magic)",
-    "Giant Thresher (Magic)", "Glorious Axe (Magic)", "Hydra Bow (Magic)", "Lacquered Plate (Magic)",
-    "Legend Spike (Magic)", "Legendary Mallet (Magic)", "Myrmidon Greaves (Magic)", "Mythical Sword (Magic)",
-    "Ogre Gauntlets (Magic)", "Sacred Armor (Magic)", "Scissors Suwayyah (Magic)", "Shadow Plate (Magic)",
-    "Sky Spirit (Magic)", "Thunder Maul (Magic)", "Troll Belt (Magic)", "Unearthed Wand (Magic)",
-    "Vortex Shield (Magic)", "War Pike (Magic)", "Ward (Magic)", "Winged Harpoon (Magic)", "Zakarum Shield (Magic)",
+    # TC84/87 with unique/set counterparts
+    "Archon Staff", "Berserker Axe", "Bloodlord Skull", "Bone Visage",
+    "Caduceus", "Champion Axe", "Colossus Blade", "Corona", "Cryptic Sword",
+    "Demon Crossbow", "Diadem", "Dimensional Shard", "Fanged Knife",
+    "Giant Thresher", "Glorious Axe", "Hydra Bow", "Lacquered Plate",
+    "Legend Spike", "Legendary Mallet", "Myrmidon Greaves", "Mythical Sword",
+    "Ogre Gauntlets", "Sacred Armor", "Scissors Suwayyah", "Shadow Plate",
+    "Sky Spirit", "Thunder Maul", "Troll Belt", "Unearthed Wand",
+    "Vortex Shield", "War Pike", "Ward", "Winged Harpoon", "Zakarum Shield",
     
-    # Rare version of tc84/87 with unique/set counterparts
-    "Archon Staff (Rare)", "Berserker Axe (Rare)", "Bloodlord Skull (Rare)", "Bone Visage (Rare)",
-    "Caduceus (Rare)", "Champion Axe (Rare)", "Colossus Blade (Rare)", "Corona (Rare)", "Cryptic Sword (Rare)",
-    "Demon Crossbow (Rare)", "Diadem (Rare)", "Dimensional Shard (Rare)", "Fanged Knife (Rare)",
-    "Giant Thresher (Rare)", "Glorious Axe (Rare)", "Hydra Bow (Rare)", "Lacquered Plate (Rare)",
-    "Legend Spike (Rare)", "Legendary Mallet (Rare)", "Myrmidon Greaves (Rare)", "Mythical Sword (Rare)",
-    "Ogre Gauntlets (Rare)", "Sacred Armor (Rare)", "Scissors Suwayyah (Rare)", "Shadow Plate (Rare)",
-    "Sky Spirit (Rare)", "Thunder Maul (Rare)", "Troll Belt (Rare)", "Unearthed Wand (Rare)",
-    "Vortex Shield (Rare)", "War Pike (Rare)", "Ward (Rare)", "Winged Harpoon (Rare)", "Zakarum Shield (Rare)",
-    
-    # Charms and jewels
-    "Grand Charm (Magic)", "Large Charm (Magic)", "Small Charm (Magic)", "Jewel (Magic)", "Jewel (Rare)",
+    # Misc
+    "Grand Charm", "Large Charm", "Small Charm", "Jewel",
     
     # TC84 with no set/unique
-    "Archon Plate (Magic)", "Archon Plate (Rare)", "Ghost Spear (Magic)", "Ghost Spear (Rare)", "Shillelagh (Magic)",
-    "Shillelagh (Rare)", "Vortex Orb (Magic)", "Vortex Orb (Rare)", "Great Poleaxe (Magic)", "Great Poleaxe (Rare)",
+    "Archon Plate", "Ghost Spear", "Shillelagh", "Vortex Orb", "Great Poleaxe",
     
     # TC87 with no set/unique
-    "Colossus Girdle (Magic)", "Colossus Girdle (Rare)", "Dream Spirit (Magic)", "Dream Spirit (Rare)",
-    "Guardian Crown (Magic)", "Guardian Crown (Rare)",
+    "Colossus Girdle", "Dream Spirit", "Guardian Crown",
     
     # Circlet types
-    "Circlet (Magic)", "Tiara (Magic)", "Coronet (Magic)", "Diadem (Magic)",
-    "Circlet (Rare)", "Tiara (Rare)", "Coronet (Rare)", "Diadem (Rare)",
+    "Circlet", "Tiara", "Coronet", "Diadem",
     
     # Other items requested by the CHOSEN Juan
-    "Sacred Rondache (Magic)", "Sacred Targe (Magic)", "Kurast Shield (Magic)", "Colossus Sword (Magic)", "Monarch (Magic)",
-    "Sacred Rondache (Rare)", "Sacred Targe (Rare)", "Kurast Shield (Rare)", "Colossus Sword (Rare)", "Monarch (Rare)",
+    "Sacred Rondache", "Sacred Targe", "Kurast Shield", "Colossus Sword", "Monarch",
 ]
+
 
 UNID_PD2_SPECIAL_ITEMS = [
     "Map (Unique)",
@@ -310,12 +283,6 @@ def get_full_item_list(pd2_mode=False):
             # Add item name
             items.add(row['Item'])
     
-    # Add special vanilla items (keys)
-    items.update(SPECIAL_VANILLA_ITEMS)
-    
-    # Add special PD2 items if PD2 mode
-    if pd2_mode:
-        items.update(SPECIAL_PD2_ITEMS)
     
     return sorted(list(items))
 
@@ -341,10 +308,11 @@ def get_unid_item_list(pd2_mode=False):
                 continue
             
             item_group_0 = row.get('Item Group 0', '')
+            item_group_1 = row.get('Item Group 1', '')
             rarity = row.get('Rarity', '').strip()
             
-            # Extract runes directly from CSV
-            if item_group_0 == 'Runes':
+            # Extract runes directly from CSV (Item Group 0='Misc', Item Group 1='Low Runes'/'Middle Runes'/'High Runes')
+            if item_group_0 == 'Misc' and item_group_1 in ('Low Runes', 'Middle Runes', 'High Runes'):
                 runes.add(row['Item'])
             elif rarity in ('Unique', 'Set'):
                 # Use get_base_item to handle PD2 mode correctly
@@ -352,20 +320,19 @@ def get_unid_item_list(pd2_mode=False):
                 if base_item:
                     items.add(f"{base_item} ({rarity})")
     
-    # Add special hardcoded UNID items (Magic/Rare versions of selected items)
-    items.update(UNID_SPECIAL_ITEMS)
+    # Generate Magic/Rare versions of special UNID items
+    for base_item in INTESTING_MAGIC_RARE_BASES:
+        items.add(f"{base_item} (Magic)")
+        # Charms cannot be Rare, only Magic
+        if base_item not in {"Grand Charm", "Large Charm", "Small Charm"}:
+            items.add(f"{base_item} (Rare)")
     
     # Add runes
     items.update(runes)
     
-    # Add keys (from SPECIAL_VANILLA_ITEMS)
-    items.update(SPECIAL_VANILLA_ITEMS)
-    
     # Add PD2-specific special items if PD2 mode
     if pd2_mode:
         items.update(UNID_PD2_SPECIAL_ITEMS)
-        # Add special PD2 non-equipment items
-        items.update(SPECIAL_PD2_ITEMS)
     
     return sorted(list(items))
 

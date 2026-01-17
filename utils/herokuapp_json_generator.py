@@ -105,7 +105,7 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
     
     if not eth:
         data['sets'] = {}
-        data['runes'] = {'low runes': {}, 'middle runes': {}, 'high runes': {}}
+        data['misc'] = {'low runes': {}, 'middle runes': {}, 'high runes': {}, 'special': {}}
     
     # Load items from CSV
     eth_item_set = get_eth_item_set(pd2_mode)
@@ -126,9 +126,13 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
             item_group_0 = row['Item Group 0']
             item_group_1 = row['Item Group 1']
             
-            # Handle runes
-            if item_group_0 == 'Runes':
-                data['runes'][item_group_1.lower()][item_name] = {}
+            # Handle Misc items (runes and special items)
+            if item_group_0 == 'Misc':
+                if item_group_1 == 'Special':
+                    data['misc']['special'][item_name] = {}
+                else:
+                    # Runes (low/middle/high runes)
+                    data['misc'][item_group_1.lower()][item_name] = {}
             elif rarity == 'Set':
                 item_group_1 = ITEM_GROUP_1_MAPPING.get(item_group_1, item_group_1)
                 data['sets'].setdefault(item_group_1, {})[item_name] = {}

@@ -15,7 +15,7 @@ def get_grail(uid, proxies=None, pd2_mode=False):
     out = req.json()
     if out.get('data', None) is None:
         dd = deepcopy(get_default_data(pd2_mode))
-        del dd['runes']
+        del dd['misc']
         out['data'] = dd
     if out.get('ethData', None) is None:
         out['ethData'] = deepcopy(get_default_eth_data(pd2_mode))

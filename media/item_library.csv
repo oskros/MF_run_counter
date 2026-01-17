@@ -554,36 +554,65 @@ Tal Rasha's Adjudication,Amulet,Sets,Tal Rasha's Wrappings,,Amulet,,Set,,1,26,1,
 Tancred's Weird,Amulet,Sets,Tancred's Battlegear,,Amulet,,Set,,1,27,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
 Telling of Beads,Amulet,Sets,The Disciple,,Amulet,,Set,,1,39,1,2.20%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
 Vidala's Snare,Amulet,Sets,Vidala's Rig,,Amulet,,Set,,1,19,7,15.60%,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-El Rune,El Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Eld Rune,Eld Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Tir Rune,Tir Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Nef Rune,Nef Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Eth Rune,Eth Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ith Rune,Ith Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Tal Rune,Tal Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ral Rune,Ral Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ort Rune,Ort Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Thul Rune,Thul Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Amn Rune,Amn Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Sol Rune,Sol Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Shael Rune,Shael Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Dol Rune,Dol Rune,Runes,Low Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Hel Rune,Hel Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Io Rune,Io Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Lum Rune,Lum Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ko Rune,Ko Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Fal Rune,Fal Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Lem Rune,Lem Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Pul Rune,Pul Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Um Rune,Um Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Mal Rune,Mal Rune,Runes,Middle Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ist Rune,Ist Rune,Runes,High Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Gul Rune,Gul Rune,Runes,High Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Vex Rune,Vex Rune,Runes,High Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ohm Rune,Ohm Rune,Runes,High Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Lo Rune,Lo Rune,Runes,High Runes,,Rune,,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Sur Rune,Sur Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Ber Rune,Ber Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Jah Rune,Jah Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Cham Rune,Cham Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
-Zod Rune,Zod Rune,Runes,High Runes,,Rune,,,,,,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,,FALSE,FALSE
+El Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Eld Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Tir Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Nef Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Eth Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ith Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Tal Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ral Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ort Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Thul Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Amn Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Sol Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Shael Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Dol Rune,Rune,Misc,Low Runes,,Misc,Low Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Hel Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Io Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Lum Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ko Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Fal Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Lem Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Pul Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Um Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Mal Rune,Rune,Misc,Middle Runes,,Misc,Middle Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ist Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Gul Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Vex Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ohm Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Lo Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Sur Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Ber Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Jah Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Cham Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Zod Rune,Rune,Misc,High Runes,,Misc,High Runes,,,,,,,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,,FALSE,FALSE
+Key of Destruction,Special,Misc,Special,,Misc,,,,,,,,,,,,,FALSE,,FALSE,FALSE
+Key of Hate,Special,Misc,Special,,Misc,,,,,,,,,,,,,FALSE,,FALSE,FALSE
+Key of Terror,Special,Misc,Special,,Misc,,,,,,,,,,,,,FALSE,,FALSE,FALSE
+Worldstone Shard,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Larzuk's Puzzlebox,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Larzuk's Puzzlepiece,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Demonic Cube,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Horadrim Navigator,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Horadrim Almanac,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Skeleton Key,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Vial of Lightsong,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Lilith's Mirror,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Sigil of Madawc,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Sigil of Talic,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Sigil of Korlic,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Prime Evil Soul,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Pure Demonic Essence,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Splinter of the Void,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Trang-Oul's Jawbone,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Demonic Insignia,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Talisman of Transgression,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Flesh of Malic,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Horadrim Scarab,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Catalyst Shard,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Fallen Garden's Map,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Zhar's Sanctum Map,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Stygian Caverns Map,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Imperial Palace Map,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE
+Outer Void Map,Special,Misc,Special,,Misc,,,,,,,,,,,,,TRUE,,FALSE,FALSE

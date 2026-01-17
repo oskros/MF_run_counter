@@ -67,7 +67,7 @@ class Grail(tkd.Frame):
         self._make_row(descr, 3, 'Uniq Weapons')
         self._make_row(descr, 4, 'Uniq Other')
         self._make_row(descr, 5, 'Sets')
-        self._make_row(descr, 6, 'Runes')
+        self._make_row(descr, 6, 'Misc')
         self._make_row(descr, 7, 'Total', font=('Segoe UI', 9, 'bold'))
 
     def _make_row(self, master, row, text, **kwargs):
@@ -153,7 +153,7 @@ class Grail(tkd.Frame):
     def reset_grail(self):
         resp = tk_utils.MessageBox(msg='Are you sure you want to reset the locally stored grail file?', title='WARNING', disabled_btn_input='DELETE').returning
         if resp == 'DELETE':
-            self.grail = self.create_empty_grail()
+            self.grail = self.create_grail_file()
             self.update_statistics()
             if self.grail_table_open:
                 self.select_from_filters()
@@ -161,17 +161,39 @@ class Grail(tkd.Frame):
                 if var.startswith('grail_item'):
                     getattr(self, var).set(0)
 
-    def create_empty_grail(self):
-        # Use item_library.csv which contains all items (regular + PD2)
+    def create_grail_file(self, found_items=None, found_eth_items=None):
+        """Create grail file from item_library.csv.
+        
+        Args:
+            found_items: Optional set of item names that have been found
+            found_eth_items: Optional set of item names that have been found ethereal
+        
+        Returns:
+            List of item dicts representing the grail
+        """
+        if found_items is None:
+            found_items = set()
+        if found_eth_items is None:
+            found_eth_items = set()
+        
+        eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
         grail_dict = []
+        
         with open(media_path + 'item_library.csv', 'r') as fo:
             for row in csv.DictReader(fo):
-                item_dict = {**row, 'Found': False}
-                # Check if item can be ethereal (considering PD2 mode)
-                if row['Item'] in get_eth_item_set(self.main_frame.pd2_mode):
-                    item_dict['FoundEth'] = False
-                # Set PD2 item attribute based on the CSV column
+                item_name = row['Item']
+                item_dict = dict(row)
+                
+                # Set Found based on found_items set
+                item_dict['Found'] = item_name in found_items
+                
+                # Set FoundEth if item can be ethereal, based on found_eth_items set
+                if item_name in eth_item_set:
+                    item_dict['FoundEth'] = item_name in found_eth_items
+                
+                # Ensure PD2 item is boolean
                 item_dict['PD2 item'] = row.get('PD2 item', '').upper() == 'TRUE'
+                
                 grail_dict.append(item_dict)
 
         other_utils.atomic_json_dump(self.file_name, grail_dict)
@@ -179,43 +201,34 @@ class Grail(tkd.Frame):
 
     def load_grail(self):
         if not os.path.isfile(self.file_name):
-            self.create_empty_grail()
+            return self.create_grail_file()
 
         state = other_utils.json_load_err(self.file_name)
         
-        # Only repopulate if PD2 items are missing (backwards compatibility)
-        pd2_items_in_state = any(item.get('PD2 item', False) for item in state)
-        if not pd2_items_in_state:
-            state = self.repopulate_grail_for_pd2(state)
+        # Check if the grail file is outdated and needs to be rebuilt by looking for a newly added column
+        if 'eth_possible' not in state[0]:
+            state = self.rebuild_grail(state)
         
         return state
 
-    def repopulate_grail_for_pd2(self, state):
-        """Backwards compatibility: merge in PD2 items if they're missing from existing grail files."""
-        existing_items = {item.get('Item', '') for item in state}
-        eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
+    def rebuild_grail(self, old_state=None):
+        """Rebuild entire grail from item_library.csv, preserving Found/FoundEth from old grail.
         
-        # Load PD2 items and add missing ones
-        with open(media_path + 'item_library.csv', 'r') as fo:
-            for row in csv.DictReader(fo):
-                if row.get('PD2 item', '').upper() == 'TRUE' and row['Item'] not in existing_items:
-                    item_dict = {**row, 'Found': False}
-                    if row['Item'] in eth_item_set:
-                        item_dict['FoundEth'] = False
-                    item_dict['PD2 item'] = True
-                    state.append(item_dict)
+        Args:
+            old_state: Previous grail state (list of item dicts). If None, creates empty grail.
         
-        # Ensure all items have the PD2 item attribute and correct eth property
-        for item in state:
-            item_name = item.get('Item', '')
-            if 'PD2 item' not in item:
-                item['PD2 item'] = is_pd2_item(item_name)
-            
-            # Add FoundEth property if item can be ethereal in current PD2 mode
-            if item_name in eth_item_set and 'FoundEth' not in item:
-                item['FoundEth'] = False
+        Returns:
+            New grail state rebuilt from CSV
+        """
+        if old_state is None:
+            old_state = []
         
-        return state
+        # Extract found items and found eth items as sets
+        found_items = {item.get('Item', '') for item in old_state if item.get('Found', False)}
+        found_eth_items = {item.get('Item', '') for item in old_state if item.get('FoundEth', False)}
+        
+        # Rebuild grail using create_grail_file with found sets
+        return self.create_grail_file(found_items=found_items, found_eth_items=found_eth_items)
 
     def save_grail(self):
         other_utils.atomic_json_dump(self.file_name, self.grail)
@@ -436,19 +449,19 @@ class Grail(tkd.Frame):
         tabcontrol.add(unique_weapons, text='Unique Weapons')
         tabcontrol.add(unique_other, text='Unique Other')
         
-        # Only show sets and runes tabs when not in eth mode (they can't be ethereal)
+        # Only show sets and misc tabs when not in eth mode (they can't be ethereal)
         if not eth_mode:
             sets = tkd.Frame(tabcontrol)
-            runes = tkd.Frame(tabcontrol)
+            misc = tkd.Frame(tabcontrol)
             tabcontrol.add(sets, text='Sets')
-            tabcontrol.add(runes, text='Runes')
+            tabcontrol.add(misc, text='Misc')
 
         rec_checkbox_add(self, unique_armor, nested_grail['uniques']['armor'], 3)
         rec_checkbox_add(self, unique_weapons, nested_grail['uniques']['weapons'], 4)
         rec_checkbox_add(self, unique_other, nested_grail['uniques']['other'], 3)
         if not eth_mode:
             rec_checkbox_add(self, sets, nested_grail['sets'], 5)
-            rec_checkbox_add(self, runes, nested_grail['runes'], 1)
+            rec_checkbox_add(self, misc, nested_grail['misc'], 1)
 
         # Make sure to update the theme for the newly created widgets
         theme = Theme(self.main_frame.active_theme)
