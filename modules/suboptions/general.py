@@ -97,4 +97,4 @@ class General(tkd.Frame):
         if attr.lower() == 'always_on_top':
             self.main_frame.root.wm_attributes("-topmost", self.main_frame.always_on_top)
         elif attr.lower() == 'tab_switch_keys_global':
-            self.main_frame.toggle_tab_keys_global()
+            self.main_frame.options_tab.toggle_tab_keys_global()

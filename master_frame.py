@@ -107,7 +107,7 @@ class MasterFrame(config.Config):
         self.tabcontrol.add(self.about_tab, text='About')
 
         self.root.bind("<<NotebookTabChanged>>", lambda _: self.notebook_tab_change())
-        self.toggle_tab_keys_global(initial_run=True)  # Register binds for changing tabs
+        self.options_tab.toggle_tab_keys_global(initial_run=True)  # Register binds for changing tabs
 
         self.toggle_drops_frame(show=self.show_drops_frame)
         self.drops_caret = tkd.CaretButton(self.drops_frame, active=self.show_drops_frame, command=self.toggle_drops_frame, text='Drops', compound=tk.RIGHT, height=13)
@@ -229,23 +229,6 @@ class MasterFrame(config.Config):
             self.am_lab.config(width=15)
             self.am_lab.configure(state=tk.DISABLED)
         self.timer_tab.toggle_automode()
-
-    def toggle_tab_keys_global(self, initial_run=False):
-        """
-        Change whether tab switching keybind (ctrl-shift-pgup/pgdn) works only when the app has focus, or also when
-        the app doesn't have focus. Added this feature, as some users might have this keybind natively bound to sth else
-        """
-        if self.tab_switch_keys_global:
-            self.root.unbind_all('<Control-Shift-Next>')
-            self.root.unbind_all('<Control-Shift-Prior>')
-            self.options_tab.tab3.hk.register(['control', 'shift', 'next'], callback=lambda event: self.queue.put(self.tabcontrol.next_tab))
-            self.options_tab.tab3.hk.register(['control', 'shift', 'prior'], callback=lambda event: self.queue.put(self.tabcontrol.prev_tab))
-        else:
-            if not initial_run:
-                self.options_tab.tab3.hk.unregister(['control', 'shift', 'next'])
-                self.options_tab.tab3.hk.unregister(['control', 'shift', 'prior'])
-            self.root.bind_all('<Control-Shift-Next>', lambda event: self.tabcontrol.next_tab())
-            self.root.bind_all('<Control-Shift-Prior>', lambda event: self.tabcontrol.prev_tab())
 
     def toggle_drops_frame(self, show=None):
         if show is None:
