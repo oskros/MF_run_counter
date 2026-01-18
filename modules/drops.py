@@ -1,5 +1,5 @@
 from utils import tk_dynamic as tkd, tk_utils, autocompletion
-from utils.item_name_lists import get_no_unique_map, get_base_item, get_item_aliases, get_full_item_list, get_unid_item_list
+from utils.item_name_lists import get_no_unique_map, get_base_item, get_item_aliases, get_full_item_list, get_unid_item_list, get_fixed_item_name
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -113,22 +113,9 @@ class Drops(tkd.Frame):
         self.m.config(state=tk.DISABLED)
 
     def add_drop_from_clipboard(self, item_dict):
-        fix_item_names = {
-            "Wartraveler": "War Traveler",
-            "Que-Hegan's Wisdon": "Que-Hegan's Wisdom",
-            "Thudergod's Vigor": "Thundergod's Vigor",
-            "McAuley's Riprap": "Sander's Riprap",
-            "Merman's Speed": "Merman's Sprocket",
-            "Griswolds's Redemption": "Griswold's Redemption",
-            "Souldrain": "Soul Drainer",
-            #"Immortal King's Soul Cage": ""
-            "Steelshade": "Steel Shade",
-            "Titangrip": "Titan's Grip"
-        }
-
         unid = item_dict.get('unidentified', False)
         is_ethereal = item_dict.get('isEthereal', False)
-        item_name = item_dict.get('name')
+        item_name = get_fixed_item_name(item_dict.get('name'))
         item_type = item_dict.get('type')
         item_quality = item_dict.get('quality')
 
@@ -140,7 +127,7 @@ class Drops(tkd.Frame):
             else:
                 output_name = f"{item_type} ({item_quality})"
         elif item_quality in ['Unique', 'Set']:
-            output_name = fix_item_names.get(item_name, item_name)
+            output_name = item_name
         elif item_quality == 'Rare':
             output_name = f"{item_name} ({item_quality} {item_type})"
         elif item_quality == 'Magic':
