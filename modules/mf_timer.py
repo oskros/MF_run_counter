@@ -358,8 +358,8 @@ class MFRunTimer(tkd.Frame):
     def pause(self, user_paused=True):
         if not self.is_paused:
             self.pause_lab = tkd.PauseButton(self, font='arial 24 bold', text='Resume', command=self.pause,
-                                             bg=self.main_frame.theme.pause_button_color,
-                                             fg=self.main_frame.theme.pause_button_text)
+                                             bg=self.main_frame.theme.colors['pause_button_color'],
+                                             fg=self.main_frame.theme.colors['pause_button_text'])
             self.pause_lab.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
             self.c1.itemconfigure(self.circ_id, fill='red')

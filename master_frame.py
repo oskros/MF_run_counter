@@ -162,21 +162,19 @@ class MasterFrame(config.Config):
 
     def load_memory_reader(self, show_err=True):
         err = None
-        d2_game_open = reader_utils.process_exists(reader.D2_GAME_EXE)
-        d2_se_open = reader_utils.process_exists(reader.D2_SE_EXE)
+        process_name = reader_utils.get_d2_process_name()
         if not self.is_user_admin:
             err = ('Elevated access rights', 'You must run the app as ADMIN to initialize memory reader for advanced automode.\n\nDisabling advanced automode.')
             self.d2_reader = None
         elif self.automode != 2:
             err = ('Automode option', 'Automode has not been set to "Advanced" - Will not initiate memory reader')
             self.d2_reader = None
-        elif reader_utils.number_of_processes_with_names([reader.D2_GAME_EXE, reader.D2_SE_EXE], logging_level=self.logging_level) > 1:
+        elif reader_utils.number_of_processes_with_names([reader_utils.D2_GAME_EXE, reader_utils.D2_SE_EXE], logging_level=self.logging_level) > 1:
             err = ('Number of processes', 'Several D2 processes have been opened, this bugs out the memory reader.\n\nDisabling advanced automode.')
             self.d2_reader = None
-        elif not d2_game_open and not d2_se_open:
+        elif not process_name:
             self.d2_reader = None
         else:
-            process_name = reader.D2_SE_EXE if d2_se_open else reader.D2_GAME_EXE
             try:
                 self.d2_reader = reader.D2Reader(process_name=process_name)
                 if self.d2_reader.dlls_loaded:

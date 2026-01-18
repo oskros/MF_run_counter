@@ -4,12 +4,9 @@ from libs.pymem import exception as pymem_exception
 import win32api
 import logging
 from memory_reader import reader_utils, stat_mappings
+from memory_reader.reader_utils import D2_GAME_EXE, D2_SE_EXE
 from utils.other_utils import pymem_err_list
 from collections import defaultdict
-
-D2_GAME_EXE = 'Game.exe'
-D2_SE_EXE = 'D2SE.exe'
-D2R_EXE = 'D2R.exe'
 
 
 class D2Reader:

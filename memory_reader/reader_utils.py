@@ -4,6 +4,11 @@ import logging
 from memory_reader import stat_mappings
 from init import *
 
+# D2 process executable names
+D2_GAME_EXE = 'Game.exe'
+D2_SE_EXE = 'D2SE.exe'
+D2R_EXE = 'D2R.exe'
+
 EXP_TABLE = {1: {'Experience': 0, 'Next': 500},
              2: {'Experience': 500, 'Next': 1000},
              3: {'Experience': 1500, 'Next': 2250},
@@ -148,6 +153,25 @@ def elevate_access(func):
 
 def process_exists(process_name):
     return pymem.process.process_from_name(process_name) is not None
+
+
+def get_d2_process_name():
+    """
+    Returns the D2 process name to use based on which processes are open.
+    Prioritizes D2SE over Game.exe if both are available.
+    
+    Returns:
+        Process name string ('D2SE.exe' or 'Game.exe') or None if neither is open
+    """
+    d2_se_open = process_exists(D2_SE_EXE)
+    d2_game_open = process_exists(D2_GAME_EXE)
+    
+    if d2_se_open:
+        return D2_SE_EXE
+    elif d2_game_open:
+        return D2_GAME_EXE
+    else:
+        return None
 
 
 def one_of_processes_exists(process_names):
