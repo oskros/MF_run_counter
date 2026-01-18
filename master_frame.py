@@ -69,13 +69,13 @@ class MasterFrame(config.Config):
         self.root.config(borderwidth=2, height=365, width=240, relief='raised')
         self.root.wm_attributes("-topmost", self.always_on_top)
         self.root.protocol("WM_DELETE_WINDOW", self.Quit)
-        self.root.iconbitmap(media_path + 'icon.ico')
+        self.root.iconbitmap(assets_path + 'icon.ico')
         # self.root.pack_propagate(False)
         self.root.bind("<Delete>", self.delete_selection)
         self.root.unbind_all('<Alt_L>')  # Pressing ALT_L paused UI updates when in focus
 
         # Build banner image
-        d2banner = media_path + 'd2icon.png'
+        d2banner = assets_path + 'd2icon.png'
         img = tk.PhotoImage(master=self.root, file=d2banner)
         self.img_panel = tkd.ImgLabel(self.root, image=img, borderwidth=0)
         self.img_panel.pack()

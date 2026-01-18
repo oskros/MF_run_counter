@@ -10,7 +10,7 @@ class ThreadedSound(threading.Thread):
         self.queue = queue
 
     def run(self):
-        winsound.PlaySound(media_path + 'run_sound.wav', winsound.SND_FILENAME)
+        winsound.PlaySound(assets_path + 'run_sound.wav', winsound.SND_FILENAME)
         self.queue.put("Task finished")
 
 

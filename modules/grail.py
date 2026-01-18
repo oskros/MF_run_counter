@@ -179,7 +179,7 @@ class Grail(tkd.Frame):
         eth_item_set = get_eth_item_set(self.main_frame.pd2_mode)
         grail_dict = []
         
-        with open(media_path + 'item_library.csv', 'r') as fo:
+        with open(assets_path + 'item_library.csv', 'r') as fo:
             for row in csv.DictReader(fo):
                 item_name = row['Item']
                 item_dict = dict(row)
@@ -399,7 +399,7 @@ class Grail(tkd.Frame):
         window = tkd.Toplevel()
         window.title('Grail controller' + (' (Eth)' if eth_mode else ''))
         window.resizable(True, True)
-        window.iconbitmap(media_path + 'icon.ico')
+        window.iconbitmap(assets_path + 'icon.ico')
 
         # Build nested dict with information from the current grail
         # Filter items based on PD2 mode - include PD2 items when PD2 mode is active
@@ -474,7 +474,7 @@ class Grail(tkd.Frame):
         window.title('Item table')
         window.state('zoomed')
         window.resizable(True, True)
-        window.iconbitmap(media_path + 'icon.ico')
+        window.iconbitmap(assets_path + 'icon.ico')
         window.protocol("WM_DELETE_WINDOW", lambda: self.close_grail_table(window))
 
         # Add PD2 item column if PD2 mode is active

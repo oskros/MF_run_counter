@@ -129,7 +129,7 @@ class ACMbox(object):
             '200x146+%s+%s' % (self.root.winfo_screenwidth() // 2 - 100, self.root.winfo_screenheight() // 2 - 72))
         self.root.update_idletasks()
         self.root.focus_set()
-        self.root.iconbitmap(media_path + 'icon.ico')
+        self.root.iconbitmap(assets_path + 'icon.ico')
         self.root.title(title)
         self.root.wm_attributes("-topmost", True)
         self.root.resizable(False, False)

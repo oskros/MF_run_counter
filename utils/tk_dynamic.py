@@ -635,8 +635,8 @@ class CaretButton(Button):
     def __init__(self, root, command=lambda: None, active=False, **kwargs):
         tooltip = kwargs.pop('tooltip', None)
         self.command = lambda: self.run_command(command)
-        up_arrow_path = media_path + 'caret-up.png'
-        dn_arrow_path = media_path + 'caret-down.png'
+        up_arrow_path = assets_path + 'caret-up.png'
+        dn_arrow_path = assets_path + 'caret-down.png'
 
         pic_geom = (374, 43)
         new_geom = (130, 14)

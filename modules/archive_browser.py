@@ -17,7 +17,7 @@ class ArchiveBrowser(tkd.Toplevel):
         self.geometry(disp_coords)
         self.focus_force()
 
-        self.iconbitmap(media_path + 'icon.ico')
+        self.iconbitmap(assets_path + 'icon.ico')
         self.minsize(802, 500)
 
         tkd.Label(self, text='Archive browser', font='Helvetica 14').pack()

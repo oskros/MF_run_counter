@@ -1,9 +1,9 @@
 import csv
-from init import media_path
+from init import assets_path
 
 
 def load_stat_map():
-    with open(media_path + 'stat_map.csv', 'r') as fo:
+    with open(assets_path + 'stat_map.csv', 'r') as fo:
         out = {int(row['ID']): row for row in csv.DictReader(fo)}
     return out
 

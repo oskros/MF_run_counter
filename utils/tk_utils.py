@@ -49,7 +49,7 @@ class RegistrationForm:
         geom = get_displaced_geom(master, 290, 154, coords[0], coords[1])
         self.new_win.geometry(geom)
         # self.new_win.eval('tk::PlaceWindow . center')
-        self.new_win.iconbitmap(media_path + 'icon.ico')
+        self.new_win.iconbitmap(assets_path + 'icon.ico')
 
         lab_text = 'Please create your first profile.' if first_profile else 'Profile registration'
         tk.Label(self.new_win, text=lab_text, font='Helvetica 14').pack()
@@ -128,7 +128,7 @@ class MultiEntryBox(object):
         self.enum = len(entries)
 
         self.root.focus_set()
-        self.root.iconbitmap(media_path + 'icon.ico')
+        self.root.iconbitmap(assets_path + 'icon.ico')
         self.root.title(title)
         self.root.wm_attributes("-topmost", True)
 
@@ -201,7 +201,7 @@ class MessageBox(object):
     def __init__(self, msg, b1='OK', b2='Cancel', entry=False, coords=None, title='Message', hyperlink='', master=None, disabled_btn_input=None):
         self.root = tk.Toplevel()
         self.root.focus_set()
-        self.root.iconbitmap(media_path + 'icon.ico')
+        self.root.iconbitmap(assets_path + 'icon.ico')
         self.root.title(title)
         self.root.wm_attributes("-topmost", True)
         self.msg = str(msg)

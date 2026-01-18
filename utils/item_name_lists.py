@@ -1,7 +1,7 @@
 """Item name lists and mappings for autocompletion and grail logic"""
 from functools import lru_cache
 import csv
-from init import media_path
+from init import assets_path
 
 
 # ============================================================================
@@ -527,7 +527,7 @@ def get_eth_item_set(pd2_mode=False):
     items = set()
     
     # Read items from CSV
-    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+    with open(assets_path + 'item_library.csv', 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             # Check appropriate column based on pd2_mode
@@ -580,7 +580,7 @@ def get_full_item_list(pd2_mode=False):
     items = set()
     
     # Read items from CSV
-    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+    with open(assets_path + 'item_library.csv', 'r', encoding='utf-8') as f:
         for row in csv.DictReader(f):
             # Filter based on PD2 mode
             if not pd2_mode and row.get('PD2 item', '').upper() == 'TRUE':
@@ -607,7 +607,7 @@ def get_unid_item_list(pd2_mode=False):
     runes = set()
     
     # Read items from CSV and generate base item + rarity combinations
-    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as f:
+    with open(assets_path + 'item_library.csv', 'r', encoding='utf-8') as f:
         for row in csv.DictReader(f):
             # Filter based on PD2 mode
             if not pd2_mode and row.get('PD2 item', '').upper() == 'TRUE':

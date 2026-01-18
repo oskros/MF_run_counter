@@ -10,7 +10,7 @@ class About(tkd.Frame):
         top_fr.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         tkd.Label(top_fr, text="MF Run Counter", font=('Segoe UI', 11, 'bold')).pack(pady=(0, 2))
 
-        self.img = tk.PhotoImage(master=parent, file=media_path + 'about_icon.png')
+        self.img = tk.PhotoImage(master=parent, file=assets_path + 'about_icon.png')
         tkd.Label(top_fr, image=self.img, borderwidth=0).pack(pady=0)
 
         btm_fr = tkd.Frame(self)

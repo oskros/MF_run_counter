@@ -2,7 +2,7 @@
 import csv
 import re
 from functools import lru_cache
-from init import media_path
+from init import assets_path
 from utils.item_name_lists import get_eth_item_set, get_base_item
 
 # Mapping from CSV format to JSON format for Item Group 1
@@ -109,7 +109,7 @@ def generate_default_grail_data(pd2_mode=False, eth=False):
     
     # Load items from CSV
     eth_item_set = get_eth_item_set(pd2_mode)
-    with open(media_path + 'item_library.csv', 'r', encoding='utf-8') as fo:
+    with open(assets_path + 'item_library.csv', 'r', encoding='utf-8') as fo:
         for row in csv.DictReader(fo):
             item_name = row['Item']
             

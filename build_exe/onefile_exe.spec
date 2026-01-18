@@ -50,14 +50,15 @@ a = Analysis(
 )
 
 # Your existing data files
-a.datas += [('d2icon.png', path+'\\..\\MF_run_counter\\media\\d2icon.png', 'DATA')]
-a.datas += [('run_sound.wav', path+'\\..\\MF_run_counter\\media\\run_sound.wav', 'DATA')]
-a.datas += [('icon.ico', path+'\\..\\MF_run_counter\\media\\icon.ico', 'DATA')]
-a.datas += [('item_library.csv', path+'\\..\\MF_run_counter\\media\\item_library.csv', 'DATA')]
-a.datas += [('stat_map.csv', path+'\\..\\MF_run_counter\\media\\stat_map.csv', 'DATA')]
-a.datas += [('caret-down.png', path+'\\..\\MF_run_counter\\media\\caret-down.png', 'DATA')]
-a.datas += [('caret-up.png', path+'\\..\\MF_run_counter\\media\\caret-up.png', 'DATA')]
-a.datas += [('about_icon.png', path+'\\..\\MF_run_counter\\media\\about_icon.png', 'DATA')]
+a.datas += [('d2icon.png', path+'\\..\\MF_run_counter\\assets\\d2icon.png', 'DATA')]
+a.datas += [('run_sound.wav', path+'\\..\\MF_run_counter\\assets\\run_sound.wav', 'DATA')]
+a.datas += [('icon.ico', path+'\\..\\MF_run_counter\\assets\\icon.ico', 'DATA')]
+a.datas += [('item_library.csv', path+'\\..\\MF_run_counter\\assets\\item_library.csv', 'DATA')]
+a.datas += [('stat_map.csv', path+'\\..\\MF_run_counter\\assets\\stat_map.csv', 'DATA')]
+a.datas += [('theme_colors.csv', path+'\\..\\MF_run_counter\\assets\\theme_colors.csv', 'DATA')]
+a.datas += [('caret-down.png', path+'\\..\\MF_run_counter\\assets\\caret-down.png', 'DATA')]
+a.datas += [('caret-up.png', path+'\\..\\MF_run_counter\\assets\\caret-up.png', 'DATA')]
+a.datas += [('about_icon.png', path+'\\..\\MF_run_counter\\assets\\about_icon.png', 'DATA')]
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
@@ -77,5 +78,5 @@ exe = EXE(
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
-    icon=path+'\\media\\icon.ico'
+    icon=path+'\\assets\\icon.ico'
 )
