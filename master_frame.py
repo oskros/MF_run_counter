@@ -4,7 +4,6 @@ import platform
 import queue
 import time
 import tkinter as tk
-import traceback
 from tkinter import messagebox
 
 import win32api
@@ -20,10 +19,6 @@ from utils import tk_dynamic as tkd, tk_utils, github_releases, other_utils, con
 
 class MasterFrame(config.Config):
     def __init__(self):
-        # Create root
-        self.root = tkd.Tk()
-        self.root.report_callback_exception = self.report_callback_exception
-
         # Build/load config file
         super().__init__()
 
@@ -34,16 +29,17 @@ class MasterFrame(config.Config):
                             datefmt='%H:%M:%S',
                             level=getattr(logging, self.logging_level, 'WARNING'))
 
-        # Check OS
-        self.os_platform = platform.system()
-        if self.os_platform != 'Windows':
-            err = "MF Run Counter only runs on Windows"
-            messagebox.showerror('OS Error', err)
-            raise SystemError(err)
-
         # A trick to disable windows DPI scaling - the app doesn't work well with scaling, unfortunately
-        if platform.release() == '10' and self.disable_dpi_scaling:
-            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        if sys.platform == "win32" and self.disable_dpi_scaling:
+            try:
+                ctypes.windll.shcore.SetProcessDpiAwareness(2)
+            except Exception as e:
+                logging.error(f'Failed to deactivate DPI scaling - error: {e}')
+
+        # Create root
+        self.root = tkd.Tk()
+        # Hide window until all components are built
+        self.root.withdraw()
 
         # Initiate variables for memory reading
         self.is_user_admin = reader_utils.is_user_admin()
@@ -151,7 +147,11 @@ class MasterFrame(config.Config):
         if self.add_drops_from_clipboard:
             self._start_clipboard_monitoring()
 
-        # Start the program
+        # Update window to ensure all widgets are drawn and then show the window
+        self.root.update_idletasks()
+        self.root.deiconify()
+
+        # Start the mainloop
         self.root.mainloop()
 
     def delete_selection(self, event=None):
@@ -333,16 +333,6 @@ class MasterFrame(config.Config):
                 win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, self.root.winfo_x(), self.root.winfo_y(), 0, 0, 0)
             self.clickable = True
 
-    def report_callback_exception(self, *args):
-        """
-        Handles errors occuring in the application, showing a messagebox with the occured error that user can send back
-        for bug fixing
-        """
-        err = traceback.format_exception(*args)
-        messagebox.showerror('Exception occured', 'Progress since last autosave is lost...\n\n' + ''.join(err))
-        logging.exception(args)
-        os._exit(0)
-
     def notebook_tab_change(self):
         """
         When tab is switched to profile, the descriptive statistics are updated.
@@ -456,7 +446,11 @@ class MasterFrame(config.Config):
 
     def _start_clipboard_monitoring(self):
         """Start monitoring clipboard for JSON items."""
-        self._check_clipboard()
+        # Set current clipboard as baseline without processing it (prevents backfill)
+        clipboard_json = tk_utils.read_json_from_clipboard(self.root)
+        self.last_clipboard_content = clipboard_json
+        # Schedule first check
+        self.clipboard_after_id = self.root.after(500, self._check_clipboard)
 
     def _stop_clipboard_monitoring(self):
         """Stop monitoring clipboard for JSON items."""

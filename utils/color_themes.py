@@ -7,8 +7,9 @@ used_base_style = 'clam'  # , 'default', 'winnative', 'clam', 'alt']
 
 class Theme:
     def __init__(self, used_theme):
-        self.style = ttk.Style()
-        self.style.theme_use(used_base_style)
+        # Defer ttk.Style() creation until after root window exists (lazy initialization)
+        self._style = None
+        self._used_base_style = used_base_style
 
         self.used_theme = used_theme
         if self.used_theme == 'blue':
@@ -158,6 +159,14 @@ class Theme:
             self.sb_bordercolor = default_color
             self.sb_arrowcolor = 'black'
             self.sb_select_btn = 'grey50'
+
+    @property
+    def style(self):
+        """Lazy initialization of ttk.Style - only created when needed (after root window exists)"""
+        if self._style is None:
+            self._style = ttk.Style()
+            self._style.theme_use(self._used_base_style)
+        return self._style
 
     def apply_theme_style(self):
         settings = {

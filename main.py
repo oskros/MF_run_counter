@@ -1,5 +1,17 @@
 import logging
 
+try:
+    import platform
+    from tkinter import messagebox
+
+    # Check OS
+    if platform.system() != 'Windows':
+        err = "MF Run Counter only runs on Windows"
+        messagebox.showerror('OS Error', err)
+        raise SystemError(err)
+except Exception as e:
+    logging.exception(e)
+    raise e
 
 try:
     import win32event
@@ -7,7 +19,6 @@ try:
     from winerror import ERROR_ALREADY_EXISTS
     import sys
     import os
-    from tkinter import messagebox
     from utils import tk_utils
     from master_frame import MasterFrame
 

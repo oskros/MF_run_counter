@@ -1,7 +1,9 @@
 from init import *
+import logging
 import textwrap
 import tkinter as tk
-from tkinter import ttk
+import traceback
+from tkinter import messagebox, ttk
 import webbrowser
 from functools import partial
 from utils import other_utils
@@ -152,6 +154,16 @@ class Tk(tk.Tk):
         x = self.winfo_x()
         y = self.winfo_y() + 1
         self.geometry("+%s+%s" % (x, y))
+
+    def report_callback_exception(self, *args):
+        """
+        Handles errors occuring in the application, showing a messagebox with the occured error that user can send back
+        for bug fixing
+        """
+        err = traceback.format_exception(*args)
+        messagebox.showerror('Exception occured', 'Progress since last autosave is lost...\n\n' + ''.join(err))
+        logging.exception(args)
+        os._exit(0)
 
 
 class Notebook(ttk.Notebook):
