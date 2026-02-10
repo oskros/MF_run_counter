@@ -1,0 +1,36 @@
+color_property,blue,dark,light
+default_color,LightSkyBlue1,black,#f0f0ed
+frame_color,LightSkyBlue1,black,#f0f0ed
+border_color,LightSkyBlue1,dark grey,#f0f0ed
+label_color,LightSkyBlue1,black,#f0f0ed
+notebook_background_color,LightSkyBlue1,grey10,#f0f0ed
+tab_background_color,LightSkyBlue1,black,#f0f0ed
+selected_tab_color,alice blue,grey20,white
+hover_tab_background_color,lavender,grey30,white
+button_color,SkyBlue1,grey47,grey85
+activebutton_color,alice blue,grey78,white
+active_checkbox_color,alice blue,gray20,white
+listbox_color,alice blue,grey33,white
+pause_button_color,DodgerBlue2,deep sky blue,deep sky blue
+circle_border_color,black,grey33,black
+entry_color,alice blue,grey78,white
+text_color,black,#ffffff,black
+button_text_color,black,white,black
+checkbox_text,black,white,black
+run_count_color,red,dark orange,red
+hyperlink_color,blue,dodger blue,blue
+listbox_text,black,white,black
+pause_button_text,black,black,black
+combohighlight_color,black,blue,blue
+combofield_color,alice blue,grey90,white
+dropdown_button_color,cornflower blue,grey70,grey90
+combo_listbox_foreground,black,black,black
+combo_listbox_selectbackground,black,black,black
+combo_listbox_selectforeground,white,white,white
+sb_btn_background,cornflower blue,grey50,grey70
+sb_btn_border_se,black,black,grey70
+sb_btn_border_nw,white,grey90,grey70
+sb_bar_background,lavender,grey70,#f0f0ed
+sb_bordercolor,grey50,grey50,#f0f0ed
+sb_arrowcolor,white,white,black
+sb_select_btn,DodgerBlue3,grey35,grey50
