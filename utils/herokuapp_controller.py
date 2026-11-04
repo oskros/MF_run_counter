@@ -8,7 +8,7 @@ api_page = 'http://d2-holy-grail.herokuapp.com/api/grail/'
 
 def get_grail(uid, proxies=None, pd2_mode=False):
     try:
-        req = requests.get(url=api_page + uid, proxies=proxies)
+        req = requests.get(url=api_page + uid, proxies=proxies, timeout=30)
     except Exception as e:
         raise e
     req.raise_for_status()
@@ -55,7 +55,7 @@ def put_grail(uid, pwd, data, proxies=None):
     del data['ethData']
 
     try:
-        req = requests.put(url=api_page + uid, data=json.dumps(data), headers={"Content-Type": "application/json"}, proxies=proxies)
+        req = requests.put(url=api_page + uid, data=json.dumps(data), headers={"Content-Type": "application/json"}, proxies=proxies, timeout=30)
     except Exception as e:
         raise e
     req.raise_for_status()
